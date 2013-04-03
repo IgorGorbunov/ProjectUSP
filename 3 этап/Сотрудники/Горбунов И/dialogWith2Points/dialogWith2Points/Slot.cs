@@ -6,13 +6,13 @@ using NXOpen.Assemblies;
 using NXOpen.BlockStyler;
 using NXOpen.Positioning;
 
-class Slot
+public class Slot
 {
     public Component ParentComponent
     {
         get
         {
-            return slotSet.ParentComponent;
+            return this.slotSet.ParentComponent;
         }
     }
 
@@ -20,7 +20,7 @@ class Slot
     {
         get
         {
-            return this.slotSet.BottomFace;
+            return this.bottomFace;
         }
     }
     public Face SideFace1
@@ -52,10 +52,11 @@ class Slot
         }
     }
 
-    Config.slotType type;
+    Config.SlotType type;
 
     SlotSet slotSet;
 
+    Face bottomFace;
     Face sideFace1, sideFace2;
     Face touchFace;
     Face topFace;
@@ -64,11 +65,11 @@ class Slot
     List<Edge> touchEdges = new List<Edge>();
     Edge touchEdge;
 
-    double[,] straight_equation;
+    Straight straight;
     double[] bottomDirection;
     
 
-    public Slot(SlotSet slotSet, Edge edgeLong1, Edge edgeLong2, Config.slotType type)
+    public Slot(SlotSet slotSet, Edge edgeLong1, Edge edgeLong2, Config.SlotType type)
     {
         this.slotSet = slotSet;
         this.edgeLong1 = edgeLong1;
@@ -91,7 +92,7 @@ class Slot
 
         foreach (Edge e in this.slotSet.TouchEdges)
         {
-            if (Geom.isEdgePointOnStraight(e, this.straight_equation,
+            if (Geom.isEdgePointOnStraight(e, this.straight,
                                            out length, this.slotSet.SelectPoint))
             {
                 this.touchEdges.Add(e);
@@ -195,10 +196,11 @@ class Slot
     }
     void setStraitEquation()
     {
-        Point3d firstPoint, secondPoint;
-        this.edgeLong1.GetVertices(out firstPoint, out secondPoint);
+        //Point3d firstPoint, secondPoint;
+        //this.edgeLong1.GetVertices(out firstPoint, out secondPoint);
 
-        this.straight_equation = Geom.getStraitEquation(firstPoint, secondPoint);
+        //this.straight_equation = Geom.getStraitEquation(firstPoint, secondPoint);
+        this.straight = new Straight(this.edgeLong1);
     }
 
 
@@ -217,7 +219,7 @@ class Slot
 
         //Config.theUI.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, this.type.ToString());
 
-        if (this.type == Config.slotType.Pslot)
+        if (this.type == Config.SlotType.Pslot)
         {
             topEdge = this.getNextEdge(face, edge, Config.P_SLOT_HEIGHT);
             topFace = this.getNextFace(topEdge, face);
@@ -228,7 +230,7 @@ class Slot
                 Config.theUI.NXMessageBox.Show("Error!", NXMessageBox.DialogType.Error, "Печаль с П-образным пазом!");
             }
         }
-        else if (this.type == Config.slotType.Tslot)
+        else if (this.type == Config.SlotType.Tslot)
         {
 
             foreach (double slotHeight in Config.T_SLOT_HEIGHT1)
@@ -280,7 +282,7 @@ class Slot
                 face = topFace;
                 //Config.theUI.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, this.type.ToString());
                 topEdge = this.getNextEdge(face, edge, Config.T_SLOT_HEIGHT2);
-                this.type = Config.slotType.Tslot2;
+                this.type = Config.SlotType.Tslot2;
             }
             else
             {
@@ -299,7 +301,7 @@ class Slot
                         break;
                     }
                 }
-                this.type = Config.slotType.Tslot1;
+                this.type = Config.SlotType.Tslot1;
             }
 
             topFace = this.getNextFace(topEdge, face);
@@ -403,9 +405,10 @@ class Slot
                 Vector vecTmp = new Vector(e);
                 if (vecEtalon.isParallel(vecTmp))
                 {
-                    double[,] edgeEquation = Geom.getStraitEquation(e);
+                    //double[,] edgeEquation = Geom.getStraitEquation(e);
+                    Straight edgeStraight = new Straight(e);
                     Point3d heightStart = vecEtalon.start;
-                    Point3d pointOnStraight = Geom.getIntersectionPointStraight(heightStart, edgeEquation);
+                    Point3d pointOnStraight = Geom.getIntersectionPointStraight(heightStart, edgeStraight);
                     Vector vecHeight = new Vector(heightStart, pointOnStraight);
 
                     if (Config.doub(vecHeight.getLength()) == distance)
@@ -468,7 +471,7 @@ class Slot
         return resultFace;
     }
 
-    bool isTypeTwo(Face face, Edge edge)
+    /*bool isTypeTwo(Face face, Edge edge)
     {
         Vector vecEtalon = new Vector(edge);
         Edge[] edges = face.GetEdges();
@@ -495,7 +498,7 @@ class Slot
         }
 
         return false;
-    }
+    }*/
 
 }
 

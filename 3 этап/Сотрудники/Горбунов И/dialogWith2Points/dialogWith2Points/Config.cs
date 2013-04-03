@@ -5,7 +5,7 @@ using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.UF;
 
-static class Config
+public static class Config
 {
     public static Session theSession = Session.GetSession();
     public static UI theUI = UI.GetUI();
@@ -31,7 +31,7 @@ static class Config
     public static double STEP_DOWN_WIDTH_T_SLOT_2 = (T_SLOT_WIDTH - T_SLOT_B1) / 2.0;
     public static double STEP_UP_WIDTH_T_SLOT_2 = (T_SLOT_B1 - T_SLOT_A) / 2.0;
 
-    public enum slotType
+    public enum SlotType
     {
         Pslot,
         Tslot,
@@ -67,16 +67,16 @@ static class Config
         return Math.Round(d, PRECISION);
     }
 
-    public static slotType getSlotType(double slotWidth)
+    public static SlotType getSlotType(double slotWidth)
     {
         //Config.theUI.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, slotWidth.ToString());
         if (doub(slotWidth) == T_SLOT_WIDTH)
         {
-            return slotType.Tslot;
+            return SlotType.Tslot;
         }
         else
         {
-            return slotType.Pslot;
+            return SlotType.Pslot;
         }
     }
 }

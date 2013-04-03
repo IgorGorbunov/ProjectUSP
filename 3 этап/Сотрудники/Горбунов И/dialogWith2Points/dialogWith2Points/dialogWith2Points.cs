@@ -99,7 +99,7 @@ public class dialogWith2Points
     public static readonly int     SnapPointTypesOnByDefault_BoundedGridPoint = (1 <<16);
     
     //--------------------------------------------------------------
-
+    UspElement element1, element2;
     SlotSet slotSet1, slotSet2;
     Slot slot1, slot2;
     SlotConstraint constr;
@@ -402,12 +402,18 @@ public class dialogWith2Points
         {
             if (block == selection0)
             {
+
+
+
+
+
                 PropertyList prop_list = block.GetProperties();
                 TaggedObject[] tag_obs = prop_list.GetTaggedObjectVector("SelectedObjects");
                 Component parentComponent = Config.findCompByBodyTag(tag_obs[0].Tag);
 
-                slotSet1 = new SlotSet(parentComponent);
-                slotSet1.setBottomFace();
+                //slotSet1 = new SlotSet(parentComponent);
+                //slotSet1.setBottomFace();
+                element1 = new UspElement(parentComponent);
             }
             else if (block == point0)
             {
@@ -420,8 +426,9 @@ public class dialogWith2Points
                 TaggedObject[] tag_obs = prop_list.GetTaggedObjectVector("SelectedObjects");
                 Component parentComponent = Config.findCompByBodyTag(tag_obs[0].Tag);
 
-                slotSet2 = new SlotSet(parentComponent);
-                slotSet2.setBottomFace();
+                element2 = new UspElement(parentComponent);
+                //slotSet2 = new SlotSet(parentComponent);
+                //slotSet2.setBottomFace();
 
             }
             else if (block == point1)

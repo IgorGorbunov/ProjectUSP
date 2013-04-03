@@ -5,23 +5,29 @@ using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.BlockStyler;
 
-class SlotSet
+/// <summary>
+/// Класс содержащий набор пазов, имеющих одну общую нижнюю плоскость.
+/// </summary>
+public class SlotSet
 {
+    /// <summary>
+    /// Возвращает компонент, на котором располагается данный набор пазов
+    /// </summary>
     public Component ParentComponent
     {
         get
         {
-            return this.component;
+            return this.element.ElementComponent;
         }
     }
 
-    public Face BottomFace
-    {
-        get
-        {
-            return this.bottomFace;
-        }
-    }
+    //public Face BottomFace
+    //{
+    //    get
+    //    {
+    //        return this.bottomFace;
+    //    }
+    //}
 
     public List<Edge> TouchEdges
     {
@@ -39,12 +45,11 @@ class SlotSet
         }
     }
 
-    Component component;
+    UspElement element;
 
     Body body;
 
     Face bottomFace;
-    List<Face> bottomFaces;
 
     List<Edge> touchEdges;
     Edge[] edges;
@@ -53,11 +58,14 @@ class SlotSet
     Point3d selectPoint;
 
 
-    int magic_number = 1680;//TODO
-
-    public SlotSet(Component component)
+    
+    /// <summary>
+    /// Инициализирует новый экземпляр класса для заданного элемента УСП.
+    /// </summary>
+    /// <param name="element">Элемент УСП, на котором существует набор пазов.</param>
+    public SlotSet(UspElement element)
     {
-        this.component = component;
+        this.element = element;
     }
 
 
@@ -67,7 +75,7 @@ class SlotSet
         this.selectPoint = propertyList.GetPoint("Point");
     }
 
-    public void setBottomFace()
+    /*public void setBottomFace()
     {
         Face someFace = null;
         for (int j = 1; j < magic_number; j++)
@@ -92,19 +100,20 @@ class SlotSet
         this.body = someFace.GetBody();
         Face[] faces = this.body.GetFaces();
 
-        int nMaxEdgesBottom = 0;
+        this.bottomFaces = new List<Face>();
+        //int nMaxEdgesBottom = 0;
         for (int j = 0; j < faces.Length; j++)
         {
             try
             {
-                Edge[] edges;
-                List<Edge> slot_edges;
+                //Edge[] edges;
+                //List<Edge> slot_edges;
 
                 Face face = faces[j];
 
                 if (face.Name != null)
                 {
-                    Config.theUI.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, face.ToString());
+                    //Config.theUI.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, face.ToString());
                     string[] split = face.Name.Split(Config.FACE_NAME_SPLITTER);
 
                     if (split[0] == Config.SLOT_SYMBOL && split[1] == Config.SLOT_BOTTOM_SYMBOL)
@@ -113,15 +122,15 @@ class SlotSet
                     }
                 }
                 
-                int newNEdges = this.checkBottom(face, nMaxEdgesBottom, out edges, out slot_edges);
-                if (newNEdges != 0)
-                {
-                    this.bottomFace = face;
-                    this.edges = edges;
-                    this.touchEdges = slot_edges;
+                //int newNEdges = this.checkBottom(face, nMaxEdgesBottom, out edges, out slot_edges);
+                //if (newNEdges != 0)
+                //{
+                //    this.bottomFace = face;
+                //    this.edges = edges;
+                //    this.touchEdges = slot_edges;
 
-                    nMaxEdgesBottom = newNEdges;
-                }
+                //    nMaxEdgesBottom = newNEdges;
+                //}
             }
             catch (NXException Ex)
             {
@@ -138,6 +147,11 @@ class SlotSet
 
 
 
+    }*/
+
+    public void setNearestBottomFace()
+    {
+        
     }
 
     public void setNearestEdges()
@@ -197,8 +211,9 @@ class SlotSet
                     Point3d start, end;
                     edgeLong1.GetVertices(out start, out end);
 
-                    double[,] straight_equation = Geom.getStraitEquation(start, end);
-                    Point3d intersection1 = Geom.getIntersectionPointStraight(this.selectPoint, straight_equation);
+                    Straight firstLongStraight = new Straight(start, end);
+                    //double[,] straight_equation = Geom.getStraitEquation(start, end);
+                    Point3d intersection1 = Geom.getIntersectionPointStraight(this.selectPoint, firstLongStraight);
                     
 
                     double len1 = -1;
@@ -229,8 +244,9 @@ class SlotSet
 
                     edgeLong2.GetVertices(out start, out end);
 
-                    straight_equation = Geom.getStraitEquation(start, end);
-                    Point3d intersection2 = Geom.getIntersectionPointStraight(this.selectPoint, straight_equation);
+                    Straight secondLongStraight = new Straight(start, end);
+                    //straight_equation = Geom.getStraitEquation(start, end);
+                    Point3d intersection2 = Geom.getIntersectionPointStraight(this.selectPoint, secondLongStraight);
 
                     double len2 = -1;
                     if (Geom.isOnSegment(intersection2, edgeLong2))
@@ -418,13 +434,15 @@ class SlotSet
         Point3d[] points1 = new Point3d[Config.N_POINTS_IN_EDGE];
         points1[0] = vec1.start;
         points1[1] = vec1.end;
-        double[,] straight1 = Geom.getStraitEquation(points1[0], points1[1]);
+        //double[,] straight1 = Geom.getStraitEquation(points1[0], points1[1]);
+        Straight straight1 = new Straight(vec1);
 
         //для второго вектора
         Point3d[] points2 = new Point3d[Config.N_POINTS_IN_EDGE];
         points2[0] = vec2.start;
         points2[1] = vec2.end;
-        double[,] straight2 = Geom.getStraitEquation(points2[0], points2[1]);
+        //double[,] straight2 = Geom.getStraitEquation(points2[0], points2[1]);
+        Straight straight2 = new Straight(vec2);
 
         int alignment = 0;
 

@@ -5,10 +5,10 @@ using NXOpen;
 
 static class Geom
 {
-    static int dimensions = 3;
+    public const int DIMENSIONS = 3;
     
-    //дробь представлена 2м€ значени€ми - числителем и знаменателем
-    static int straight_equation_rank = 2; 
+    
+    
 
     public static double getHalfPerimetr(double a, double b, double c)
     {
@@ -27,35 +27,37 @@ static class Geom
     }
 
 
-    public static double[,] getStraitEquation(Point3d firstPoint, Point3d secondPoint)
-    {
-        double[,] straight_equation =
-            new double[straight_equation_rank, dimensions];
+    //public static double[,] getStraitEquation(Point3d firstPoint, Point3d secondPoint)
+    //{
+    //    double[,] straight_equation =
+    //        new double[straight_equation_rank, DIMENSIONS];
 
-        straight_equation[0, 0] = -secondPoint.X;
-        straight_equation[0, 1] = -secondPoint.Y;
-        straight_equation[0, 2] = -secondPoint.Z;
-        straight_equation[1, 0] = secondPoint.X - firstPoint.X;
-        straight_equation[1, 1] = secondPoint.Y - firstPoint.Y;
-        straight_equation[1, 2] =secondPoint.Z - firstPoint.Z;
+    //    straight_equation[0, 0] = -secondPoint.X;
+    //    straight_equation[0, 1] = -secondPoint.Y;
+    //    straight_equation[0, 2] = -secondPoint.Z;
+    //    straight_equation[1, 0] = secondPoint.X - firstPoint.X;
+    //    straight_equation[1, 1] = secondPoint.Y - firstPoint.Y;
+    //    straight_equation[1, 2] =secondPoint.Z - firstPoint.Z;
 
-        return straight_equation;
-    }
-    public static double[,] getStraitEquation(Edge edge)
-    {
-        Point3d start, end;
-        edge.GetVertices(out start, out end);
+    //    return straight_equation;
+    //}
+    //public static double[,] getStraitEquation(Edge edge)
+    //{
+    //    Point3d start, end;
+    //    edge.GetVertices(out start, out end);
 
-        return getStraitEquation(start, end);
-    }
+    //    return getStraitEquation(start, end);
+    //}
 
-    public static bool isEdgePointOnStraight(Edge edge, double[,] straight_equation, 
+    public static bool isEdgePointOnStraight(Edge edge, Straight straight, 
                                                 out double length, Point3d measurePoint)
     {
         length = -1.0;
 
         Point3d[] points = new Point3d[2];
         edge.GetVertices(out points[0], out points[1]);
+
+        double[,] straight_equation = straight.Equation;
         foreach (Point3d p in points)
         {
             if (isPointOnStrait(p, straight_equation, out length, measurePoint))
@@ -67,14 +69,17 @@ static class Geom
         return false;
     }
 
-    public static Point3d getIntersectionPointStraight(Point3d P, double[,] straight_equation)
+    public static Point3d getIntersectionPointStraight(Point3d P, Straight straight)
     {
-        int excessEquation;
-        double[] plain = getPlainEquation(P, straight_equation, out excessEquation);
-        double[,] straights = get2plainsFromStraight(straight_equation, excessEquation);
+        //int excessEquation;
+        Platan plain = new Platan(P, straight);
+        //double[] plain = getPlainEquation(P, straight_equation, out excessEquation);
+        //Platan[] straightPlatanes = straight.Platanes;
+        //double[,] straights = get2plainsFromStraight(straight_equation, excessEquation);
 
         double[] freeArg;
-        double[,] matrix = getMatrix(straights, plain, out freeArg);
+        double[,] matrix = getMatrixIntersection(straight, plain, out freeArg);
+        //double[,] matrix = getMatrixIntersection(straights, plain, out freeArg);
 
         double det = getDet3x3(matrix);
 
@@ -94,97 +99,112 @@ static class Geom
     }
 
 
-    public static double[] getPlainEquation(Point3d point, double[,] strain_equation, out int axeWillBeNull)
-    {
-        double xArg = strain_equation[1, 0];
-        double yArg = strain_equation[1, 1];
-        double zArg = strain_equation[1, 2];
+    //public static double[] getPlainEquation(Point3d point, double[,] strain_equation, out int axeWillBeNull)
+    //{
+    //    double xArg = strain_equation[1, 0];
+    //    double yArg = strain_equation[1, 1];
+    //    double zArg = strain_equation[1, 2];
         
-        if (xArg != 0)
-        {
-            axeWillBeNull = 0;
-        }
-        else if (yArg != 0)
-        {
-            axeWillBeNull = 1;
-        }
-        else if (zArg != 0)
-        {
-            axeWillBeNull = 2;
-        }
-        else
-        {
-            axeWillBeNull = -1;
-        }
+    //    if (xArg != 0)
+    //    {
+    //        axeWillBeNull = 0;
+    //    }
+    //    else if (yArg != 0)
+    //    {
+    //        axeWillBeNull = 1;
+    //    }
+    //    else if (zArg != 0)
+    //    {
+    //        axeWillBeNull = 2;
+    //    }
+    //    else
+    //    {
+    //        axeWillBeNull = -1;
+    //    }
 
-        double xFreeArg = strain_equation[1, 0] * -point.X;
-        double yFreeArg = strain_equation[1, 1] * -point.Y;
-        double zFreeArg = strain_equation[1, 2] * -point.Z;
+    //    double xFreeArg = strain_equation[1, 0] * -point.X;
+    //    double yFreeArg = strain_equation[1, 1] * -point.Y;
+    //    double zFreeArg = strain_equation[1, 2] * -point.Z;
 
-        double freeArg = xFreeArg + yFreeArg + zFreeArg;
+    //    double freeArg = xFreeArg + yFreeArg + zFreeArg;
 
-        double[] plain_equation = {xArg, yArg, zArg, freeArg};
+    //    double[] plain_equation = {xArg, yArg, zArg, freeArg};
 
-        return plain_equation;
-    }
-    public static double[,] get2plainsFromStraight(double[,] straight_equation, int axeIsNull)
+    //    return plain_equation;
+    //}
+    //public static double[,] get2plainsFromStraight(double[,] straight_equation, int axeIsNull)
+    //{
+    //    double[,] matrix = new double[2, 4];
+
+    //    int i = 0;
+    //    if (axeIsNull != 2)
+    //    {
+    //        matrix[i, 0] = straight_equation[1, 1];
+    //        matrix[i, 1] = -straight_equation[1, 0];
+    //        matrix[i, 2] = 0;
+    //        matrix[i, 3] = straight_equation[1, 1] * straight_equation[0, 0] -
+    //            straight_equation[1, 0] * straight_equation[0, 1];
+
+    //        i++;
+    //    }
+
+    //    if (axeIsNull != 1)
+    //    {
+    //        matrix[i, 0] = straight_equation[1, 2];
+    //        matrix[i, 1] = 0;
+    //        matrix[i, 2] = -straight_equation[1, 0];
+    //        matrix[i, 3] = straight_equation[1, 2] * straight_equation[0, 0] -
+    //            straight_equation[1, 0] * straight_equation[0, 2];
+
+    //        i++;
+    //    }
+
+    //    if (i < 2)
+    //    {
+    //        matrix[i, 0] = 0;
+    //        matrix[i, 1] = straight_equation[1, 2];
+    //        matrix[i, 2] = -straight_equation[1, 1];
+    //        matrix[i, 3] = straight_equation[1, 2] * straight_equation[0, 1] -
+    //            straight_equation[1, 1] * straight_equation[0, 2];
+    //    }
+
+    //    return matrix;
+    //}
+    public static double[,] getMatrixIntersection(Straight straight, Platan platan, out double[] freeArg)
     {
-        double[,] matrix = new double[2, 4];
+        double[,] matrix = new double[DIMENSIONS, DIMENSIONS]; //REFACTOR
+        freeArg = new double[DIMENSIONS];
 
+        Platan[] straightPlatans = straight.Platanes;
         int i = 0;
-        if (axeIsNull != 2)
+        while (i < DIMENSIONS - 1)
         {
-            matrix[i, 0] = straight_equation[1, 1];
-            matrix[i, 1] = -straight_equation[1, 0];
-            matrix[i, 2] = 0;
-            matrix[i, 3] = straight_equation[1, 1] * straight_equation[0, 0] -
-                straight_equation[1, 0] * straight_equation[0, 1];
-
-            i++;
+            matrix[i, 0] = straightPlatans[i].X;
+            matrix[i, 1] = straightPlatans[i].Y;
+            matrix[i, 2] = straightPlatans[i].Z;
+            freeArg[i] = -straightPlatans[i].FreeArg;
         }
 
-        if (axeIsNull != 1)
-        {
-            matrix[i, 0] = straight_equation[1, 2];
-            matrix[i, 1] = 0;
-            matrix[i, 2] = -straight_equation[1, 0];
-            matrix[i, 3] = straight_equation[1, 2] * straight_equation[0, 0] -
-                straight_equation[1, 0] * straight_equation[0, 2];
+        matrix[i, 0] = platan.X;
+        matrix[i, 1] = platan.Y;
+        matrix[i, 2] = platan.Z;
+        freeArg[i] = platan.FreeArg;
 
-            i++;
-        }
+        //matrix[0, 0] = straights[0, 0];
+        //matrix[0, 1] = straights[0, 1];
+        //matrix[0, 2] = straights[0, 2];
 
-        if (i < 2)
-        {
-            matrix[i, 0] = 0;
-            matrix[i, 1] = straight_equation[1, 2];
-            matrix[i, 2] = -straight_equation[1, 1];
-            matrix[i, 3] = straight_equation[1, 2] * straight_equation[0, 1] -
-                straight_equation[1, 1] * straight_equation[0, 2];
-        }
+        //matrix[1, 0] = straights[1, 0];
+        //matrix[1, 1] = straights[1, 1];
+        //matrix[1, 2] = straights[1, 2];
 
-        return matrix;
-    }
-    public static double[,] getMatrix(double[,] straights, double[] plane, out double[] freeArg)
-    {
-        double[,] matrix = new double[3, 3]; //REFACTOR
-        freeArg = new double[3];
+        //matrix[2, 0] = plane[0];
+        //matrix[2, 1] = plane[1];
+        //matrix[2, 2] = plane[2];
 
-        matrix[0, 0] = straights[0, 0];
-        matrix[0, 1] = straights[0, 1];
-        matrix[0, 2] = straights[0, 2];
-
-        matrix[1, 0] = straights[1, 0];
-        matrix[1, 1] = straights[1, 1];
-        matrix[1, 2] = straights[1, 2];
-
-        matrix[2, 0] = plane[0];
-        matrix[2, 1] = plane[1];
-        matrix[2, 2] = plane[2];
-
-        freeArg[0] = -straights[0, 3];
-        freeArg[1] = -straights[1, 3];
-        freeArg[2] = -plane[3];
+        //freeArg[0] = -straights[0, 3];
+        //freeArg[1] = -straights[1, 3];
+        //freeArg[2] = -plane[3];
 
         return matrix;
     }
@@ -216,13 +236,13 @@ static class Geom
         Point3d ABcoords = vecAB.getCoords();
         Point3d AXcoords = vecAX.getCoords();
 
-        double[] p = new double[dimensions];
+        double[] p = new double[DIMENSIONS];
 
         p[0] = Config.doub(AXcoords.X) / Config.doub(ABcoords.X);
         p[1] = Config.doub(AXcoords.Y) / Config.doub(ABcoords.Y);
         p[2] = Config.doub(AXcoords.Z) / Config.doub(ABcoords.Z);
 
-        for (int i = 0; i < dimensions; i++)
+        for (int i = 0; i < DIMENSIONS; i++)
         {
             if (p[i] < 0 || p[i] > 1)
             {
@@ -265,7 +285,7 @@ static class Geom
     }
     public static bool isEqual(double[] dir1, double[] dir2)
     {
-        if (dir1.Length == dir2.Length && dir1.Length == dimensions)
+        if (dir1.Length == dir2.Length && dir1.Length == DIMENSIONS)
         {
             for (int i = 0; i < dir1.Length; i++)
             {
@@ -346,7 +366,7 @@ static class Geom
     /// </summary>
     static double[] getRow(double[,] matrix, int row)
     {
-        int size = dimensions;
+        int size = DIMENSIONS;
         double[] ret = new double[size];
 
         for (int i = 0; i < size; i++)
@@ -362,7 +382,7 @@ static class Geom
     /// </summary>
     static void SetRow(double[,] matrix, int row, double[] rowValues)
     {
-        int size = dimensions;
+        int size = DIMENSIONS;
 
         for (int i = 0; i < size; i++)
             matrix[row, i] = rowValues[i];
@@ -397,7 +417,7 @@ static class Geom
     {
         length = -1;
 
-        int nDimensions = dimensions;
+        int nDimensions = DIMENSIONS;
         int nNulls = 0;
 
         // ћассив с дл€ обозначени€ осей, в перпендикул€рных плоскост€х которых лежит пр€ма€
