@@ -149,8 +149,42 @@ public class SlotSet
 
     }*/
 
-    public void setNearestBottomFace()
+    public bool haveNearestBottomFace()
     {
+        double minLen = -1;
+        Face nearFace = null;
+        bool isFirstFace = true;
+        foreach (Face face in this.element.SlotFaces)
+	    {
+            
+            Platan platan = new Platan(face);
+            double len = platan.getDistanceToPoint(this.selectPoint);
+
+            if (isFirstFace && len >= 0)
+            {
+                minLen = len;
+                isFirstFace = false;
+            }
+
+            if (len >= 0 && len <= minLen)
+            {
+                nearFace = face;
+                minLen = len;
+            }
+	    }
+
+        if (minLen == -1)
+        {
+            return false;
+        }
+        else
+        {
+            this.bottomFace = nearFace;
+            this.bottomFace.Highlight();
+            Config.theUI.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, "");
+            this.bottomFace.Unhighlight();
+            return true;
+        }
         
     }
 

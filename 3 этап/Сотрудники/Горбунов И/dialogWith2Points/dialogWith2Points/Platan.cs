@@ -9,7 +9,7 @@ using NXOpen;
 public class Platan
 {
     /// <summary>
-    /// Возвращает массив коэффициентов A, B, C, D для нормального уравнения плоскости -
+    /// Возвращает массив коэффициентов A, B, C, D для общего уравнения плоскости -
     /// Ax + By + Cz + D = 0.
     /// </summary>
     public double[] Equation
@@ -20,7 +20,7 @@ public class Platan
         }
     }
     /// <summary>
-    /// Возвращает коэффициент при аргументе X из нормального уравнения плоскости.
+    /// Возвращает коэффициент при аргументе X из общего уравнения плоскости.
     /// </summary>
     public double X
     {
@@ -30,7 +30,7 @@ public class Platan
         }
     }
     /// <summary>
-    /// Возвращает коэффициент при аргументе Y из нормального уравнения плоскости.
+    /// Возвращает коэффициент при аргументе Y из общего уравнения плоскости.
     /// </summary>
     public double Y
     {
@@ -40,7 +40,7 @@ public class Platan
         }
     }
     /// <summary>
-    /// Возвращает коэффициент при аргументе Z из нормального уравнения плоскости.
+    /// Возвращает коэффициент при аргументе Z из общего уравнения плоскости.
     /// </summary>
     public double Z
     {
@@ -50,7 +50,7 @@ public class Platan
         }
     }
     /// <summary>
-    /// Возвращает свободный аргумент из нормального уравнения плоскости.
+    /// Возвращает свободный аргумент из общего уравнения плоскости.
     /// </summary>
     public double FreeArg
     {
@@ -85,7 +85,7 @@ public class Platan
         this.equation = new double[4] { xArg, yArg, zArg, freeArg };
     }
     /// <summary>
-    /// Инициализирует новый экземпляр класса для плоскости, заданной нормальным уравнением
+    /// Инициализирует новый экземпляр класса для плоскости, заданной общим уравнением
     /// (Ax + By + Cz + D = 0).
     /// </summary>
     /// <param name="xArg">Коэффициент при аргументе Х.</param>
@@ -97,7 +97,7 @@ public class Platan
         this.equation = new double[4] { xArg, yArg, zArg, freeArg };
     }
     /// <summary>
-    /// Инициализирует новый экземпляр класса для плоскости, заданной нормальным уравнением
+    /// Инициализирует новый экземпляр класса для плоскости, заданной общим уравнением
     /// (Ax + By + Cz + D = 0).
     /// </summary>
     /// <param name="equation">Массив c коэффициентами А, B, C, D</param>
@@ -105,9 +105,33 @@ public class Platan
     {
         this.equation = equation;
     }
+    /// <summary>
+    /// Инициализирует новый экземпляр класса для плоскости, заданной гранью элемента.
+    /// </summary>
+    /// <param name="face">Грань элемента.</param>
+    public Platan(Face face)
+    {
+        int tmpInt;
+        double tmpDouble;
+        double[] box = new double[6];
+
+        double[] point = new double[3];
+        double[] dir = new double[3];
+        Config.theUFSession.Modl.AskFaceData(face.Tag, out tmpInt, point, dir, box,
+                                             out tmpDouble, out tmpDouble, out tmpInt);
+
+        double A = dir[0];
+        double B = dir[1];
+        double C = dir[2];
+        double D = A * -point[0] + B * -point[1] + C * -point[2];
+        
+        this.equation = new double[4] { A, B, C, D };
+    }
 
     /// <summary>
-    /// Возвращает минимальное расстояние (перпендикуляр) между плоскостью и заданной точкой.
+    /// Возвращает минимальное по модулю расстояние (перпендикуляр) между плоскостью и заданной
+    /// точкой. Ахтунг!!1 Возвращает положительное значение, если нормаль плоскости и вектор к
+    /// точке сонаправлены, отрицательное значение - если противонаправлены.
     /// </summary>
     /// <param name="point">Точка.</param>
     /// <returns></returns>

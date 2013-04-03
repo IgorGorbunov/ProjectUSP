@@ -414,11 +414,15 @@ public class dialogWith2Points
                 //slotSet1 = new SlotSet(parentComponent);
                 //slotSet1.setBottomFace();
                 element1 = new UspElement(parentComponent);
+                slotSet1 = new SlotSet(element1);
             }
             else if (block == point0)
             {
                 slotSet1.setPoint(block);
-                slotSet1.setNearestEdges();
+                if (slotSet1.haveNearestBottomFace())
+                {
+                    
+                }
             }
             else if (block == selection01)
             {
@@ -427,6 +431,7 @@ public class dialogWith2Points
                 Component parentComponent = Config.findCompByBodyTag(tag_obs[0].Tag);
 
                 element2 = new UspElement(parentComponent);
+                slotSet2 = new SlotSet(element2);
                 //slotSet2 = new SlotSet(parentComponent);
                 //slotSet2.setBottomFace();
 

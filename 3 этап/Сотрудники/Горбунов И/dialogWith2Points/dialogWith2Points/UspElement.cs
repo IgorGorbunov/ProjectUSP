@@ -1,16 +1,16 @@
-using System;
+п»їusing System;
 using System.Collections.Generic;
 using System.Text;
 using NXOpen;
 using NXOpen.Assemblies;
 
 /// <summary>
-/// Класс содержащий элемент УСП.
+/// РљР»Р°СЃСЃ СЃРѕРґРµСЂР¶Р°С‰РёР№ СЌР»РµРјРµРЅС‚ РЈРЎРџ.
 /// </summary>
 public class UspElement
 {
     /// <summary>
-    /// Возвращает компонент элемента.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ РєРѕРјРїРѕРЅРµРЅС‚ СЌР»РµРјРµРЅС‚Р°.
     /// </summary>
     public Component ElementComponent
     {
@@ -20,7 +20,7 @@ public class UspElement
         }
     }
     /// <summary>
-    /// Возвращает список всех нижних плоскостей пазов для данного элемента.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РІСЃРµС… РЅРёР¶РЅРёС… РїР»РѕСЃРєРѕСЃС‚РµР№ РїР°Р·РѕРІ РґР»СЏ РґР°РЅРЅРѕРіРѕ СЌР»РµРјРµРЅС‚Р°.
     /// </summary>
     public List<Face> SlotFaces
     {
@@ -40,9 +40,9 @@ public class UspElement
 
 
     /// <summary>
-    /// Инициализирует новый экземпляр класса элемента УСП для заданного компонента.
+    /// РРЅРёС†РёР°Р»РёР·РёСЂСѓРµС‚ РЅРѕРІС‹Р№ СЌРєР·РµРјРїР»СЏСЂ РєР»Р°СЃСЃР° СЌР»РµРјРµРЅС‚Р° РЈРЎРџ РґР»СЏ Р·Р°РґР°РЅРЅРѕРіРѕ РєРѕРјРїРѕРЅРµРЅС‚Р°.
     /// </summary>
-    /// <param name="component">Компонент из сборки NX.</param>
+    /// <param name="component">РљРѕРјРїРѕРЅРµРЅС‚ РёР· СЃР±РѕСЂРєРё NX.</param>
     public UspElement(Component component)
     {
         this.component = component;
@@ -70,9 +70,9 @@ public class UspElement
                 }
                 else
                 {
-                    UI.GetUI().NXMessageBox.Show("Ошибка!", 
+                    UI.GetUI().NXMessageBox.Show("РћС€РёР±РєР°!", 
                                                  NXMessageBox.DialogType.Error, 
-                                                 "Ашипка!");
+                                                 "РђС€РёРїРєР°!");
                 }
             }
         }
@@ -94,15 +94,6 @@ public class UspElement
                         split[1] == Config.SLOT_BOTTOM_SYMBOL)
                     {
                         this.bottomFaces.Add(face);
-
-                        int tag;
-                        double d;
-                        double[] dd = new double[3];
-                        double[] dds = new double[3];
-                        double[] ddd = new double[6];
-                        Config.theUFSession.Modl.AskFaceData(face.Tag, out tag, dd, dds, ddd, out d, out d, out tag);
-
-                        Config.theUI.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, dds[0] + " " + dds[1] + " " + dds[2]);
                     }
                 }
             }
@@ -114,9 +105,9 @@ public class UspElement
                 }
                 else
                 {
-                    UI.GetUI().NXMessageBox.Show("Ошибка!", 
+                    UI.GetUI().NXMessageBox.Show("РћС€РёР±РєР°!", 
                                                  NXMessageBox.DialogType.Error, 
-                                                 "Ашипка!");
+                                                 "РђС€РёРїРєР°!");
                 }
             }
         }
