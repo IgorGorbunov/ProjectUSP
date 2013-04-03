@@ -23,7 +23,7 @@ public class Vector
     {
         get
         {
-            if (this.length == null)
+            if (this.length == -1.0)
 	        {
         		 this.length = this.getLength();
 	        }
@@ -37,7 +37,7 @@ public class Vector
     {
         get
         {
-            if (this.direction == null)
+            if (Geom.isEqual(this.direction, new Point3d(0.0, 0.0, 0.0)))
             {
                 this.setDirection();
             }
@@ -46,8 +46,8 @@ public class Vector
         }
     }
 
-    double length;
-    Point3d direction;
+    double length = -1.0;
+    Point3d direction = new Point3d(0.0, 0.0, 0.0);
 
 
     /// <summary>

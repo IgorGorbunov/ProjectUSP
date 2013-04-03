@@ -1,4 +1,4 @@
-using System;
+п»їusing System;
 using System.Collections.Generic;
 using System.Text;
 using NXOpen;
@@ -6,12 +6,12 @@ using NXOpen.Assemblies;
 using NXOpen.BlockStyler;
 
 /// <summary>
-/// Класс содержащий набор пазов, имеющих одну общую нижнюю плоскость.
+/// РљР»Р°СЃСЃ СЃРѕРґРµСЂР¶Р°С‰РёР№ РЅР°Р±РѕСЂ РїР°Р·РѕРІ, РёРјРµСЋС‰РёС… РѕРґРЅСѓ РѕР±С‰СѓСЋ РЅРёР¶РЅСЋСЋ РїР»РѕСЃРєРѕСЃС‚СЊ.
 /// </summary>
 public class SlotSet
 {
     /// <summary>
-    /// Возвращает компонент, на котором располагается данный набор пазов
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ РєРѕРјРїРѕРЅРµРЅС‚, РЅР° РєРѕС‚РѕСЂРѕРј СЂР°СЃРїРѕР»Р°РіР°РµС‚СЃСЏ РґР°РЅРЅС‹Р№ РЅР°Р±РѕСЂ РїР°Р·РѕРІ
     /// </summary>
     public Component ParentComponent
     {
@@ -60,9 +60,9 @@ public class SlotSet
 
     
     /// <summary>
-    /// Инициализирует новый экземпляр класса для заданного элемента УСП.
+    /// РРЅРёС†РёР°Р»РёР·РёСЂСѓРµС‚ РЅРѕРІС‹Р№ СЌРєР·РµРјРїР»СЏСЂ РєР»Р°СЃСЃР° РґР»СЏ Р·Р°РґР°РЅРЅРѕРіРѕ СЌР»РµРјРµРЅС‚Р° РЈРЎРџ.
     /// </summary>
-    /// <param name="element">Элемент УСП, на котором существует набор пазов.</param>
+    /// <param name="element">Р­Р»РµРјРµРЅС‚ РЈРЎРџ, РЅР° РєРѕС‚РѕСЂРѕРј СЃСѓС‰РµСЃС‚РІСѓРµС‚ РЅР°Р±РѕСЂ РїР°Р·РѕРІ.</param>
     public SlotSet(UspElement element)
     {
         this.element = element;
@@ -93,7 +93,7 @@ public class SlotSet
                 }
                 else
                 {
-                    UI.GetUI().NXMessageBox.Show("Ошибка!", NXMessageBox.DialogType.Error, "Ашипка!");
+                    UI.GetUI().NXMessageBox.Show("РћС€РёР±РєР°!", NXMessageBox.DialogType.Error, "РђС€РёРїРєР°!");
                 }
             }
         }
@@ -140,7 +140,7 @@ public class SlotSet
                 }
                 else
                 {
-                    UI.GetUI().NXMessageBox.Show("Ошибка!", NXMessageBox.DialogType.Error, "Ашипка!");
+                    UI.GetUI().NXMessageBox.Show("РћС€РёР±РєР°!", NXMessageBox.DialogType.Error, "РђС€РёРїРєР°!");
                 }
             }
         }
@@ -168,8 +168,8 @@ public class SlotSet
                 Vector Vec1 = new Vector(this.selectPoint, FirstPoint);
                 Vector Vec2 = new Vector(this.selectPoint, SecondPoint);
 
-                double len1 = Vec1.getLength();
-                double len2 = Vec2.getLength();
+                double len1 = Vec1.Length;
+                double len2 = Vec2.Length;
 
                 double min_len;
                 if (len1 < len2)
@@ -220,15 +220,15 @@ public class SlotSet
                     if (Geom.isOnSegment(intersection1, edgeLong1))
                     {
                         Vector vecN1 = new Vector(this.selectPoint, intersection1);
-                        len1 = vecN1.getLength();
+                        len1 = vecN1.Length;
                     }
                     else
                     {
                         Vector Vec1S = new Vector(this.selectPoint, start);
                         Vector Vec1L = new Vector(this.selectPoint, end);
 
-                        double lenS = Vec1S.getLength();
-                        double lenL = Vec1L.getLength();
+                        double lenS = Vec1S.Length;
+                        double lenL = Vec1L.Length;
 
                         if (lenS < lenL)
                         {
@@ -252,15 +252,15 @@ public class SlotSet
                     if (Geom.isOnSegment(intersection2, edgeLong2))
                     {
                         Vector vecN2 = new Vector(this.selectPoint, intersection2);
-                        len2 = vecN2.getLength();
+                        len2 = vecN2.Length;
                     }
                     else
                     {
                         Vector Vec2S = new Vector(this.selectPoint, start);
                         Vector Vec2L = new Vector(this.selectPoint, end);
 
-                        double lenS = Vec2S.getLength();
-                        double lenL = Vec2L.getLength();
+                        double lenS = Vec2S.Length;
+                        double lenL = Vec2L.Length;
 
                         if (lenS < lenL)
                         {
@@ -399,7 +399,7 @@ public class SlotSet
 
                     if (vec1.isNormal(temp_vec))
                     {
-                        double length = Config.doub(temp_vec.getLength());
+                        double length = Config.doub(temp_vec.Length);
                         if (length == Config.P_SLOT_WIDTH || length == Config.T_SLOT_WIDTH)
                         {
                             distance = length;
@@ -430,14 +430,14 @@ public class SlotSet
 
     bool haveNormals(Vector vec1, Vector vec2)
     {
-        //для первого вектора
+        //РґР»СЏ РїРµСЂРІРѕРіРѕ РІРµРєС‚РѕСЂР°
         Point3d[] points1 = new Point3d[Config.N_POINTS_IN_EDGE];
         points1[0] = vec1.start;
         points1[1] = vec1.end;
         //double[,] straight1 = Geom.getStraitEquation(points1[0], points1[1]);
         Straight straight1 = new Straight(vec1);
 
-        //для второго вектора
+        //РґР»СЏ РІС‚РѕСЂРѕРіРѕ РІРµРєС‚РѕСЂР°
         Point3d[] points2 = new Point3d[Config.N_POINTS_IN_EDGE];
         points2[0] = vec2.start;
         points2[1] = vec2.end;
@@ -446,7 +446,7 @@ public class SlotSet
 
         int alignment = 0;
 
-        //первое ребро
+        //РїРµСЂРІРѕРµ СЂРµР±СЂРѕ
         bool onPoint = false;
         for (int i = 0; i < Config.N_POINTS_IN_EDGE; i++)
         {
@@ -468,7 +468,7 @@ public class SlotSet
             }
         }
 
-        //второе ребро
+        //РІС‚РѕСЂРѕРµ СЂРµР±СЂРѕ
         onPoint = false;
         for (int i = 0; i < Config.N_POINTS_IN_EDGE; i++)
         {
@@ -499,7 +499,7 @@ public class SlotSet
         }
     }
 
-    //не используется
+    //РЅРµ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ
     /*bool hasCommonEdge(Vector v1, Vector v2, out Edge edge, out int k, out int n)
     {
         Point3d[] points1, points2;

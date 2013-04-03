@@ -8,7 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace dialogWith2Points.Properties {
     using System;
     
     
@@ -60,4 +59,3 @@ namespace dialogWith2Points.Properties {
             }
         }
     }
-}

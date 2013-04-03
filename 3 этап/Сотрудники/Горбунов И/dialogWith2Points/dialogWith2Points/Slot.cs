@@ -1,4 +1,4 @@
-using System;
+п»їusing System;
 using System.Collections.Generic;
 using System.Text;
 using NXOpen;
@@ -227,7 +227,7 @@ public class Slot
 
             if (!Geom.isEqual(this.bottomDirection, direction))
             {
-                Config.theUI.NXMessageBox.Show("Error!", NXMessageBox.DialogType.Error, "Печаль с П-образным пазом!");
+                Config.theUI.NXMessageBox.Show("Error!", NXMessageBox.DialogType.Error, "РџРµС‡Р°Р»СЊ СЃ Рџ-РѕР±СЂР°Р·РЅС‹Рј РїР°Р·РѕРј!");
             }
         }
         else if (this.type == Config.SlotType.Tslot)
@@ -248,7 +248,7 @@ public class Slot
 
             topEdge = this.getNextEdge(face, edge, Config.STEP_WIDTH_T_SLOT_1);
 
-            //значит Т-образный паз второго исполнения
+            //Р·РЅР°С‡РёС‚ Рў-РѕР±СЂР°Р·РЅС‹Р№ РїР°Р· РІС‚РѕСЂРѕРіРѕ РёСЃРїРѕР»РЅРµРЅРёСЏ
             if (topEdge == null)
             {
                 
@@ -312,7 +312,7 @@ public class Slot
 
         if (!Geom.isEqual(this.bottomDirection, direction))
         {
-            Config.theUI.NXMessageBox.Show("Error!", NXMessageBox.DialogType.Error, "Печаль с T-образным пазом!");
+            Config.theUI.NXMessageBox.Show("Error!", NXMessageBox.DialogType.Error, "РџРµС‡Р°Р»СЊ СЃ T-РѕР±СЂР°Р·РЅС‹Рј РїР°Р·РѕРј!");
         }
 
 
@@ -395,7 +395,7 @@ public class Slot
 
     Edge getNextEdge(Face face, Edge edge, double distance)
     {
-        //поиск верхнего левого ребра
+        //РїРѕРёСЃРє РІРµСЂС…РЅРµРіРѕ Р»РµРІРѕРіРѕ СЂРµР±СЂР°
         Edge resultEdge = null;
         Vector vecEtalon = new Vector(edge);
         foreach (Edge e in face.GetEdges())
@@ -411,7 +411,7 @@ public class Slot
                     Point3d pointOnStraight = Geom.getIntersectionPointStraight(heightStart, edgeStraight);
                     Vector vecHeight = new Vector(heightStart, pointOnStraight);
 
-                    if (Config.doub(vecHeight.getLength()) == distance)
+                    if (Config.doub(vecHeight.Length) == distance)
                     {
                         resultEdge = e;
                         break;
@@ -425,7 +425,7 @@ public class Slot
 
     Edge getNextEdge(Face face, Edge edge)
     {
-        //поиск верхнего левого ребра
+        //РїРѕРёСЃРє РІРµСЂС…РЅРµРіРѕ Р»РµРІРѕРіРѕ СЂРµР±СЂР°
         Edge resultEdge = null;
         Vector vecEtalon = new Vector(edge);
         foreach (Edge e in face.GetEdges())
@@ -443,7 +443,7 @@ public class Slot
 
         if (resultEdge == null)
         {
-            Config.theUI.NXMessageBox.Show("Error!", NXMessageBox.DialogType.Error, "Верхнего ребра нет!");
+            Config.theUI.NXMessageBox.Show("Error!", NXMessageBox.DialogType.Error, "Р’РµСЂС…РЅРµРіРѕ СЂРµР±СЂР° РЅРµС‚!");
         }
 
         return resultEdge;
@@ -451,7 +451,7 @@ public class Slot
 
     Face getNextFace(Edge edge, Face face)
     {
-        //поиск верхней горизонтальной поверхности
+        //РїРѕРёСЃРє РІРµСЂС…РЅРµР№ РіРѕСЂРёР·РѕРЅС‚Р°Р»СЊРЅРѕР№ РїРѕРІРµСЂС…РЅРѕСЃС‚Рё
         Face resultFace = null;
         Face[] faces = edge.GetFaces();
         foreach (Face f in faces)
@@ -465,7 +465,7 @@ public class Slot
 
         if (resultFace == null)
         {
-            Config.theUI.NXMessageBox.Show("Error!", NXMessageBox.DialogType.Error, "Верхняя горизонтальная поверхность не найдена!");
+            Config.theUI.NXMessageBox.Show("Error!", NXMessageBox.DialogType.Error, "Р’РµСЂС…РЅСЏСЏ РіРѕСЂРёР·РѕРЅС‚Р°Р»СЊРЅР°СЏ РїРѕРІРµСЂС…РЅРѕСЃС‚СЊ РЅРµ РЅР°Р№РґРµРЅР°!");
         }
 
         return resultFace;
