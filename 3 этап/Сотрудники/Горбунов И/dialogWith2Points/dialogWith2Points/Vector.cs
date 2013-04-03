@@ -1,33 +1,76 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using NXOpen;
 using NXOpen.UF;
 
-
+/// <summary>
+/// Класс математического вектора.
+/// </summary>
 public class Vector
 {
-    public Point3d start, end;
+    /// <summary>
+    /// Задаёт и возвращает начало вектора.
+    /// </summary>
+    public Point3d start;
+    /// <summary>
+    /// Задаёт и возвращает конец вектора.
+    /// </summary>
+    public Point3d end;
+    /// <summary>
+    /// Возвращает длину вектора.
+    /// </summary>
+    public double Length
+    {
+        get
+        {
+            if (this.length == null)
+	        {
+        		 this.length = this.getLength();
+	        }
+            return this.length;
+        }
+    }
+    /// <summary>
+    /// Возвращает направляющие косинусы вектора.
+    /// </summary>
+    public Point3d Direction
+    {
+        get
+        {
+            if (this.direction == null)
+            {
+                this.setDirection();
+            }
+
+            return this.direction;
+        }
+    }
+
+    double length;
+    Point3d direction;
 
 
     /// <summary>
-    /// ������������� ��-���������
+    /// Инициализирует новый путой экземпляр класса.
     /// </summary>
     public Vector()
         : this(new Point3d(), new Point3d())
     {
 
     }
-
     /// <summary>
-    /// ������������� ������ ������ � ������ ����� �������
+    /// Инициализирует новый экземпляр класса вектора по координатам начальной и конечной точки.
     /// </summary>
-    /// <param name="start"></param>
-    /// <param name="end"></param>
+    /// <param name="start">Начальная точка вектора.</param>
+    /// <param name="end">Конечная точка вектора.</param>
     public Vector(Point3d start, Point3d end)
     {
         initPoints(start, end);
     }
-
+    /// <summary>
+    /// Инициализирует новый экземпляр класса вектора для заданного ребра.
+    /// </summary>
+    /// <param name="Edg">Ребро элемента.</param>
     public Vector(Edge Edg)
     {
         Point3d start, end;
@@ -36,21 +79,10 @@ public class Vector
         initPoints(start, end);
     }
 
-    void initPoints(Point3d start, Point3d end)
-    {
-        this.start = new Point3d();
-        this.start.X = Config.doub(start.X);
-        this.start.Y = Config.doub(start.Y);
-        this.start.Z = Config.doub(start.Z);
-
-        this.end = new Point3d();
-        this.end.X = Config.doub(end.X);
-        this.end.Y = Config.doub(end.Y);
-        this.end.Z = Config.doub(end.Z);
-    }
+    
 
     /// <summary>
-    /// ��������� ��������� �������
+    /// Возвращает координаты вектора.
     /// </summary>
     /// <returns></returns>
     public Point3d getCoords()
@@ -59,15 +91,10 @@ public class Vector
     }
 
     /// <summary>
-    /// ��������� ����� �������
+    /// Возвращает угол между текущим вектором и заданным (вторым).
     /// </summary>
+    /// <param name="vec">Второй вектор.</param>
     /// <returns></returns>
-    public double getLength()
-    {
-        Point3d Coords = getCoords();
-        return Math.Sqrt(Math.Abs(Math.Pow(Coords.X, 2) + Math.Pow(Coords.Y, 2) + Math.Pow(Coords.Z, 2)));
-    }
-
     public double getAngle(Vector vec)
     {
         UFSession theUFSession = UFSession.GetUFSession();
@@ -92,6 +119,12 @@ public class Vector
         return angle * 180 / Math.PI;
     }
 
+    /// <summary>
+    /// Возвращает значение, определяющее является ли второй (заданный) вектор перпендикулярным
+    /// текущему.
+    /// </summary>
+    /// <param name="vec">Второй вектор.</param>
+    /// <returns></returns>
     public bool isNormal(Vector vec)
     {
         double angle = this.getAngle(vec);
@@ -105,7 +138,12 @@ public class Vector
             return false;
         }
     }
-
+    /// <summary>
+    /// Возвращает значение, определяющее является ли второй (заданный) вектор параллельным
+    /// текущему.
+    /// </summary>
+    /// <param name="vec">Второй вектор.</param>
+    /// <returns></returns>
     public bool isParallel(Vector vec)
     {
         double angle = this.getAngle(vec);
@@ -118,6 +156,38 @@ public class Vector
         {
             return false;
         }
+    }
+
+
+    
+    void initPoints(Point3d start, Point3d end)
+    {
+        this.start = new Point3d();
+        this.start.X = Config.doub(start.X);
+        this.start.Y = Config.doub(start.Y);
+        this.start.Z = Config.doub(start.Z);
+
+        this.end = new Point3d();
+        this.end.X = Config.doub(end.X);
+        this.end.Y = Config.doub(end.Y);
+        this.end.Z = Config.doub(end.Z);
+    }
+
+    double getLength()
+    {
+        Point3d Coords = getCoords();
+        return Math.Sqrt(Math.Abs(Math.Pow(Coords.X, 2) +
+                                  Math.Pow(Coords.Y, 2) +
+                                  Math.Pow(Coords.Z, 2)));
+    }
+
+    void setDirection()
+    {
+        double cosA = (end.X - start.X) / this.Length;
+        double cosB = (end.Y - start.Y) / this.Length;
+        double cosC = (end.Z - start.Z) / this.Length;
+
+        this.direction = new Point3d(cosA, cosB, cosC);
     }
 }
 
