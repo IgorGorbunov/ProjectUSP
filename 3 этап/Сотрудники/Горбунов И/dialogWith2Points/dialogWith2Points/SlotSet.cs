@@ -29,13 +29,13 @@ public class SlotSet
     //    }
     //}
 
-    public List<Edge> TouchEdges
-    {
-        get
-        {
-            return this.touchEdges;
-        }
-    }
+    //public List<Edge> TouchEdges
+    //{
+    //    get
+    //    {
+    //        return this.touchEdges;
+    //    }
+    //}
 
     public Point3d SelectPoint
     {
@@ -45,13 +45,21 @@ public class SlotSet
         }
     }
 
+    public Face BottomFace
+    {
+        get
+        {
+            return this.bottomFace;
+        }
+    }
+
     UspElement element;
 
-    Body body;
+    //Body body;
 
     Face bottomFace;
 
-    List<Edge> touchEdges;
+    //List<Edge> touchEdges;
     Edge[] edges;
     Dictionary<Edge, double> nearestEdges;
 
@@ -75,114 +83,33 @@ public class SlotSet
         this.selectPoint = propertyList.GetPoint("Point");
     }
 
-    /*public void setBottomFace()
-    {
-        Face someFace = null;
-        for (int j = 1; j < magic_number; j++)
-        {
-            try
-            {
-                someFace = (Face)this.component.FindObject("PROTO#.Features|UNPARAMETERIZED_FEATURE(0)|FACE " + j);
-                break;
-            }
-            catch (NXException Ex)
-            {
-                if (Ex.ErrorCode == 3520016) //No object found exeption
-                {
-                    
-                }
-                else
-                {
-                    UI.GetUI().NXMessageBox.Show("Ошибка!", NXMessageBox.DialogType.Error, "Ашипка!");
-                }
-            }
-        }
-        this.body = someFace.GetBody();
-        Face[] faces = this.body.GetFaces();
-
-        this.bottomFaces = new List<Face>();
-        //int nMaxEdgesBottom = 0;
-        for (int j = 0; j < faces.Length; j++)
-        {
-            try
-            {
-                //Edge[] edges;
-                //List<Edge> slot_edges;
-
-                Face face = faces[j];
-
-                if (face.Name != null)
-                {
-                    //Config.theUI.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, face.ToString());
-                    string[] split = face.Name.Split(Config.FACE_NAME_SPLITTER);
-
-                    if (split[0] == Config.SLOT_SYMBOL && split[1] == Config.SLOT_BOTTOM_SYMBOL)
-                    {
-                        this.bottomFaces.Add(face);
-                    }
-                }
-                
-                //int newNEdges = this.checkBottom(face, nMaxEdgesBottom, out edges, out slot_edges);
-                //if (newNEdges != 0)
-                //{
-                //    this.bottomFace = face;
-                //    this.edges = edges;
-                //    this.touchEdges = slot_edges;
-
-                //    nMaxEdgesBottom = newNEdges;
-                //}
-            }
-            catch (NXException Ex)
-            {
-                if (Ex.ErrorCode == 3520016) //No object found exeption
-                {
-
-                }
-                else
-                {
-                    UI.GetUI().NXMessageBox.Show("Ошибка!", NXMessageBox.DialogType.Error, "Ашипка!");
-                }
-            }
-        }
-
-
-
-    }*/
-
     public bool haveNearestBottomFace()
     {
-        double minLen = -1;
+        double minLen = double.MaxValue;
         Face nearFace = null;
-        bool isFirstFace = true;
+        bool isFound = false;
         foreach (Face face in this.element.SlotFaces)
 	    {
             
             Platan platan = new Platan(face);
             double len = platan.getDistanceToPoint(this.selectPoint);
 
-            if (isFirstFace && len >= 0)
-            {
-                minLen = len;
-                isFirstFace = false;
-            }
-
-            if (len >= 0 && len <= minLen)
+            if (Config.round(len) >= 0 && Config.round(len) <= minLen)
             {
                 nearFace = face;
                 minLen = len;
+                isFound = true;
             }
 	    }
 
-        if (minLen == -1)
+        if (!isFound)
         {
             return false;
         }
         else
         {
             this.bottomFace = nearFace;
-            this.bottomFace.Highlight();
-            Config.theUI.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, "");
-            this.bottomFace.Unhighlight();
+            this.edges = nearFace.GetEdges();
             return true;
         }
         
@@ -229,10 +156,11 @@ public class SlotSet
         double minSlotWidth = 0;
         Edge edge1 = null, edge2 = null;
 
-        List<Edge> Edges = new List<Edge>(nearestEdges.Keys);
+        List<Edge> Edges = new List<Edge>(this.nearestEdges.Keys);
         bool isFound = false;
         for (int i = 0; i < Edges.Count; i++)
         {
+            
             for (int j = i + 1; j < Edges.Count; j++)
             {
                 Vector vec1 = new Vector(Edges[i]);
@@ -246,7 +174,6 @@ public class SlotSet
                     edgeLong1.GetVertices(out start, out end);
 
                     Straight firstLongStraight = new Straight(start, end);
-                    //double[,] straight_equation = Geom.getStraitEquation(start, end);
                     Point3d intersection1 = Geom.getIntersectionPointStraight(this.selectPoint, firstLongStraight);
                     
 
@@ -279,7 +206,6 @@ public class SlotSet
                     edgeLong2.GetVertices(out start, out end);
 
                     Straight secondLongStraight = new Straight(start, end);
-                    //straight_equation = Geom.getStraitEquation(start, end);
                     Point3d intersection2 = Geom.getIntersectionPointStraight(this.selectPoint, secondLongStraight);
 
                     double len2 = -1;
@@ -318,6 +244,7 @@ public class SlotSet
 
                     if (min_len == -1 || min < min_len)
                     {
+                        
                         min_len = min;
                         edge1 = edgeLong1;
                         edge2 = edgeLong2;
@@ -372,7 +299,7 @@ public class SlotSet
 
         foreach (Edge e in edges)
         {
-            if (Config.doub(e.GetLength()) == Config.T_SLOT_WIDTH || Config.doub(e.GetLength()) == Config.P_SLOT_WIDTH)
+            if (Config.round(e.GetLength()) == Config.T_SLOT_WIDTH || Config.round(e.GetLength()) == Config.P_SLOT_WIDTH)
             {
                 slotWidthEdges.Add(e);
             }
@@ -433,8 +360,9 @@ public class SlotSet
 
                     if (vec1.isNormal(temp_vec))
                     {
-                        double length = Config.doub(temp_vec.Length);
-                        if (length == Config.P_SLOT_WIDTH || length == Config.T_SLOT_WIDTH)
+                        double length = temp_vec.Length;
+                        if (Config.round(length) == Config.P_SLOT_WIDTH || 
+                            Config.round(length) == Config.T_SLOT_WIDTH)
                         {
                             distance = length;
                             nPerpendicular++;
@@ -485,8 +413,10 @@ public class SlotSet
         for (int i = 0; i < Config.N_POINTS_IN_EDGE; i++)
         {
             Point3d intersect1 = Geom.getIntersectionPointStraight(points1[i], straight2);
+
             for (int j = 0; j < Config.N_POINTS_IN_EDGE; j++)
             {
+
                 if (Geom.isEqual(intersect1, points2[j]))
                 {
                     alignment++;
@@ -494,7 +424,6 @@ public class SlotSet
                     break;
                 }
             }
-
 
             if (!onPoint && Geom.isOnSegment(intersect1, vec2))
             {
@@ -507,8 +436,10 @@ public class SlotSet
         for (int i = 0; i < Config.N_POINTS_IN_EDGE; i++)
         {
             Point3d intersect1 = Geom.getIntersectionPointStraight(points2[i], straight1);
+
             for (int j = 0; j < Config.N_POINTS_IN_EDGE; j++)
             {
+
                 if (Geom.isEqual(intersect1, points1[j]))
                 {
                     alignment++;
@@ -519,6 +450,7 @@ public class SlotSet
 
             if (!onPoint && Geom.isOnSegment(intersect1, vec1))
             {
+
                 return true;
             }
         }
@@ -566,4 +498,3 @@ public class SlotSet
         return false;
     }*/
 }
-

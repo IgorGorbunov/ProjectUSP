@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using NXOpen;
@@ -43,7 +43,11 @@ public static class Config
     public const string SLOT_SYMBOL = "SLOT";
     public const string SLOT_BOTTOM_SYMBOL = "BOTTOM";
 
-    const int PRECISION = 4;
+    //снизил с 4 на 3 из-за невозможности пазирования (почему-то) коротких пазов на главной
+    //плоскости с длинными на боковых у плит
+    //снизил с 3 на 2 из-за невозможности пазирования (почему-то) длинных пазов - неточно
+    //вычислялась ширина паза
+    const int PRECISION = 5;
 
     //------------------------ Methods ------------------------------------------------------------
 
@@ -62,15 +66,14 @@ public static class Config
         return null;
     }
 
-    public static double doub(double d)
+    public static double round(double d)
     {
         return Math.Round(d, PRECISION);
     }
 
     public static SlotType getSlotType(double slotWidth)
     {
-        //Config.theUI.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, slotWidth.ToString());
-        if (doub(slotWidth) == T_SLOT_WIDTH)
+        if (round(slotWidth) == T_SLOT_WIDTH)
         {
             return SlotType.Tslot;
         }

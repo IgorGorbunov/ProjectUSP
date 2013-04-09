@@ -1,4 +1,4 @@
-//==============================================================================
+﻿//==============================================================================
 //  WARNING!!  This file is overwritten by the Block UI Styler while generating
 //  the automation code. Any modifications to this file will be lost after
 //  generating the code again.
@@ -402,17 +402,10 @@ public class dialogWith2Points
         {
             if (block == selection0)
             {
-
-
-
-
-
                 PropertyList prop_list = block.GetProperties();
                 TaggedObject[] tag_obs = prop_list.GetTaggedObjectVector("SelectedObjects");
                 Component parentComponent = Config.findCompByBodyTag(tag_obs[0].Tag);
 
-                //slotSet1 = new SlotSet(parentComponent);
-                //slotSet1.setBottomFace();
                 element1 = new UspElement(parentComponent);
                 slotSet1 = new SlotSet(element1);
             }
@@ -421,7 +414,13 @@ public class dialogWith2Points
                 slotSet1.setPoint(block);
                 if (slotSet1.haveNearestBottomFace())
                 {
-                    
+                    slotSet1.setNearestEdges();
+                }
+                else
+                {
+                    Config.theUI.NXMessageBox.Show("Error!", 
+                                                   NXMessageBox.DialogType.Error, 
+                                                   "Базовые плоскости пазов не найдены!");
                 }
             }
             else if (block == selection01)
@@ -432,25 +431,32 @@ public class dialogWith2Points
 
                 element2 = new UspElement(parentComponent);
                 slotSet2 = new SlotSet(element2);
-                //slotSet2 = new SlotSet(parentComponent);
-                //slotSet2.setBottomFace();
-
             }
             else if (block == point1)
             {
                 slotSet2.setPoint(block);
-                slotSet2.setNearestEdges();
-
-                constr = new SlotConstraint();
-
-                if (slotSet1.hasSlot(out slot1) && slotSet2.hasSlot(out slot2))
+                if (slotSet2.haveNearestBottomFace())
                 {
-                    constr.setEachOtherConstraint(slot1, slot2);
+                    slotSet2.setNearestEdges();
+
+                    constr = new SlotConstraint();
+
+                    if (slotSet1.hasSlot(out slot1) && slotSet2.hasSlot(out slot2))
+                    {
+                        constr.setEachOtherConstraint(slot1, slot2);
+                    }
+                    else
+                    {
+                        Config.theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, "Паз(ы) не выбрался");
+                    }
                 }
                 else
                 {
-                    Config.theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, "���(�) �� ��������");
+                    Config.theUI.NXMessageBox.Show("Error!",
+                                                   NXMessageBox.DialogType.Error,
+                                                   "Базовые плоскости пазов не найдены!");
                 }
+
             }
             else if (block == direction0)
             {

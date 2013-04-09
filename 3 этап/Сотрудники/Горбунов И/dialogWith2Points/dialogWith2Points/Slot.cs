@@ -20,7 +20,7 @@ public class Slot
     {
         get
         {
-            return this.bottomFace;
+            return this.slotSet.BottomFace;
         }
     }
     public Face SideFace1
@@ -56,7 +56,7 @@ public class Slot
 
     SlotSet slotSet;
 
-    Face bottomFace;
+    //Face bottomFace;
     Face sideFace1, sideFace2;
     Face touchFace;
     Face topFace;
@@ -80,31 +80,30 @@ public class Slot
         this.sideFace2 = this.getNotBottomFace(edgeLong2);
 
         this.setStraitEquation();
-        this.setTouchEdge();
     }
 
 
-    public void setTouchEdge()
-    {
-        double length;
-        double min_len = -1.0;
-        Edge nearestEdge = null;
+    //public void setTouchEdge()
+    //{
+    //    double length;
+    //    double min_len = -1.0;
+    //    Edge nearestEdge = null;
 
-        foreach (Edge e in this.slotSet.TouchEdges)
-        {
-            if (Geom.isEdgePointOnStraight(e, this.straight,
-                                           out length, this.slotSet.SelectPoint))
-            {
-                this.touchEdges.Add(e);
-                if (min_len == -1.0 || length < min_len)
-                {
-                    min_len = length;
-                    nearestEdge = e;
-                }
-            }
-        }
-        this.touchEdge = nearestEdge;
-    }
+    //    foreach (Edge e in this.slotSet.TouchEdges)
+    //    {
+    //        if (Geom.isEdgePointOnStraight(e, this.straight,
+    //                                       out length, this.slotSet.SelectPoint))
+    //        {
+    //            this.touchEdges.Add(e);
+    //            if (min_len == -1.0 || length < min_len)
+    //            {
+    //                min_len = length;
+    //                nearestEdge = e;
+    //            }
+    //        }
+    //    }
+    //    this.touchEdge = nearestEdge;
+    //}
     public void reverseTouchEdge()
     {
         Edge otherEdge = null;
@@ -196,10 +195,6 @@ public class Slot
     }
     void setStraitEquation()
     {
-        //Point3d firstPoint, secondPoint;
-        //this.edgeLong1.GetVertices(out firstPoint, out secondPoint);
-
-        //this.straight_equation = Geom.getStraitEquation(firstPoint, secondPoint);
         this.straight = new Straight(this.edgeLong1);
     }
 
@@ -217,8 +212,6 @@ public class Slot
         edge = this.edgeLong1;
         face = this.sideFace1;
 
-        //Config.theUI.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, this.type.ToString());
-
         if (this.type == Config.SlotType.Pslot)
         {
             topEdge = this.getNextEdge(face, edge, Config.P_SLOT_HEIGHT);
@@ -232,7 +225,6 @@ public class Slot
         }
         else if (this.type == Config.SlotType.Tslot)
         {
-
             foreach (double slotHeight in Config.T_SLOT_HEIGHT1)
             {
                 topEdge = this.getNextEdge(face, edge, slotHeight);
@@ -270,28 +262,22 @@ public class Slot
                 topFace = this.getNextFace(topEdge, face);
                 edge = topEdge;
                 face = topFace;
-                face.Highlight();
-                //Config.theUI.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, Config.STEP_UP_WIDTH_T_SLOT_2.ToString());
+
+
                 topEdge = this.getNextEdge(face, edge, Config.STEP_UP_WIDTH_T_SLOT_2);
-                topEdge.Highlight();
-                //Config.theUI.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, this.type.ToString());
                 topFace = this.getNextFace(topEdge, face);
-                topFace.Highlight();
-                //Config.theUI.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, this.type.ToString());
                 edge = topEdge;
                 face = topFace;
-                //Config.theUI.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, this.type.ToString());
+
                 topEdge = this.getNextEdge(face, edge, Config.T_SLOT_HEIGHT2);
                 this.type = Config.SlotType.Tslot2;
             }
             else
             {
-                //Config.theUI.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, "1");
                 topFace = this.getNextFace(topEdge, face);
                 edge = topEdge;
                 face = topFace;
 
-                //Config.theUI.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, "2");
                 foreach (double d in Config.T_SLOT_HEIGHT)
                 {
                     topEdge = this.getNextEdge(face, edge, d);
@@ -307,7 +293,6 @@ public class Slot
             topFace = this.getNextFace(topEdge, face);
         }
 
-        //Config.theUI.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, this.type.ToString());
         direction = Geom.getDirection(topFace);
 
         if (!Geom.isEqual(this.bottomDirection, direction))
@@ -317,79 +302,6 @@ public class Slot
 
 
         this.topFace = topFace;
-        //topFace.Highlight();//tst
-
-
-
-
-
-
-
-
-
-
-        //Face topFace = null;
-        //Edge topEdge;
-        //Face face;
-        //Edge edge;
-        //bool isUnidirectional = false;
-        //this.bottomDirection = Geom.getDirection(this.BottomFace);
-
-        //edge = this.edgeLong1;
-        //face = this.sideFace1;
-        //int steps = 0;
-        //while (!isUnidirectional)
-        //{
-        //    topEdge = this.getNextEdge(face, edge);
-        //    topFace = this.getNextFace(topEdge, face);
-        //    double[] direction = Geom.getDirection(topFace);
-
-        //    //tst
-        //    topFace.Highlight();
-        //    Config.theUI.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, this.bottomDirection[0] + " " + this.bottomDirection[1] + " " + this.bottomDirection[2] + " " + Environment.NewLine + direction[0] + " " + direction[1] + " " + direction[2]);
-        //    topFace.Unhighlight();
-
-
-        //    if (Geom.isEqual(this.bottomDirection, direction))
-        //    {
-        //        isUnidirectional = true;
-        //        break;
-        //    }
-
-        //    edge = topEdge;
-        //    face = topFace;
-        //    steps++;
-        //}
-        
-        ////Edge upwardEdgeEnd = this.getNextEdge(this.sideFace1, this.edgeLong1);
-        ////Face upwardHorizontalFace = this.getNextFace(upwardEdgeEnd, this.sideFace1);
-
-        ////Edge upwardMidEdge;
-        ////if (this.isTypeTwo(upwardHorizontalFace, upwardEdgeEnd))
-        ////{
-        ////    Edge stepDownEdge = this.getNextHorizEdge(upwardHorizontalFace, upwardEdgeEnd, 3.5);
-        ////    Face stepVerticalFace = this.getNextFace(stepDownEdge, upwardHorizontalFace);
-
-        ////    Edge stepEndEdge = this.getNextEdge(stepVerticalFace, stepDownEdge);
-        ////    Face stepHorizontalFace = this.getNextFace(stepEndEdge, stepVerticalFace);
-
-        ////    Edge stepMidEdge = this.getNextHorizEdge(stepHorizontalFace, stepEndEdge, 0.5);
-
-        ////    upwardMidEdge = stepMidEdge;
-        ////    upwardHorizontalFace = stepHorizontalFace;
-        ////}
-        ////else
-        ////{
-        ////    upwardMidEdge = this.getNextHorizEdge(upwardHorizontalFace, upwardEdgeEnd, 4.0);
-        ////}
-
-        ////Face upwardVerticalFace = this.getNextFace(upwardMidEdge, upwardHorizontalFace);
-        
-        ////topEdge = this.getNextEdge(upwardVerticalFace, upwardMidEdge);
-        ////topFace = this.getNextFace(topEdge, upwardVerticalFace);
-        //Config.theUI.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, steps.ToString());
-
-        //this.topFace = topFace;
     }
 
 
@@ -405,45 +317,19 @@ public class Slot
                 Vector vecTmp = new Vector(e);
                 if (vecEtalon.isParallel(vecTmp))
                 {
-                    //double[,] edgeEquation = Geom.getStraitEquation(e);
                     Straight edgeStraight = new Straight(e);
                     Point3d heightStart = vecEtalon.start;
                     Point3d pointOnStraight = Geom.getIntersectionPointStraight(heightStart, edgeStraight);
+
                     Vector vecHeight = new Vector(heightStart, pointOnStraight);
 
-                    if (Config.doub(vecHeight.Length) == distance)
+                    if (Config.round(vecHeight.Length) == distance)
                     {
                         resultEdge = e;
                         break;
                     }
                 }
             }
-        }
-
-        return resultEdge;
-    }
-
-    Edge getNextEdge(Face face, Edge edge)
-    {
-        //поиск верхнего левого ребра
-        Edge resultEdge = null;
-        Vector vecEtalon = new Vector(edge);
-        foreach (Edge e in face.GetEdges())
-        {
-            if (e != edge)
-            {
-                Vector vecTmp = new Vector(e);
-                if (vecEtalon.isParallel(vecTmp))
-                {
-                    resultEdge = e;
-                    break;
-                }
-            }
-        }
-
-        if (resultEdge == null)
-        {
-            Config.theUI.NXMessageBox.Show("Error!", NXMessageBox.DialogType.Error, "Верхнего ребра нет!");
         }
 
         return resultEdge;

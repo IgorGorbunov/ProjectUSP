@@ -135,6 +135,50 @@ public class Straight
     {
 
     }
+    /// <summary>
+    /// Инициализирует новый экземпляр класса для математической прямой, заданной каноническим
+    /// уравнением прямой.
+    /// </summary>
+    /// <param name="equation">Массив коэффициентов канонического уравнения.</param>
+    public Straight(double[,] equation)
+    {
+        this.equation = new double[this.equationRank, Geom.DIMENSIONS];
+        for (int i = 0; i < this.equationRank; i++)
+        {
+            for (int j = 0; j < Geom.DIMENSIONS; j++)
+            {
+                this.equation[i, j] = equation[i, j];
+            }
+        }
+    }
+
+    /// <summary>
+    /// Возвращает строку, которая представляет текущий объект.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        string mess = "";
+        mess += "{ ";
+
+        mess += "{ ";
+        mess += "X: " + NumX.ToString() + " ";
+        mess += "Y: " + NumY.ToString() + " ";
+        mess += "Z: " + NumZ.ToString();
+        mess += " }";
+
+        mess += Environment.NewLine;
+
+        mess += "   { ";
+        mess += "X: " + DenX.ToString() + " ";
+        mess += "Y: " + DenY.ToString() + " ";
+        mess += "Z: " + DenZ.ToString();
+        mess += " }";
+
+        mess += " }";
+
+        return mess;
+    }
 
     void setEquation(Point3d firstPoint, Point3d secondPoint)
     {
@@ -148,43 +192,61 @@ public class Straight
     }
     void setPlatanes()
     {
+        //if (Config.round(this.DenX) != 0 || Config.round(this.DenY) != 0)
+        //{
+        //    matrix[k, 0] = this.DenY;//-straight_equation[1, 0];
+        //    matrix[k, 1] = -this.DenX;//straight_equation[1, 1];
+        //    matrix[k, 2] = 0;
+        //    matrix[k, 3] = this.DenY * this.NumX - this.DenX * this.NumY;
+        //        //straight_equation[1, 1] * straight_equation[0, 0] -
+        //        //straight_equation[1, 0] * straight_equation[0, 1];
+
+        //    k++;
+        //}
+
+        //if (Config.round(this.DenX) != 0 || Config.round(this.DenZ) != 0)
+        //{
+        //    matrix[k, 0] = this.DenZ;//-straight_equation[1, 0];
+        //    matrix[k, 1] = 0;
+        //    matrix[k, 2] = -this.DenX;//straight_equation[1, 2];
+        //    matrix[k, 3] = this.DenZ * this.NumX - this.DenX * this.NumZ;
+        //        //straight_equation[1, 2] * straight_equation[0, 0] -
+        //        //straight_equation[1, 0] * straight_equation[0, 2];
+
+        //    k++;
+        //}
+
+        //if (k < 2)
+        //{
+        //    matrix[k, 0] = 0;
+        //    matrix[k, 1] = this.DenZ;//-straight_equation[1, 1];
+        //    matrix[k, 2] = -this.DenY;//straight_equation[1, 2];
+        //    matrix[k, 3] = this.DenZ * this.NumY - this.DenY * this.NumZ;
+        //        //straight_equation[1, 2] * straight_equation[0, 1] -
+        //        //straight_equation[1, 1] * straight_equation[0, 2];
+        //}
         int nPlatanes = 2;
         int nCoefficients = 4;
         double[,] matrix = new double[nPlatanes, nCoefficients];
 
         int k = 0;
-        if (this.DenZ == 0)
+        if (Config.round(this.DenX) != 0)
         {
-            matrix[k, 0] = -this.DenX;//-straight_equation[1, 0];
-            matrix[k, 1] = this.DenY;//straight_equation[1, 1];
-            matrix[k, 2] = 0;
-            matrix[k, 3] = this.DenY * this.NumX - this.DenX * this.NumY;
-                //straight_equation[1, 1] * straight_equation[0, 0] -
-                //straight_equation[1, 0] * straight_equation[0, 1];
-
+            this.setXY(matrix, k);
             k++;
+            this.setXZ(matrix, k);
         }
-
-        if (this.DenY == 0)
+        else if (Config.round(this.DenY) != 0)
         {
-            matrix[k, 0] = -this.DenX;//-straight_equation[1, 0];
-            matrix[k, 1] = 0;
-            matrix[k, 2] = this.DenZ;//straight_equation[1, 2];
-            matrix[k, 3] = this.DenZ * this.NumX - this.DenX * this.NumZ;
-                //straight_equation[1, 2] * straight_equation[0, 0] -
-                //straight_equation[1, 0] * straight_equation[0, 2];
-
+            this.setXY(matrix, k);
             k++;
+            this.setYZ(matrix, k);
         }
-
-        if (k < 2)
+        else if (Config.round(this.DenZ) != 0)
         {
-            matrix[k, 0] = 0;
-            matrix[k, 1] = -this.DenY;//-straight_equation[1, 1];
-            matrix[k, 2] = this.DenZ;//straight_equation[1, 2];
-            matrix[k, 3] = this.DenZ * this.NumY - this.DenY * this.NumZ;
-                //straight_equation[1, 2] * straight_equation[0, 1] -
-                //straight_equation[1, 1] * straight_equation[0, 2];
+            this.setXZ(matrix, k);
+            k++;
+            this.setYZ(matrix, k);
         }
 
         Platan[] platans = new Platan[nPlatanes];
@@ -200,6 +262,33 @@ public class Straight
 
         this.firstPlatane = platans[0];
         this.secondPlatane = platans[1];
+    }
+    void setXY(double[,] matrix, int k)
+    {
+        matrix[k, 0] = this.DenY;//-straight_equation[1, 0];
+        matrix[k, 1] = -this.DenX;//straight_equation[1, 1];
+        matrix[k, 2] = 0;
+        matrix[k, 3] = this.DenY * this.NumX - this.DenX * this.NumY;
+        //straight_equation[1, 1] * straight_equation[0, 0] -
+        //straight_equation[1, 0] * straight_equation[0, 1];
+    }
+    void setYZ(double[,] matrix, int k)
+    {
+        matrix[k, 0] = 0;
+        matrix[k, 1] = this.DenZ;//-straight_equation[1, 1];
+        matrix[k, 2] = -this.DenY;//straight_equation[1, 2];
+        matrix[k, 3] = this.DenZ * this.NumY - this.DenY * this.NumZ;
+        //straight_equation[1, 2] * straight_equation[0, 1] -
+        //straight_equation[1, 1] * straight_equation[0, 2];
+    }
+    void setXZ(double[,] matrix, int k)
+    {
+        matrix[k, 0] = this.DenZ;//-straight_equation[1, 0];
+        matrix[k, 1] = 0;
+        matrix[k, 2] = -this.DenX;//straight_equation[1, 2];
+        matrix[k, 3] = this.DenZ * this.NumX - this.DenX * this.NumZ;
+        //straight_equation[1, 2] * straight_equation[0, 0] -
+        //straight_equation[1, 0] * straight_equation[0, 2];
     }
 
 

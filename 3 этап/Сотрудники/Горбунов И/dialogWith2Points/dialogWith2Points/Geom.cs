@@ -71,29 +71,24 @@ static class Geom
 
     public static Point3d getIntersectionPointStraight(Point3d P, Straight straight)
     {
-        //int excessEquation;
         Platan plain = new Platan(P, straight);
-        //double[] plain = getPlainEquation(P, straight_equation, out excessEquation);
-        //Platan[] straightPlatanes = straight.Platanes;
-        //double[,] straights = get2plainsFromStraight(straight_equation, excessEquation);
 
         double[] freeArg;
         double[,] matrix = getMatrixIntersection(straight, plain, out freeArg);
-        //double[,] matrix = getMatrixIntersection(straights, plain, out freeArg);
 
         double det = getDet3x3(matrix);
 
         double[,] copyMatr = copy3x3(matrix);
         double[,] matrixX = setCol3x3(copyMatr, freeArg, 0);
-        double detX = getDet3x3(copyMatr);
+        double detX = getDet3x3(matrixX);
 
         copyMatr = copy3x3(matrix);
         double[,] matrixY = setCol3x3(copyMatr, freeArg, 1);
-        double detY = getDet3x3(copyMatr);
+        double detY = getDet3x3(matrixY);
 
         copyMatr = copy3x3(matrix);
         double[,] matrixZ = setCol3x3(copyMatr, freeArg, 2);
-        double detZ = getDet3x3(copyMatr);
+        double detZ = getDet3x3(matrixZ);
 
         return new Point3d(detX / det, detY / det, detZ / det);
     }
@@ -176,6 +171,7 @@ static class Geom
         freeArg = new double[DIMENSIONS];
 
         Platan[] straightPlatans = straight.Platanes;
+
         int i = 0;
         while (i < DIMENSIONS - 1)
         {
@@ -183,12 +179,13 @@ static class Geom
             matrix[i, 1] = straightPlatans[i].Y;
             matrix[i, 2] = straightPlatans[i].Z;
             freeArg[i] = -straightPlatans[i].FreeArg;
+            i++;
         }
 
         matrix[i, 0] = platan.X;
         matrix[i, 1] = platan.Y;
         matrix[i, 2] = platan.Z;
-        freeArg[i] = platan.FreeArg;
+        freeArg[i] = -platan.FreeArg;
 
         //matrix[0, 0] = straights[0, 0];
         //matrix[0, 1] = straights[0, 1];
@@ -238,13 +235,13 @@ static class Geom
 
         double[] p = new double[DIMENSIONS];
 
-        p[0] = Config.doub(AXcoords.X) / Config.doub(ABcoords.X);
-        p[1] = Config.doub(AXcoords.Y) / Config.doub(ABcoords.Y);
-        p[2] = Config.doub(AXcoords.Z) / Config.doub(ABcoords.Z);
+        p[0] = AXcoords.X / ABcoords.X;
+        p[1] = AXcoords.Y / ABcoords.Y;
+        p[2] = AXcoords.Z / ABcoords.Z;
 
         for (int i = 0; i < DIMENSIONS; i++)
         {
-            if (p[i] < 0 || p[i] > 1)
+            if (Config.round(p[i]) < 0 || Config.round(p[i]) > 1)
             {
                 return false;
             }
@@ -258,8 +255,10 @@ static class Geom
         int voidInt;
         double voidDouble;
         double[] dir = new double[3];
+        double[] box = new double[6];
 
-        Config.theUFSession.Modl.AskFaceData(face.Tag, out voidInt, new double[3], dir, new double[6], out voidDouble, out voidDouble, out voidInt);
+        double[] point = new double[3];
+        Config.theUFSession.Modl.AskFaceData(face.Tag, out voidInt, point, dir, box, out voidDouble, out voidDouble, out voidInt);
         return dir;
     }
 
@@ -272,15 +271,15 @@ static class Geom
     /// <returns></returns>
     public static bool isEqual(Point3d point1, Point3d point2)
     {
-        if (Config.doub(point1.X) != Config.doub(point2.X))
+        if (Config.round(point1.X) != Config.round(point2.X))
         {
             return false;
         }
-        else if (Config.doub(point1.Y) != Config.doub(point2.Y))
+        else if (Config.round(point1.Y) != Config.round(point2.Y))
         {
             return false;
         }
-        else if (Config.doub(point1.Z) != Config.doub(point2.Z))
+        else if (Config.round(point1.Z) != Config.round(point2.Z))
         {
             return false;
         }
@@ -295,7 +294,7 @@ static class Geom
         {
             for (int i = 0; i < dir1.Length; i++)
             {
-                if (Config.doub(dir1[i]) != Config.doub(dir2[i]))
+                if (Config.round(dir1[i]) != Config.round(dir2[i]))
                 {
                     return false;
                 }
@@ -447,9 +446,9 @@ static class Geom
 
         //REFACTOR
         double[] arrPoint = new double[nDimensions];
-        arrPoint[0] = Config.doub(point.X);
-        arrPoint[1] = Config.doub(point.Y);
-        arrPoint[2] = Config.doub(point.Z);
+        arrPoint[0] = Config.round(point.X);
+        arrPoint[1] = Config.round(point.Y);
+        arrPoint[2] = Config.round(point.Z);
 
         double[] coefficient = new double[nDimensions]; 
         for (int i = 0; i < nDimensions; i++)
@@ -480,7 +479,7 @@ static class Geom
         int equelity = 0;
         for (int i = 1; i < axeNo.Count; i++)
         {
-            if (Config.doub(coefficient[axeNo[i - 1]]) == Config.doub(coefficient[axeNo[i]]))
+            if (Config.round(coefficient[axeNo[i - 1]]) == Config.round(coefficient[axeNo[i]]))
             {
                 equelity++;
             }
@@ -489,8 +488,8 @@ static class Geom
         for (int i = 0; i < constAxeNo.Count; i++)
         {
             int axeDirection = constAxeNo[i];
-            if (Config.doub(arrPoint[axeDirection]) == 
-                    Config.doub(- straight_equation[0, axeDirection]))
+            if (Config.round(arrPoint[axeDirection]) == 
+                    Config.round(- straight_equation[0, axeDirection]))
             {
                 equelity++;
             }

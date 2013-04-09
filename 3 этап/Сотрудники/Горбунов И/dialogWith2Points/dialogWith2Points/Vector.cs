@@ -76,7 +76,7 @@ public class Vector
         Point3d start, end;
         Edg.GetVertices(out start, out end);
 
-        initPoints(start, end);
+        this.initPoints(start, end);
     }
 
     
@@ -163,22 +163,23 @@ public class Vector
     void initPoints(Point3d start, Point3d end)
     {
         this.start = new Point3d();
-        this.start.X = Config.doub(start.X);
-        this.start.Y = Config.doub(start.Y);
-        this.start.Z = Config.doub(start.Z);
+        this.start.X = start.X;
+        this.start.Y = start.Y;
+        this.start.Z = start.Z;
 
         this.end = new Point3d();
-        this.end.X = Config.doub(end.X);
-        this.end.Y = Config.doub(end.Y);
-        this.end.Z = Config.doub(end.Z);
+        this.end.X = end.X;
+        this.end.Y = end.Y;
+        this.end.Z = end.Z;
     }
 
     double getLength()
     {
         Point3d Coords = getCoords();
-        return Math.Sqrt(Math.Abs(Math.Pow(Coords.X, 2) +
-                                  Math.Pow(Coords.Y, 2) +
-                                  Math.Pow(Coords.Z, 2)));
+
+        return Math.Sqrt(Math.Pow(Coords.X, 2) +
+                         Math.Pow(Coords.Y, 2) +
+                         Math.Pow(Coords.Z, 2));
     }
 
     void setDirection()
