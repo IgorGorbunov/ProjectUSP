@@ -6,6 +6,9 @@ using NXOpen.Assemblies;
 using NXOpen.BlockStyler;
 using NXOpen.Positioning;
 
+/// <summary>
+/// Класс Т-образного и П-образного паза.
+/// </summary>
 public class Slot
 {
     public Component ParentComponent

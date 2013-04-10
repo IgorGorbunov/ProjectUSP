@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using NXOpen;
 
+/// <summary>
+/// Класс с реализацией геометрических функций.
+/// </summary>
 static class Geom
 {
     public const int DIMENSIONS = 3;

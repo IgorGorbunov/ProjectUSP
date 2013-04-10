@@ -113,7 +113,7 @@ public class dialogWith2Points
         {
             theSession = Session.GetSession();
             theUI = UI.GetUI();
-            theDialogName = @"C:\ug_customization\application\dialogWith2Points.dlx";
+            theDialogName = Config.dlxPath + Config.dlxName;
             theDialog = theUI.CreateDialog(theDialogName);
             theDialog.AddApplyHandler(new NXOpen.BlockStyler.BlockDialog.Apply(apply_cb));
             theDialog.AddOkHandler(new NXOpen.BlockStyler.BlockDialog.Ok(ok_cb));

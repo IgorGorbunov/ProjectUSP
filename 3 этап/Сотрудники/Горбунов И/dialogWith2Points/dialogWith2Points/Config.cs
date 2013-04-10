@@ -5,6 +5,9 @@ using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.UF;
 
+/// <summary>
+/// Класс настроек системы.
+/// </summary>
 public static class Config
 {
     public static Session theSession = Session.GetSession();
@@ -48,6 +51,10 @@ public static class Config
     //снизил с 3 на 2 из-за невозможности пазирования (почему-то) длинных пазов - неточно
     //вычислялась ширина паза
     const int PRECISION = 5;
+
+    public static string logPath = @"C:\ug_customization\application\";
+    public static string dlxPath = @"C:\ug_customization\application\";
+    public static string dlxName = @"dialogWith2Points.dlx";
 
     //------------------------ Methods ------------------------------------------------------------
 
