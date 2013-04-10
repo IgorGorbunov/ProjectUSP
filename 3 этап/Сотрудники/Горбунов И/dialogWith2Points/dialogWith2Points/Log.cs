@@ -8,18 +8,34 @@ using System.IO;
 /// </summary>
 public static class Log
 {
-    string name = @"SlotterLog";
-    string extension = @".log";
-    int count = 5;
+    static string name = @"SlotterLog";
+    static string extension = @".log";
+    static int count = 5;
 
-    void writeLine(string line)
+    /// <summary>
+    /// Записывает новую строку в лог.
+    /// </summary>
+    /// <param name="line">Строка.</param>
+    public static void writeLine(string line)
     {
-        StreamWriter sW = new StreamWriter(Config.logPath + name + extension, true, Encoding.UTF8);
+        StreamWriter sW = new StreamWriter(Config.logPath + name + extension, 
+                                           true,
+                                           Encoding.UTF8);
 
-        sW.WriteLine(DateTime.Now + Environment.NewLine + line);
+        sW.WriteLine(DateTime.Now + Environment.NewLine + line + Environment.NewLine);
         sW.Flush();
 
         sW.Close();
+    }
+    /// <summary>
+    /// Записывает новую строку с сообщением о предупреждении или ошибки пользователю.
+    /// </summary>
+    /// <param name="warning"></param>
+    public static void writeWarning(string warning)
+    {
+        string message = "||||||||||||||||||||||||||||||||||||||||||||" +
+            Environment.NewLine + warning;
+        writeLine(message);
     }
 }
 

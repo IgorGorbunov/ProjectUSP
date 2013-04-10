@@ -310,7 +310,30 @@ static class Geom
             return false;
         }
     }
-    
+
+    public static bool isComponent(TaggedObject tO)
+    {
+        string strTO = tO.ToString();
+        string[] split = strTO.Split(' ');
+
+        if (split[0] == "Component")
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+
+
+
+
+
+
+
+
     static double getDet2x2(double[,] matrix)
     {
         return matrix[0, 0] * matrix[1, 1] - matrix[1, 0] * matrix[0, 1];

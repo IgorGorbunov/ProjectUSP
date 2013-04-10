@@ -218,6 +218,9 @@ public class dialogWith2Points
     {
         try
         {
+            Log.writeLine("=======================================================" + 
+                Environment.NewLine + "Программа запущена!");
+
             thedialogWith2Points = new dialogWith2Points();
             // The following method shows the dialog immediately
             thedialogWith2Points.Show();
@@ -383,6 +386,7 @@ public class dialogWith2Points
         try
         {
             //---- Enter your callback code here -----
+            Log.writeLine("Нажата кнопка 'Принять'.");
         }
         catch (Exception ex)
         {
@@ -402,15 +406,35 @@ public class dialogWith2Points
         {
             if (block == selection0)
             {
+                Log.writeLine("Выбран объект по первому select.");
+
                 PropertyList prop_list = block.GetProperties();
                 TaggedObject[] tag_obs = prop_list.GetTaggedObjectVector("SelectedObjects");
-                Component parentComponent = Config.findCompByBodyTag(tag_obs[0].Tag);
 
-                element1 = new UspElement(parentComponent);
-                slotSet1 = new SlotSet(element1);
+                if (Geom.isComponent(tag_obs[0]))
+                {
+                    Component parentComponent = Config.findCompByBodyTag(tag_obs[0].Tag);
+
+                    Log.writeLine("Объект - " + tag_obs[0].ToString() +
+                        " - " + parentComponent.Name);
+
+                    element1 = new UspElement(parentComponent);
+                    slotSet1 = new SlotSet(element1);
+                }
+                else
+                {
+                    string message = "Выбрана не деталь УСП!" + Environment.NewLine +
+                        "Пожалуйста, перевыберите элемент.";
+                    Log.writeWarning(message);
+                    Config.theUI.NXMessageBox.Show("Error!",
+                                                   NXMessageBox.DialogType.Error,
+                                                   message);
+                }
             }
             else if (block == point0)
             {
+                Log.writeLine("Поставлена первая точка.");
+
                 slotSet1.setPoint(block);
                 if (slotSet1.haveNearestBottomFace())
                 {
@@ -425,15 +449,35 @@ public class dialogWith2Points
             }
             else if (block == selection01)
             {
+                Log.writeLine("Выбран объект по второму select.");
+
                 PropertyList prop_list = block.GetProperties();
                 TaggedObject[] tag_obs = prop_list.GetTaggedObjectVector("SelectedObjects");
-                Component parentComponent = Config.findCompByBodyTag(tag_obs[0].Tag);
 
-                element2 = new UspElement(parentComponent);
-                slotSet2 = new SlotSet(element2);
+                if (Geom.isComponent(tag_obs[0]))
+                {
+                    Component parentComponent = Config.findCompByBodyTag(tag_obs[0].Tag);
+
+                    Log.writeLine("Объект - " + parentComponent.ToString() +
+                        " - " + parentComponent.Name);
+
+                    element2 = new UspElement(parentComponent);
+                    slotSet2 = new SlotSet(element2);
+                }
+                else
+                {
+                    string message = "Выбрана не деталь УСП!" + Environment.NewLine + 
+                        "Пожалуйста, перевыберите элемент.";
+                    Log.writeWarning(message);
+                    Config.theUI.NXMessageBox.Show("Error!",
+                                                   NXMessageBox.DialogType.Error,
+                                                   message);
+                }
             }
             else if (block == point1)
             {
+                Log.writeLine("Поставлена вторая точка.");
+
                 slotSet2.setPoint(block);
                 if (slotSet2.haveNearestBottomFace())
                 {
@@ -486,6 +530,7 @@ public class dialogWith2Points
         {
             errorCode = apply_cb();
             //---- Enter your callback code here -----
+            Log.writeLine("Нажата кнопка 'ОК'.");
         }
         catch (Exception ex)
         {
@@ -504,6 +549,7 @@ public class dialogWith2Points
         try
         {
             //---- Enter your callback code here -----
+            Log.writeLine("Нажата кнопка 'Отмена'.");
         }
         catch (Exception ex)
         {

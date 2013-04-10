@@ -81,6 +81,8 @@ public class SlotSet
     {
         PropertyList propertyList = block.GetProperties();
         this.selectPoint = propertyList.GetPoint("Point");
+
+        Log.writeLine("Координаты точки - " + this.selectPoint.ToString());
     }
 
     public bool haveNearestBottomFace()
