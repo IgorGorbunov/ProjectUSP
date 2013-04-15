@@ -593,9 +593,9 @@ public class dialogWith2Points
             Config.theUI.NXMessageBox.Show("Error!",
                                            NXMessageBox.DialogType.Error,
                                            message);
+            block.Focus();
         }
     }
-
     bool setPoint(UIBlock block, SlotSet slotSet)
     {
         slotSet.setPoint(block);
@@ -607,9 +607,12 @@ public class dialogWith2Points
         }
         else
         {
+            string message = "Базовые плоскости пазов не найдены!";
+            Log.writeWarning(message);
             Config.theUI.NXMessageBox.Show("Error!",
                                            NXMessageBox.DialogType.Error,
-                                           "Базовые плоскости пазов не найдены!");
+                                           message);
+            block.Focus();
             return false;
         }
     }
