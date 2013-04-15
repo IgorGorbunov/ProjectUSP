@@ -103,6 +103,8 @@ public class dialogWith2Points
     SlotSet slotSet1, slotSet2;
     Slot slot1, slot2;
     SlotConstraint constr;
+    bool firstSlotIsReady = false, secondSlotIsReady = false;
+    bool constraintCreated = false;
 
     //------------------------------------------------------------------------------
     //Constructor for NX Styler class
@@ -406,110 +408,35 @@ public class dialogWith2Points
         {
             if (block == selection0)
             {
-                Log.writeLine("Выбран объект по первому select.");
-
-                PropertyList prop_list = block.GetProperties();
-                TaggedObject[] tag_obs = prop_list.GetTaggedObjectVector("SelectedObjects");
-
-                if (Geom.isComponent(tag_obs[0]))
-                {
-                    Component parentComponent = Config.findCompByBodyTag(tag_obs[0].Tag);
-
-                    Log.writeLine("Объект - " + tag_obs[0].ToString() +
-                        " - " + parentComponent.Name);
-
-                    element1 = new UspElement(parentComponent);
-                    slotSet1 = new SlotSet(element1);
-                }
-                else
-                {
-                    string message = "Выбрана не деталь УСП!" + Environment.NewLine +
-                        "Пожалуйста, перевыберите элемент.";
-                    Log.writeWarning(message);
-                    Config.theUI.NXMessageBox.Show("Error!",
-                                                   NXMessageBox.DialogType.Error,
-                                                   message);
-                }
+                this.setFirstComponent(block);
             }
             else if (block == point0)
             {
-                Log.writeLine("Поставлена первая точка.");
-
-                slotSet1.setPoint(block);
-                if (slotSet1.haveNearestBottomFace())
+                this.setFirstPoint(block);
+                if (this.firstSlotIsReady && this.secondSlotIsReady)
                 {
-                    slotSet1.setNearestEdges();
-                }
-                else
-                {
-                    Config.theUI.NXMessageBox.Show("Error!", 
-                                                   NXMessageBox.DialogType.Error, 
-                                                   "Базовые плоскости пазов не найдены!");
+                    this.setConstraint();
                 }
             }
             else if (block == selection01)
             {
-                Log.writeLine("Выбран объект по второму select.");
-
-                PropertyList prop_list = block.GetProperties();
-                TaggedObject[] tag_obs = prop_list.GetTaggedObjectVector("SelectedObjects");
-
-                if (Geom.isComponent(tag_obs[0]))
-                {
-                    Component parentComponent = Config.findCompByBodyTag(tag_obs[0].Tag);
-
-                    Log.writeLine("Объект - " + parentComponent.ToString() +
-                        " - " + parentComponent.Name);
-
-                    element2 = new UspElement(parentComponent);
-                    slotSet2 = new SlotSet(element2);
-                }
-                else
-                {
-                    string message = "Выбрана не деталь УСП!" + Environment.NewLine + 
-                        "Пожалуйста, перевыберите элемент.";
-                    Log.writeWarning(message);
-                    Config.theUI.NXMessageBox.Show("Error!",
-                                                   NXMessageBox.DialogType.Error,
-                                                   message);
-                }
+                this.setSecondComponent(block);
             }
             else if (block == point1)
             {
-                Log.writeLine("Поставлена вторая точка.");
-
-                slotSet2.setPoint(block);
-                if (slotSet2.haveNearestBottomFace())
+                this.setSecondPoint(block);
+                if (this.firstSlotIsReady && this.secondSlotIsReady)
                 {
-                    slotSet2.setNearestEdges();
-
-                    constr = new SlotConstraint();
-
-                    if (slotSet1.hasSlot(out slot1) && slotSet2.hasSlot(out slot2))
-                    {
-                        constr.setEachOtherConstraint(slot1, slot2);
-                    }
-                    else
-                    {
-                        Config.theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, "Паз(ы) не выбрался");
-                    }
-                }
-                else
-                {
-                    Config.theUI.NXMessageBox.Show("Error!",
-                                                   NXMessageBox.DialogType.Error,
-                                                   "Базовые плоскости пазов не найдены!");
+                    this.setConstraint();
                 }
 
             }
             else if (block == direction0)
             {
-                constr.removeTouch();
-                constr.reverse();
-
-                slot2.reverseTouchEdge();
-                slot2.setTouchFace();
-                constr.createSideTouch(slot1, slot2);
+                if (this.constraintCreated)
+                {
+                    constr.reverse();
+                }
             }
         }
         catch (Exception ex)
@@ -601,4 +528,107 @@ public class dialogWith2Points
         }
     }
     
+    //--------------------------------------------------------------------------------------
+
+    void setFirstComponent(UIBlock block)
+    {
+        Log.writeLine("Выбран объект по первому select.");
+        this.setComponent(block, ref this.element1, ref this.slotSet1);
+        this.firstSlotIsReady = false;
+    }
+    void setFirstPoint(UIBlock block)
+    {
+        Log.writeLine("Поставлена первая точка.");
+
+        if (setPoint(block, slotSet1))
+        {
+            this.firstSlotIsReady = true;
+        }
+        else
+        {
+            this.firstSlotIsReady = false;
+        }
+    }
+
+    void setSecondComponent(UIBlock block)
+    {
+        Log.writeLine("Выбран объект по второму select.");
+        this.setComponent(block, ref this.element2, ref this.slotSet2);
+        this.secondSlotIsReady = false;
+    }
+    void setSecondPoint(UIBlock block)
+    {
+        Log.writeLine("Поставлена вторая точка.");
+
+        if (setPoint(block, slotSet2))
+        {
+            this.secondSlotIsReady = true;
+        }
+        else
+        {
+            this.secondSlotIsReady = false;
+        }
+    }
+
+    void setComponent(UIBlock block, ref UspElement element, ref SlotSet slotSet)
+    {
+        PropertyList prop_list = block.GetProperties();
+        TaggedObject[] tag_obs = prop_list.GetTaggedObjectVector("SelectedObjects");
+
+        if (Geom.isComponent(tag_obs[0]))
+        {
+            Component parentComponent = Config.findCompByBodyTag(tag_obs[0].Tag);
+
+            Log.writeLine("Объект - " + tag_obs[0].ToString() +
+                " - " + parentComponent.Name);
+
+            element = new UspElement(parentComponent);
+            slotSet = new SlotSet(element);
+        }
+        else
+        {
+            string message = "Выбрана не деталь УСП!" + Environment.NewLine +
+                "Пожалуйста, перевыберите элемент.";
+            Log.writeWarning(message);
+            Config.theUI.NXMessageBox.Show("Error!",
+                                           NXMessageBox.DialogType.Error,
+                                           message);
+        }
+    }
+
+    bool setPoint(UIBlock block, SlotSet slotSet)
+    {
+        slotSet.setPoint(block);
+        if (slotSet.haveNearestBottomFace())
+        {
+            slotSet.setNearestEdges();
+
+            return true;
+        }
+        else
+        {
+            Config.theUI.NXMessageBox.Show("Error!",
+                                           NXMessageBox.DialogType.Error,
+                                           "Базовые плоскости пазов не найдены!");
+            return false;
+        }
+    }
+
+    void setConstraint()
+    {
+        this.constr = new SlotConstraint();
+
+        if (this.slotSet1.hasSlot(out this.slot1) && this.slotSet2.hasSlot(out this.slot2))
+        {
+            this.constr.setEachOtherConstraint(slot1, slot2);
+            this.constraintCreated = true;
+        }
+        else
+        {
+            Config.theUI.NXMessageBox.Show("Block Styler",
+                                           NXMessageBox.DialogType.Error,
+                                           "Паз(ы) не выбрался!");
+            this.constraintCreated = false;
+        }
+    }
 }
