@@ -481,4 +481,46 @@ public class UspIntersection
         }
     }
     
+    //------------------------------------------------------------------
+
+    void setFirstComponent(UIBlock block)
+    {
+        Log.writeLine("Выбран объект по первому select.");
+        this.setComponent(block, ref this.element1, ref this.slotSet1);
+        this.firstSlotIsReady = false;
+    }
+    void setSecondComponent(UIBlock block)
+    {
+        Log.writeLine("Выбран объект по второму select.");
+        this.setComponent(block, ref this.element2, ref this.slotSet2);
+        this.secondSlotIsReady = false;
+    }
+
+    void setComponent(UIBlock block, ref UspElement element, ref SlotSet slotSet)
+    {
+        PropertyList prop_list = block.GetProperties();
+        TaggedObject[] tag_obs = prop_list.GetTaggedObjectVector("SelectedObjects");
+
+        if (Geom.isComponent(tag_obs[0]))
+        {
+            Component parentComponent = Config.findCompByBodyTag(tag_obs[0].Tag);
+
+            Log.writeLine("Объект - " + tag_obs[0].ToString() +
+                " - " + parentComponent.Name);
+
+            element = new UspElement(parentComponent);
+            slotSet = new SlotSet(element);
+        }
+        else
+        {
+            string message = "Выбрана не деталь УСП!" + Environment.NewLine +
+                "Пожалуйста, перевыберите элемент.";
+            Log.writeWarning(message);
+            Config.theUI.NXMessageBox.Show("Error!",
+                                           NXMessageBox.DialogType.Error,
+                                           message);
+            block.Focus();
+        }
+    }
+
 }
