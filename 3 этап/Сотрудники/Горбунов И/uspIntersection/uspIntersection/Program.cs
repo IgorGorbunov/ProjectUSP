@@ -201,6 +201,9 @@ public class UspIntersection
     {
         try
         {
+            Log.writeLine("=======================================================" +
+                Environment.NewLine + "Программа запущена!");
+
             theInter = new UspIntersection();
             // The following method shows the dialog immediately
             theInter.Show();
@@ -362,6 +365,7 @@ public class UspIntersection
         try
         {
             //---- Enter your callback code here -----
+            Log.writeLine("Нажата кнопка 'Принять'.");
         }
         catch (Exception ex)
         {
@@ -406,6 +410,7 @@ public class UspIntersection
         {
             errorCode = apply_cb();
             //---- Enter your callback code here -----
+            Log.writeLine("Нажата кнопка 'ОК'.");
         }
         catch (Exception ex)
         {
@@ -424,6 +429,7 @@ public class UspIntersection
         try
         {
             //---- Enter your callback code here -----
+            Log.writeLine("Нажата кнопка 'Отмена'.");
         }
         catch (Exception ex)
         {
