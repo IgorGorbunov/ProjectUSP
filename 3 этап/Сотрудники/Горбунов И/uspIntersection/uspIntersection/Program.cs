@@ -37,6 +37,7 @@
 using System;
 using NXOpen;
 using NXOpen.BlockStyler;
+using NXOpen.Assemblies;
 
 //------------------------------------------------------------------------------
 //Represents Block Styler application class
@@ -87,6 +88,12 @@ public class UspIntersection
     public static readonly int     SnapPointTypesOnByDefault_PointConstructor = (1 <<12);
     public static readonly int     SnapPointTypesOnByDefault_BoundedGridPoint = (1 <<16);
     
+    //----------------------------------------------------------------------------------
+    UspElement element1, element2;
+    SlotSet slotSet1, slotSet2;
+    bool firstSlotIsReady = false, secondSlotIsReady = false;
+
+
     //------------------------------------------------------------------------------
     //Constructor for NX Styler class
     //------------------------------------------------------------------------------
