@@ -513,10 +513,9 @@ public class UspIntersection
         PropertyList prop_list = block.GetProperties();
         TaggedObject[] tag_obs = prop_list.GetTaggedObjectVector("SelectedObjects");
 
+        Component parentComponent = Config.findCompByBodyTag(tag_obs[0].Tag);
         if (Geom.isComponent(tag_obs[0]))
         {
-            Component parentComponent = Config.findCompByBodyTag(tag_obs[0].Tag);
-
             Log.writeLine("Объект - " + tag_obs[0].ToString() +
                 " - " + parentComponent.Name);
 
@@ -531,6 +530,10 @@ public class UspIntersection
             Config.theUI.NXMessageBox.Show("Error!",
                                            NXMessageBox.DialogType.Error,
                                            message);
+
+            Log.writeLine("Объект - " + tag_obs[0].ToString() +
+                " - " + parentComponent.Name);
+
             block.Focus();
         }
     }

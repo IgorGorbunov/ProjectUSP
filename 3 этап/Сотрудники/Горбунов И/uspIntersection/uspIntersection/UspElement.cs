@@ -56,36 +56,14 @@ public class UspElement
     {
         this.component = component;
 
-        this.setBottomFace();
+        this.setBody();
     }
 
-    //refactor
-    void setBottomFace()
+    /// <summary>
+    /// Проводит поиск и устанавливает нижние плоскости пазов.
+    /// </summary>
+    public void setBottomFace()
     {
-        Face someFace = null;
-        for (int j = 1; j < magic_number; j++)
-        {
-            try
-            {
-                someFace = (Face)this.component.FindObject(
-                    "PROTO#.Features|UNPARAMETERIZED_FEATURE(0)|FACE " + j);
-                break;
-            }
-            catch (NXException Ex)
-            {
-                if (Ex.ErrorCode == 3520016) //No object found exeption
-                {
-
-                }
-                else
-                {
-                    UI.GetUI().NXMessageBox.Show("Ошибка!", 
-                                                 NXMessageBox.DialogType.Error, 
-                                                 "Ашипка!");
-                }
-            }
-        }
-        this.body = someFace.GetBody();
         Face[] faces = this.body.GetFaces();
 
         this.bottomFaces = new List<Face>();
@@ -120,6 +98,41 @@ public class UspElement
                 }
             }
         }
+    }
+
+    //refactor
+    Face getSomeFace()
+    {
+        Face someFace = null;
+        for (int j = 1; j < magic_number; j++)
+        {
+            try
+            {
+                someFace = (Face)this.component.FindObject(
+                    "PROTO#.Features|UNPARAMETERIZED_FEATURE(0)|FACE " + j);
+                break;
+            }
+            catch (NXException Ex)
+            {
+                if (Ex.ErrorCode == 3520016) //No object found exeption
+                {
+
+                }
+                else
+                {
+                    UI.GetUI().NXMessageBox.Show("Ошибка!",
+                                                 NXMessageBox.DialogType.Error,
+                                                 "Ашипка!");
+                }
+            }
+        }
+        return someFace;
+    }
+
+    void setBody()
+    {
+        Face someFace = this.getSomeFace();
+        this.body = someFace.GetBody();
     }
 }
 
