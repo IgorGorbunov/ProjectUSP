@@ -38,6 +38,7 @@ using System;
 using NXOpen;
 using NXOpen.BlockStyler;
 using NXOpen.Assemblies;
+using NXOpen.GeometricAnalysis;
 
 //------------------------------------------------------------------------------
 //Represents Block Styler application class
@@ -373,6 +374,7 @@ public class UspIntersection
         {
             //---- Enter your callback code here -----
             Log.writeLine("Нажата кнопка 'Принять'.");
+            this.showIntersection();
         }
         catch (Exception ex)
         {
@@ -393,10 +395,12 @@ public class UspIntersection
             if(block == selection1)
             {
             //---------Enter your code here-----------
+                this.setFirstComponent(block);
             }
             else if(block == selection2)
             {
             //---------Enter your code here-----------
+                this.setSecondComponent(block);
             }
         }
         catch (Exception ex)
@@ -418,6 +422,7 @@ public class UspIntersection
             errorCode = apply_cb();
             //---- Enter your callback code here -----
             Log.writeLine("Нажата кнопка 'ОК'.");
+            this.showIntersection();
         }
         catch (Exception ex)
         {
@@ -528,6 +533,29 @@ public class UspIntersection
                                            message);
             block.Focus();
         }
+    }
+
+    //------------------------------------------------------------------
+
+    SimpleInterference.Result getIntersection(UspElement element1, UspElement element2)
+    {
+        SimpleInterference SI = Config.workPart.AnalysisManager.CreateSimpleInterferenceObject();
+
+        SI.InterferenceType = SimpleInterference.InterferenceMethod.InterferenceSolid;
+
+        SI.FirstBody.Value = element1.Body;
+        SI.SecondBody.Value = element2.Body;
+
+        SimpleInterference.Result result = SI.PerformCheck();
+        Log.writeLine("Произведена проверка на пересечение элементов. Результат:" + 
+                            Environment.NewLine + result.ToString());
+
+        return result;
+    }
+    void showIntersection()
+    {
+        SimpleInterference.Result result = getIntersection(element1, element2);
+        Config.theUI.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, result.ToString());
     }
 
 }

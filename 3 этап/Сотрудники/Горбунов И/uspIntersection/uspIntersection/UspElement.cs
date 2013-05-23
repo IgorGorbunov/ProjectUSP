@@ -29,7 +29,16 @@ public class UspElement
             return this.bottomFaces;
         }
     }
-
+    /// <summary>
+    /// Возвращает тело данного элемента.
+    /// </summary>
+    public Body Body
+    {
+        get
+        {
+            return this.body;
+        }
+    }
 
     Component component;
     Body body;
