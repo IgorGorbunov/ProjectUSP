@@ -544,7 +544,8 @@ public class UspIntersection
     {
         SimpleInterference SI = Config.workPart.AnalysisManager.CreateSimpleInterferenceObject();
 
-        SI.InterferenceType = SimpleInterference.InterferenceMethod.InterferenceSolid;
+        SI.InterferenceType = SimpleInterference.InterferenceMethod.InterferingFaces;
+        SI.FaceInterferenceType = SimpleInterference.FaceInterferenceMethod.AllPairs;
 
         SI.FirstBody.Value = element1.Body;
         SI.SecondBody.Value = element2.Body;
@@ -558,7 +559,27 @@ public class UspIntersection
     void showIntersection()
     {
         SimpleInterference.Result result = getIntersection(element1, element2);
-        Config.theUI.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, result.ToString());
+        
+        if (result == SimpleInterference.Result.CanNotPerformCheck)
+        {
+            Config.theUI.NXMessageBox.Show("Result", NXMessageBox.DialogType.Information, 
+                        "Возникла неизвестная ошибка при вычислении пересечения!");
+        }
+        else if (result == SimpleInterference.Result.NoInterference)
+        {
+            Config.theUI.NXMessageBox.Show("Result", NXMessageBox.DialogType.Information,
+                        "Пересечения не существует!");
+        }
+        else if (result == SimpleInterference.Result.OnlyEdgesOrFacesInterfere)
+        {
+            Config.theUI.NXMessageBox.Show("Result", NXMessageBox.DialogType.Information,
+                        "Пересечение существует только по рёбрам и граням!");
+        }
+        else if (result == SimpleInterference.Result.InterferenceExists)
+        {
+            Config.theUI.NXMessageBox.Show("Result", NXMessageBox.DialogType.Information,
+                        "Пересечение существует!");
+        }
     }
 
 }
