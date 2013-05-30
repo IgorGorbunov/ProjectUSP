@@ -66,6 +66,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="Straight.cs" />
+    <Compile Include="Tunnel.cs" />
     <Compile Include="UspElement.cs" />
     <Compile Include="Vector.cs" />
   </ItemGroup>
