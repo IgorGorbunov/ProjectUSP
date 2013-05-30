@@ -51,10 +51,11 @@ public class dialogWith2Points
     private string theDialogName;
     private NXOpen.BlockStyler.BlockDialog theDialog;
     private NXOpen.BlockStyler.UIBlock group02;// Block type: Group
-    private NXOpen.BlockStyler.UIBlock objSelect1;// Block type: Specify Грань 1
-    private NXOpen.BlockStyler.UIBlock objSelect2;// Block type: Specify Грань 2
+    private NXOpen.BlockStyler.UIBlock objSelect1;// Block type: Specify выбор объекта 1
+    private NXOpen.BlockStyler.UIBlock objSelect2;// Block type: Specify выбор объекта 2
     private NXOpen.BlockStyler.UIBlock faceSelect1;// Block type: Specify Грань 1
     private NXOpen.BlockStyler.UIBlock faceSelect2;// Block type: Specify Грань 2
+    private NXOpen.BlockStyler.UIBlock direction;// Block type: Specify Грань 2
 
     //------------------------------------------------------------------------------
     //Bit Option for Property: SnapPointTypesEnabled
@@ -99,7 +100,7 @@ public class dialogWith2Points
     
     //--------------------------------------------------------------
     UspElement element1, element2;
-    
+    Tunnel firstTunnel, secondTunnel;
     bool firstElementSelected = false, secondElementSelected = false;
     bool firstFaceSelected = false, secondFaceSelected = false;
     bool constraintCreated = false;
@@ -349,6 +350,7 @@ public class dialogWith2Points
             objSelect2 = (NXOpen.BlockStyler.UIBlock)theDialog.TopBlock.FindBlock("selection01");
             faceSelect1 = (NXOpen.BlockStyler.UIBlock)theDialog.TopBlock.FindBlock("face_select0");
             faceSelect2 = (NXOpen.BlockStyler.UIBlock)theDialog.TopBlock.FindBlock("face_select02");
+            direction = (NXOpen.BlockStyler.UIBlock)theDialog.TopBlock.FindBlock("direction0");
         }
         catch (Exception ex)
         {
@@ -402,33 +404,25 @@ public class dialogWith2Points
     {
         try
         {
-            if (block == faceSelect1)
+            if (block == objSelect1)
             {
-                PropertyList propertyList = block.GetProperties();
+                this.setFirstComponent(block);
+            }
+            else if (block == faceSelect1)
+            {
+                this.setFirstFace(block);
+            }
+            else if (block == objSelect2)
+            {
+                this.setSecondComponent(block);
+            }
+            else if (block == faceSelect2)
+            {
+                this.setSecondFace(block);
+            }
+            else if (block == direction)
+            {
 
-                PartCollection PC = Config.theSession.Parts;
-
-                TaggedObject[] TO = propertyList.GetTaggedObjectVector("SelectedObjects");
-                TaggedObject t = TO[0];
-
-                foreach (Part p in PC)
-                {
-                    BodyCollection BC = p.Bodies;
-
-                    foreach (Body b in BC)
-                    {
-                        Face[] FC = b.GetFaces();
-
-                        foreach (Face f in FC)
-                        {
-                            if (f.Tag == t.Tag)
-                            {
-                                Config.theUI.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, "+");
-                            }
-                        }
-                    }
-                }
-                
             }
             
 
@@ -569,7 +563,7 @@ public class dialogWith2Points
     {
         Log.writeLine("Нажат выбор первой грани.");
 
-        if (setFace(block))
+        if (setFace(block, ref this.firstTunnel))
         {
             this.firstFaceSelected = true;
         }
@@ -582,7 +576,7 @@ public class dialogWith2Points
     {
         Log.writeLine("Нажат выбор второй грани.");
 
-        if (setFace(block))
+        if (setFace(block, ref this.secondTunnel))
         {
             this.secondFaceSelected = true;
         }
@@ -591,7 +585,7 @@ public class dialogWith2Points
             this.secondFaceSelected = false;
         }
     }
-    bool setFace(UIBlock block)
+    bool setFace(UIBlock block, ref Tunnel tunnel)
     {
         PropertyList propertyList = block.GetProperties();
         TaggedObject[] TO = propertyList.GetTaggedObjectVector("SelectedObjects");
@@ -612,6 +606,7 @@ public class dialogWith2Points
                     {
                         if (f.SolidFaceType == Face.FaceType.Cylindrical)
                         {
+                            tunnel = new Tunnel(f);
                             return true;
                         }
                         else
