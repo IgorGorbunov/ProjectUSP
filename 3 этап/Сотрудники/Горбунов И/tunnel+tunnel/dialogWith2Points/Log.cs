@@ -10,7 +10,7 @@ public static class Log
 {
     static StreamWriter sW;
 
-    static string name = @"IntersectionLog";
+    static string name = @"Log";
     static string extension = @".log";
     static int count = 5;
 

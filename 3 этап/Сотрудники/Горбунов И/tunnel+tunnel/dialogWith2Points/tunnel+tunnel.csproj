@@ -7,8 +7,8 @@
     <ProjectGuid>{507914B5-0645-4E23-983F-1994F3D5985C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>dialogWith2Points</RootNamespace>
-    <AssemblyName>dialogWith2Points</AssemblyName>
+    <RootNamespace>tt</RootNamespace>
+    <AssemblyName>tt</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -50,7 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config.cs" />
-    <Compile Include="dialogWith2Points.cs" />
+    <Compile Include="t+t.cs" />
     <Compile Include="Geom.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Platan.cs" />

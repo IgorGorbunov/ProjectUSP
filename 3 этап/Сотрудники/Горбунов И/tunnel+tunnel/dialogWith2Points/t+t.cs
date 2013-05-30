@@ -51,12 +51,11 @@ public class dialogWith2Points
     private string theDialogName;
     private NXOpen.BlockStyler.BlockDialog theDialog;
     private NXOpen.BlockStyler.UIBlock group02;// Block type: Group
-    private NXOpen.BlockStyler.UIBlock selection0;// Block type: Selection
-    private NXOpen.BlockStyler.UIBlock point0;// Block type: Specify Point
-    private NXOpen.BlockStyler.UIBlock group0;// Block type: Group
-    private NXOpen.BlockStyler.UIBlock selection01;// Block type: Selection
-    private NXOpen.BlockStyler.UIBlock point1;// Block type: Specify Point
-    private NXOpen.BlockStyler.UIBlock direction0;// Block type: Reverse Direction
+    private NXOpen.BlockStyler.UIBlock objSelect1;// Block type: Specify Грань 1
+    private NXOpen.BlockStyler.UIBlock objSelect2;// Block type: Specify Грань 2
+    private NXOpen.BlockStyler.UIBlock faceSelect1;// Block type: Specify Грань 1
+    private NXOpen.BlockStyler.UIBlock faceSelect2;// Block type: Specify Грань 2
+
     //------------------------------------------------------------------------------
     //Bit Option for Property: SnapPointTypesEnabled
     //------------------------------------------------------------------------------
@@ -100,7 +99,9 @@ public class dialogWith2Points
     
     //--------------------------------------------------------------
     UspElement element1, element2;
-    bool firstSlotIsReady = false, secondSlotIsReady = false;
+    
+    bool firstElementSelected = false, secondElementSelected = false;
+    bool firstFaceSelected = false, secondFaceSelected = false;
     bool constraintCreated = false;
 
     //------------------------------------------------------------------------------
@@ -112,7 +113,7 @@ public class dialogWith2Points
         {
             theSession = Session.GetSession();
             theUI = UI.GetUI();
-            theDialogName = Config.dlxPath + Config.dlxName;
+            theDialogName = Config.dlxPath + Config.dlxTunnelTunnel;
             theDialog = theUI.CreateDialog(theDialogName);
             theDialog.AddApplyHandler(new NXOpen.BlockStyler.BlockDialog.Apply(apply_cb));
             theDialog.AddOkHandler(new NXOpen.BlockStyler.BlockDialog.Ok(ok_cb));
@@ -344,12 +345,10 @@ public class dialogWith2Points
         try
         {
             group02 = (NXOpen.BlockStyler.UIBlock)theDialog.TopBlock.FindBlock("group02");
-            selection0 = (NXOpen.BlockStyler.UIBlock)theDialog.TopBlock.FindBlock("selection0");
-            point0 = (NXOpen.BlockStyler.UIBlock)theDialog.TopBlock.FindBlock("point0");
-            group0 = (NXOpen.BlockStyler.UIBlock)theDialog.TopBlock.FindBlock("group0");
-            selection01 = (NXOpen.BlockStyler.UIBlock)theDialog.TopBlock.FindBlock("selection01");
-            point1 = (NXOpen.BlockStyler.UIBlock)theDialog.TopBlock.FindBlock("point1");
-            direction0 = (NXOpen.BlockStyler.UIBlock)theDialog.TopBlock.FindBlock("direction0");
+            objSelect1 = (NXOpen.BlockStyler.UIBlock)theDialog.TopBlock.FindBlock("selection0");
+            objSelect2 = (NXOpen.BlockStyler.UIBlock)theDialog.TopBlock.FindBlock("selection01");
+            faceSelect1 = (NXOpen.BlockStyler.UIBlock)theDialog.TopBlock.FindBlock("face_select0");
+            faceSelect2 = (NXOpen.BlockStyler.UIBlock)theDialog.TopBlock.FindBlock("face_select02");
         }
         catch (Exception ex)
         {
@@ -403,7 +402,35 @@ public class dialogWith2Points
     {
         try
         {
+            if (block == faceSelect1)
+            {
+                PropertyList propertyList = block.GetProperties();
 
+                PartCollection PC = Config.theSession.Parts;
+
+                TaggedObject[] TO = propertyList.GetTaggedObjectVector("SelectedObjects");
+                TaggedObject t = TO[0];
+
+                foreach (Part p in PC)
+                {
+                    BodyCollection BC = p.Bodies;
+
+                    foreach (Body b in BC)
+                    {
+                        Face[] FC = b.GetFaces();
+
+                        foreach (Face f in FC)
+                        {
+                            if (f.Tag == t.Tag)
+                            {
+                                Config.theUI.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, "+");
+                            }
+                        }
+                    }
+                }
+                
+            }
+            
 
         }
         catch (Exception ex)
@@ -499,53 +526,24 @@ public class dialogWith2Points
 
     void setFirstComponent(UIBlock block)
     {
-        Log.writeLine("Выбран объект по первому select.");
+        Log.writeLine("Нажат выбор объекта по первому select.");
         this.setComponent(block, ref this.element1);
-        this.firstSlotIsReady = false;
+        this.firstElementSelected = true;
     }
-    void setFirstPoint(UIBlock block)
-    {
-        Log.writeLine("Поставлена первая точка.");
-
-        if (setPoint(block))
-        {
-            this.firstSlotIsReady = true;
-        }
-        else
-        {
-            this.firstSlotIsReady = false;
-        }
-    }
-
     void setSecondComponent(UIBlock block)
     {
-        Log.writeLine("Выбран объект по второму select.");
+        Log.writeLine("Нажат выбор объекта по второму select.");
         this.setComponent(block, ref this.element2);
-        this.secondSlotIsReady = false;
+        this.secondElementSelected = true;
     }
-    void setSecondPoint(UIBlock block)
-    {
-        Log.writeLine("Поставлена вторая точка.");
-
-        if (setPoint(block))
-        {
-            this.secondSlotIsReady = true;
-        }
-        else
-        {
-            this.secondSlotIsReady = false;
-        }
-    }
-
     void setComponent(UIBlock block, ref UspElement element)
     {
         PropertyList prop_list = block.GetProperties();
         TaggedObject[] tag_obs = prop_list.GetTaggedObjectVector("SelectedObjects");
 
+        Component parentComponent = Config.findCompByBodyTag(tag_obs[0].Tag);
         if (Geom.isComponent(tag_obs[0]))
         {
-            Component parentComponent = Config.findCompByBodyTag(tag_obs[0].Tag);
-
             Log.writeLine("Объект - " + tag_obs[0].ToString() +
                 " - " + parentComponent.Name);
 
@@ -559,26 +557,86 @@ public class dialogWith2Points
             Config.theUI.NXMessageBox.Show("Error!",
                                            NXMessageBox.DialogType.Error,
                                            message);
+
+            Log.writeLine("Объект - " + tag_obs[0].ToString() +
+                " - " + parentComponent.Name);
+
             block.Focus();
         }
     }
-    bool setPoint(UIBlock block)
-    {
-        if (false)
-        {
 
-            return true;
+    void setFirstFace(UIBlock block)
+    {
+        Log.writeLine("Нажат выбор первой грани.");
+
+        if (setFace(block))
+        {
+            this.firstFaceSelected = true;
         }
         else
         {
-            string message = "Базовые плоскости пазов не найдены!";
-            Log.writeWarning(message);
-            Config.theUI.NXMessageBox.Show("Error!",
-                                           NXMessageBox.DialogType.Error,
-                                           message);
-            block.Focus();
-            return false;
+            this.firstFaceSelected = false;
         }
+    }
+    void setSecondFace(UIBlock block)
+    {
+        Log.writeLine("Нажат выбор второй грани.");
+
+        if (setFace(block))
+        {
+            this.secondFaceSelected = true;
+        }
+        else
+        {
+            this.secondFaceSelected = false;
+        }
+    }
+    bool setFace(UIBlock block)
+    {
+        PropertyList propertyList = block.GetProperties();
+        TaggedObject[] TO = propertyList.GetTaggedObjectVector("SelectedObjects");
+        TaggedObject t = TO[0];
+
+        PartCollection PC = Config.theSession.Parts;
+        foreach (Part p in PC)
+        {
+            BodyCollection BC = p.Bodies;
+
+            foreach (Body b in BC)
+            {
+                Face[] FC = b.GetFaces();
+
+                foreach (Face f in FC)
+                {
+                    if (f.Tag == t.Tag)
+                    {
+                        if (f.SolidFaceType == Face.FaceType.Cylindrical)
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            string message = "Грань не цилиндрическая! Выберите другую грань!";
+                            Log.writeWarning(message);
+                            Config.theUI.NXMessageBox.Show("Error!",
+                                                           NXMessageBox.DialogType.Error,
+                                                           message);
+                            block.Focus();
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+
+        string mess= "Грань не найдена! Выберите другую грань!";
+        Log.writeWarning(mess);
+        Config.theUI.NXMessageBox.Show("Error!",
+                                       NXMessageBox.DialogType.Error,
+                                       mess);
+        block.Focus();
+        return false;
+        
     }
 
     void setConstraint()
