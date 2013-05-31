@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config.cs" />
+    <Compile Include="Constrainter.cs" />
     <Compile Include="Instr.cs" />
     <Compile Include="t+t.cs" />
     <Compile Include="Geom.cs" />
@@ -67,6 +68,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="Straight.cs" />
+    <Compile Include="TouchAxeConstraint.cs" />
     <Compile Include="Tunnel.cs" />
     <Compile Include="TunnelConstraint.cs" />
     <Compile Include="UspElement.cs" />
