@@ -11,6 +11,7 @@ using NXOpen.Positioning;
 public class TunnelConstraint
 {
     TouchAxeConstraint axeConstr;
+    TouchConstraint touchConstr;
 
     /// <summary>
     /// Инициализирует новый экземпляр класса связей для соединения двух отверстий.
@@ -26,10 +27,15 @@ public class TunnelConstraint
     /// </summary>
     /// <param name="firstTunnel">Первое отверстие.</param>
     /// <param name="secondTunnel">Второе отверстие.</param>
-    public void setEachOtherConstraint(Tunnel firstTunnel, Tunnel secondTunnel)
+    public void setTouchAxeConstraint(Tunnel firstTunnel, Tunnel secondTunnel)
     {
         axeConstr.create(firstTunnel.ParentComponent, firstTunnel.TunnelFace,
                          secondTunnel.ParentComponent, secondTunnel.TunnelFace);
+    }
+
+    public void setTouchFaceConstraint(Tunnel firstTunnel, Tunnel secondTunnel)
+    {
+
     }
 
     /// <summary>

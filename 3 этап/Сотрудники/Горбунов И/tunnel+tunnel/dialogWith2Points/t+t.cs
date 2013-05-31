@@ -679,7 +679,7 @@ public class dialogWith2Points
     {
         this.constr = new TunnelConstraint();
 
-        this.constr.setEachOtherConstraint(tunnel1, tunnel2);
+        this.constr.setTouchAxeConstraint(tunnel1, tunnel2);
 
     }
 
