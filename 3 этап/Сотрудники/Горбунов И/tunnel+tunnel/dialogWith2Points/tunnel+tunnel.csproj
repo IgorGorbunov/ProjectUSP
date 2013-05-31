@@ -70,6 +70,7 @@
     </Compile>
     <Compile Include="Straight.cs" />
     <Compile Include="TouchAxeConstraint.cs" />
+    <Compile Include="TouchConstraint.cs" />
     <Compile Include="Tunnel.cs" />
     <Compile Include="TunnelConstraint.cs" />
     <Compile Include="UspElement.cs" />

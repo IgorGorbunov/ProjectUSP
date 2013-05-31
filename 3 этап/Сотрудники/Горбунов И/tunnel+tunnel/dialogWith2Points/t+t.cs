@@ -102,6 +102,8 @@ public class dialogWith2Points
     Tunnel tunnel1, tunnel2;
     TunnelConstraint constr;
 
+    KeyValuePair<Face, double>[] facePairs1, facePairs2;
+
     bool firstElementSelected = false, secondElementSelected = false;
     bool firstFaceSelected = false, secondFaceSelected = false;
     bool constraintCreated = false;
@@ -410,7 +412,7 @@ public class dialogWith2Points
             else if (block == faceSelect1)
             {
                 this.setFirstFace(block);
-                this.setPlatans(this.tunnel1);
+                this.setPlatans(this.tunnel1, out this.facePairs1);
             }
             else if (block == objSelect2)
             {
@@ -419,6 +421,7 @@ public class dialogWith2Points
             else if (block == faceSelect2)
             {
                 this.setSecondFace(block);
+                this.setPlatans(this.tunnel2, out this.facePairs2);
 
                 this.setConstraint();
             }
@@ -636,7 +639,7 @@ public class dialogWith2Points
                                 Geom.isEqual(point, point2) && Geom.isEqual(dir, dir2))
                             {
 
-                                if (/*ff.SolidFaceType == Face.FaceType.Cylindrical*/true)
+                                if (ff.SolidFaceType == Face.FaceType.Cylindrical)
                                 {
                                     tunnel = new Tunnel(ff, element);
                                     return true;
@@ -680,7 +683,7 @@ public class dialogWith2Points
 
     }
 
-    void setPlatans(Tunnel tunnel)
+    void setPlatans(Tunnel tunnel, out KeyValuePair<Face, double>[] facePairs)
     {
         Face[] faces = tunnel.Body.GetFaces();
         double[] direction1 = tunnel.Direction;
@@ -706,7 +709,7 @@ public class dialogWith2Points
             }  
         }
 
-        KeyValuePair<Face, double>[] facePairs = new KeyValuePair<Face, double>[dictFaces.Count];
+        facePairs = new KeyValuePair<Face, double>[dictFaces.Count];
         int i = 0;
         foreach (KeyValuePair<Face, double> pair in dictFaces)
         {
