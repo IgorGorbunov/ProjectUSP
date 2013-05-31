@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Config.cs" />
     <Compile Include="Constrainter.cs" />
+    <Compile Include="ElementIntersection.cs" />
     <Compile Include="Instr.cs" />
     <Compile Include="t+t.cs" />
     <Compile Include="Geom.cs" />
