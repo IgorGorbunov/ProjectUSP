@@ -38,6 +38,7 @@ using System;
 using NXOpen;
 using NXOpen.BlockStyler;
 using NXOpen.Assemblies;
+using System.Collections.Generic;
 
 //------------------------------------------------------------------------------
 //Represents Block Styler application class
@@ -45,8 +46,6 @@ using NXOpen.Assemblies;
 public class dialogWith2Points
 {
     //class members
-    private static Session theSession = null;
-    private static UI theUI = null;
     public static dialogWith2Points thedialogWith2Points;
     private string theDialogName;
     private NXOpen.BlockStyler.BlockDialog theDialog;
@@ -100,7 +99,9 @@ public class dialogWith2Points
     
     //--------------------------------------------------------------
     UspElement element1, element2;
-    Tunnel firstTunnel, secondTunnel;
+    Tunnel tunnel1, tunnel2;
+    TunnelConstraint constr;
+
     bool firstElementSelected = false, secondElementSelected = false;
     bool firstFaceSelected = false, secondFaceSelected = false;
     bool constraintCreated = false;
@@ -112,10 +113,8 @@ public class dialogWith2Points
     {
         try
         {
-            theSession = Session.GetSession();
-            theUI = UI.GetUI();
             theDialogName = Config.dlxPath + Config.dlxTunnelTunnel;
-            theDialog = theUI.CreateDialog(theDialogName);
+            theDialog = Config.theUI.CreateDialog(theDialogName);
             theDialog.AddApplyHandler(new NXOpen.BlockStyler.BlockDialog.Apply(apply_cb));
             theDialog.AddOkHandler(new NXOpen.BlockStyler.BlockDialog.Ok(ok_cb));
             theDialog.AddUpdateHandler(new NXOpen.BlockStyler.BlockDialog.Update(update_cb));
@@ -229,7 +228,7 @@ public class dialogWith2Points
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            Config.theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
         }
         finally
         {
@@ -275,7 +274,7 @@ public class dialogWith2Points
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            Config.theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
         }
         return 0;
     }
@@ -293,7 +292,7 @@ public class dialogWith2Points
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            Config.theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
         }
         return 0;
     }
@@ -325,7 +324,7 @@ public class dialogWith2Points
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            Config.theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
         }
         finally
         {
@@ -355,7 +354,7 @@ public class dialogWith2Points
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            Config.theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
         }
     }
     
@@ -373,7 +372,7 @@ public class dialogWith2Points
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            Config.theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
         }
     }
     
@@ -392,7 +391,7 @@ public class dialogWith2Points
         {
             //---- Enter your exception handling code here -----
             errorCode = 1;
-            theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            Config.theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
         }
         return errorCode;
     }
@@ -411,6 +410,7 @@ public class dialogWith2Points
             else if (block == faceSelect1)
             {
                 this.setFirstFace(block);
+                this.setPlatans(this.tunnel1);
             }
             else if (block == objSelect2)
             {
@@ -419,10 +419,12 @@ public class dialogWith2Points
             else if (block == faceSelect2)
             {
                 this.setSecondFace(block);
+
+                this.setConstraint();
             }
             else if (block == direction)
             {
-
+                this.constr.reverse();
             }
             
 
@@ -430,7 +432,7 @@ public class dialogWith2Points
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            Config.theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
         }
         return 0;
     }
@@ -451,7 +453,7 @@ public class dialogWith2Points
         {
             //---- Enter your exception handling code here -----
             errorCode = 1;
-            theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            Config.theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
         }
         return errorCode;
     }
@@ -469,7 +471,7 @@ public class dialogWith2Points
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            Config.theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
         }
         return 0;
     }
@@ -495,7 +497,7 @@ public class dialogWith2Points
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            Config.theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
         }
     }
     
@@ -512,7 +514,7 @@ public class dialogWith2Points
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            Config.theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
         }
     }
     
@@ -563,7 +565,7 @@ public class dialogWith2Points
     {
         Log.writeLine("Нажат выбор первой грани.");
 
-        if (setFace(block, ref this.firstTunnel))
+        if (setFace(block, ref this.tunnel1, this.element1))
         {
             this.firstFaceSelected = true;
         }
@@ -576,7 +578,7 @@ public class dialogWith2Points
     {
         Log.writeLine("Нажат выбор второй грани.");
 
-        if (setFace(block, ref this.secondTunnel))
+        if (setFace(block, ref this.tunnel2, this.element2))
         {
             this.secondFaceSelected = true;
         }
@@ -585,7 +587,7 @@ public class dialogWith2Points
             this.secondFaceSelected = false;
         }
     }
-    bool setFace(UIBlock block, ref Tunnel tunnel)
+    bool setFace(UIBlock block, ref Tunnel tunnel, UspElement element)
     {
         PropertyList propertyList = block.GetProperties();
         TaggedObject[] TO = propertyList.GetTaggedObjectVector("SelectedObjects");
@@ -604,21 +606,57 @@ public class dialogWith2Points
                 {
                     if (f.Tag == t.Tag)
                     {
-                        if (f.SolidFaceType == Face.FaceType.Cylindrical)
+                        int type;
+                        double[] point = new double[3];
+                        double[] dir = new double[3];
+                        double[] box = new double[6];
+                        double radius;
+                        double raddata;
+                        int normDir;
+
+                        Config.theUFSession.Modl.AskFaceData(f.Tag, out type, point, dir, box, out radius,
+                            out raddata, out normDir);
+
+                        foreach (Face ff in element.Body.GetFaces())
                         {
-                            tunnel = new Tunnel(f);
-                            return true;
+                            int type2;
+                            double[] point2 = new double[3];
+                            double[] dir2 = new double[3];
+                            double[] box2 = new double[6];
+                            double radius2;
+                            double raddata2;
+                            int normDir2;
+
+                            Config.theUFSession.Modl.AskFaceData(ff.Tag, out type2, point2, dir2, box2,
+                                out radius2, out raddata2, out normDir2);
+
+                            if (type == type2 && normDir == normDir2 &&
+                                Config.round(radius) == Config.round(radius2) && 
+                                Config.round(raddata) == Config.round(raddata2) && 
+                                Geom.isEqual(point, point2) && Geom.isEqual(dir, dir2))
+                            {
+
+                                if (/*ff.SolidFaceType == Face.FaceType.Cylindrical*/true)
+                                {
+                                    tunnel = new Tunnel(ff, element);
+                                    return true;
+                                }
+                                else
+                                {
+                                    string message = "Грань не цилиндрическая! Выберите другую грань!";
+                                    Log.writeWarning(message);
+                                    Config.theUI.NXMessageBox.Show("Error!",
+                                                                   NXMessageBox.DialogType.Error,
+                                                                   message);
+                                    block.Focus();
+                                    return false;
+                                }
+
+                            }
+
                         }
-                        else
-                        {
-                            string message = "Грань не цилиндрическая! Выберите другую грань!";
-                            Log.writeWarning(message);
-                            Config.theUI.NXMessageBox.Show("Error!",
-                                                           NXMessageBox.DialogType.Error,
-                                                           message);
-                            block.Focus();
-                            return false;
-                        }
+
+                        
                     }
                 }
             }
@@ -636,19 +674,54 @@ public class dialogWith2Points
 
     void setConstraint()
     {
-        /*this.constr = new SlotConstraint();
+        this.constr = new TunnelConstraint();
 
-        if (this.slotSet1.hasSlot(out this.slot1) && this.slotSet2.hasSlot(out this.slot2))
+        this.constr.setEachOtherConstraint(tunnel1, tunnel2);
+
+    }
+
+    void setPlatans(Tunnel tunnel)
+    {
+        Face[] faces = tunnel.Body.GetFaces();
+        double[] direction1 = tunnel.Direction;
+        Point3d point = tunnel.CentralPoint;
+
+        Dictionary<Face, double> dictFaces = new Dictionary<Face, double>();
+ 
+        foreach (Face f in faces)
         {
-            this.constr.setEachOtherConstraint(slot1, slot2);
-            this.constraintCreated = true;
+            double[] direction2 = Geom.getDirection(f);
+
+            if (Geom.isEqual(direction1, direction2) && f.SolidFaceType == Face.FaceType.Planar)
+            {
+                Platan pl = new Platan(f);
+
+                //точка находится "под" необходимыми гранями
+                double distance = - pl.getDistanceToPoint(point);
+
+                if (distance >= 0)
+                {
+                    dictFaces.Add(f, distance);
+                }
+            }  
         }
-        else
+
+        KeyValuePair<Face, double>[] facePairs = new KeyValuePair<Face, double>[dictFaces.Count];
+        int i = 0;
+        foreach (KeyValuePair<Face, double> pair in dictFaces)
         {
-            Config.theUI.NXMessageBox.Show("Block Styler",
-                                           NXMessageBox.DialogType.Error,
-                                           "Паз(ы) не выбрался!");
-            this.constraintCreated = false;
-        }*/
+            facePairs[i] = pair;
+            i++;
+        }
+
+        Instr.qSortPair(facePairs, 0, facePairs.Length - 1);
+
+        /*tst = "";
+        for (int j = 0; j < facePairs.Length; j++)
+        {
+            tst += facePairs[j].Key.Tag.ToString() + " - " + facePairs[j].Value.ToString() + Environment.NewLine;
+        }
+        Config.theUI.NXMessageBox.Show("tst - 2", NXMessageBox.DialogType.Error, tst);*/
+
     }
 }
