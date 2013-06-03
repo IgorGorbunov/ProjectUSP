@@ -34,9 +34,10 @@
 //------------------------------------------------------------------------------
 //These imports are needed for the following template code
 //------------------------------------------------------------------------------
-using System;
 using NXOpen;
 using NXOpen.BlockStyler;
+using System;
+using System.IO;
 
 //------------------------------------------------------------------------------
 //Represents Block Styler application class
@@ -44,8 +45,6 @@ using NXOpen.BlockStyler;
 public class tunnelslot
 {
     //class members
-    private static Session theSession = null;
-    private static UI theUI = null;
     public static tunnelslot thetunnelslot;
     private string theDialogName;
     private NXOpen.BlockStyler.BlockDialog theDialog;
@@ -129,10 +128,10 @@ public class tunnelslot
     {
         try
         {
-            theSession = Session.GetSession();
-            theUI = UI.GetUI();
-            theDialogName = "tunnel+slot.dlx";
-            theDialog = theUI.CreateDialog(theDialogName);
+            theDialogName = AppDomain.CurrentDomain.BaseDirectory + 
+                Config.dlxFolder + Config.dlxTunnelSlot;
+
+            theDialog = Config.theUI.CreateDialog(theDialogName);
             theDialog.AddApplyHandler(new NXOpen.BlockStyler.BlockDialog.Apply(apply_cb));
             theDialog.AddOkHandler(new NXOpen.BlockStyler.BlockDialog.Ok(ok_cb));
             theDialog.AddUpdateHandler(new NXOpen.BlockStyler.BlockDialog.Update(update_cb));
@@ -231,7 +230,7 @@ public class tunnelslot
     //             e.g., UGII_CUSTOM_DIRECTORY_FILE=$UGII_ROOT_DIR\menus\custom_dirs.dat
     //    
     //------------------------------------------------------------------------------
-#if USER_EXIT_OR_MENU
+//#if USER_EXIT_OR_MENU
     public static void Main()
     {
         try
@@ -243,15 +242,15 @@ public class tunnelslot
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            Config.theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
         }
         finally
         {
             thetunnelslot.Dispose();
         }
     }
-#endif//USER_EXIT_OR_MENU
-#if USER_EXIT
+//#endif//USER_EXIT_OR_MENU
+//#if USER_EXIT
     //------------------------------------------------------------------------------
     // This method specifies how a shared image is unloaded from memory
     // within NX. This method gives you the capability to unload an
@@ -289,11 +288,11 @@ public class tunnelslot
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            Config.theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
         }
         return 0;
     }
-#endif//USER_EXIT
+//#endif//USER_EXIT
     
     //------------------------------------------------------------------------------
     //This method shows the dialog on the screen
@@ -307,7 +306,7 @@ public class tunnelslot
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            Config.theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
         }
         return 0;
     }
@@ -324,7 +323,7 @@ public class tunnelslot
         }
     }
     
-#if CALLBACK
+//#if CALLBACK
     //------------------------------------------------------------------------------
     //Method name: Show_tunnelslot
     //------------------------------------------------------------------------------
@@ -339,14 +338,14 @@ public class tunnelslot
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            Config.theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
         }
         finally
         {
             thetunnelslot.Dispose();
         }
     }
-#endif//CALLBACK
+//#endif//CALLBACK
     
     //------------------------------------------------------------------------------
     //---------------------Block UI Styler Callback Functions--------------------------
@@ -371,7 +370,7 @@ public class tunnelslot
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            Config.theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
         }
     }
     
@@ -389,7 +388,7 @@ public class tunnelslot
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            Config.theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
         }
     }
     
@@ -407,7 +406,7 @@ public class tunnelslot
         {
             //---- Enter your exception handling code here -----
             errorCode = 1;
-            theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            Config.theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
         }
         return errorCode;
     }
@@ -447,7 +446,7 @@ public class tunnelslot
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            Config.theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
         }
         return 0;
     }
@@ -467,7 +466,7 @@ public class tunnelslot
         {
             //---- Enter your exception handling code here -----
             errorCode = 1;
-            theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            Config.theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
         }
         return errorCode;
     }
@@ -484,7 +483,7 @@ public class tunnelslot
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            Config.theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
         }
         return 0;
     }
@@ -510,7 +509,7 @@ public class tunnelslot
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            Config.theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
         }
     }
     
@@ -527,8 +526,10 @@ public class tunnelslot
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            Config.theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
         }
     }
+
+    //--------------------------------------------------------------------
     
 }
