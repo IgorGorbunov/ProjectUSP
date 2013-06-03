@@ -53,8 +53,9 @@ public static class Config
     const int PRECISION = 5;
 
     public static string logPath = @"C:\ug_customization\application\";
-    public static string dlxPath = @"C:\ug_customization\application\";
+    public static string dlxPath = @"C:\ug_customization\application\dialogs\";
     public static string dlxName = @"inter.dlx";
+    public static string dlxTunnelTunnel = @"tunnel+tunnel.dlx";
 
     //------------------------ Methods ------------------------------------------------------------
 

@@ -253,16 +253,37 @@ static class Geom
         return true;
     }
 
+    /// <summary>
+    /// Возвращает нормаль/направление для заданной грани.
+    /// </summary>
+    /// <param name="face">Целевая грань.</param>
+    /// <returns></returns>
     public static double[] getDirection(Face face)
     {
         int voidInt;
         double voidDouble;
         double[] dir = new double[3];
         double[] box = new double[6];
-
         double[] point = new double[3];
+
         Config.theUFSession.Modl.AskFaceData(face.Tag, out voidInt, point, dir, box, out voidDouble, out voidDouble, out voidInt);
         return dir;
+    }
+    /// <summary>
+    /// Возвращает "центральную" точку для грани.
+    /// </summary>
+    /// <param name="face">Целевая грань.</param>
+    /// <returns></returns>
+    public static double[] getPoint(Face face)
+    {
+        int voidInt;
+        double voidDouble;
+        double[] dir = new double[3];
+        double[] box = new double[6];
+        double[] point = new double[3];
+
+        Config.theUFSession.Modl.AskFaceData(face.Tag, out voidInt, point, dir, box, out voidDouble, out voidDouble, out voidInt);
+        return point;
     }
 
     /// <summary>
@@ -291,13 +312,20 @@ static class Geom
             return true;
         }
     }
-    public static bool isEqual(double[] dir1, double[] dir2)
+    /// <summary>
+    /// Возвращает значение, определяющее являются ли два массива эквивалентными с учетом
+    /// рабочего округления.
+    /// </summary>
+    /// <param name="d1">Первый одномерный массив.</param>
+    /// <param name="d2">Второй одномерный массив.</param>
+    /// <returns></returns>
+    public static bool isEqual(double[] d1, double[] d2)
     {
-        if (dir1.Length == dir2.Length && dir1.Length == DIMENSIONS)
+        if (d1.Length == d2.Length)
         {
-            for (int i = 0; i < dir1.Length; i++)
+            for (int i = 0; i < d1.Length; i++)
             {
-                if (Config.round(dir1[i]) != Config.round(dir2[i]))
+                if (Config.round(d1[i]) != Config.round(d2[i]))
                 {
                     return false;
                 }
@@ -306,11 +334,15 @@ static class Geom
         }
         else
         {
-            Config.theUI.NXMessageBox.Show("Error!", NXMessageBox.DialogType.Error, "В массиве элементов больше 3х!");
+            Config.theUI.NXMessageBox.Show("Error!", NXMessageBox.DialogType.Error, "Массивы различны по длине!");
             return false;
         }
     }
-
+    /// <summary>
+    /// Возвращает true, если объект является компонентом.
+    /// </summary>
+    /// <param name="tO">Объект в формате TaggedObject.</param>
+    /// <returns></returns>
     public static bool isComponent(TaggedObject tO)
     {
         string strTO = tO.ToString();

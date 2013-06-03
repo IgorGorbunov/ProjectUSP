@@ -47,6 +47,8 @@ public class UspElement
 
     int magic_number = 1680;//TODO
 
+    
+
 
     /// <summary>
     /// Инициализирует новый экземпляр класса элемента УСП для заданного компонента.
