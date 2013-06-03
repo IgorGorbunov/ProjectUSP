@@ -1,4 +1,4 @@
-//==============================================================================
+﻿//==============================================================================
 //  WARNING!!  This file is overwritten by the Block UI Styler while generating
 //  the automation code. Any modifications to this file will be lost after
 //  generating the code again.
@@ -35,6 +35,7 @@
 //These imports are needed for the following template code
 //------------------------------------------------------------------------------
 using NXOpen;
+using NXOpen.Assemblies;
 using NXOpen.BlockStyler;
 using System;
 using System.IO;
@@ -121,6 +122,11 @@ public class tunnelslot
     public static readonly int                  FaceRules_RegionBoundaryFaces = (1 <<13);
     public static readonly int                 FaceRules_FaceandAdjacentFaces = (1 <<14);
     
+    //---------------------------------------------------------------------------------
+
+    UspElement element1, element2;
+    Tunnel tunnel1;
+
     //------------------------------------------------------------------------------
     //Constructor for NX Styler class
     //------------------------------------------------------------------------------
@@ -141,6 +147,7 @@ public class tunnelslot
             theDialog.AddFocusNotifyHandler(new NXOpen.BlockStyler.BlockDialog.FocusNotify(focusNotify_cb));
             theDialog.AddKeyboardFocusNotifyHandler(new NXOpen.BlockStyler.BlockDialog.KeyboardFocusNotify(keyboardFocusNotify_cb));
             theDialog.AddDialogShownHandler(new NXOpen.BlockStyler.BlockDialog.DialogShown(dialogShown_cb));
+            Log.writeLine("++++++++++++++++++++++++++++++++++++++++++++++++" + " Начало работы программы");
         }
         catch (Exception ex)
         {
@@ -238,6 +245,7 @@ public class tunnelslot
             thetunnelslot = new tunnelslot();
             // The following method shows the dialog immediately
             thetunnelslot.Show();
+            Log.writeLine("-------------------------------------------------" + " Конец работы программы");
         }
         catch (Exception ex)
         {
@@ -401,6 +409,7 @@ public class tunnelslot
         try
         {
             //---- Enter your callback code here -----
+            Log.writeLine("Нажата кнопка ПРИМЕНИТЬ.");
         }
         catch (Exception ex)
         {
@@ -421,10 +430,14 @@ public class tunnelslot
             if(block == selection0)
             {
             //---------Enter your code here-----------
+                Log.writeLine("Нажат выбор объекта по первому select.");
+                setFirstComponent(block);
             }
             else if(block == face_select0)
             {
             //---------Enter your code here-----------
+                Log.writeLine("Нажат выбор первой грани.");
+                setFirstFace(block);
             }
             else if(block == direction0)
             {
@@ -433,6 +446,8 @@ public class tunnelslot
             else if(block == selection01)
             {
             //---------Enter your code here-----------
+                Log.writeLine("Нажат выбор объекта по второму select.");
+                setSecondComponent(block);
             }
             else if(block == point0)
             {
@@ -461,6 +476,7 @@ public class tunnelslot
         {
             errorCode = apply_cb();
             //---- Enter your callback code here -----
+            Log.writeLine("Нажата кнопка ОК.");
         }
         catch (Exception ex)
         {
@@ -479,6 +495,7 @@ public class tunnelslot
         try
         {
             //---- Enter your callback code here -----
+            Log.writeLine("Нажата кнопка ОТМЕНА.");
         }
         catch (Exception ex)
         {
@@ -531,5 +548,192 @@ public class tunnelslot
     }
 
     //--------------------------------------------------------------------
+
+    void setFirstComponent(UIBlock block)
+    {
+        if (setComponent(block, ref this.element1))
+        {
+            setEnable(this.face_select0, true);
+        }
+        else
+        {
+            unSelectObjects(this.face_select0);
+            setEnable(this.face_select0, false);
+        }
+    }
+    void setSecondComponent(UIBlock block)
+    {
+        if (this.setComponent(block, ref this.element2))
+        {
+            setEnable(this.point0, true);
+        }
+        else
+        {
+            setEnable(this.point0, false);
+        }
+    }
+    bool setComponent(UIBlock block, ref UspElement element)
+    {
+        PropertyList prop_list = block.GetProperties();
+        TaggedObject[] tag_obs = prop_list.GetTaggedObjectVector("SelectedObjects");
+
+        //если не деселект
+        if (tag_obs.Length > 0)
+        {
+            Component parentComponent = Config.findCompByBodyTag(tag_obs[0].Tag);
+            if (Geom.isComponent(tag_obs[0]))
+            {
+                Log.writeLine("Объект - " + tag_obs[0].ToString() +
+                    " - " + parentComponent.Name);
+
+                element = new UspElement(parentComponent);
+                return true;
+            }
+            else
+            {
+                string message = "Выбрана не деталь УСП!" + Environment.NewLine +
+                    "Пожалуйста, перевыберите элемент.";
+                Log.writeWarning(message);
+                Log.writeLine("Объект - " + tag_obs[0].ToString());
+                unSelectObjects(block);
+
+                Config.theUI.NXMessageBox.Show("Error!",
+                                               NXMessageBox.DialogType.Error,
+                                               message);
+
+                block.Focus();
+                return false;
+            }
+        }
+        else
+        {
+            Log.writeLine("Деселект объекта.");
+            return false;
+        }
+    }
+
+    void setFirstFace(UIBlock block)
+    {
+        if (setFace(block, ref this.tunnel1, this.element1))
+        {
+            
+        }
+        else
+        {
+            
+        }
+    }
+    bool setFace(UIBlock block, ref Tunnel tunnel, UspElement element)
+    {
+        PropertyList propertyList = block.GetProperties();
+        TaggedObject[] TO = propertyList.GetTaggedObjectVector("SelectedObjects");
+
+        //если не деселект
+        if (TO.Length > 0)
+        {
+            Face face;
+            if (findFace(TO, element, out face))
+	        {
+                if (face.SolidFaceType == Face.FaceType.Cylindrical)
+                {
+                    Log.writeLine("Грань выбрана - " + face.ToString());
+                    tunnel = new Tunnel(face, element);
+                    return true;
+                }
+                else
+                {
+                    string message = "Грань не цилиндрическая! Выберите другую грань!";
+                    Log.writeWarning(message + Environment.NewLine + "Выбрана грань - " + face.ToString());
+                    unSelectObjects(block);
+                    Config.theUI.NXMessageBox.Show("Error!",
+                                                   NXMessageBox.DialogType.Error,
+                                                   message);
+                    block.Focus();
+                    return false;
+                }
+            }
+
+            string mess = "Грань не найдена! Выберите другую грань!";
+            Log.writeWarning(mess);
+            Config.theUI.NXMessageBox.Show("Error!",
+                                           NXMessageBox.DialogType.Error,
+                                           mess);
+            block.Focus();
+            return false;
+        }
+        else
+        {
+            Log.writeLine("Деселект грани");
+            return false;
+        }
+    }
     
+    bool findFace(TaggedObject[] TO, UspElement element, out Face face)
+    {
+        TaggedObject t = TO[0];
+
+        PartCollection PC = Config.theSession.Parts;
+        foreach (Part p in PC)
+        {
+            BodyCollection BC = p.Bodies;
+
+            foreach (Body b in BC)
+            {
+                Face[] FC = b.GetFaces();
+
+                foreach (Face f in FC)
+                {
+                    if (f.Tag == t.Tag)
+                    {
+                        int type;
+                        double[] point = new double[3];
+                        double[] dir = new double[3];
+                        double[] box = new double[6];
+                        double radius;
+                        double raddata;
+                        int normDir;
+
+                        Config.theUFSession.Modl.AskFaceData(f.Tag, out type, point, dir, box, out radius,
+                            out raddata, out normDir);
+
+                        foreach (Face ff in element.Body.GetFaces())
+                        {
+                            int type2;
+                            double[] point2 = new double[3];
+                            double[] dir2 = new double[3];
+                            double[] box2 = new double[6];
+                            double radius2;
+                            double raddata2;
+                            int normDir2;
+
+                            Config.theUFSession.Modl.AskFaceData(ff.Tag, out type2, point2, dir2, box2,
+                                out radius2, out raddata2, out normDir2);
+
+                            if (type == type2 && normDir == normDir2 &&
+                                Config.round(radius) == Config.round(radius2) &&
+                                Config.round(raddata) == Config.round(raddata2) &&
+                                Geom.isEqual(point, point2) && Geom.isEqual(dir, dir2))
+                            {
+                                face = ff;
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        face = null;
+        return false;
+    }
+
+    void setEnable(UIBlock block, bool enable)
+    {
+        PropertyList prop_list = block.GetProperties();
+        prop_list.SetLogical("Enable", enable);
+    }
+    void unSelectObjects(UIBlock block)
+    {
+        PropertyList prop_list = block.GetProperties();
+        prop_list.SetTaggedObjectVector("SelectedObjects", new TaggedObject[0]);
+    }
 }
