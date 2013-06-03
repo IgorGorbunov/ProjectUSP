@@ -126,6 +126,7 @@ public class tunnelslot
 
     UspElement element1, element2;
     Tunnel tunnel1;
+    SlotSet slotSet2;
 
     //------------------------------------------------------------------------------
     //Constructor for NX Styler class
@@ -452,6 +453,8 @@ public class tunnelslot
             else if(block == point0)
             {
             //---------Enter your code here-----------
+                Log.writeLine("Нажата постановка второй точки.");
+                setSecondPoint(block);
             }
             else if(block == direction01)
             {
@@ -566,6 +569,8 @@ public class tunnelslot
         if (this.setComponent(block, ref this.element2))
         {
             setEnable(this.point0, true);
+            this.slotSet2 = new SlotSet(this.element2);
+            this.element2.setBottomFaces();
         }
         else
         {
@@ -725,6 +730,41 @@ public class tunnelslot
         face = null;
         return false;
     }
+
+    void setSecondPoint(UIBlock block)
+    {
+        if (setPoint(block, slotSet2))
+        {
+
+        }
+        else
+        {
+
+        }
+    }
+    bool setPoint(UIBlock block, SlotSet slotSet)
+    {
+        slotSet.setPoint(block);
+        if (slotSet.haveNearestBottomFace())
+        {
+            slotSet.setNearestEdges();
+
+            return true;
+        }
+        else
+        {
+            string message = "Базовые плоскости пазов не найдены!";
+            Log.writeWarning(message);
+            Config.theUI.NXMessageBox.Show("Error!",
+                                           NXMessageBox.DialogType.Error,
+                                           message);
+            unSelectObjects(block);
+
+            block.Focus();
+            return false;
+        }
+    }
+
 
     void setEnable(UIBlock block, bool enable)
     {

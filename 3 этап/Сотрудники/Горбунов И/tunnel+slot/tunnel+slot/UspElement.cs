@@ -64,7 +64,7 @@ public class UspElement
     /// <summary>
     /// Проводит поиск и устанавливает нижние плоскости пазов.
     /// </summary>
-    public void setBottomFace()
+    public void setBottomFaces()
     {
         Face[] faces = this.body.GetFaces();
 

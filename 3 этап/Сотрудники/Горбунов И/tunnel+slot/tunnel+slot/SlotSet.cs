@@ -76,7 +76,10 @@ public class SlotSet
         this.element = element;
     }
 
-
+    /// <summary>
+    /// Метод определяет координаты точки из выбора меню.
+    /// </summary>
+    /// <param name="block">Блок выбора меню.</param>
     public void setPoint(UIBlock block)
     {
         PropertyList propertyList = block.GetProperties();
