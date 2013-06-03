@@ -54,7 +54,8 @@ public class dialogWith2Points
     private NXOpen.BlockStyler.UIBlock objSelect2;// Block type: Specify выбор объекта 2
     private NXOpen.BlockStyler.UIBlock faceSelect1;// Block type: Specify Грань 1
     private NXOpen.BlockStyler.UIBlock faceSelect2;// Block type: Specify Грань 2
-    private NXOpen.BlockStyler.UIBlock direction;// Block type: Specify Грань 2
+    private NXOpen.BlockStyler.UIBlock direction1;// Block type: Specify Грань 2
+    private NXOpen.BlockStyler.UIBlock direction2;// Block type: Specify Грань 2
 
     //------------------------------------------------------------------------------
     //Bit Option for Property: SnapPointTypesEnabled
@@ -101,8 +102,6 @@ public class dialogWith2Points
     UspElement element1, element2;
     Tunnel tunnel1, tunnel2;
     TunnelConstraint constr;
-
-    KeyValuePair<Face, double>[] facePairs1, facePairs2;
 
     bool firstElementSelected = false, secondElementSelected = false;
     bool firstFaceSelected = false, secondFaceSelected = false;
@@ -351,7 +350,8 @@ public class dialogWith2Points
             objSelect2 = (NXOpen.BlockStyler.UIBlock)theDialog.TopBlock.FindBlock("selection01");
             faceSelect1 = (NXOpen.BlockStyler.UIBlock)theDialog.TopBlock.FindBlock("face_select0");
             faceSelect2 = (NXOpen.BlockStyler.UIBlock)theDialog.TopBlock.FindBlock("face_select02");
-            direction = (NXOpen.BlockStyler.UIBlock)theDialog.TopBlock.FindBlock("direction0");
+            direction1 = (NXOpen.BlockStyler.UIBlock)theDialog.TopBlock.FindBlock("direction0");
+            direction2 = (NXOpen.BlockStyler.UIBlock)theDialog.TopBlock.FindBlock("direction01");
         }
         catch (Exception ex)
         {
@@ -412,7 +412,6 @@ public class dialogWith2Points
             else if (block == faceSelect1)
             {
                 this.setFirstFace(block);
-                this.setPlatans(this.tunnel1, out this.facePairs1);
             }
             else if (block == objSelect2)
             {
@@ -421,13 +420,18 @@ public class dialogWith2Points
             else if (block == faceSelect2)
             {
                 this.setSecondFace(block);
-                this.setPlatans(this.tunnel2, out this.facePairs2);
 
                 this.setConstraint();
             }
-            else if (block == direction)
+            else if (block == direction1)
             {
-                this.constr.reverse();
+                this.constr.reverse(true, false);
+                Config.theUFSession.Modl.Update();
+            }
+            else if (block == direction2)
+            {
+                this.constr.reverse(false, true);
+                Config.theUFSession.Modl.Update();
             }
             
 
@@ -677,54 +681,10 @@ public class dialogWith2Points
 
     void setConstraint()
     {
-        this.constr = new TunnelConstraint();
+        this.constr = new TunnelConstraint(tunnel1, tunnel2);
 
-        this.constr.setTouchAxeConstraint(tunnel1, tunnel2);
-
-    }
-
-    void setPlatans(Tunnel tunnel, out KeyValuePair<Face, double>[] facePairs)
-    {
-        Face[] faces = tunnel.Body.GetFaces();
-        double[] direction1 = tunnel.Direction;
-        Point3d point = tunnel.CentralPoint;
-
-        Dictionary<Face, double> dictFaces = new Dictionary<Face, double>();
- 
-        foreach (Face f in faces)
-        {
-            double[] direction2 = Geom.getDirection(f);
-
-            if (Geom.isEqual(direction1, direction2) && f.SolidFaceType == Face.FaceType.Planar)
-            {
-                Platan pl = new Platan(f);
-
-                //точка находится "под" необходимыми гранями
-                double distance = - pl.getDistanceToPoint(point);
-
-                if (distance >= 0)
-                {
-                    dictFaces.Add(f, distance);
-                }
-            }  
-        }
-
-        facePairs = new KeyValuePair<Face, double>[dictFaces.Count];
-        int i = 0;
-        foreach (KeyValuePair<Face, double> pair in dictFaces)
-        {
-            facePairs[i] = pair;
-            i++;
-        }
-
-        Instr.qSortPair(facePairs, 0, facePairs.Length - 1);
-
-        /*tst = "";
-        for (int j = 0; j < facePairs.Length; j++)
-        {
-            tst += facePairs[j].Key.Tag.ToString() + " - " + facePairs[j].Value.ToString() + Environment.NewLine;
-        }
-        Config.theUI.NXMessageBox.Show("tst - 2", NXMessageBox.DialogType.Error, tst);*/
-
+        this.constr.setTouchAxeConstraint();
+        this.constr.setTouchFaceConstraint(false, false);
+        Config.theUFSession.Modl.Update();
     }
 }

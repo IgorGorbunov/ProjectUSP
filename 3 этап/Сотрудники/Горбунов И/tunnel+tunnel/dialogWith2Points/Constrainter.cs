@@ -22,7 +22,7 @@ public class Constrainter
     /// <summary>
     /// Производит реверс констрэйнта.
     /// </summary>
-    public void reverse()
+    public virtual void reverse()
     {
         constr.FlipAlignment();
         this.executeConstraints();
@@ -38,8 +38,9 @@ public class Constrainter
     protected void executeConstraints()
     {
         componentNetwork.Solve();
-        Config.theUFSession.Modl.Update();
+        //Config.theUFSession.Modl.Update();
     }
+
 
     
 }

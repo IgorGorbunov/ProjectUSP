@@ -26,7 +26,7 @@ public class TouchAxeConstraint : Constrainter
     /// <param name="secondComponent">Второй компонент.</param>
     /// <param name="secondFace">Грань отверстия со второго компонента.</param>
     public void create(Component firstComponent, Face firstFace, 
-                                      Component secondComponent, Face secondFace)
+                       Component secondComponent, Face secondFace)
     {
         constr = (ComponentConstraint)componentPositioner.CreateConstraint();
         constr.ConstraintAlignment = Constraint.Alignment.ContraAlign;
