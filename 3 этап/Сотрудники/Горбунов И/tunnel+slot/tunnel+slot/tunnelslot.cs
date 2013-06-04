@@ -126,7 +126,12 @@ public class tunnelslot
 
     UspElement element1, element2;
     Tunnel tunnel1;
-    SlotSet slotSet2;
+    SlotSet slotSet1, slotSet2;
+    Slot slot1, slot2;
+    SlotConstraint slotConstr;
+
+    bool faceSelected = false;
+    bool pointSelected = false;
 
     //------------------------------------------------------------------------------
     //Constructor for NX Styler class
@@ -557,10 +562,13 @@ public class tunnelslot
         if (setComponent(block, ref this.element1))
         {
             setEnable(this.face_select0, true);
+            this.slotSet1 = new SlotSet(this.element1);
+            this.element1.setBottomFaces();
         }
         else
         {
             unSelectObjects(this.face_select0);
+            this.faceSelected = false;
             setEnable(this.face_select0, false);
         }
     }
@@ -574,6 +582,8 @@ public class tunnelslot
         }
         else
         {
+            this.pointSelected = false;
+            unSelectObjects(this.point0);
             setEnable(this.point0, false);
         }
     }
@@ -621,11 +631,12 @@ public class tunnelslot
     {
         if (setFace(block, ref this.tunnel1, this.element1))
         {
-            
+            this.faceSelected = true;
+            setConstraints();
         }
         else
         {
-            
+            this.faceSelected = false;
         }
     }
     bool setFace(UIBlock block, ref Tunnel tunnel, UspElement element)
@@ -735,11 +746,15 @@ public class tunnelslot
     {
         if (setPoint(block, slotSet2))
         {
-
+            this.pointSelected = true;
+            setConstraints();
         }
         else
         {
-
+            this.pointSelected = false;
+            unSelectObjects(this.selection01);
+            this.selection01.Focus();
+            setEnable(block, false);
         }
     }
     bool setPoint(UIBlock block, SlotSet slotSet)
@@ -753,18 +768,16 @@ public class tunnelslot
         }
         else
         {
-            string message = "Базовые плоскости пазов не найдены!";
+            string message = "Базовые плоскости пазов не найдены!" + Environment.NewLine + 
+                                "Выберите другой элемент!";
             Log.writeWarning(message);
             Config.theUI.NXMessageBox.Show("Error!",
                                            NXMessageBox.DialogType.Error,
                                            message);
             unSelectObjects(block);
-
-            block.Focus();
             return false;
         }
     }
-
 
     void setEnable(UIBlock block, bool enable)
     {
@@ -775,5 +788,17 @@ public class tunnelslot
     {
         PropertyList prop_list = block.GetProperties();
         prop_list.SetTaggedObjectVector("SelectedObjects", new TaggedObject[0]);
+    }
+
+    void setConstraints()
+    {
+        if (this.faceSelected && this.pointSelected)
+        {
+            if (this.slotSet1.hasSlot(out this.slot1) &&
+                this.slotSet2.hasSlot(out this.slot2))
+            {
+                slotConstr = new SlotConstraint(this.slot1, this.slot2);
+            }
+        }
     }
 }

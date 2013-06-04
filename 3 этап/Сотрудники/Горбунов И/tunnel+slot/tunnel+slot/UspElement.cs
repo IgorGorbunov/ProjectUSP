@@ -100,6 +100,14 @@ public class UspElement
                 }
             }
         }
+
+        string mess = "В качестве нижних граней паза выбраны:";
+        foreach (Face f in this.bottomFaces)
+        {
+            mess += Environment.NewLine + f.ToString();
+        }
+        mess += Environment.NewLine + "---------------";
+        Log.writeLine(mess);
     }
 
     //refactor

@@ -39,6 +39,7 @@
   </Target>
   -->
   <ItemGroup>
+    <Compile Include="CenterConstraint.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Constrainter.cs" />
     <Compile Include="ElementIntersection.cs" />
@@ -75,5 +76,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Documents and Settings\USP\Рабочий стол\NXOpenUI.dll</HintPath>
     </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
 </Project>
