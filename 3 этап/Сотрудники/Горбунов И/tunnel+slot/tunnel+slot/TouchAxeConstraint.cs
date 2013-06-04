@@ -11,7 +11,7 @@ using NXOpen.Positioning;
 public class TouchAxeConstraint : Constrainter
 {
     /// <summary>
-    /// Инициализирует новый экземпляр класса.
+    /// Инициализирует новый пустой экземпляр класса.
     /// </summary>
     public TouchAxeConstraint() : base()
     {

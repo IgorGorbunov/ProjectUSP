@@ -51,7 +51,6 @@ public class TunnelConstraint
         KeyValuePair<Face, double>[] pairs2 = this.secondTunnel.getOrtFacePairs(secondRev);
         ElementIntersection intersect = new ElementIntersection(firstTunnel.Body, secondTunnel.Body);
 
-
         for (int i = 0; i < pairs2.Length; i++)
         {
             for (int j = 0; j < pairs1.Length; j++)

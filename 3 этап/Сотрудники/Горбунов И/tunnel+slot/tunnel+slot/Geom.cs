@@ -339,6 +339,39 @@ static class Geom
         }
     }
     /// <summary>
+    /// Возвращает значение, определяющее являются ли два направления, заданные разными способами,
+    /// эквивалентными с учетом рабочего округления.
+    /// </summary>
+    /// <param name="d1">Направление, заданное одномерным массивом.</param>
+    /// <param name="d2">Направление, заданное экземпляром класса Point3D</param>
+    /// <returns></returns>
+    public static bool isEqual(double[] d1, Point3d d2)
+    {
+        if (d1.Length == 3)
+        {
+            if (Config.round(d1[0]) != Config.round(d2.X))
+            {
+                return false;
+            }
+            else if (Config.round(d1[1]) != Config.round(d2.Y))
+	        {
+                return false;
+	        }
+            else if (Config.round(d1[2]) != Config.round(d2.Z))
+	        {
+                return false;
+	        }
+            return true;
+        }
+        else
+        {
+            Config.theUI.NXMessageBox.Show("Error!", NXMessageBox.DialogType.Error, "Длина массива не равна 3!");
+            return false;
+        }
+    }
+
+
+    /// <summary>
     /// Возвращает true, если объект является компонентом.
     /// </summary>
     /// <param name="tO">Объект в формате TaggedObject.</param>

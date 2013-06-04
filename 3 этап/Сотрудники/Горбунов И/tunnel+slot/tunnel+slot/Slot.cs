@@ -71,7 +71,13 @@ public class Slot
     Straight straight;
     double[] bottomDirection;
     
-
+    /// <summary>
+    /// Инициализирует новый экземпляр класса паза.
+    /// </summary>
+    /// <param name="slotSet">Набор пазов.</param>
+    /// <param name="edgeLong1">Первое боковое ребро паза.</param>
+    /// <param name="edgeLong2">Второе боковое ребро паза.</param>
+    /// <param name="type">Тип паза.</param>
     public Slot(SlotSet slotSet, Edge edgeLong1, Edge edgeLong2, Config.SlotType type)
     {
         this.slotSet = slotSet;

@@ -52,7 +52,7 @@ public class tunnelslot
     private NXOpen.BlockStyler.UIBlock group;// Block type: Group
     private NXOpen.BlockStyler.UIBlock selection0;// Block type: Selection
     private NXOpen.BlockStyler.UIBlock face_select0;// Block type: Face Collector
-    private NXOpen.BlockStyler.UIBlock direction0;// Block type: Reverse Direction
+    private NXOpen.BlockStyler.UIBlock integer0;// Block type: Position
     private NXOpen.BlockStyler.UIBlock group1;// Block type: Group
     private NXOpen.BlockStyler.UIBlock selection01;// Block type: Selection
     private NXOpen.BlockStyler.UIBlock point0;// Block type: Specify Point
@@ -375,7 +375,7 @@ public class tunnelslot
             group = (NXOpen.BlockStyler.UIBlock)theDialog.TopBlock.FindBlock("group");
             selection0 = (NXOpen.BlockStyler.UIBlock)theDialog.TopBlock.FindBlock("selection0");
             face_select0 = (NXOpen.BlockStyler.UIBlock)theDialog.TopBlock.FindBlock("face_select0");
-            direction0 = (NXOpen.BlockStyler.UIBlock)theDialog.TopBlock.FindBlock("direction0");
+            integer0 = (NXOpen.BlockStyler.UIBlock)theDialog.TopBlock.FindBlock("integer0");
             group1 = (NXOpen.BlockStyler.UIBlock)theDialog.TopBlock.FindBlock("group1");
             selection01 = (NXOpen.BlockStyler.UIBlock)theDialog.TopBlock.FindBlock("selection01");
             point0 = (NXOpen.BlockStyler.UIBlock)theDialog.TopBlock.FindBlock("point0");
@@ -445,7 +445,7 @@ public class tunnelslot
                 Log.writeLine("Нажат выбор первой грани.");
                 setFirstFace(block);
             }
-            else if(block == direction0)
+            else if (block == integer0)
             {
             //---------Enter your code here-----------
             }
@@ -631,8 +631,28 @@ public class tunnelslot
     {
         if (setFace(block, ref this.tunnel1, this.element1))
         {
-            this.faceSelected = true;
-            setConstraints();
+            Point3d point = this.tunnel1.getEndRightDirection();
+
+            if (setPoint(point, ref this.slotSet1))
+            {
+                this.faceSelected = true;
+
+                setConstraints();
+            }
+            else
+            {
+                string message = "Базовые плоскости пазов не найдены!" + Environment.NewLine +
+                                    "Выберите другой элемент!";
+                Log.writeWarning(message);
+                Config.theUI.NXMessageBox.Show("Error!",
+                                               NXMessageBox.DialogType.Error,
+                                               message);
+                unSelectObjects(block);
+                unSelectObjects(this.selection0);
+
+                this.faceSelected = false;
+                this.selection0.Focus();
+            }
         }
         else
         {
@@ -684,23 +704,26 @@ public class tunnelslot
         }
     }
     
-    bool findFace(TaggedObject[] TO, UspElement element, out Face face)
+    bool findFaceOooooold(TaggedObject[] TO, UspElement element, out Face face)
     {
         TaggedObject t = TO[0];
 
         PartCollection PC = Config.theSession.Parts;
         foreach (Part p in PC)
         {
+            Config.theUI.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, p.ToString());
             BodyCollection BC = p.Bodies;
 
             foreach (Body b in BC)
             {
+                Config.theUI.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, b.ToString());
                 Face[] FC = b.GetFaces();
 
                 foreach (Face f in FC)
                 {
                     if (f.Tag == t.Tag)
                     {
+                        Config.theUI.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, f.Tag.ToString() + " | " + f.JournalIdentifier);
                         int type;
                         double[] point = new double[3];
                         double[] dir = new double[3];
@@ -730,6 +753,27 @@ public class tunnelslot
                                 Config.round(raddata) == Config.round(raddata2) &&
                                 Geom.isEqual(point, point2) && Geom.isEqual(dir, dir2))
                             {
+                                //Config.theUI.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, ff.Tag.ToString() + " | " + ff.JournalIdentifier);
+
+                                //tst
+                                Part prt = (Part)element.ElementComponent.OwningPart;
+                                Config.theUI.NXMessageBox.Show("tsttttt", NXMessageBox.DialogType.Error, prt.ToString());
+                                BodyCollection bbb = prt.Bodies;
+                                string sttt = "";
+                                foreach (Body var in bbb)
+	                            {
+                                    Config.theUI.NXMessageBox.Show("tstttt", NXMessageBox.DialogType.Error, var.ToString());
+                                    foreach (Face ss in var.GetFaces())
+                                    {
+                                        sttt += ss.Tag.ToString() + " ++ " + ff.JournalIdentifier + Environment.NewLine;
+                                    }
+                                    Log.writeLine(sttt);
+                                    
+                            		 //Config.theUI.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, var.ToString());
+	                            }
+
+
+
                                 face = ff;
                                 return true;
                             }
@@ -742,9 +786,33 @@ public class tunnelslot
         return false;
     }
 
+    bool findFace(TaggedObject[] TO, UspElement element, out Face face)
+    {
+        TaggedObject t = TO[0];
+
+        Part p = (Part)element.ElementComponent.OwningPart;
+        BodyCollection BC = p.Bodies;
+        foreach (Body b in BC)
+        {
+            Face[] FC = b.GetFaces();
+
+            foreach (Face f in FC)
+            {
+                if (f.Tag == t.Tag)
+                {
+                    face = f;
+                    return true;
+                }
+            }
+        }
+
+        face = null;
+        return false;
+    }
+
     void setSecondPoint(UIBlock block)
     {
-        if (setPoint(block, slotSet2))
+        if (setPoint(block, ref this.slotSet2))
         {
             this.pointSelected = true;
             setConstraints();
@@ -757,9 +825,31 @@ public class tunnelslot
             setEnable(block, false);
         }
     }
-    bool setPoint(UIBlock block, SlotSet slotSet)
+    bool setPoint(UIBlock block, ref SlotSet slotSet)
     {
-        slotSet.setPoint(block);
+        PropertyList propertyList = block.GetProperties();
+        Point3d point = propertyList.GetPoint("Point");
+
+        if (setPoint(point, ref slotSet))
+        {
+            return true;
+        }
+        else
+        {
+            string message = "Базовые плоскости пазов не найдены!" + Environment.NewLine +
+                                "Выберите другой элемент!";
+            Log.writeWarning(message);
+            Config.theUI.NXMessageBox.Show("Error!",
+                                           NXMessageBox.DialogType.Error,
+                                           message);
+            unSelectObjects(block);
+            return false;
+        }
+        
+    }
+    bool setPoint(Point3d point, ref SlotSet slotSet)
+    {
+        slotSet.setPoint(point);
         if (slotSet.haveNearestBottomFace())
         {
             slotSet.setNearestEdges();
@@ -768,13 +858,6 @@ public class tunnelslot
         }
         else
         {
-            string message = "Базовые плоскости пазов не найдены!" + Environment.NewLine + 
-                                "Выберите другой элемент!";
-            Log.writeWarning(message);
-            Config.theUI.NXMessageBox.Show("Error!",
-                                           NXMessageBox.DialogType.Error,
-                                           message);
-            unSelectObjects(block);
             return false;
         }
     }
@@ -794,10 +877,13 @@ public class tunnelslot
     {
         if (this.faceSelected && this.pointSelected)
         {
-            if (this.slotSet1.hasSlot(out this.slot1) &&
-                this.slotSet2.hasSlot(out this.slot2))
+            Log.writeLine("Запущена процедура позиционирования.");
+            this.tunnel1.getEndRightDirection();
+            if (this.slotSet1.hasNearestSlot(out this.slot1) &&
+                this.slotSet2.hasNearestSlot(out this.slot2))
             {
                 slotConstr = new SlotConstraint(this.slot1, this.slot2);
+                
             }
         }
     }

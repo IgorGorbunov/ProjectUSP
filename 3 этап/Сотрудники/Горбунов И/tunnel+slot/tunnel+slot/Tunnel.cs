@@ -48,7 +48,6 @@ public class Tunnel
         {
             //считаем каждый раз заново, ибо может поменяться
             this.setDirectionAndPoint();
-            //Config.theUI.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, this.direction[0].ToString() + " - " + this.direction[1].ToString() + " - " + this.direction[2].ToString());
             return this.direction;
         }
     }
@@ -99,6 +98,29 @@ public class Tunnel
             this.findOrtFaces(reverse);
         }
         return this.ortFacePairs;
+    }
+    /// <summary>
+    /// Возвращает центр окружности, находящейся по направлению предполагаемой
+    /// ВЕРНОЙ нормали базового отверстия.
+    /// </summary>
+    /// <returns></returns>
+    public Point3d getEndRightDirection()
+    {
+        Edge[] edges = this.face.GetEdges();
+        Point3d point1, point2, tempPoint;
+
+        edges[0].GetVertices(out point1, out tempPoint);
+        edges[1].GetVertices(out point2, out tempPoint);
+
+        Vector vec1 = new Vector(point1, point2);
+        if (Geom.isEqual(this.Direction, vec1.Direction))
+        {
+            return point2;
+        }
+        else
+        {
+            return point1;
+        }
     }
 
     void findOrtFaces(bool reverse)
@@ -195,13 +217,10 @@ public class Tunnel
         double[] dir = this.Direction;
         this.rev *= -1;
 
-        string st = "";
         for (int i = 0; i < dir.Length; i++)
         {
             dir[i] = this.rev * dir[i];
-            st += dir[i] + " - ";
         }
-        //Config.theUI.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, st);
 
         return dir;
     }

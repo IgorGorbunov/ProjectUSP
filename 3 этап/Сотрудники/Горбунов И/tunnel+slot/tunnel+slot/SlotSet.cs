@@ -77,13 +77,12 @@ public class SlotSet
     }
 
     /// <summary>
-    /// Метод определяет координаты точки из выбора меню.
+    /// Метод записывает координаты точки.
     /// </summary>
-    /// <param name="block">Блок выбора меню.</param>
-    public void setPoint(UIBlock block)
+    /// <param name="point">Точка.</param>
+    public void setPoint(Point3d point)
     {
-        PropertyList propertyList = block.GetProperties();
-        this.selectPoint = propertyList.GetPoint("Point");
+        this.selectPoint = point;
 
         Log.writeLine("Координаты точки - " + this.selectPoint.ToString());
     }
@@ -153,7 +152,7 @@ public class SlotSet
         this.nearestEdges = Edges;
     }
 
-    public bool hasSlot(out Slot slot)
+    public bool hasNearestSlot(out Slot slot)
     {
         slot = null;
         double min_len = -1;
