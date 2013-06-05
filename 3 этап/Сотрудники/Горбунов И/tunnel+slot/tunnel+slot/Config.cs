@@ -99,5 +99,28 @@ public static class Config
             return SlotType.Pslot;
         }
     }
+
+    /// <summary>
+    /// Заморозить экран.
+    /// </summary>
+    public static void freezeDisplay()
+    {
+        Config.theUFSession.Disp.SetDisplay(UFConstants.UF_DISP_SUPPRESS_DISPLAY);
+    }
+    /// <summary>
+    /// Разморозить экран.
+    /// </summary>
+    public static void unFreezeDisplay()
+    {
+        int displayCode;
+        Config.theUFSession.Disp.AskDisplay(out displayCode);
+
+        Config.theUFSession.Disp.SetDisplay(UFConstants.UF_DISP_UNSUPPRESS_DISPLAY);
+
+        if (displayCode == UFConstants.UF_DISP_SUPPRESS_DISPLAY)
+        {
+            Config.theUFSession.Disp.RegenerateDisplay();
+        }
+    }
 }
 

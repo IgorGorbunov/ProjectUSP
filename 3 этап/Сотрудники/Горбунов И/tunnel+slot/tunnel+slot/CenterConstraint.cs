@@ -43,6 +43,8 @@ class CenterConstraint : Constrainter
             constr.CreateConstraintReference(secondComponent, secondObj1, false, false, false);
         ConstraintReference constraintReference4 =
             constr.CreateConstraintReference(secondComponent, secondObj2, false, false, false);
+
+        executeConstraints();
     }
 }
 

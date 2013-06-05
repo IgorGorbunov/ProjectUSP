@@ -4,6 +4,7 @@ using System.Text;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Positioning;
+using NXOpen.UF;
 
 /// <summary>
 /// Класс для создания связей между двумя базовыми отверстиями.
@@ -14,9 +15,9 @@ public class TunnelConstraint
     TouchConstraint touchConstr;
 
     NXOpen.Session.UndoMarkId markId1;
-    Face correctFace1, correctFace2;
 
     Tunnel firstTunnel, secondTunnel;
+    Slot slot;
 
     /// <summary>
     /// Инициализирует новый экземпляр класса связей для соединения двух отверстий.
@@ -30,6 +31,17 @@ public class TunnelConstraint
 
         this.firstTunnel = firstTunnel;
         this.secondTunnel = secondTunnel;
+        this.slot = null;
+    }
+
+    public TunnelConstraint(Tunnel firstTunnel, Slot slot)
+    {
+        axeConstr = new TouchAxeConstraint();
+        touchConstr = new TouchConstraint();
+
+        this.firstTunnel = firstTunnel;
+        this.secondTunnel = null;
+        this.slot = slot;
     }
 
     /// <summary>
@@ -43,13 +55,28 @@ public class TunnelConstraint
     /// <summary>
     /// Производит соединение двух деталей с отверстиями по ортогональным плоскостям.
     /// </summary>
-    /// <param name="first">True, если необходимо перевернуть первый элемент.</param>
-    /// <param name="second">True, если необходимо перевернуть второй элемент.</param>
+    /// <param name="firstRev">True, если необходимо перевернуть первый элемент.</param>
+    /// <param name="secondRev">True, если необходимо перевернуть второй элемент.</param>
     public void setTouchFaceConstraint(bool firstRev, bool secondRev)
     {
         KeyValuePair<Face, double>[] pairs1 = this.firstTunnel.getOrtFacePairs(firstRev);
-        KeyValuePair<Face, double>[] pairs2 = this.secondTunnel.getOrtFacePairs(secondRev);
-        ElementIntersection intersect = new ElementIntersection(firstTunnel.Body, secondTunnel.Body);
+        KeyValuePair<Face, double>[] pairs2;
+        ElementIntersection intersect;
+
+        Component comp2;
+        if (slot == null)
+        {
+            pairs2 = this.secondTunnel.getOrtFacePairs(secondRev);
+            intersect = new ElementIntersection(firstTunnel.Body, secondTunnel.Body);
+            comp2 = this.secondTunnel.ParentComponent;
+        }
+        else
+        {
+            pairs2 = this.slot.OrtFaces;
+            intersect = new ElementIntersection(this.firstTunnel.Body, this.slot.Body);
+            comp2 = this.slot.ParentComponent;
+        }
+        Config.freezeDisplay();
 
         for (int i = 0; i < pairs2.Length; i++)
         {
@@ -58,33 +85,19 @@ public class TunnelConstraint
                 markId1 = Config.theSession.SetUndoMark(NXOpen.Session.MarkVisibility.Invisible, "SetTouch");
 
                 touchConstr.create(this.firstTunnel.ParentComponent, pairs1[j].Key,
-                                   this.secondTunnel.ParentComponent, pairs2[i].Key);
+                                   comp2, pairs2[i].Key);
 
                 if (intersect.TouchExists)
                 {
                     goto End;
                 }
-
-                //последний проход - касание в любом случае
-                if (i == (pairs2.Length - 1) && j == (pairs1.Length - 1))
-                {
-                    correctFace1 = pairs1[j].Key;
-                    correctFace2 = pairs2[i].Key;
-                }
-
                 Config.theSession.UndoToMark(markId1, "SetTouch");
             }
         }
+    End: { }
 
-        //if (intersect.InterferenseExists)
-        //{
-        //    this.reverseAfterItersect();
-        //}
-
-
-    End: { }     
-
-
+        Config.unFreezeDisplay();
+        Config.theUFSession.Modl.Update();
     }
 
     /// <summary>

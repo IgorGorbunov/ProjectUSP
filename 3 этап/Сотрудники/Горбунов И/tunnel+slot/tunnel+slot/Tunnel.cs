@@ -72,6 +72,8 @@ public class Tunnel
     Point3d point;
     int rev;
 
+    Slot slot;
+
     /// <summary>
     /// Инициализирует новый экземпляр класса отверстия для базирования для данной грани 
     /// данного элемента УСП.
@@ -122,11 +124,38 @@ public class Tunnel
             return point1;
         }
     }
+    /// <summary>
+    /// Возвращает центр окружности, находящейся противоположно направлению предполагаемой
+    /// ВЕРНОЙ нормали базового отверстия.
+    /// </summary>
+    /// <returns></returns>
+    public Point3d getBeginRightDirection()
+    {
+        Edge[] edges = this.face.GetEdges();
+        Point3d point1, point2, tempPoint;
 
+        edges[0].GetVertices(out point1, out tempPoint);
+        edges[1].GetVertices(out point2, out tempPoint);
+
+        Vector vec1 = new Vector(point1, point2);
+        if (Geom.isEqual(this.Direction, vec1.Direction))
+        {
+            return point1;
+        }
+        else
+        {
+            return point2;
+        }
+    }
+
+    public void setSlot(Slot slot)
+    {
+        this.slot = slot;
+    }
+
+    //refactor
     void findOrtFaces(bool reverse)
     {
-        Face[] faces = this.Body.GetFaces();
-
         double[] direction1;
         if (reverse)
         {
@@ -135,13 +164,14 @@ public class Tunnel
         else
         {
             this.rev = 1;
-            direction1 = this.Direction;
+            direction1 = this.slot.BottomDirection;
         }
         
         Point3d point = this.CentralPoint;
 
         Dictionary<Face, double> dictFaces = new Dictionary<Face, double>();
- 
+
+        Face[] faces = this.Body.GetFaces();
         foreach (Face f in faces)
         {
             double[] direction2 = Geom.getDirection(f);
@@ -172,6 +202,7 @@ public class Tunnel
             this.ortFacePairs[i] = pair;
             i++;
         }
+
         //TODO проверка на пустоту массива
         Instr.qSortPair(this.ortFacePairs, 0, this.ortFacePairs.Length - 1);
     }

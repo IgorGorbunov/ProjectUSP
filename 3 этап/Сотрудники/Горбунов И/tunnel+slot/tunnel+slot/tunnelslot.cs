@@ -129,6 +129,7 @@ public class tunnelslot
     SlotSet slotSet1, slotSet2;
     Slot slot1, slot2;
     SlotConstraint slotConstr;
+    TunnelConstraint tunnelConstsr;
 
     bool faceSelected = false;
     bool pointSelected = false;
@@ -878,12 +879,29 @@ public class tunnelslot
         if (this.faceSelected && this.pointSelected)
         {
             Log.writeLine("Запущена процедура позиционирования.");
-            this.tunnel1.getEndRightDirection();
-            if (this.slotSet1.hasNearestSlot(out this.slot1) &&
-                this.slotSet2.hasNearestSlot(out this.slot2))
+
+            bool hasNearestSlot1 = this.slotSet1.hasNearestSlot(out this.slot1);
+            bool hasNearestSlot2 = this.slotSet2.hasNearestSlot(out this.slot2);
+
+            if (hasNearestSlot1 && hasNearestSlot2)
             {
-                slotConstr = new SlotConstraint(this.slot1, this.slot2);
-                
+                this.slotConstr = new SlotConstraint(this.slot1, this.slot2);
+                this.slotConstr.setCenterConstraint();
+
+                slot1.findTopFace();
+                slot2.findTopFace();
+                tunnel1.setSlot(this.slot1);
+
+                this.tunnelConstsr = new TunnelConstraint(this.tunnel1, this.slot2);
+                this.tunnelConstsr.setTouchFaceConstraint(false, false);
+
+            }
+            else
+            {
+                string mess = "Ближайший слот для первого элемента найден - " + hasNearestSlot1.ToString() +
+                    Environment.NewLine;
+                mess += "Ближайший слот для второго элемента найден - " + hasNearestSlot2.ToString();
+                Log.writeLine(mess);
             }
         }
     }

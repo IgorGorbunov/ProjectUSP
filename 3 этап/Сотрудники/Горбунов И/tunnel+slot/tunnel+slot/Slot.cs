@@ -54,6 +54,40 @@ public class Slot
             return topFace;
         }
     }
+    /// <summary>
+    /// Возвращает тело элемента, на котором расположен паз.
+    /// </summary>
+    public Body Body
+    {
+        get
+        {
+            return slotSet.Body;
+        }
+    }
+    /// <summary>
+    /// Возвращает набор граней и расстояний до них от ВГП, параллельных пазу и находящихся выше него.
+    /// </summary>
+    public KeyValuePair<Face, double>[] OrtFaces
+    {
+        get
+        {
+            if (this.ortFacePairs == null)
+            {
+                this.findOrtFaces();
+            }
+            return this.ortFacePairs;
+        }
+    }
+    /// <summary>
+    /// Возвращает направление НГП.
+    /// </summary>
+    public double[] BottomDirection
+    {
+        get
+        {
+            return this.bottomDirection;
+        }
+    }
 
     Config.SlotType type;
 
@@ -70,6 +104,8 @@ public class Slot
 
     Straight straight;
     double[] bottomDirection;
+
+    KeyValuePair<Face, double>[] ortFacePairs = null;
     
     /// <summary>
     /// Инициализирует новый экземпляр класса паза.
@@ -141,6 +177,56 @@ public class Slot
         }
     }
 
+    //refactor
+    void findOrtFaces()
+    {
+        double[] direction1 = this.bottomDirection;
+
+
+        Edge[] pointEdges = topFace.GetEdges();
+        Edge pointEdge = pointEdges[0];
+        Point3d point, tempPoint;
+        pointEdge.GetVertices(out point, out tempPoint);
+
+        Dictionary<Face, double> dictFaces = new Dictionary<Face, double>();
+
+        Face[] faces = this.Body.GetFaces();
+        foreach (Face f in faces)
+        {
+            double[] direction2 = Geom.getDirection(f);
+
+            if (Geom.isEqual(direction1, direction2) && f.SolidFaceType == Face.FaceType.Planar)
+            {
+                Platan pl = new Platan(f);
+
+                //точка находится "под" необходимыми гранями
+                double distance = - pl.getDistanceToPoint(point);
+                
+                if (distance >= 0 && !dictFaces.ContainsValue(Config.round(distance)))
+                {
+                    dictFaces.Add(f, Config.round(distance));
+                }
+            }
+        }
+
+        this.setOrtFaces(dictFaces);
+    }
+
+    void setOrtFaces(Dictionary<Face, double> dictFaces)
+    {
+        this.ortFacePairs = new KeyValuePair<Face, double>[dictFaces.Count];
+        int i = 0;
+        foreach (KeyValuePair<Face, double> pair in dictFaces)
+        {
+            this.ortFacePairs[i] = pair;
+            i++;
+        }
+
+        if (this.ortFacePairs.Length > 1)
+        {
+            Instr.qSortPair(this.ortFacePairs, 0, this.ortFacePairs.Length - 1);            
+        }
+    }
 
     /*Dictionary<Edge, double> getNearestEdges(Edge[] edges, Point3d from_point)
     {

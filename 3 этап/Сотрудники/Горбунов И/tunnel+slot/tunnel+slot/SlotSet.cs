@@ -11,6 +11,16 @@ using NXOpen.BlockStyler;
 public class SlotSet
 {
     /// <summary>
+    /// Возвращает тело компонента, на котором расположены пазы.
+    /// </summary>
+    public Body Body
+    {
+        get
+        {
+            return this.element.Body;
+        }
+    }
+    /// <summary>
     /// Возвращает компонент, на котором располагается данный набор пазов
     /// </summary>
     public Component ParentComponent
@@ -55,11 +65,8 @@ public class SlotSet
 
     UspElement element;
 
-    //Body body;
-
     Face bottomFace;
 
-    //List<Edge> touchEdges;
     Edge[] edges;
     Dictionary<Edge, double> nearestEdges;
 
@@ -96,9 +103,9 @@ public class SlotSet
 	    {
             
             Platan platan = new Platan(face);
-            double len = platan.getDistanceToPoint(this.selectPoint);
+            double len = Math.Abs(platan.getDistanceToPoint(this.selectPoint));
 
-            if (Config.round(len) >= 0 && Config.round(len) <= minLen)
+            if (Config.round(len) <= minLen)
             {
                 nearFace = face;
                 minLen = len;

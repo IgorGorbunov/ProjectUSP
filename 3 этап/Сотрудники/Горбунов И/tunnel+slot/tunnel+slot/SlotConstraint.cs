@@ -38,6 +38,8 @@ class SlotConstraint
                             this.firstSlot.SideFace1, this.firstSlot.SideFace2,
                             this.secondSlot.ParentComponent,
                             this.secondSlot.SideFace1, this.secondSlot.SideFace2);
+
+        Config.theUFSession.Modl.Update();
     }
 
     /*void setLongConstraint(Slot slot1, Slot slot2)

@@ -4,6 +4,7 @@ using System.Text;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Positioning;
+using NXOpen.UF;
 
 /// <summary>
 /// Класс для создания связей между двумя базовыми отверстиями.
@@ -51,6 +52,14 @@ public class TunnelConstraint
         KeyValuePair<Face, double>[] pairs2 = this.secondTunnel.getOrtFacePairs(secondRev);
         ElementIntersection intersect = new ElementIntersection(firstTunnel.Body, secondTunnel.Body);
 
+        //Tag[] t = new Tag[2];
+        //t[0] = ((Part)firstTunnel.ParentComponent.Prototype).Tag;
+        //t[1] = ((Part)secondTunnel.ParentComponent.Prototype).Tag;
+
+        //NXOpen.UF.UFWave wave = Config.theUFSession.Wave;
+
+        UFDisp display = Config.theUFSession.Disp;
+        display.SetDisplay(UFConstants.UF_DISP_SUPPRESS_DISPLAY);
 
         for (int i = 0; i < pairs2.Length; i++)
         {
@@ -81,10 +90,18 @@ public class TunnelConstraint
         //{
         //    this.reverseAfterItersect();
         //}
+        
+    End: { }
 
+        int displayCode;
+        display.AskDisplay(out displayCode);
 
-    End: { }     
+        display.SetDisplay(UFConstants.UF_DISP_UNSUPPRESS_DISPLAY);
 
+        if (displayCode == UFConstants.UF_DISP_SUPPRESS_DISPLAY)
+        {
+            display.RegenerateDisplay();
+        }
 
     }
 

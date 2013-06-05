@@ -38,7 +38,7 @@ public class Constrainter
     protected void executeConstraints()
     {
         componentNetwork.Solve();
-        //Config.theUFSession.Modl.Update();
+        //
     }
 
 
