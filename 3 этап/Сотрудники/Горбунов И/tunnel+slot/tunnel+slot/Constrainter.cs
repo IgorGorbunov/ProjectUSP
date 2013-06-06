@@ -1,44 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using NXOpen.Assemblies;
-using NXOpen.Positioning;
+﻿using NXOpen.Positioning;
 
 /// <summary>
 /// Класс для создания различный связей и ограничений.
 /// </summary>
 public class Constrainter
 {
-    protected ComponentConstraint constr;
-    protected ComponentPositioner componentPositioner;
+    protected ComponentConstraint Constr;
+    protected ComponentPositioner ComponentPositioner;
 
-    ComponentNetwork componentNetwork;
+    ComponentNetwork _componentNetwork;
 
     protected Constrainter()
     {
-        this.initConstraints();
+        InitConstraints();
     }
 
     /// <summary>
     /// Производит реверс констрэйнта.
     /// </summary>
-    public virtual void reverse()
+    public virtual void Reverse()
     {
-        constr.FlipAlignment();
-        this.executeConstraints();
+        Constr.FlipAlignment();
+        ExecuteConstraints();
     }
 
-    protected void initConstraints()
+    protected void InitConstraints()
     {
-        componentPositioner = Config.workPart.ComponentAssembly.Positioner;
+        ComponentPositioner = Config.WorkPart.ComponentAssembly.Positioner;
 
-        componentNetwork = (ComponentNetwork)componentPositioner.EstablishNetwork();
-        componentNetwork.MoveObjectsState = true;
+        _componentNetwork = (ComponentNetwork)ComponentPositioner.EstablishNetwork();
+        _componentNetwork.MoveObjectsState = true;
     }
-    protected void executeConstraints()
+    protected void ExecuteConstraints()
     {
-        componentNetwork.Solve();
-        //
+        _componentNetwork.Solve();
     }
 
 

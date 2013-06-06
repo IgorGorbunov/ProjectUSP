@@ -28,27 +28,27 @@ public class TouchConstraint : Constrainter
     public void create(Component firstComponent, Face firstFace, 
                                       Component secondComponent, Face secondFace)
     {
-        constr = (ComponentConstraint)componentPositioner.CreateConstraint();
-        constr.ConstraintAlignment = Constraint.Alignment.ContraAlign;
-        constr.ConstraintType = NXOpen.Positioning.Constraint.Type.Touch;
+        Constr = (ComponentConstraint)ComponentPositioner.CreateConstraint();
+        Constr.ConstraintAlignment = Constraint.Alignment.ContraAlign;
+        Constr.ConstraintType = NXOpen.Positioning.Constraint.Type.Touch;
 
         ConstraintReference constraintReference1 =
-            constr.CreateConstraintReference(firstComponent,
+            Constr.CreateConstraintReference(firstComponent,
                                              firstFace, false, false, false);
 
         ConstraintReference constraintReference3 =
-            constr.CreateConstraintReference(secondComponent,
+            Constr.CreateConstraintReference(secondComponent,
                                              secondFace, false, false, false);
 
-        executeConstraints();
+        ExecuteConstraints();
     }
     /// <summary>
     /// Удаляет соединение.
     /// </summary>
     public void delete()
     {
-        NXObject object_to_delete = base.constr;
-        Config.theSession.UpdateManager.AddToDeleteList(object_to_delete);
+        NXObject object_to_delete = base.Constr;
+        Config.TheSession.UpdateManager.AddToDeleteList(object_to_delete);
     }
 
 }

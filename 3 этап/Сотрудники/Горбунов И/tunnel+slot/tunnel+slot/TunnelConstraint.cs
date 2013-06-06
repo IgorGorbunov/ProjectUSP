@@ -76,13 +76,13 @@ public class TunnelConstraint
             intersect = new ElementIntersection(this.firstTunnel.Body, this.slot.Body);
             comp2 = this.slot.ParentComponent;
         }
-        Config.freezeDisplay();
+        Config.FreezeDisplay();
 
         for (int i = 0; i < pairs2.Length; i++)
         {
             for (int j = 0; j < pairs1.Length; j++)
             {
-                markId1 = Config.theSession.SetUndoMark(NXOpen.Session.MarkVisibility.Invisible, "SetTouch");
+                markId1 = Config.TheSession.SetUndoMark(NXOpen.Session.MarkVisibility.Invisible, "SetTouch");
 
                 touchConstr.create(this.firstTunnel.ParentComponent, pairs1[j].Key,
                                    comp2, pairs2[i].Key);
@@ -91,13 +91,13 @@ public class TunnelConstraint
                 {
                     goto End;
                 }
-                Config.theSession.UndoToMark(markId1, "SetTouch");
+                Config.TheSession.UndoToMark(markId1, "SetTouch");
             }
         }
     End: { }
 
-        Config.unFreezeDisplay();
-        Config.theUFSession.Modl.Update();
+        Config.UnFreezeDisplay();
+        Config.TheUfSession.Modl.Update();
     }
 
     /// <summary>
@@ -121,7 +121,7 @@ public class TunnelConstraint
     public void reverse(bool first, bool second)
     {
         touchConstr.delete();
-        axeConstr.reverse();
+        axeConstr.Reverse();
 
         setTouchFaceConstraint(first, second);
     }

@@ -77,10 +77,10 @@ public class UspElement
 
                 if (face.Name != null)
                 {
-                    string[] split = face.Name.Split(Config.FACE_NAME_SPLITTER);
+                    string[] split = face.Name.Split(Config.FaceNameSplitter);
 
-                    if (split[0] == Config.SLOT_SYMBOL && 
-                        split[1] == Config.SLOT_BOTTOM_SYMBOL)
+                    if (split[0] == Config.SlotSymbol && 
+                        split[1] == Config.SlotBottomSymbol)
                     {
                         this.bottomFaces.Add(face);
                     }
@@ -107,7 +107,7 @@ public class UspElement
             mess += Environment.NewLine + f.ToString();
         }
         mess += Environment.NewLine + "---------------";
-        Log.writeLine(mess);
+        Log.WriteLine(mess);
     }
 
     //refactor

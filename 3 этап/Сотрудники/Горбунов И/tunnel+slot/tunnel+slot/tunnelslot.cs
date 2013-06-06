@@ -143,9 +143,9 @@ public class tunnelslot
         try
         {
             theDialogName = AppDomain.CurrentDomain.BaseDirectory +
-                Config.dlxFolder + Config.dlxTunnelSlot;
+                Config.DlxFolder + Config.DlxTunnelSlot;
 
-            theDialog = Config.theUI.CreateDialog(theDialogName);
+            theDialog = Config.TheUi.CreateDialog(theDialogName);
             theDialog.AddApplyHandler(new NXOpen.BlockStyler.BlockDialog.Apply(apply_cb));
             theDialog.AddOkHandler(new NXOpen.BlockStyler.BlockDialog.Ok(ok_cb));
             theDialog.AddUpdateHandler(new NXOpen.BlockStyler.BlockDialog.Update(update_cb));
@@ -249,16 +249,16 @@ public class tunnelslot
     {
         try
         {
-            Log.writeLine("++++++++++++++++++++++++++++++++++++++++++++++++" + " Начало работы программы");
+            Log.WriteLine("++++++++++++++++++++++++++++++++++++++++++++++++" + " Начало работы программы");
             thetunnelslot = new tunnelslot();
             // The following method shows the dialog immediately
             thetunnelslot.Show();
-            Log.writeLine("-------------------------------------------------" + " Конец работы программы");
+            Log.WriteLine("-------------------------------------------------" + " Конец работы программы");
         }
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            Config.theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            Config.TheUi.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
         }
         finally
         {
@@ -304,7 +304,7 @@ public class tunnelslot
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            Config.theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            Config.TheUi.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
         }
         return 0;
     }
@@ -322,7 +322,7 @@ public class tunnelslot
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            Config.theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            Config.TheUi.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
         }
         return 0;
     }
@@ -354,7 +354,7 @@ public class tunnelslot
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            Config.theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            Config.TheUi.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
         }
         finally
         {
@@ -388,7 +388,7 @@ public class tunnelslot
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            Config.theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            Config.TheUi.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
         }
     }
     
@@ -406,7 +406,7 @@ public class tunnelslot
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            Config.theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            Config.TheUi.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
         }
     }
     
@@ -419,13 +419,13 @@ public class tunnelslot
         try
         {
             //---- Enter your callback code here -----
-            Log.writeLine("Нажата кнопка ПРИМЕНИТЬ.");
+            Log.WriteLine("Нажата кнопка ПРИМЕНИТЬ.");
         }
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
             errorCode = 1;
-            Config.theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            Config.TheUi.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
         }
         return errorCode;
     }
@@ -440,13 +440,13 @@ public class tunnelslot
             if(block == selection0)
             {
             //---------Enter your code here-----------
-                Log.writeLine("Нажат выбор объекта по первому select.");
+                Log.WriteLine("Нажат выбор объекта по первому select.");
                 setFirstComponent(block);
             }
             else if(block == face_select0)
             {
             //---------Enter your code here-----------
-                Log.writeLine("Нажат выбор первой грани.");
+                Log.WriteLine("Нажат выбор первой грани.");
                 setFirstFace(block);
             }
             else if (block == integer0)
@@ -456,13 +456,13 @@ public class tunnelslot
             else if(block == selection01)
             {
             //---------Enter your code here-----------
-                Log.writeLine("Нажат выбор объекта по второму select.");
+                Log.WriteLine("Нажат выбор объекта по второму select.");
                 setSecondComponent(block);
             }
             else if(block == point0)
             {
             //---------Enter your code here-----------
-                Log.writeLine("Нажата постановка второй точки.");
+                Log.WriteLine("Нажата постановка второй точки.");
                 setSecondPoint(block);
             }
             else if(block == direction01)
@@ -478,7 +478,7 @@ public class tunnelslot
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            Config.theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            Config.TheUi.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
         }
         return 0;
     }
@@ -493,13 +493,13 @@ public class tunnelslot
         {
             errorCode = apply_cb();
             //---- Enter your callback code here -----
-            Log.writeLine("Нажата кнопка ОК.");
+            Log.WriteLine("Нажата кнопка ОК.");
         }
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
             errorCode = 1;
-            Config.theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            Config.TheUi.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
         }
         return errorCode;
     }
@@ -512,12 +512,12 @@ public class tunnelslot
         try
         {
             //---- Enter your callback code here -----
-            Log.writeLine("Нажата кнопка ОТМЕНА.");
+            Log.WriteLine("Нажата кнопка ОТМЕНА.");
         }
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            Config.theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            Config.TheUi.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
         }
         return 0;
     }
@@ -543,7 +543,7 @@ public class tunnelslot
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            Config.theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            Config.TheUi.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
         }
     }
     
@@ -560,7 +560,7 @@ public class tunnelslot
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            Config.theUI.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            Config.TheUi.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
         }
     }
 
@@ -604,10 +604,10 @@ public class tunnelslot
         //если не деселект
         if (tag_obs.Length > 0)
         {
-            Component parentComponent = Config.findCompByBodyTag(tag_obs[0].Tag);
-            if (Geom.isComponent(tag_obs[0]))
+            Component parentComponent = Config.FindCompByBodyTag(tag_obs[0].Tag);
+            if (Geom.IsComponent(tag_obs[0]))
             {
-                Log.writeLine("Объект - " + tag_obs[0].ToString() +
+                Log.WriteLine("Объект - " + tag_obs[0].ToString() +
                     " - " + parentComponent.Name);
 
                 element = new UspElement(parentComponent);
@@ -617,11 +617,11 @@ public class tunnelslot
             {
                 string message = "Выбрана не деталь УСП!" + Environment.NewLine +
                     "Пожалуйста, перевыберите элемент.";
-                Log.writeWarning(message);
-                Log.writeLine("Объект - " + tag_obs[0].ToString());
+                Log.WriteWarning(message);
+                Log.WriteLine("Объект - " + tag_obs[0].ToString());
                 unSelectObjects(block);
 
-                Config.theUI.NXMessageBox.Show("Error!",
+                Config.TheUi.NXMessageBox.Show("Error!",
                                                NXMessageBox.DialogType.Error,
                                                message);
 
@@ -631,7 +631,7 @@ public class tunnelslot
         }
         else
         {
-            Log.writeLine("Деселект объекта.");
+            Log.WriteLine("Деселект объекта.");
             return false;
         }
     }
@@ -652,8 +652,8 @@ public class tunnelslot
             {
                 string message = "Базовые плоскости пазов не найдены!" + Environment.NewLine +
                                     "Выберите другой элемент!";
-                Log.writeWarning(message);
-                Config.theUI.NXMessageBox.Show("Error!",
+                Log.WriteWarning(message);
+                Config.TheUi.NXMessageBox.Show("Error!",
                                                NXMessageBox.DialogType.Error,
                                                message);
                 unSelectObjects(block);
@@ -681,16 +681,16 @@ public class tunnelslot
 	        {
                 if (face.SolidFaceType == Face.FaceType.Cylindrical)
                 {
-                    Log.writeLine("Грань выбрана - " + face.ToString());
+                    Log.WriteLine("Грань выбрана - " + face.ToString());
                     tunnel = new Tunnel(face, element);
                     return true;
                 }
                 else
                 {
                     string message = "Грань не цилиндрическая! Выберите другую грань!";
-                    Log.writeWarning(message + Environment.NewLine + "Выбрана грань - " + face.ToString());
+                    Log.WriteWarning(message + Environment.NewLine + "Выбрана грань - " + face.ToString());
                     unSelectObjects(block);
-                    Config.theUI.NXMessageBox.Show("Error!",
+                    Config.TheUi.NXMessageBox.Show("Error!",
                                                    NXMessageBox.DialogType.Error,
                                                    message);
                     block.Focus();
@@ -699,8 +699,8 @@ public class tunnelslot
             }
 
             string mess = "Грань не найдена! Выберите другую грань!";
-            Log.writeWarning(mess);
-            Config.theUI.NXMessageBox.Show("Error!",
+            Log.WriteWarning(mess);
+            Config.TheUi.NXMessageBox.Show("Error!",
                                            NXMessageBox.DialogType.Error,
                                            mess);
             block.Focus();
@@ -708,7 +708,7 @@ public class tunnelslot
         }
         else
         {
-            Log.writeLine("Деселект грани");
+            Log.WriteLine("Деселект грани");
             return false;
         }
     }
@@ -717,22 +717,22 @@ public class tunnelslot
     {
         TaggedObject t = TO[0];
 
-        PartCollection PC = Config.theSession.Parts;
+        PartCollection PC = Config.TheSession.Parts;
         foreach (Part p in PC)
         {
-            Config.theUI.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, p.ToString());
+            Config.TheUi.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, p.ToString());
             BodyCollection BC = p.Bodies;
 
             foreach (Body b in BC)
             {
-                Config.theUI.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, b.ToString());
+                Config.TheUi.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, b.ToString());
                 Face[] FC = b.GetFaces();
 
                 foreach (Face f in FC)
                 {
                     if (f.Tag == t.Tag)
                     {
-                        Config.theUI.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, f.Tag.ToString() + " | " + f.JournalIdentifier);
+                        Config.TheUi.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, f.Tag.ToString() + " | " + f.JournalIdentifier);
                         int type;
                         double[] point = new double[3];
                         double[] dir = new double[3];
@@ -741,7 +741,7 @@ public class tunnelslot
                         double raddata;
                         int normDir;
 
-                        Config.theUFSession.Modl.AskFaceData(f.Tag, out type, point, dir, box, out radius,
+                        Config.TheUfSession.Modl.AskFaceData(f.Tag, out type, point, dir, box, out radius,
                             out raddata, out normDir);
 
                         foreach (Face ff in element.Body.GetFaces())
@@ -754,29 +754,29 @@ public class tunnelslot
                             double raddata2;
                             int normDir2;
 
-                            Config.theUFSession.Modl.AskFaceData(ff.Tag, out type2, point2, dir2, box2,
+                            Config.TheUfSession.Modl.AskFaceData(ff.Tag, out type2, point2, dir2, box2,
                                 out radius2, out raddata2, out normDir2);
 
                             if (type == type2 && normDir == normDir2 &&
-                                Config.round(radius) == Config.round(radius2) &&
-                                Config.round(raddata) == Config.round(raddata2) &&
-                                Geom.isEqual(point, point2) && Geom.isEqual(dir, dir2))
+                                Config.Round(radius) == Config.Round(radius2) &&
+                                Config.Round(raddata) == Config.Round(raddata2) &&
+                                Geom.IsEqual(point, point2) && Geom.IsEqual(dir, dir2))
                             {
                                 //Config.theUI.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, ff.Tag.ToString() + " | " + ff.JournalIdentifier);
 
                                 //tst
                                 Part prt = (Part)element.ElementComponent.OwningPart;
-                                Config.theUI.NXMessageBox.Show("tsttttt", NXMessageBox.DialogType.Error, prt.ToString());
+                                Config.TheUi.NXMessageBox.Show("tsttttt", NXMessageBox.DialogType.Error, prt.ToString());
                                 BodyCollection bbb = prt.Bodies;
                                 string sttt = "";
                                 foreach (Body var in bbb)
 	                            {
-                                    Config.theUI.NXMessageBox.Show("tstttt", NXMessageBox.DialogType.Error, var.ToString());
+                                    Config.TheUi.NXMessageBox.Show("tstttt", NXMessageBox.DialogType.Error, var.ToString());
                                     foreach (Face ss in var.GetFaces())
                                     {
                                         sttt += ss.Tag.ToString() + " ++ " + ff.JournalIdentifier + Environment.NewLine;
                                     }
-                                    Log.writeLine(sttt);
+                                    Log.WriteLine(sttt);
                                     
                             		 //Config.theUI.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, var.ToString());
 	                            }
@@ -847,8 +847,8 @@ public class tunnelslot
         {
             string message = "Базовые плоскости пазов не найдены!" + Environment.NewLine +
                                 "Выберите другой элемент!";
-            Log.writeWarning(message);
-            Config.theUI.NXMessageBox.Show("Error!",
+            Log.WriteWarning(message);
+            Config.TheUi.NXMessageBox.Show("Error!",
                                            NXMessageBox.DialogType.Error,
                                            message);
             unSelectObjects(block);
@@ -886,7 +886,7 @@ public class tunnelslot
     {
         if (this.faceSelected && this.pointSelected)
         {
-            Log.writeLine("Запущена процедура позиционирования.");
+            Log.WriteLine("Запущена процедура позиционирования.");
 
             bool hasNearestSlot1 = this.slotSet1.hasNearestSlot(out this.slot1);
             bool hasNearestSlot2 = this.slotSet2.hasNearestSlot(out this.slot2);
@@ -894,10 +894,10 @@ public class tunnelslot
             if (hasNearestSlot1 && hasNearestSlot2)
             {
                 this.slotConstr = new SlotConstraint(this.slot1, this.slot2);
-                this.slotConstr.setCenterConstraint();
+                this.slotConstr.SetCenterConstraint();
 
-                slot1.findTopFace();
-                slot2.findTopFace();
+                slot1.FindTopFace();
+                slot2.FindTopFace();
                 tunnel1.setSlot(this.slot1);
 
                 this.tunnelConstsr = new TunnelConstraint(this.tunnel1, this.slot2);
@@ -909,14 +909,14 @@ public class tunnelslot
                 string mess = "Ближайший слот для первого элемента найден - " + hasNearestSlot1.ToString() +
                     Environment.NewLine;
                 mess += "Ближайший слот для второго элемента найден - " + hasNearestSlot2.ToString();
-                Log.writeLine(mess);
+                Log.WriteLine(mess);
             }
         }
     }
 
     void move(Component comp, Vector vec)
     {
-        NXOpen.Positioning.ComponentPositioner componentPositioner1 = Config.workPart.ComponentAssembly.Positioner;
+        NXOpen.Positioning.ComponentPositioner componentPositioner1 = Config.WorkPart.ComponentAssembly.Positioner;
         componentPositioner1.BeginMoveComponent();
         NXOpen.Positioning.Network network2 = componentPositioner1.EstablishNetwork();
         NXOpen.Positioning.ComponentNetwork componentNetwork2 = (NXOpen.Positioning.ComponentNetwork)network2;

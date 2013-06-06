@@ -91,7 +91,7 @@ public class SlotSet
     {
         this.selectPoint = point;
 
-        Log.writeLine("Координаты точки - " + this.selectPoint.ToString());
+        Log.WriteLine("Координаты точки - " + this.selectPoint.ToString());
     }
 
     public bool haveNearestBottomFace()
@@ -103,9 +103,9 @@ public class SlotSet
 	    {
             
             Platan platan = new Platan(face);
-            double len = Math.Abs(platan.getDistanceToPoint(this.selectPoint));
+            double len = Math.Abs(platan.GetDistanceToPoint(this.selectPoint));
 
-            if (Config.round(len) <= minLen)
+            if (Config.Round(len) <= minLen)
             {
                 nearFace = face;
                 minLen = len;
@@ -185,11 +185,11 @@ public class SlotSet
                     edgeLong1.GetVertices(out start, out end);
 
                     Straight firstLongStraight = new Straight(start, end);
-                    Point3d intersection1 = Geom.getIntersectionPointStraight(this.selectPoint, firstLongStraight);
+                    Point3d intersection1 = Geom.GetIntersectionPointStraight(this.selectPoint, firstLongStraight);
                     
 
                     double len1 = -1;
-                    if (Geom.isOnSegment(intersection1, edgeLong1))
+                    if (Geom.IsOnSegment(intersection1, edgeLong1))
                     {
                         Vector vecN1 = new Vector(this.selectPoint, intersection1);
                         len1 = vecN1.Length;
@@ -217,10 +217,10 @@ public class SlotSet
                     edgeLong2.GetVertices(out start, out end);
 
                     Straight secondLongStraight = new Straight(start, end);
-                    Point3d intersection2 = Geom.getIntersectionPointStraight(this.selectPoint, secondLongStraight);
+                    Point3d intersection2 = Geom.GetIntersectionPointStraight(this.selectPoint, secondLongStraight);
 
                     double len2 = -1;
-                    if (Geom.isOnSegment(intersection2, edgeLong2))
+                    if (Geom.IsOnSegment(intersection2, edgeLong2))
                     {
                         Vector vecN2 = new Vector(this.selectPoint, intersection2);
                         len2 = vecN2.Length;
@@ -269,7 +269,7 @@ public class SlotSet
 
         if (isFound)
         {
-            slot = new Slot(this, edge1, edge2, Config.getSlotType(minSlotWidth));
+            slot = new Slot(this, edge1, edge2, Config.GetSlotType(minSlotWidth));
             return true;
         }
         else
@@ -287,7 +287,7 @@ public class SlotSet
         int counter = 0;
         foreach (Edge e in edges)
         {
-            if (e.GetLength().ToString() == Config.T_SLOT_WIDTH.ToString())
+            if (e.GetLength().ToString() == Config.SlotWidth.ToString())
             {
                 slot_edges.Add(e);
                 counter++;
@@ -310,7 +310,7 @@ public class SlotSet
 
         foreach (Edge e in edges)
         {
-            if (Config.round(e.GetLength()) == Config.T_SLOT_WIDTH || Config.round(e.GetLength()) == Config.P_SLOT_WIDTH)
+            if (Config.Round(e.GetLength()) == Config.SlotWidth || Config.Round(e.GetLength()) == Config.PSlotWidth)
             {
                 slotWidthEdges.Add(e);
             }
@@ -324,7 +324,7 @@ public class SlotSet
         Edge min_key = null;
         double min_value = value;
 
-        if (Dictionary.Count < Config.NUMBER_OF_NEAREST_EDGES)
+        if (Dictionary.Count < Config.NumberOfNearestEdges)
         {
             Dictionary.Add(key, value);
         }
@@ -372,8 +372,8 @@ public class SlotSet
                     if (vec1.IsNormal(temp_vec))
                     {
                         double length = temp_vec.Length;
-                        if (Config.round(length) == Config.P_SLOT_WIDTH || 
-                            Config.round(length) == Config.T_SLOT_WIDTH)
+                        if (Config.Round(length) == Config.PSlotWidth || 
+                            Config.Round(length) == Config.SlotWidth)
                         {
                             distance = length;
                             nPerpendicular++;
@@ -404,14 +404,14 @@ public class SlotSet
     bool haveNormals(Vector vec1, Vector vec2)
     {
         //для первого вектора
-        Point3d[] points1 = new Point3d[Config.N_POINTS_IN_EDGE];
+        Point3d[] points1 = new Point3d[Config.NPointsInEdge];
         points1[0] = vec1.Start;
         points1[1] = vec1.End;
         //double[,] straight1 = Geom.getStraitEquation(points1[0], points1[1]);
         Straight straight1 = new Straight(vec1);
 
         //для второго вектора
-        Point3d[] points2 = new Point3d[Config.N_POINTS_IN_EDGE];
+        Point3d[] points2 = new Point3d[Config.NPointsInEdge];
         points2[0] = vec2.Start;
         points2[1] = vec2.End;
         //double[,] straight2 = Geom.getStraitEquation(points2[0], points2[1]);
@@ -421,14 +421,14 @@ public class SlotSet
 
         //первое ребро
         bool onPoint = false;
-        for (int i = 0; i < Config.N_POINTS_IN_EDGE; i++)
+        for (int i = 0; i < Config.NPointsInEdge; i++)
         {
-            Point3d intersect1 = Geom.getIntersectionPointStraight(points1[i], straight2);
+            Point3d intersect1 = Geom.GetIntersectionPointStraight(points1[i], straight2);
 
-            for (int j = 0; j < Config.N_POINTS_IN_EDGE; j++)
+            for (int j = 0; j < Config.NPointsInEdge; j++)
             {
 
-                if (Geom.isEqual(intersect1, points2[j]))
+                if (Geom.IsEqual(intersect1, points2[j]))
                 {
                     alignment++;
                     onPoint = true;
@@ -436,7 +436,7 @@ public class SlotSet
                 }
             }
 
-            if (!onPoint && Geom.isOnSegment(intersect1, vec2))
+            if (!onPoint && Geom.IsOnSegment(intersect1, vec2))
             {
                 return true;
             }
@@ -444,14 +444,14 @@ public class SlotSet
 
         //второе ребро
         onPoint = false;
-        for (int i = 0; i < Config.N_POINTS_IN_EDGE; i++)
+        for (int i = 0; i < Config.NPointsInEdge; i++)
         {
-            Point3d intersect1 = Geom.getIntersectionPointStraight(points2[i], straight1);
+            Point3d intersect1 = Geom.GetIntersectionPointStraight(points2[i], straight1);
 
-            for (int j = 0; j < Config.N_POINTS_IN_EDGE; j++)
+            for (int j = 0; j < Config.NPointsInEdge; j++)
             {
 
-                if (Geom.isEqual(intersect1, points1[j]))
+                if (Geom.IsEqual(intersect1, points1[j]))
                 {
                     alignment++;
                     onPoint = true;
@@ -459,7 +459,7 @@ public class SlotSet
                 }
             }
 
-            if (!onPoint && Geom.isOnSegment(intersect1, vec1))
+            if (!onPoint && Geom.IsOnSegment(intersect1, vec1))
             {
 
                 return true;

@@ -1,19 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using NXOpen;
-using NXOpen.Assemblies;
-using NXOpen.Positioning;
-
-/// <summary>
+﻿/// <summary>
 /// Класс для наложения связей пазирования.
 /// </summary>
 class SlotConstraint
 {
-    TouchConstraint touchConstr;
-    CenterConstraint centerConstr;
+    readonly CenterConstraint _centerConstr;
 
-    Slot firstSlot, secondSlot;
+    readonly Slot _firstSlot;
+    readonly Slot _secondSlot;
 
     /// <summary>
     /// Инициализирует новый экземпляр класса связей для пазирования.
@@ -22,24 +15,23 @@ class SlotConstraint
     /// <param name="secondSlot">Второй паз.</param>
     public SlotConstraint(Slot firstSlot, Slot secondSlot)
     {
-        this.firstSlot = firstSlot;
-        this.secondSlot = secondSlot;
+        _firstSlot = firstSlot;
+        _secondSlot = secondSlot;
 
-        this.touchConstr = new TouchConstraint();
-        this.centerConstr = new CenterConstraint();
+        _centerConstr = new CenterConstraint();
     }
 
     /// <summary>
     /// Производит соединение вдоль паза.
     /// </summary>
-    public void setCenterConstraint()
+    public void SetCenterConstraint()
     {
-        centerConstr.create(this.firstSlot.ParentComponent,
-                            this.firstSlot.SideFace1, this.firstSlot.SideFace2,
-                            this.secondSlot.ParentComponent,
-                            this.secondSlot.SideFace1, this.secondSlot.SideFace2);
+        _centerConstr.Create(_firstSlot.ParentComponent,
+                            _firstSlot.SideFace1, _firstSlot.SideFace2,
+                            _secondSlot.ParentComponent,
+                            _secondSlot.SideFace1, _secondSlot.SideFace2);
 
-        Config.theUFSession.Modl.Update();
+        Config.TheUfSession.Modl.Update();
     }
 
     /*void setLongConstraint(Slot slot1, Slot slot2)
@@ -58,12 +50,12 @@ class SlotConstraint
     /// </summary>
     /// <param name="slot1">Первый паз.</param>
     /// <param name="slot2">Второй паз.</param>
-    public void setEachOtherConstraint(Slot slot1, Slot slot2)
+    public void SetEachOtherConstraint(Slot slot1, Slot slot2)
     {
         //this.createLong(slot1, slot2);
 
-        slot1.findTopFace();
-        slot2.findTopFace();
+        slot1.FindTopFace();
+        slot2.FindTopFace();
 
         //this.createTopTouch(slot1, slot2);
     }

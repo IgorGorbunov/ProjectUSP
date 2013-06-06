@@ -28,19 +28,19 @@ public class TouchAxeConstraint : Constrainter
     public void create(Component firstComponent, Face firstFace, 
                        Component secondComponent, Face secondFace)
     {
-        constr = (ComponentConstraint)componentPositioner.CreateConstraint();
-        constr.ConstraintAlignment = Constraint.Alignment.ContraAlign;
-        constr.ConstraintType = NXOpen.Positioning.Constraint.Type.Touch;
+        Constr = (ComponentConstraint)ComponentPositioner.CreateConstraint();
+        Constr.ConstraintAlignment = Constraint.Alignment.ContraAlign;
+        Constr.ConstraintType = NXOpen.Positioning.Constraint.Type.Touch;
 
         ConstraintReference constraintReference1 =
-            constr.CreateConstraintReference(firstComponent,
+            Constr.CreateConstraintReference(firstComponent,
                                              firstFace, true, false, false);
 
         ConstraintReference constraintReference3 =
-            constr.CreateConstraintReference(secondComponent,
+            Constr.CreateConstraintReference(secondComponent,
                                              secondFace, true, false, false);
 
-        executeConstraints();
+        ExecuteConstraints();
     }
 
 

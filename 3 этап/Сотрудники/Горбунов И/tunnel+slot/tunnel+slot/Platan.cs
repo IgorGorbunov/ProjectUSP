@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using NXOpen;
 
 /// <summary>
@@ -16,7 +14,7 @@ public class Platan
     {
         get
         {
-            return this.equation;
+            return _equation;
         }
     }
     /// <summary>
@@ -26,7 +24,7 @@ public class Platan
     {
         get
         {
-            return this.equation[0];
+            return _equation[0];
         }
     }
     /// <summary>
@@ -36,7 +34,7 @@ public class Platan
     {
         get
         {
-            return this.equation[1];
+            return _equation[1];
         }
     }
     /// <summary>
@@ -46,7 +44,7 @@ public class Platan
     {
         get
         {
-            return this.equation[2];
+            return _equation[2];
         }
     }
     /// <summary>
@@ -56,12 +54,12 @@ public class Platan
     {
         get
         {
-            return this.equation[3];
+            return _equation[3];
         }
     }
-    
 
-    double[] equation;
+
+    readonly double[] _equation;
 
     /// <summary>
     /// Инициализирует новый экземпляр класса для плоскости, проходящей через заданную точку и
@@ -82,7 +80,7 @@ public class Platan
 
         double freeArg = xFreeArg + yFreeArg + zFreeArg;
 
-        this.equation = new double[4] { xArg, yArg, zArg, freeArg };
+        _equation = new double[] { xArg, yArg, zArg, freeArg };
     }
     /// <summary>
     /// Инициализирует новый экземпляр класса для плоскости, заданной общим уравнением
@@ -94,7 +92,7 @@ public class Platan
     /// <param name="freeArg">Cвободный аргумент.</param>
     public Platan(double xArg, double yArg, double zArg, double freeArg)
     {
-        this.equation = new double[4] { xArg, yArg, zArg, freeArg };
+        _equation = new double[] { xArg, yArg, zArg, freeArg };
     }
     /// <summary>
     /// Инициализирует новый экземпляр класса для плоскости, заданной общим уравнением
@@ -103,7 +101,7 @@ public class Platan
     /// <param name="equation">Массив c коэффициентами А, B, C, D</param>
     public Platan(double[] equation)
     {
-        this.equation = equation;
+        _equation = equation;
     }
     /// <summary>
     /// Инициализирует новый экземпляр класса для плоскости, заданной гранью элемента.
@@ -117,15 +115,15 @@ public class Platan
 
         double[] point = new double[3];
         double[] dir = new double[3];
-        Config.theUFSession.Modl.AskFaceData(face.Tag, out tmpInt, point, dir, box,
+        Config.TheUfSession.Modl.AskFaceData(face.Tag, out tmpInt, point, dir, box,
                                              out tmpDouble, out tmpDouble, out tmpInt);
 
-        double A = dir[0];
-        double B = dir[1];
-        double C = dir[2];
-        double D = A * -point[0] + B * -point[1] + C * -point[2];
+        double a = dir[0];
+        double b = dir[1];
+        double c = dir[2];
+        double d = a * -point[0] + b * -point[1] + c * -point[2];
         
-        this.equation = new double[4] { A, B, C, D };
+        _equation = new double[] { a, b, c, d };
     }
 
     /// <summary>
@@ -137,10 +135,10 @@ public class Platan
         string mess = "";
 
         mess += "{ ";
-        mess += "A: " + X.ToString() + " ";
-        mess += "B: " + Y.ToString() + " ";
-        mess += "C: " + Z.ToString() + " ";
-        mess += "D: " + FreeArg.ToString();
+        mess += "A: " + X + " ";
+        mess += "B: " + Y + " ";
+        mess += "C: " + Z + " ";
+        mess += "D: " + FreeArg;
         mess += " }";
 
         return mess;
@@ -153,24 +151,24 @@ public class Platan
     /// </summary>
     /// <param name="point">Точка.</param>
     /// <returns></returns>
-    public double getDistanceToPoint(Point3d point)
+    public double GetDistanceToPoint(Point3d point)
     {
-        double numerator = this.X * point.X +
-                           this.Y * point.Y +
-                           this.Z * point.Z +
-                           this.FreeArg;
+        double numerator = X * point.X +
+                           Y * point.Y +
+                           Z * point.Z +
+                           FreeArg;
 
-        double denominator = Math.Sqrt(this.X * this.X +
-                                       this.Y * this.Y +
-                                       this.Z * this.Z);
+        double denominator = Math.Sqrt(X * X +
+                                       Y * Y +
+                                       Z * Z);
 
         return numerator / denominator;
     }
 
-    public Point3d getProection(Point3d point)
+    public Point3d GetProection(Point3d point)
     {
         Straight straight = new Straight(point, this);
 
-        return Geom.solveSLAE(straight, this);
+        return Geom.SolveSlae(straight, this);
     }
 }

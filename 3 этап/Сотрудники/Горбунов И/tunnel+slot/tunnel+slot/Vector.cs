@@ -28,11 +28,11 @@ public class Vector
     {
         get
         {
-            if (this._length == -1.0)
+            if (_length == -1.0)
 	        {
-        		 this._length = this.GetLength();
+        		 _length = GetLength();
 	        }
-            return this._length;
+            return _length;
         }
     }
     /// <summary>
@@ -42,12 +42,12 @@ public class Vector
     {
         get
         {
-            if (Geom.isEqual(this._direction, new Point3d(0.0, 0.0, 0.0)))
+            if (Geom.IsEqual(_direction, new Point3d(0.0, 0.0, 0.0)))
             {
-                this.SetDirection();
+                SetDirection();
             }
 
-            return this._direction;
+            return _direction;
         }
     }
 
@@ -56,9 +56,9 @@ public class Vector
         get
         {
 
-            if (Geom.isEqual(this._direction, new Point3d(0.0, 0.0, 0.0)))
+            if (Geom.IsEqual(_direction, new Point3d(0.0, 0.0, 0.0)))
             {
-                this.SetDirection();
+                SetDirection();
             }
             return _direction.X;
         }
@@ -67,9 +67,9 @@ public class Vector
     {
         get
         {
-            if (Geom.isEqual(this._direction, new Point3d(0.0, 0.0, 0.0)))
+            if (Geom.IsEqual(_direction, new Point3d(0.0, 0.0, 0.0)))
             {
-                this.SetDirection();
+                SetDirection();
             }
             return _direction.Y;
         }
@@ -78,9 +78,9 @@ public class Vector
     {
         get
         {
-            if (Geom.isEqual(this._direction, new Point3d(0.0, 0.0, 0.0)))
+            if (Geom.IsEqual(_direction, new Point3d(0.0, 0.0, 0.0)))
             {
-                this.SetDirection();
+                SetDirection();
             }
             return _direction.Z;
         }
@@ -116,7 +116,7 @@ public class Vector
         Point3d start, end;
         edg.GetVertices(out start, out end);
 
-        this.InitPoints(start, end);
+        InitPoints(start, end);
     }
 
 
@@ -157,24 +157,24 @@ public class Vector
     /// <returns></returns>
     public double GetAngle(Vector vec)
     {
-        UFSession theUFSession = UFSession.GetUFSession();
+        UFSession theUfSession = UFSession.GetUFSession();
 
-        double[] Line_Vec1 = new double[3];
-        double[] Line_Vec2 = new double[3];
+        double[] lineVec1 = new double[3];
+        double[] lineVec2 = new double[3];
         double angle;
-        double[] vec_ccw = new double[3];
+        double[] vecCcw = new double[3];
 
-        Point3d cord1 = this.GetCoords();
-        Line_Vec1[0] = cord1.X;
-        Line_Vec1[1] = cord1.Y;
-        Line_Vec1[2] = cord1.Z;
+        Point3d cord1 = GetCoords();
+        lineVec1[0] = cord1.X;
+        lineVec1[1] = cord1.Y;
+        lineVec1[2] = cord1.Z;
 
         Point3d cord2 = vec.GetCoords();
-        Line_Vec2[0] = cord2.X;
-        Line_Vec2[1] = cord2.Y;
-        Line_Vec2[2] = cord2.Z;
+        lineVec2[0] = cord2.X;
+        lineVec2[1] = cord2.Y;
+        lineVec2[2] = cord2.Z;
 
-        theUFSession.Vec3.AngleBetween(Line_Vec1, Line_Vec2, vec_ccw, out angle);
+        theUfSession.Vec3.AngleBetween(lineVec1, lineVec2, vecCcw, out angle);
 
         return angle * 180 / Math.PI;
     }
@@ -189,15 +189,9 @@ public class Vector
     {
         double angle = this.GetAngle(vec);
 
-        if (Math.Round(Math.Abs(angle)) == 90.0 || Math.Round(Math.Abs(angle)) == 270.0)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return Math.Round(Math.Abs(angle)) == 90.0 || Math.Round(Math.Abs(angle)) == 270.0;
     }
+
     /// <summary>
     /// Возвращает значение, определяющее является ли второй (заданный) вектор параллельным
     /// текущему.
@@ -208,38 +202,30 @@ public class Vector
     {
         double angle = this.GetAngle(vec);
 
-        if (Math.Round((Math.Abs(angle))) == 0.0 || Math.Round(Math.Abs(angle)) == 180.0)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return Math.Round((Math.Abs(angle))) == 0.0 || Math.Round(Math.Abs(angle)) == 180.0;
     }
 
 
-    
     void InitPoints(Point3d start, Point3d end)
     {
-        this._start = new Point3d();
-        this._start.X = start.X;
-        this._start.Y = start.Y;
-        this._start.Z = start.Z;
+        _start = new Point3d();
+        _start.X = start.X;
+        _start.Y = start.Y;
+        _start.Z = start.Z;
 
-        this._end = new Point3d();
-        this._end.X = end.X;
-        this._end.Y = end.Y;
-        this._end.Z = end.Z;
+        _end = new Point3d();
+        _end.X = end.X;
+        _end.Y = end.Y;
+        _end.Z = end.Z;
     }
 
     double GetLength()
     {
-        Point3d Coords = GetCoords();
+        Point3d coords = GetCoords();
 
-        return Math.Sqrt(Math.Pow(Coords.X, 2) +
-                         Math.Pow(Coords.Y, 2) +
-                         Math.Pow(Coords.Z, 2));
+        return Math.Sqrt(Math.Pow(coords.X, 2) +
+                         Math.Pow(coords.Y, 2) +
+                         Math.Pow(coords.Z, 2));
     }
 
     void SetDirection()

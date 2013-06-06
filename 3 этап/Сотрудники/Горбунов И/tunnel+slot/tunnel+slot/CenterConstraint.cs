@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using NXOpen;
+﻿using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Positioning;
 
@@ -11,15 +8,6 @@ using NXOpen.Positioning;
 class CenterConstraint : Constrainter
 {
     /// <summary>
-    /// Инициализирует новый экземпляр класса.
-    /// </summary>
-    public CenterConstraint()
-        : base()
-    {
-
-    }
-
-    /// <summary>
     /// Cоздаёт соединение между объектами двух элементов.
     /// </summary>
     /// <param name="firstComponent">Первый элемент.</param>
@@ -28,23 +16,19 @@ class CenterConstraint : Constrainter
     /// <param name="secondComponent">Второй элемент.</param>
     /// <param name="secondObj1">Первый объект второго элемента.</param>
     /// <param name="secondObj2">Второй объект второго элемента.</param>
-    public void create(Component firstComponent, NXObject firstObj1, NXObject firstObj2,
+    public void Create(Component firstComponent, NXObject firstObj1, NXObject firstObj2,
                        Component secondComponent, NXObject secondObj1, NXObject secondObj2)
     {
-        constr = (ComponentConstraint)componentPositioner.CreateConstraint();
-        constr.ConstraintType = NXOpen.Positioning.Constraint.Type.Center22;
+        Constr = (ComponentConstraint)ComponentPositioner.CreateConstraint();
+        Constr.ConstraintType = Constraint.Type.Center22;
 
-        ConstraintReference constraintReference1 =
-            constr.CreateConstraintReference(firstComponent, firstObj1, false, false, false);
-        ConstraintReference constraintReference2 =
-            constr.CreateConstraintReference(firstComponent, firstObj2, false, false, false);
+        Constr.CreateConstraintReference(firstComponent, firstObj1, false, false, false);
+        Constr.CreateConstraintReference(firstComponent, firstObj2, false, false, false);
 
-        ConstraintReference constraintReference3 =
-            constr.CreateConstraintReference(secondComponent, secondObj1, false, false, false);
-        ConstraintReference constraintReference4 =
-            constr.CreateConstraintReference(secondComponent, secondObj2, false, false, false);
+        Constr.CreateConstraintReference(secondComponent, secondObj1, false, false, false);
+        Constr.CreateConstraintReference(secondComponent, secondObj2, false, false, false);
 
-        executeConstraints();
+        ExecuteConstraints();
     }
 }
 

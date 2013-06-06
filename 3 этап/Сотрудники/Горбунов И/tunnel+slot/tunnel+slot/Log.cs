@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using System.IO;
 
@@ -8,75 +8,75 @@ using System.IO;
 /// </summary>
 public static class Log
 {
-    static StreamWriter sW;
+    static StreamWriter _sW;
 
-    static string name = @"Log";
-    static string extension = @".log";
-    static int count = 5;
+    private const string Name = @"Log";
+    private const string Extension = @".log";
+    private const int Count = 5;
 
-    static long maxSize = 1000000;//~ мегабайт
+    private const long MaxSize = 1000000; //~ мегабайт
 
     /// <summary>
     /// Записывает новую строку в лог.
     /// </summary>
     /// <param name="line">Строка.</param>
-    public static void writeLine(string line)
+    public static void WriteLine(string line)
     {
-        setFile();
-        sW.WriteLine(DateTime.Now + Environment.NewLine + line + Environment.NewLine);
-        sW.Flush();
+        SetFile();
+        _sW.WriteLine(DateTime.Now + Environment.NewLine + line + Environment.NewLine);
+        _sW.Flush();
 
-        sW.Close();
+        _sW.Close();
     }
     /// <summary>
     /// Записывает новую строку с сообщением о предупреждении или ошибки пользователю.
     /// </summary>
     /// <param name="warning"></param>
-    public static void writeWarning(string warning)
+    public static void WriteWarning(string warning)
     {
         string message = "||||||||||||||||||||||||||||||||||||||||||||" +
             Environment.NewLine + warning;
-        writeLine(message);
+        WriteLine(message);
     }
 
-    static void setFile()
+    static void SetFile()
     {
-        string currFile = AppDomain.CurrentDomain.BaseDirectory + name + extension;
+        string currFile = AppDomain.CurrentDomain.BaseDirectory + Name + Extension;
         try
         {
             FileInfo info = new FileInfo(currFile);
 
             bool append = true;
-            if (info.Length > maxSize)
+            if (info.Length > MaxSize)
             {
-                copyFiles();
+                CopyFiles();
                 append = false;
             }
 
-            sW = new StreamWriter(currFile, append, Encoding.UTF8);
+            _sW = new StreamWriter(currFile, append, Encoding.UTF8);
         }
         catch (FileNotFoundException)
         {
-            sW = new StreamWriter(currFile, false, Encoding.UTF8);
+            _sW = new StreamWriter(currFile, false, Encoding.UTF8);
         }        
     }
 
-    static void copyFiles()
+    static void CopyFiles()
     {
-        for (int i = count; i > 2; i--)
+        for (int i = Count; i > 2; i--)
         {
             try
             {
-                FileInfo f = new FileInfo(AppDomain.CurrentDomain.BaseDirectory + name + 
-                                                (i - 1).ToString() + extension);
-                f.CopyTo(AppDomain.CurrentDomain.BaseDirectory + name + i + extension, true);
+                FileInfo f = new FileInfo(AppDomain.CurrentDomain.BaseDirectory + Name + 
+                                (i - 1).ToString(CultureInfo.InvariantCulture) + Extension);
+                f.CopyTo(AppDomain.CurrentDomain.BaseDirectory + Name + i + Extension, true);
             }
             catch (FileNotFoundException ) { }
             
         }
 
-        FileInfo firstFile = new FileInfo(AppDomain.CurrentDomain.BaseDirectory + name + extension);
-        firstFile.CopyTo(AppDomain.CurrentDomain.BaseDirectory + name + "2" + extension, true);
+        FileInfo firstFile = new FileInfo(AppDomain.CurrentDomain.BaseDirectory + Name + Extension);
+        firstFile.CopyTo(AppDomain.CurrentDomain.BaseDirectory + Name + "2" + Extension, true);
     }
 }
 

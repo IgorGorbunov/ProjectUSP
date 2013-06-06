@@ -115,7 +115,7 @@ public class Tunnel
         edges[1].GetVertices(out point2, out tempPoint);
 
         Vector vec1 = new Vector(point1, point2);
-        if (Geom.isEqual(this.Direction, vec1.Direction))
+        if (Geom.IsEqual(this.Direction, vec1.Direction))
         {
             return point2;
         }
@@ -138,7 +138,7 @@ public class Tunnel
         edges[1].GetVertices(out point2, out tempPoint);
 
         Vector vec1 = new Vector(point1, point2);
-        if (Geom.isEqual(this.Direction, vec1.Direction))
+        if (Geom.IsEqual(this.Direction, vec1.Direction))
         {
             return point1;
         }
@@ -174,18 +174,18 @@ public class Tunnel
         Face[] faces = this.Body.GetFaces();
         foreach (Face f in faces)
         {
-            double[] direction2 = Geom.getDirection(f);
+            double[] direction2 = Geom.GetDirection(f);
 
-            if (Geom.isEqual(direction1, direction2) && f.SolidFaceType == Face.FaceType.Planar)
+            if (Geom.IsEqual(direction1, direction2) && f.SolidFaceType == Face.FaceType.Planar)
             {
                 Platan pl = new Platan(f);
 
                 //точка находится "под" необходимыми гранями
-                double distance = - pl.getDistanceToPoint(point);
+                double distance = - pl.GetDistanceToPoint(point);
 
-                if (distance >= 0 && !dictFaces.ContainsValue(Config.round(distance)))
+                if (distance >= 0 && !dictFaces.ContainsValue(Config.Round(distance)))
                 {
-                    dictFaces.Add(f, Config.round(distance));
+                    dictFaces.Add(f, Config.Round(distance));
                 }
             }  
         }
@@ -204,7 +204,7 @@ public class Tunnel
         }
 
         //TODO проверка на пустоту массива
-        Instr.qSortPair(this.ortFacePairs, 0, this.ortFacePairs.Length - 1);
+        Instr.QSortPair(this.ortFacePairs, 0, this.ortFacePairs.Length - 1);
     }
 
     void setNormalFaces()
@@ -235,7 +235,7 @@ public class Tunnel
         double[] box = new double[6];
         double[] voidPoint = new double[3];
 
-        Config.theUFSession.Modl.AskFaceData(this.face.Tag, out voidInt, voidPoint, this.direction, box, out voidDouble, out voidDouble, out voidInt);
+        Config.TheUfSession.Modl.AskFaceData(this.face.Tag, out voidInt, voidPoint, this.direction, box, out voidDouble, out voidDouble, out voidInt);
 
         Edge[] edges = face.GetEdges();
         Point3d point1, point2;
