@@ -350,17 +350,17 @@ public class SlotSet
     bool isSlot(Vector vec1, Vector vec2, out double distance)
     {
         distance = 0;
-        if (vec1.isParallel(vec2))
+        if (vec1.IsParallel(vec2))
         {
             int nPerpendicular = 0;
             int nPointsInEdge = 2;
             int nVectors = 2;
 
             Point3d[] points = new Point3d[nPointsInEdge * nVectors];
-            points[0] = vec1.start;
-            points[1] = vec1.end;
-            points[2] = vec2.start;
-            points[3] = vec2.end;
+            points[0] = vec1.Start;
+            points[1] = vec1.End;
+            points[2] = vec2.Start;
+            points[3] = vec2.End;
 
             for (int i = 1; i <= nPointsInEdge; i++)
             {
@@ -369,7 +369,7 @@ public class SlotSet
 
                     Vector temp_vec = new Vector(points[i - 1], points[j - 1]);
 
-                    if (vec1.isNormal(temp_vec))
+                    if (vec1.IsNormal(temp_vec))
                     {
                         double length = temp_vec.Length;
                         if (Config.round(length) == Config.P_SLOT_WIDTH || 
@@ -405,15 +405,15 @@ public class SlotSet
     {
         //для первого вектора
         Point3d[] points1 = new Point3d[Config.N_POINTS_IN_EDGE];
-        points1[0] = vec1.start;
-        points1[1] = vec1.end;
+        points1[0] = vec1.Start;
+        points1[1] = vec1.End;
         //double[,] straight1 = Geom.getStraitEquation(points1[0], points1[1]);
         Straight straight1 = new Straight(vec1);
 
         //для второго вектора
         Point3d[] points2 = new Point3d[Config.N_POINTS_IN_EDGE];
-        points2[0] = vec2.start;
-        points2[1] = vec2.end;
+        points2[0] = vec2.Start;
+        points2[1] = vec2.End;
         //double[,] straight2 = Geom.getStraitEquation(points2[0], points2[1]);
         Straight straight2 = new Straight(vec2);
 

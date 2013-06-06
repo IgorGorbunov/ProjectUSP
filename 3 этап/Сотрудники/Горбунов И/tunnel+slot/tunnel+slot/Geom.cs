@@ -72,28 +72,18 @@ static class Geom
         return false;
     }
 
+    /// <summary>
+    /// Возвращает точку пересечения плоскости и перпендикулярной прямой. Плоскость проведена через
+    /// точку.
+    /// </summary>
+    /// <param name="P"></param>
+    /// <param name="straight"></param>
+    /// <returns></returns>
     public static Point3d getIntersectionPointStraight(Point3d P, Straight straight)
     {
         Platan plain = new Platan(P, straight);
 
-        double[] freeArg;
-        double[,] matrix = getMatrixIntersection(straight, plain, out freeArg);
-
-        double det = getDet3x3(matrix);
-
-        double[,] copyMatr = copy3x3(matrix);
-        double[,] matrixX = setCol3x3(copyMatr, freeArg, 0);
-        double detX = getDet3x3(matrixX);
-
-        copyMatr = copy3x3(matrix);
-        double[,] matrixY = setCol3x3(copyMatr, freeArg, 1);
-        double detY = getDet3x3(matrixY);
-
-        copyMatr = copy3x3(matrix);
-        double[,] matrixZ = setCol3x3(copyMatr, freeArg, 2);
-        double detZ = getDet3x3(matrixZ);
-
-        return new Point3d(detX / det, detY / det, detZ / det);
+        return solveSLAE(straight, plain);
     }
 
 
@@ -168,7 +158,7 @@ static class Geom
 
     //    return matrix;
     //}
-    public static double[,] getMatrixIntersection(Straight straight, Platan platan, out double[] freeArg)
+    static double[,] getMatrixIntersection(Straight straight, Platan platan, out double[] freeArg)
     {
         double[,] matrix = new double[DIMENSIONS, DIMENSIONS]; //REFACTOR
         freeArg = new double[DIMENSIONS];
@@ -208,6 +198,28 @@ static class Geom
 
         return matrix;
     }
+    
+    public static Point3d solveSLAE(Straight straight, Platan plain)
+    {
+        double[] freeArg;
+        double[,] matrix = getMatrixIntersection(straight, plain, out freeArg);
+
+        double det = getDet3x3(matrix);
+
+        double[,] copyMatr = copy3x3(matrix);
+        double[,] matrixX = setCol3x3(copyMatr, freeArg, 0);
+        double detX = getDet3x3(matrixX);
+
+        copyMatr = copy3x3(matrix);
+        double[,] matrixY = setCol3x3(copyMatr, freeArg, 1);
+        double detY = getDet3x3(matrixY);
+
+        copyMatr = copy3x3(matrix);
+        double[,] matrixZ = setCol3x3(copyMatr, freeArg, 2);
+        double detZ = getDet3x3(matrixZ);
+
+        return new Point3d(detX / det, detY / det, detZ / det);
+    }
 
     public static bool isOnSegment(Point3d P, Edge E)
     {
@@ -218,7 +230,7 @@ static class Geom
     }
     public static bool isOnSegment(Point3d P, Vector v)
     {
-        if (isOnSegment(P, v.start, v.end))
+        if (isOnSegment(P, v.Start, v.End))
         {
             return true;
         }
@@ -233,8 +245,8 @@ static class Geom
         Vector vecAB = new Vector(vecPoint1, vecPoint2);
         Vector vecAX = new Vector(vecPoint1, P);
 
-        Point3d ABcoords = vecAB.getCoords();
-        Point3d AXcoords = vecAX.getCoords();
+        Point3d ABcoords = vecAB.GetCoords();
+        Point3d AXcoords = vecAX.GetCoords();
 
         double[] p = new double[DIMENSIONS];
 

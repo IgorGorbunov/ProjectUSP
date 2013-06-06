@@ -410,10 +410,10 @@ public class Slot
             if (e != edge)
             {
                 Vector vecTmp = new Vector(e);
-                if (vecEtalon.isParallel(vecTmp))
+                if (vecEtalon.IsParallel(vecTmp))
                 {
                     Straight edgeStraight = new Straight(e);
-                    Point3d heightStart = vecEtalon.start;
+                    Point3d heightStart = vecEtalon.Start;
                     Point3d pointOnStraight = Geom.getIntersectionPointStraight(heightStart, edgeStraight);
 
                     Vector vecHeight = new Vector(heightStart, pointOnStraight);

@@ -131,9 +131,27 @@ public class Straight
     /// </summary>
     /// <param name="vector">Вектор.</param>
     public Straight(Vector vector)
-        : this(vector.start, vector.end)
+        : this(vector.Start, vector.End)
     {
 
+    }
+    /// <summary>
+    /// Инициализирует новый экземпляр класса для математической прямой, проходящей через заданную 
+    /// точку, перпендикулярно заданной плоскости.
+    /// </summary>
+    /// <param name="p">Точка, через которую проходит прямая.</param>
+    /// <param name="pl">Плоскость, перпендикулярно которой проходит прямая.</param>
+    public Straight(Point3d p, Platan pl)
+    {
+        this.equation = new double[this.equationRank, Geom.DIMENSIONS];
+
+        this.equation[0, 0] = - p.X;
+        this.equation[0, 1] = - p.Y;
+        this.equation[0, 2] = - p.Z;
+
+        this.equation[1, 0] = pl.X;
+        this.equation[1, 1] = pl.Y;
+        this.equation[1, 2] = pl.Z; 
     }
     /// <summary>
     /// Инициализирует новый экземпляр класса для математической прямой, заданной каноническим
@@ -293,4 +311,3 @@ public class Straight
 
 
 }
-

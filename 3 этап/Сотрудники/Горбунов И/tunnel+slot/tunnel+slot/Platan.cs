@@ -166,4 +166,11 @@ public class Platan
 
         return numerator / denominator;
     }
+
+    public Point3d getProection(Point3d point)
+    {
+        Straight straight = new Straight(point, this);
+
+        return Geom.solveSLAE(straight, this);
+    }
 }

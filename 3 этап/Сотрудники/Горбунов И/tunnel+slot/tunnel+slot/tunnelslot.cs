@@ -56,6 +56,7 @@ public class tunnelslot
     private NXOpen.BlockStyler.UIBlock group1;// Block type: Group
     private NXOpen.BlockStyler.UIBlock selection01;// Block type: Selection
     private NXOpen.BlockStyler.UIBlock point0;// Block type: Specify Point
+    private NXOpen.BlockStyler.UIBlock point01;// Block type: Specify Point
     private NXOpen.BlockStyler.UIBlock direction01;// Block type: Reverse Direction
     //------------------------------------------------------------------------------
     //Bit Option for Property: SnapPointTypesEnabled
@@ -141,7 +142,7 @@ public class tunnelslot
     {
         try
         {
-            theDialogName = AppDomain.CurrentDomain.BaseDirectory + 
+            theDialogName = AppDomain.CurrentDomain.BaseDirectory +
                 Config.dlxFolder + Config.dlxTunnelSlot;
 
             theDialog = Config.theUI.CreateDialog(theDialogName);
@@ -154,7 +155,6 @@ public class tunnelslot
             theDialog.AddFocusNotifyHandler(new NXOpen.BlockStyler.BlockDialog.FocusNotify(focusNotify_cb));
             theDialog.AddKeyboardFocusNotifyHandler(new NXOpen.BlockStyler.BlockDialog.KeyboardFocusNotify(keyboardFocusNotify_cb));
             theDialog.AddDialogShownHandler(new NXOpen.BlockStyler.BlockDialog.DialogShown(dialogShown_cb));
-            Log.writeLine("++++++++++++++++++++++++++++++++++++++++++++++++" + " Начало работы программы");
         }
         catch (Exception ex)
         {
@@ -249,6 +249,7 @@ public class tunnelslot
     {
         try
         {
+            Log.writeLine("++++++++++++++++++++++++++++++++++++++++++++++++" + " Начало работы программы");
             thetunnelslot = new tunnelslot();
             // The following method shows the dialog immediately
             thetunnelslot.Show();
@@ -381,6 +382,8 @@ public class tunnelslot
             selection01 = (NXOpen.BlockStyler.UIBlock)theDialog.TopBlock.FindBlock("selection01");
             point0 = (NXOpen.BlockStyler.UIBlock)theDialog.TopBlock.FindBlock("point0");
             direction01 = (NXOpen.BlockStyler.UIBlock)theDialog.TopBlock.FindBlock("direction01");
+
+            point01 = (NXOpen.BlockStyler.UIBlock)theDialog.TopBlock.FindBlock("point01");
         }
         catch (Exception ex)
         {
@@ -465,6 +468,11 @@ public class tunnelslot
             else if(block == direction01)
             {
             //---------Enter your code here-----------
+            }
+
+            if (block == point01)
+            {
+                
             }
         }
         catch (Exception ex)
@@ -904,5 +912,27 @@ public class tunnelslot
                 Log.writeLine(mess);
             }
         }
+    }
+
+    void move(Component comp, Vector vec)
+    {
+        NXOpen.Positioning.ComponentPositioner componentPositioner1 = Config.workPart.ComponentAssembly.Positioner;
+        componentPositioner1.BeginMoveComponent();
+        NXOpen.Positioning.Network network2 = componentPositioner1.EstablishNetwork();
+        NXOpen.Positioning.ComponentNetwork componentNetwork2 = (NXOpen.Positioning.ComponentNetwork)network2;
+        NXObject[] movableObjects2 = new NXObject[1];
+        movableObjects2[0] = comp;
+        componentNetwork2.SetMovingGroup(movableObjects2);
+        componentNetwork2.BeginDrag();
+
+        Vector3d translation1 = vec.GetVector3D();
+        componentNetwork2.DragByTranslation(translation1);
+        componentNetwork2.EndDrag();
+        componentNetwork2.ResetDisplay();
+        componentNetwork2.ApplyToModel();
+        componentNetwork2.Solve();
+        componentNetwork2.ResetDisplay();
+        componentNetwork2.ApplyToModel();
+        componentPositioner1.ClearNetwork();
     }
 }

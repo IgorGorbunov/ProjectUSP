@@ -65,6 +65,10 @@ public static class Config
     /// Имя файла с формой для базирования отверстие-паз.
     /// </summary>
     public static string dlxTunnelSlot = @"tunnel+slot.dlx";
+    /// <summary>
+    /// Имя файла с формой c двумя точками.
+    /// </summary>
+    public static string dlxPointPoint = @"point+point.dlx";
 
     //------------------------ Methods ------------------------------------------------------------
 
