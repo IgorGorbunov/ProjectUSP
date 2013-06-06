@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using NXOpen;
 using NXOpen.Assemblies;
 
@@ -16,7 +15,7 @@ public class UspElement
     {
         get
         {
-            return this.component;
+            return _component;
         }
     }
     /// <summary>
@@ -26,7 +25,7 @@ public class UspElement
     {
         get
         {
-            return this.bottomFaces;
+            return _bottomFaces;
         }
     }
     /// <summary>
@@ -36,18 +35,16 @@ public class UspElement
     {
         get
         {
-            return this.body;
+            return _body;
         }
     }
 
-    Component component;
-    Body body;
+    readonly Component _component;
+    Body _body;
 
-    List<Face> bottomFaces;
+    List<Face> _bottomFaces;
 
-    int magic_number = 1680;//TODO
-
-    
+    private const int MagicNumber = 1680; //TODO
 
 
     /// <summary>
@@ -56,19 +53,19 @@ public class UspElement
     /// <param name="component">Компонент из сборки NX.</param>
     public UspElement(Component component)
     {
-        this.component = component;
+        _component = component;
 
-        this.setBody();
+        SetBody();
     }
 
     /// <summary>
     /// Проводит поиск и устанавливает нижние плоскости пазов.
     /// </summary>
-    public void setBottomFaces()
+    public void SetBottomFaces()
     {
-        Face[] faces = this.body.GetFaces();
+        Face[] faces = _body.GetFaces();
 
-        this.bottomFaces = new List<Face>();
+        _bottomFaces = new List<Face>();
         for (int j = 0; j < faces.Length; j++)
         {
             try
@@ -82,53 +79,45 @@ public class UspElement
                     if (split[0] == Config.SlotSymbol && 
                         split[1] == Config.SlotBottomSymbol)
                     {
-                        this.bottomFaces.Add(face);
+                        _bottomFaces.Add(face);
                     }
                 }
             }
-            catch (NXException Ex)
+            catch (NXException ex)
             {
-                if (Ex.ErrorCode == 3520016) //No object found exeption
+                if (ex.ErrorCode != 3520016)
                 {
-
-                }
-                else
-                {
-                    UI.GetUI().NXMessageBox.Show("Ошибка!", 
-                                                 NXMessageBox.DialogType.Error, 
+                    UI.GetUI().NXMessageBox.Show("Ошибка!",
+                                                 NXMessageBox.DialogType.Error,
                                                  "Ашипка!");
                 }
             }
         }
 
         string mess = "В качестве нижних граней паза выбраны:";
-        foreach (Face f in this.bottomFaces)
+        foreach (Face f in _bottomFaces)
         {
-            mess += Environment.NewLine + f.ToString();
+            mess += Environment.NewLine + f;
         }
         mess += Environment.NewLine + "---------------";
         Log.WriteLine(mess);
     }
 
     //refactor
-    Face getSomeFace()
+    Face GetSomeFace()
     {
         Face someFace = null;
-        for (int j = 1; j < magic_number; j++)
+        for (int j = 1; j < MagicNumber; j++)
         {
             try
             {
-                someFace = (Face)this.component.FindObject(
+                someFace = (Face)_component.FindObject(
                     "PROTO#.Features|UNPARAMETERIZED_FEATURE(0)|FACE " + j);
                 break;
             }
-            catch (NXException Ex)
+            catch (NXException ex)
             {
-                if (Ex.ErrorCode == 3520016) //No object found exeption
-                {
-
-                }
-                else
+                if (ex.ErrorCode != 3520016)
                 {
                     UI.GetUI().NXMessageBox.Show("Ошибка!",
                                                  NXMessageBox.DialogType.Error,
@@ -139,10 +128,10 @@ public class UspElement
         return someFace;
     }
 
-    void setBody()
+    void SetBody()
     {
-        Face someFace = this.getSomeFace();
-        this.body = someFace.GetBody();
+        Face someFace = GetSomeFace();
+        _body = someFace.GetBody();
     }
 }
 

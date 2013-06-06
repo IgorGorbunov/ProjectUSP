@@ -38,102 +38,102 @@ using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.BlockStyler;
 using System;
-using System.IO;
 
 //------------------------------------------------------------------------------
 //Represents Block Styler application class
 //------------------------------------------------------------------------------
+// ReSharper disable UnusedMember.Global
 public class tunnelslot
+// ReSharper restore UnusedMember.Global
 {
     //class members
-    public static tunnelslot thetunnelslot;
-    private string theDialogName;
-    private NXOpen.BlockStyler.BlockDialog theDialog;
-    private NXOpen.BlockStyler.UIBlock group;// Block type: Group
-    private NXOpen.BlockStyler.UIBlock selection0;// Block type: Selection
-    private NXOpen.BlockStyler.UIBlock face_select0;// Block type: Face Collector
-    private NXOpen.BlockStyler.UIBlock integer0;// Block type: Position
-    private NXOpen.BlockStyler.UIBlock group1;// Block type: Group
-    private NXOpen.BlockStyler.UIBlock selection01;// Block type: Selection
-    private NXOpen.BlockStyler.UIBlock point0;// Block type: Specify Point
-    private NXOpen.BlockStyler.UIBlock point01;// Block type: Specify Point
-    private NXOpen.BlockStyler.UIBlock direction01;// Block type: Reverse Direction
+    private static tunnelslot _thetunnelslot;
+    private readonly string _theDialogName;
+    private BlockDialog _theDialog;
+    private UIBlock _selection0;// Block type: Selection
+    private UIBlock _faceSelect0;// Block type: Face Collector
+    private UIBlock _integer0;// Block type: Position
+    private UIBlock _selection01;// Block type: Selection
+    private UIBlock _point0;// Block type: Specify Point
+    private UIBlock _point01;// Block type: Specify Point
+    private UIBlock _direction01;// Block type: Reverse Direction
     //------------------------------------------------------------------------------
     //Bit Option for Property: SnapPointTypesEnabled
     //------------------------------------------------------------------------------
-    public static readonly int              SnapPointTypesEnabled_UserDefined = (1 << 0);
-    public static readonly int                 SnapPointTypesEnabled_Inferred = (1 << 1);
-    public static readonly int           SnapPointTypesEnabled_ScreenPosition = (1 << 2);
-    public static readonly int                 SnapPointTypesEnabled_EndPoint = (1 << 3);
-    public static readonly int                 SnapPointTypesEnabled_MidPoint = (1 << 4);
-    public static readonly int             SnapPointTypesEnabled_ControlPoint = (1 << 5);
-    public static readonly int             SnapPointTypesEnabled_Intersection = (1 << 6);
-    public static readonly int                SnapPointTypesEnabled_ArcCenter = (1 << 7);
-    public static readonly int            SnapPointTypesEnabled_QuadrantPoint = (1 << 8);
-    public static readonly int            SnapPointTypesEnabled_ExistingPoint = (1 << 9);
-    public static readonly int             SnapPointTypesEnabled_PointonCurve = (1 <<10);
-    public static readonly int           SnapPointTypesEnabled_PointonSurface = (1 <<11);
-    public static readonly int         SnapPointTypesEnabled_PointConstructor = (1 <<12);
-    public static readonly int     SnapPointTypesEnabled_TwocurveIntersection = (1 <<13);
-    public static readonly int             SnapPointTypesEnabled_TangentPoint = (1 <<14);
-    public static readonly int                    SnapPointTypesEnabled_Poles = (1 <<15);
-    public static readonly int         SnapPointTypesEnabled_BoundedGridPoint = (1 <<16);
-    //------------------------------------------------------------------------------
-    //Bit Option for Property: SnapPointTypesOnByDefault
-    //------------------------------------------------------------------------------
-    public static readonly int          SnapPointTypesOnByDefault_UserDefined = (1 << 0);
-    public static readonly int             SnapPointTypesOnByDefault_Inferred = (1 << 1);
-    public static readonly int       SnapPointTypesOnByDefault_ScreenPosition = (1 << 2);
-    public static readonly int             SnapPointTypesOnByDefault_EndPoint = (1 << 3);
-    public static readonly int             SnapPointTypesOnByDefault_MidPoint = (1 << 4);
-    public static readonly int         SnapPointTypesOnByDefault_ControlPoint = (1 << 5);
-    public static readonly int         SnapPointTypesOnByDefault_Intersection = (1 << 6);
-    public static readonly int            SnapPointTypesOnByDefault_ArcCenter = (1 << 7);
-    public static readonly int        SnapPointTypesOnByDefault_QuadrantPoint = (1 << 8);
-    public static readonly int        SnapPointTypesOnByDefault_ExistingPoint = (1 << 9);
-    public static readonly int         SnapPointTypesOnByDefault_PointonCurve = (1 <<10);
-    public static readonly int       SnapPointTypesOnByDefault_PointonSurface = (1 <<11);
-    public static readonly int     SnapPointTypesOnByDefault_PointConstructor = (1 <<12);
-    public static readonly int SnapPointTypesOnByDefault_TwocurveIntersection = (1 <<13);
-    public static readonly int         SnapPointTypesOnByDefault_TangentPoint = (1 <<14);
-    public static readonly int                SnapPointTypesOnByDefault_Poles = (1 <<15);
-    public static readonly int     SnapPointTypesOnByDefault_BoundedGridPoint = (1 <<16);
-    //------------------------------------------------------------------------------
-    //Bit Option for Property: EntityType
-    //------------------------------------------------------------------------------
-    public static readonly int                          EntityType_AllowFaces = (1 << 4);
-    public static readonly int                         EntityType_AllowDatums = (1 << 5);
-    public static readonly int                         EntityType_AllowBodies = (1 << 6);
-    //------------------------------------------------------------------------------
-    //Bit Option for Property: FaceRules
-    //------------------------------------------------------------------------------
-    public static readonly int                           FaceRules_SingleFace = (1 << 0);
-    public static readonly int                          FaceRules_RegionFaces = (1 << 1);
-    public static readonly int                         FaceRules_TangentFaces = (1 << 2);
-    public static readonly int                   FaceRules_TangentRegionFaces = (1 << 3);
-    public static readonly int                            FaceRules_BodyFaces = (1 << 4);
-    public static readonly int                         FaceRules_FeatureFaces = (1 << 5);
-    public static readonly int                        FaceRules_AdjacentFaces = (1 << 6);
-    public static readonly int                  FaceRules_ConnectedBlendFaces = (1 << 7);
-    public static readonly int                        FaceRules_AllBlendFaces = (1 << 8);
-    public static readonly int                             FaceRules_RibFaces = (1 << 9);
-    public static readonly int                            FaceRules_SlotFaces = (1 <<10);
-    public static readonly int                   FaceRules_BossandPocketFaces = (1 <<11);
-    public static readonly int                       FaceRules_MergedRibFaces = (1 <<12);
-    public static readonly int                  FaceRules_RegionBoundaryFaces = (1 <<13);
-    public static readonly int                 FaceRules_FaceandAdjacentFaces = (1 <<14);
+    //public static readonly int              SnapPointTypesEnabled_UserDefined = (1 << 0);
+    //public static readonly int                 SnapPointTypesEnabled_Inferred = (1 << 1);
+    //public static readonly int           SnapPointTypesEnabled_ScreenPosition = (1 << 2);
+    //public static readonly int                 SnapPointTypesEnabled_EndPoint = (1 << 3);
+    //public static readonly int                 SnapPointTypesEnabled_MidPoint = (1 << 4);
+    //public static readonly int             SnapPointTypesEnabled_ControlPoint = (1 << 5);
+    //public static readonly int             SnapPointTypesEnabled_Intersection = (1 << 6);
+    //public static readonly int                SnapPointTypesEnabled_ArcCenter = (1 << 7);
+    //public static readonly int            SnapPointTypesEnabled_QuadrantPoint = (1 << 8);
+    //public static readonly int            SnapPointTypesEnabled_ExistingPoint = (1 << 9);
+    //public static readonly int             SnapPointTypesEnabled_PointonCurve = (1 <<10);
+    //public static readonly int           SnapPointTypesEnabled_PointonSurface = (1 <<11);
+    //public static readonly int         SnapPointTypesEnabled_PointConstructor = (1 <<12);
+    //public static readonly int     SnapPointTypesEnabled_TwocurveIntersection = (1 <<13);
+    //public static readonly int             SnapPointTypesEnabled_TangentPoint = (1 <<14);
+    //public static readonly int                    SnapPointTypesEnabled_Poles = (1 <<15);
+    //public static readonly int         SnapPointTypesEnabled_BoundedGridPoint = (1 <<16);
+    ////------------------------------------------------------------------------------
+    ////Bit Option for Property: SnapPointTypesOnByDefault
+    ////------------------------------------------------------------------------------
+    //public static readonly int          SnapPointTypesOnByDefault_UserDefined = (1 << 0);
+    //public static readonly int             SnapPointTypesOnByDefault_Inferred = (1 << 1);
+    //public static readonly int       SnapPointTypesOnByDefault_ScreenPosition = (1 << 2);
+    //public static readonly int             SnapPointTypesOnByDefault_EndPoint = (1 << 3);
+    //public static readonly int             SnapPointTypesOnByDefault_MidPoint = (1 << 4);
+    //public static readonly int         SnapPointTypesOnByDefault_ControlPoint = (1 << 5);
+    //public static readonly int         SnapPointTypesOnByDefault_Intersection = (1 << 6);
+    //public static readonly int            SnapPointTypesOnByDefault_ArcCenter = (1 << 7);
+    //public static readonly int        SnapPointTypesOnByDefault_QuadrantPoint = (1 << 8);
+    //public static readonly int        SnapPointTypesOnByDefault_ExistingPoint = (1 << 9);
+    //public static readonly int         SnapPointTypesOnByDefault_PointonCurve = (1 <<10);
+    //public static readonly int       SnapPointTypesOnByDefault_PointonSurface = (1 <<11);
+    //public static readonly int     SnapPointTypesOnByDefault_PointConstructor = (1 <<12);
+    //public static readonly int SnapPointTypesOnByDefault_TwocurveIntersection = (1 <<13);
+    //public static readonly int         SnapPointTypesOnByDefault_TangentPoint = (1 <<14);
+    //public static readonly int                SnapPointTypesOnByDefault_Poles = (1 <<15);
+    //public static readonly int     SnapPointTypesOnByDefault_BoundedGridPoint = (1 <<16);
+    ////------------------------------------------------------------------------------
+    ////Bit Option for Property: EntityType
+    ////------------------------------------------------------------------------------
+    //public static readonly int                          EntityType_AllowFaces = (1 << 4);
+    //public static readonly int                         EntityType_AllowDatums = (1 << 5);
+    //public static readonly int                         EntityType_AllowBodies = (1 << 6);
+    ////------------------------------------------------------------------------------
+    ////Bit Option for Property: FaceRules
+    ////------------------------------------------------------------------------------
+    //public static readonly int                           FaceRules_SingleFace = (1 << 0);
+    //public static readonly int                          FaceRules_RegionFaces = (1 << 1);
+    //public static readonly int                         FaceRules_TangentFaces = (1 << 2);
+    //public static readonly int                   FaceRules_TangentRegionFaces = (1 << 3);
+    //public static readonly int                            FaceRules_BodyFaces = (1 << 4);
+    //public static readonly int                         FaceRules_FeatureFaces = (1 << 5);
+    //public static readonly int                        FaceRules_AdjacentFaces = (1 << 6);
+    //public static readonly int                  FaceRules_ConnectedBlendFaces = (1 << 7);
+    //public static readonly int                        FaceRules_AllBlendFaces = (1 << 8);
+    //public static readonly int                             FaceRules_RibFaces = (1 << 9);
+    //public static readonly int                            FaceRules_SlotFaces = (1 <<10);
+    //public static readonly int                   FaceRules_BossandPocketFaces = (1 <<11);
+    //public static readonly int                       FaceRules_MergedRibFaces = (1 <<12);
+    //public static readonly int                  FaceRules_RegionBoundaryFaces = (1 <<13);
+    //public static readonly int                 FaceRules_FaceandAdjacentFaces = (1 <<14);
+
     
     //---------------------------------------------------------------------------------
 
-    UspElement element1, element2;
-    Tunnel tunnel1;
-    SlotSet slotSet1, slotSet2;
-    Slot slot1, slot2;
-    SlotConstraint slotConstr;
-    TunnelConstraint tunnelConstsr;
+    UspElement _element1, _element2;
+    Tunnel _tunnel1;
+    SlotSet _slotSet1, _slotSet2;
+    Slot _slot1, _slot2;
+    SlotConstraint _slotConstr;
+    TunnelConstraint _tunnelConstsr;
 
-    bool faceSelected = false;
-    bool pointSelected = false;
+    bool _faceSelected;
+    bool _pointSelected;
 
     //------------------------------------------------------------------------------
     //Constructor for NX Styler class
@@ -142,19 +142,19 @@ public class tunnelslot
     {
         try
         {
-            theDialogName = AppDomain.CurrentDomain.BaseDirectory +
+            _theDialogName = AppDomain.CurrentDomain.BaseDirectory +
                 Config.DlxFolder + Config.DlxTunnelSlot;
 
-            theDialog = Config.TheUi.CreateDialog(theDialogName);
-            theDialog.AddApplyHandler(new NXOpen.BlockStyler.BlockDialog.Apply(apply_cb));
-            theDialog.AddOkHandler(new NXOpen.BlockStyler.BlockDialog.Ok(ok_cb));
-            theDialog.AddUpdateHandler(new NXOpen.BlockStyler.BlockDialog.Update(update_cb));
-            theDialog.AddCancelHandler(new NXOpen.BlockStyler.BlockDialog.Cancel(cancel_cb));
-            theDialog.AddFilterHandler(new NXOpen.BlockStyler.BlockDialog.Filter(filter_cb));
-            theDialog.AddInitializeHandler(new NXOpen.BlockStyler.BlockDialog.Initialize(initialize_cb));
-            theDialog.AddFocusNotifyHandler(new NXOpen.BlockStyler.BlockDialog.FocusNotify(focusNotify_cb));
-            theDialog.AddKeyboardFocusNotifyHandler(new NXOpen.BlockStyler.BlockDialog.KeyboardFocusNotify(keyboardFocusNotify_cb));
-            theDialog.AddDialogShownHandler(new NXOpen.BlockStyler.BlockDialog.DialogShown(dialogShown_cb));
+            _theDialog = Config.TheUi.CreateDialog(_theDialogName);
+            _theDialog.AddApplyHandler(apply_cb);
+            _theDialog.AddOkHandler(ok_cb);
+            _theDialog.AddUpdateHandler(update_cb);
+            _theDialog.AddCancelHandler(cancel_cb);
+            _theDialog.AddFilterHandler(filter_cb);
+            _theDialog.AddInitializeHandler(initialize_cb);
+            _theDialog.AddFocusNotifyHandler(focusNotify_cb);
+            _theDialog.AddKeyboardFocusNotifyHandler(keyboardFocusNotify_cb);
+            _theDialog.AddDialogShownHandler(dialogShown_cb);
         }
         catch (Exception ex)
         {
@@ -245,14 +245,16 @@ public class tunnelslot
     //    
     //------------------------------------------------------------------------------
 //#if USER_EXIT_OR_MENU
+// ReSharper disable UnusedMember.Global
     public static void Main()
+// ReSharper restore UnusedMember.Global
     {
         try
         {
             Log.WriteLine("++++++++++++++++++++++++++++++++++++++++++++++++" + " Начало работы программы");
-            thetunnelslot = new tunnelslot();
+            _thetunnelslot = new tunnelslot();
             // The following method shows the dialog immediately
-            thetunnelslot.Show();
+            _thetunnelslot.Show();
             Log.WriteLine("-------------------------------------------------" + " Конец работы программы");
         }
         catch (Exception ex)
@@ -262,7 +264,7 @@ public class tunnelslot
         }
         finally
         {
-            thetunnelslot.Dispose();
+            _thetunnelslot.Dispose();
         }
     }
 //#endif//USER_EXIT_OR_MENU
@@ -284,18 +286,24 @@ public class tunnelslot
     // MUST NOT use this option since it will UNLOAD your NX Open application image
     // from the menubar.
     //------------------------------------------------------------------------------
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedParameter.Global
      public static int GetUnloadOption(string arg)
+// ReSharper restore UnusedParameter.Global
+// ReSharper restore UnusedMember.Global
     {
-        //return System.Convert.ToInt32(Session.LibraryUnloadOption.Explicitly);
-         return System.Convert.ToInt32(Session.LibraryUnloadOption.Immediately);
-        // return System.Convert.ToInt32(Session.LibraryUnloadOption.AtTermination);
+         return Convert.ToInt32(Session.LibraryUnloadOption.Immediately);
     }
     
     //------------------------------------------------------------------------------
     // Following method cleanup any housekeeping chores that may be needed.
     // This method is automatically called by NX.
     //------------------------------------------------------------------------------
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedParameter.Global
     public static int UnloadLibrary(string arg)
+// ReSharper restore UnusedParameter.Global
+// ReSharper restore UnusedMember.Global
     {
         try
         {
@@ -313,29 +321,28 @@ public class tunnelslot
     //------------------------------------------------------------------------------
     //This method shows the dialog on the screen
     //------------------------------------------------------------------------------
-    public NXOpen.UIStyler.DialogResponse Show()
+    private void Show()
     {
         try
         {
-            theDialog.Show();
+            _theDialog.Show();
         }
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
             Config.TheUi.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
         }
-        return 0;
     }
-    
+
     //------------------------------------------------------------------------------
     //Method Name: Dispose
     //------------------------------------------------------------------------------
-    public void Dispose()
+    private void Dispose()
     {
-        if(theDialog != null)
+        if(_theDialog != null)
         {
-            theDialog.Dispose();
-            theDialog = null;
+            _theDialog.Dispose();
+            _theDialog = null;
         }
     }
     
@@ -343,13 +350,15 @@ public class tunnelslot
     //------------------------------------------------------------------------------
     //Method name: Show_tunnelslot
     //------------------------------------------------------------------------------
+// ReSharper disable UnusedMember.Global
     public static void Show_tunnelslot()
+// ReSharper restore UnusedMember.Global
     {
         try
         {
-            thetunnelslot = new tunnelslot();
+            _thetunnelslot = new tunnelslot();
             // The following method shows the dialog immediately
-            thetunnelslot.Show();
+            _thetunnelslot.Show();
         }
         catch (Exception ex)
         {
@@ -358,7 +367,7 @@ public class tunnelslot
         }
         finally
         {
-            thetunnelslot.Dispose();
+            _thetunnelslot.Dispose();
         }
     }
 //#endif//CALLBACK
@@ -370,20 +379,17 @@ public class tunnelslot
     //------------------------------------------------------------------------------
     //Callback Name: initialize_cb
     //------------------------------------------------------------------------------
-    public void initialize_cb()
+    private void initialize_cb()
     {
         try
         {
-            group = (NXOpen.BlockStyler.UIBlock)theDialog.TopBlock.FindBlock("group");
-            selection0 = (NXOpen.BlockStyler.UIBlock)theDialog.TopBlock.FindBlock("selection0");
-            face_select0 = (NXOpen.BlockStyler.UIBlock)theDialog.TopBlock.FindBlock("face_select0");
-            integer0 = (NXOpen.BlockStyler.UIBlock)theDialog.TopBlock.FindBlock("integer0");
-            group1 = (NXOpen.BlockStyler.UIBlock)theDialog.TopBlock.FindBlock("group1");
-            selection01 = (NXOpen.BlockStyler.UIBlock)theDialog.TopBlock.FindBlock("selection01");
-            point0 = (NXOpen.BlockStyler.UIBlock)theDialog.TopBlock.FindBlock("point0");
-            direction01 = (NXOpen.BlockStyler.UIBlock)theDialog.TopBlock.FindBlock("direction01");
-
-            point01 = (NXOpen.BlockStyler.UIBlock)theDialog.TopBlock.FindBlock("point01");
+            _selection0 = _theDialog.TopBlock.FindBlock("selection0");
+            _faceSelect0 = _theDialog.TopBlock.FindBlock("face_select0");
+            _integer0 = _theDialog.TopBlock.FindBlock("integer0");
+            _selection01 = _theDialog.TopBlock.FindBlock("selection01");
+            _point0 = _theDialog.TopBlock.FindBlock("point0");
+            _direction01 = _theDialog.TopBlock.FindBlock("direction01");
+            _point01 = _theDialog.TopBlock.FindBlock("point01");
         }
         catch (Exception ex)
         {
@@ -397,7 +403,7 @@ public class tunnelslot
     //This callback is executed just before the dialog launch. Thus any value set 
     //here will take precedence and dialog will be launched showing that value. 
     //------------------------------------------------------------------------------
-    public void dialogShown_cb()
+    private static void dialogShown_cb()
     {
         try
         {
@@ -413,7 +419,7 @@ public class tunnelslot
     //------------------------------------------------------------------------------
     //Callback Name: apply_cb
     //------------------------------------------------------------------------------
-    public int apply_cb()
+    private static int apply_cb()
     {
         int errorCode = 0;
         try
@@ -433,44 +439,44 @@ public class tunnelslot
     //------------------------------------------------------------------------------
     //Callback Name: update_cb
     //------------------------------------------------------------------------------
-    public int update_cb( NXOpen.BlockStyler.UIBlock block)
+    private int update_cb( UIBlock block)
     {
         try
         {
-            if(block == selection0)
+            if(block == _selection0)
             {
             //---------Enter your code here-----------
                 Log.WriteLine("Нажат выбор объекта по первому select.");
-                setFirstComponent(block);
+                SetFirstComponent(block);
             }
-            else if(block == face_select0)
+            else if(block == _faceSelect0)
             {
             //---------Enter your code here-----------
                 Log.WriteLine("Нажат выбор первой грани.");
-                setFirstFace(block);
+                SetFirstFace(block);
             }
-            else if (block == integer0)
+            else if (block == _integer0)
             {
             //---------Enter your code here-----------
             }
-            else if(block == selection01)
+            else if(block == _selection01)
             {
             //---------Enter your code here-----------
                 Log.WriteLine("Нажат выбор объекта по второму select.");
-                setSecondComponent(block);
+                SetSecondComponent(block);
             }
-            else if(block == point0)
+            else if(block == _point0)
             {
             //---------Enter your code here-----------
                 Log.WriteLine("Нажата постановка второй точки.");
-                setSecondPoint(block);
+                SetSecondPoint(block);
             }
-            else if(block == direction01)
+            else if(block == _direction01)
             {
             //---------Enter your code here-----------
             }
 
-            if (block == point01)
+            if (block == _point01)
             {
                 
             }
@@ -486,7 +492,7 @@ public class tunnelslot
     //------------------------------------------------------------------------------
     //Callback Name: ok_cb
     //------------------------------------------------------------------------------
-    public int ok_cb()
+    private static int ok_cb()
     {
         int errorCode = 0;
         try
@@ -507,7 +513,7 @@ public class tunnelslot
     //------------------------------------------------------------------------------
     //Callback Name: cancel_cb
     //------------------------------------------------------------------------------
-    public int cancel_cb()
+    private static int cancel_cb()
     {
         try
         {
@@ -525,7 +531,7 @@ public class tunnelslot
     //------------------------------------------------------------------------------
     //Callback Name: filter_cb
     //------------------------------------------------------------------------------
-    public int filter_cb(NXOpen.BlockStyler.UIBlock block, NXOpen.TaggedObject selectedObject)
+    private static int filter_cb(UIBlock block, TaggedObject selectedObject)
     {
         return(NXOpen.UF.UFConstants.UF_UI_SEL_ACCEPT);
     }
@@ -534,7 +540,7 @@ public class tunnelslot
     //Callback Name: focusNotify_cb
     //This callback is executed when any block (except the ones which receive keyboard entry such as Integer block) receives focus.
     //------------------------------------------------------------------------------
-    public void focusNotify_cb(NXOpen.BlockStyler.UIBlock block, bool focus)
+    private static void focusNotify_cb(UIBlock block, bool focus)
     {
         try
         {
@@ -551,7 +557,7 @@ public class tunnelslot
     //Callback Name: keyboardFocusNotify_cb
     //This callback is executed when block which can receive keyboard entry, receives the focus.
     //------------------------------------------------------------------------------
-    public void keyboardFocusNotify_cb(NXOpen.BlockStyler.UIBlock block, bool focus)
+    private static void keyboardFocusNotify_cb(UIBlock block, bool focus)
     {
         try
         {
@@ -566,87 +572,82 @@ public class tunnelslot
 
     //--------------------------------------------------------------------
 
-    void setFirstComponent(UIBlock block)
+    void SetFirstComponent(UIBlock block)
     {
-        if (setComponent(block, ref this.element1))
+        if (SetComponent(block, ref _element1))
         {
-            setEnable(this.face_select0, true);
-            this.slotSet1 = new SlotSet(this.element1);
-            this.element1.setBottomFaces();
+            SetEnable(_faceSelect0, true);
+            _slotSet1 = new SlotSet(_element1);
+            _element1.SetBottomFaces();
         }
         else
         {
-            unSelectObjects(this.face_select0);
-            this.faceSelected = false;
-            setEnable(this.face_select0, false);
+            UnSelectObjects(_faceSelect0);
+            _faceSelected = false;
+            SetEnable(_faceSelect0, false);
         }
     }
-    void setSecondComponent(UIBlock block)
+    void SetSecondComponent(UIBlock block)
     {
-        if (this.setComponent(block, ref this.element2))
+        if (SetComponent(block, ref _element2))
         {
-            setEnable(this.point0, true);
-            this.slotSet2 = new SlotSet(this.element2);
-            this.element2.setBottomFaces();
+            SetEnable(_point0, true);
+            _slotSet2 = new SlotSet(_element2);
+            _element2.SetBottomFaces();
         }
         else
         {
-            this.pointSelected = false;
-            unSelectObjects(this.point0);
-            setEnable(this.point0, false);
+            _pointSelected = false;
+            UnSelectObjects(_point0);
+            SetEnable(_point0, false);
         }
     }
-    bool setComponent(UIBlock block, ref UspElement element)
+
+    static bool SetComponent(UIBlock block, ref UspElement element)
     {
-        PropertyList prop_list = block.GetProperties();
-        TaggedObject[] tag_obs = prop_list.GetTaggedObjectVector("SelectedObjects");
+        PropertyList propList = block.GetProperties();
+        TaggedObject[] tagObs = propList.GetTaggedObjectVector("SelectedObjects");
 
         //если не деселект
-        if (tag_obs.Length > 0)
+        if (tagObs.Length > 0)
         {
-            Component parentComponent = Config.FindCompByBodyTag(tag_obs[0].Tag);
-            if (Geom.IsComponent(tag_obs[0]))
+            Component parentComponent = Config.FindCompByBodyTag(tagObs[0].Tag);
+            if (Geom.IsComponent(tagObs[0]))
             {
-                Log.WriteLine("Объект - " + tag_obs[0].ToString() +
+                Log.WriteLine("Объект - " + tagObs[0] +
                     " - " + parentComponent.Name);
 
                 element = new UspElement(parentComponent);
                 return true;
             }
-            else
-            {
-                string message = "Выбрана не деталь УСП!" + Environment.NewLine +
-                    "Пожалуйста, перевыберите элемент.";
-                Log.WriteWarning(message);
-                Log.WriteLine("Объект - " + tag_obs[0].ToString());
-                unSelectObjects(block);
+            string message = "Выбрана не деталь УСП!" + Environment.NewLine +
+                             "Пожалуйста, перевыберите элемент.";
+            Log.WriteWarning(message);
+            Log.WriteLine("Объект - " + tagObs[0]);
+            UnSelectObjects(block);
 
-                Config.TheUi.NXMessageBox.Show("Error!",
-                                               NXMessageBox.DialogType.Error,
-                                               message);
+            Config.TheUi.NXMessageBox.Show("Error!",
+                                           NXMessageBox.DialogType.Error,
+                                           message);
 
-                block.Focus();
-                return false;
-            }
-        }
-        else
-        {
-            Log.WriteLine("Деселект объекта.");
+            block.Focus();
             return false;
         }
+        Log.WriteLine("Деселект объекта.");
+        return false;
     }
 
-    void setFirstFace(UIBlock block)
+    void SetFirstFace(UIBlock block)
     {
-        if (setFace(block, ref this.tunnel1, this.element1))
+        if (SetFace(block, ref _tunnel1, _element1))
         {
-            Point3d point = this.tunnel1.getEndRightDirection();
+            Point3d point = _tunnel1.GetEndRightDirection();
 
-            if (setPoint(point, ref this.slotSet1))
+            if (SetPoint(point, ref _slotSet1))
             {
-                this.faceSelected = true;
+                _faceSelected = true;
 
-                setConstraints();
+                SetConstraints();
             }
             else
             {
@@ -656,49 +657,47 @@ public class tunnelslot
                 Config.TheUi.NXMessageBox.Show("Error!",
                                                NXMessageBox.DialogType.Error,
                                                message);
-                unSelectObjects(block);
-                unSelectObjects(this.selection0);
+                UnSelectObjects(block);
+                UnSelectObjects(_selection0);
 
-                this.faceSelected = false;
-                this.selection0.Focus();
+                _faceSelected = false;
+                _selection0.Focus();
             }
         }
         else
         {
-            this.faceSelected = false;
+            _faceSelected = false;
         }
     }
-    bool setFace(UIBlock block, ref Tunnel tunnel, UspElement element)
+
+    static bool SetFace(UIBlock block, ref Tunnel tunnel, UspElement element)
     {
         PropertyList propertyList = block.GetProperties();
-        TaggedObject[] TO = propertyList.GetTaggedObjectVector("SelectedObjects");
+        TaggedObject[] to = propertyList.GetTaggedObjectVector("SelectedObjects");
 
         //если не деселект
-        if (TO.Length > 0)
+        if (to.Length > 0)
         {
             Face face;
-            if (findFace(TO, element, out face))
+            if (FindFace(to, element, out face))
 	        {
                 if (face.SolidFaceType == Face.FaceType.Cylindrical)
                 {
-                    Log.WriteLine("Грань выбрана - " + face.ToString());
+                    Log.WriteLine("Грань выбрана - " + face);
                     tunnel = new Tunnel(face, element);
                     return true;
                 }
-                else
-                {
-                    string message = "Грань не цилиндрическая! Выберите другую грань!";
-                    Log.WriteWarning(message + Environment.NewLine + "Выбрана грань - " + face.ToString());
-                    unSelectObjects(block);
-                    Config.TheUi.NXMessageBox.Show("Error!",
-                                                   NXMessageBox.DialogType.Error,
-                                                   message);
-                    block.Focus();
-                    return false;
-                }
-            }
+	            const string message = "Грань не цилиндрическая! Выберите другую грань!";
+	            Log.WriteWarning(message + Environment.NewLine + "Выбрана грань - " + face);
+	            UnSelectObjects(block);
+	            Config.TheUi.NXMessageBox.Show("Error!",
+	                                           NXMessageBox.DialogType.Error,
+	                                           message);
+	            block.Focus();
+	            return false;
+	        }
 
-            string mess = "Грань не найдена! Выберите другую грань!";
+            const string mess = "Грань не найдена! Выберите другую грань!";
             Log.WriteWarning(mess);
             Config.TheUi.NXMessageBox.Show("Error!",
                                            NXMessageBox.DialogType.Error,
@@ -706,16 +705,14 @@ public class tunnelslot
             block.Focus();
             return false;
         }
-        else
-        {
-            Log.WriteLine("Деселект грани");
-            return false;
-        }
+        Log.WriteLine("Деселект грани");
+        return false;
     }
     
-    bool findFaceOooooold(TaggedObject[] TO, UspElement element, out Face face)
+/*
+    bool findFaceOooooold(TaggedObject[] to, UspElement element, out Face face)
     {
-        TaggedObject t = TO[0];
+        TaggedObject t = to[0];
 
         PartCollection PC = Config.TheSession.Parts;
         foreach (Part p in PC)
@@ -794,24 +791,23 @@ public class tunnelslot
         face = null;
         return false;
     }
+*/
 
-    bool findFace(TaggedObject[] TO, UspElement element, out Face face)
+    static bool FindFace(TaggedObject[] to, UspElement element, out Face face)
     {
-        TaggedObject t = TO[0];
+        TaggedObject t = to[0];
 
         Part p = (Part)element.ElementComponent.OwningPart;
-        BodyCollection BC = p.Bodies;
-        foreach (Body b in BC)
+        BodyCollection bc = p.Bodies;
+        foreach (Body b in bc)
         {
-            Face[] FC = b.GetFaces();
+            Face[] fc = b.GetFaces();
 
-            foreach (Face f in FC)
+            foreach (Face f in fc)
             {
-                if (f.Tag == t.Tag)
-                {
-                    face = f;
-                    return true;
-                }
+                if (f.Tag != t.Tag) continue;
+                face = f;
+                return true;
             }
         }
 
@@ -819,96 +815,92 @@ public class tunnelslot
         return false;
     }
 
-    void setSecondPoint(UIBlock block)
+    void SetSecondPoint(UIBlock block)
     {
-        if (setPoint(block, ref this.slotSet2))
+        if (SetPoint(block, ref _slotSet2))
         {
-            this.pointSelected = true;
-            setConstraints();
+            _pointSelected = true;
+            SetConstraints();
         }
         else
         {
-            this.pointSelected = false;
-            unSelectObjects(this.selection01);
-            this.selection01.Focus();
-            setEnable(block, false);
+            _pointSelected = false;
+            UnSelectObjects(_selection01);
+            _selection01.Focus();
+            SetEnable(block, false);
         }
     }
-    bool setPoint(UIBlock block, ref SlotSet slotSet)
+
+    static bool SetPoint(UIBlock block, ref SlotSet slotSet)
     {
         PropertyList propertyList = block.GetProperties();
         Point3d point = propertyList.GetPoint("Point");
 
-        if (setPoint(point, ref slotSet))
+        if (SetPoint(point, ref slotSet))
         {
             return true;
         }
-        else
-        {
-            string message = "Базовые плоскости пазов не найдены!" + Environment.NewLine +
-                                "Выберите другой элемент!";
-            Log.WriteWarning(message);
-            Config.TheUi.NXMessageBox.Show("Error!",
-                                           NXMessageBox.DialogType.Error,
-                                           message);
-            unSelectObjects(block);
-            return false;
-        }
-        
+        string message = "Базовые плоскости пазов не найдены!" + Environment.NewLine +
+                         "Выберите другой элемент!";
+        Log.WriteWarning(message);
+        Config.TheUi.NXMessageBox.Show("Error!",
+                                       NXMessageBox.DialogType.Error,
+                                       message);
+        UnSelectObjects(block);
+        return false;
     }
-    bool setPoint(Point3d point, ref SlotSet slotSet)
+
+    static bool SetPoint(Point3d point, ref SlotSet slotSet)
     {
-        slotSet.setPoint(point);
-        if (slotSet.haveNearestBottomFace())
+        slotSet.SetPoint(point);
+        if (slotSet.HaveNearestBottomFace())
         {
-            slotSet.setNearestEdges();
+            slotSet.SetNearestEdges();
 
             return true;
         }
-        else
-        {
-            return false;
-        }
+        return false;
     }
 
-    void setEnable(UIBlock block, bool enable)
+    static void SetEnable(UIBlock block, bool enable)
     {
-        PropertyList prop_list = block.GetProperties();
-        prop_list.SetLogical("Enable", enable);
-    }
-    void unSelectObjects(UIBlock block)
-    {
-        PropertyList prop_list = block.GetProperties();
-        prop_list.SetTaggedObjectVector("SelectedObjects", new TaggedObject[0]);
+        PropertyList propList = block.GetProperties();
+        propList.SetLogical("Enable", enable);
     }
 
-    void setConstraints()
+    static void UnSelectObjects(UIBlock block)
     {
-        if (this.faceSelected && this.pointSelected)
+        PropertyList propList = block.GetProperties();
+        propList.SetTaggedObjectVector("SelectedObjects", new TaggedObject[0]);
+    }
+
+    void SetConstraints()
+    {
+        if (_faceSelected && _pointSelected)
         {
             Log.WriteLine("Запущена процедура позиционирования.");
 
-            bool hasNearestSlot1 = this.slotSet1.hasNearestSlot(out this.slot1);
-            bool hasNearestSlot2 = this.slotSet2.hasNearestSlot(out this.slot2);
+            bool hasNearestSlot1 = _slotSet1.HasNearestSlot(out _slot1);
+            bool hasNearestSlot2 = _slotSet2.HasNearestSlot(out _slot2);
 
             if (hasNearestSlot1 && hasNearestSlot2)
             {
-                this.slotConstr = new SlotConstraint(this.slot1, this.slot2);
-                this.slotConstr.SetCenterConstraint();
+                _slotConstr = new SlotConstraint(_slot1, _slot2);
+                _slotConstr.SetCenterConstraint();
 
-                slot1.FindTopFace();
-                slot2.FindTopFace();
-                tunnel1.setSlot(this.slot1);
+                _slot1.FindTopFace();
+                _slot2.FindTopFace();
+                _tunnel1.SetSlot(_slot1);
 
-                this.tunnelConstsr = new TunnelConstraint(this.tunnel1, this.slot2);
-                this.tunnelConstsr.setTouchFaceConstraint(false, false);
+                _tunnelConstsr = new TunnelConstraint(_tunnel1, _slot2);
+                _tunnelConstsr.SetTouchFaceConstraint(false, false);
 
             }
             else
             {
-                string mess = "Ближайший слот для первого элемента найден - " + hasNearestSlot1.ToString() +
+                string mess = "Ближайший слот для первого элемента найден - " + hasNearestSlot1 +
                     Environment.NewLine;
-                mess += "Ближайший слот для второго элемента найден - " + hasNearestSlot2.ToString();
+                mess += "Ближайший слот для второго элемента найден - " + hasNearestSlot2;
                 Log.WriteLine(mess);
             }
         }

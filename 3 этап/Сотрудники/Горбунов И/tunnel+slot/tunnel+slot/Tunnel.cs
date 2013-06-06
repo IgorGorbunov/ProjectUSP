@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using NXOpen;
 using NXOpen.Assemblies;
 
@@ -16,7 +14,7 @@ public class Tunnel
     {
         get
         {
-            return this.element.ElementComponent;
+            return _element.ElementComponent;
         }
     }
     /// <summary>
@@ -26,7 +24,7 @@ public class Tunnel
     {
         get
         {
-            return this.element.Body;
+            return _element.Body;
         }
     }
     /// <summary>
@@ -36,7 +34,7 @@ public class Tunnel
     {
         get
         {
-            return face;
+            return _face;
         }
     }
     /// <summary>
@@ -47,8 +45,8 @@ public class Tunnel
         get
         {
             //считаем каждый раз заново, ибо может поменяться
-            this.setDirectionAndPoint();
-            return this.direction;
+            SetDirectionAndPoint();
+            return _direction;
         }
     }
     /// <summary>
@@ -58,21 +56,20 @@ public class Tunnel
     {
         get
         {
-            return this.point;
+            return _point;
         }
     }
 
-    Face face;
-    Face[] normalFaces = new Face[2];
-    KeyValuePair<Face, double>[] ortFacePairs = null;
-    UspElement element;
+    readonly Face _face;
+    readonly Face[] _normalFaces = new Face[2];
+    KeyValuePair<Face, double>[] _ortFacePairs;
+    readonly UspElement _element;
 
-    double radius1, radius2;
-    double[] direction = new double[3];
-    Point3d point;
-    int rev;
+    readonly double[] _direction = new double[3];
+    Point3d _point;
+    int _rev;
 
-    Slot slot;
+    Slot _slot;
 
     /// <summary>
     /// Инициализирует новый экземпляр класса отверстия для базирования для данной грани 
@@ -82,96 +79,82 @@ public class Tunnel
     /// <param name="element">Элемент УСП для данной грани.</param>
     public Tunnel(Face face, UspElement element)
     {
-        this.face = face;
-        this.element = element;
+        _face = face;
+        _element = element;
 
-        this.setNormalFaces();
-        this.setDirectionAndPoint();
+        SetNormalFaces();
+        SetDirectionAndPoint();
     }
     /// <summary>
     /// Возвращает пару (Грань-Расстояние)ортогональных базовому отверстию граней с расстоянием до них.
     /// </summary>
     /// <param name="reverse">True, если необходимо изменить направление поиска граней.</param>
     /// <returns></returns>
-    public KeyValuePair<Face, double>[] getOrtFacePairs(bool reverse)
+    public KeyValuePair<Face, double>[] GetOrtFacePairs(bool reverse)
     {
-        if (this.ortFacePairs == null || reverse)
+        if (_ortFacePairs == null || reverse)
         {
-            this.findOrtFaces(reverse);
+            FindOrtFaces(reverse);
         }
-        return this.ortFacePairs;
+        return _ortFacePairs;
     }
     /// <summary>
     /// Возвращает центр окружности, находящейся по направлению предполагаемой
     /// ВЕРНОЙ нормали базового отверстия.
     /// </summary>
     /// <returns></returns>
-    public Point3d getEndRightDirection()
+    public Point3d GetEndRightDirection()
     {
-        Edge[] edges = this.face.GetEdges();
+        Edge[] edges = _face.GetEdges();
         Point3d point1, point2, tempPoint;
 
         edges[0].GetVertices(out point1, out tempPoint);
         edges[1].GetVertices(out point2, out tempPoint);
 
         Vector vec1 = new Vector(point1, point2);
-        if (Geom.IsEqual(this.Direction, vec1.Direction))
-        {
-            return point2;
-        }
-        else
-        {
-            return point1;
-        }
+        return Geom.IsEqual(Direction, vec1.Direction) ? point2 : point1;
     }
     /// <summary>
     /// Возвращает центр окружности, находящейся противоположно направлению предполагаемой
     /// ВЕРНОЙ нормали базового отверстия.
     /// </summary>
     /// <returns></returns>
-    public Point3d getBeginRightDirection()
+    public Point3d GetBeginRightDirection()
     {
-        Edge[] edges = this.face.GetEdges();
+        Edge[] edges = _face.GetEdges();
         Point3d point1, point2, tempPoint;
 
         edges[0].GetVertices(out point1, out tempPoint);
         edges[1].GetVertices(out point2, out tempPoint);
 
         Vector vec1 = new Vector(point1, point2);
-        if (Geom.IsEqual(this.Direction, vec1.Direction))
-        {
-            return point1;
-        }
-        else
-        {
-            return point2;
-        }
+        return Geom.IsEqual(Direction, vec1.Direction) ? point1 : point2;
     }
 
-    public void setSlot(Slot slot)
+    public void SetSlot(Slot slot)
     {
-        this.slot = slot;
+        _slot = slot;
     }
 
     //refactor
-    void findOrtFaces(bool reverse)
+    void FindOrtFaces(bool reverse)
     {
         double[] direction1;
         if (reverse)
         {
-            direction1 = this.reverseDirection();
+            direction1 = ReverseDirection();
         }
         else
         {
-            this.rev = 1;
-            direction1 = this.slot.BottomDirection;
+            _rev = 1;
+            direction1 = _slot.BottomDirection;
         }
         
-        Point3d point = this.CentralPoint;
+        Point3d point = CentralPoint;
 
         Dictionary<Face, double> dictFaces = new Dictionary<Face, double>();
 
-        Face[] faces = this.Body.GetFaces();
+        Face[] faces = Body.GetFaces();
         foreach (Face f in faces)
         {
             double[] direction2 = Geom.GetDirection(f);
@@ -190,67 +173,63 @@ public class Tunnel
             }  
         }
 
-        this.setOrtFaces(dictFaces);
+        SetOrtFaces(dictFaces);
     }
 
-    void setOrtFaces(Dictionary<Face, double> dictFaces)
+    void SetOrtFaces(Dictionary<Face, double> dictFaces)
     {
-        this.ortFacePairs = new KeyValuePair<Face, double>[dictFaces.Count];
+        _ortFacePairs = new KeyValuePair<Face, double>[dictFaces.Count];
         int i = 0;
         foreach (KeyValuePair<Face, double> pair in dictFaces)
         {
-            this.ortFacePairs[i] = pair;
+            _ortFacePairs[i] = pair;
             i++;
         }
 
         //TODO проверка на пустоту массива
-        Instr.QSortPair(this.ortFacePairs, 0, this.ortFacePairs.Length - 1);
+        Instr.QSortPair(_ortFacePairs, 0, _ortFacePairs.Length - 1);
     }
 
-    void setNormalFaces()
+    void SetNormalFaces()
     {
-        Edge[] edges = face.GetEdges();
-
-        radius1 = edges[0].GetLength() / (2 * Math.PI);
-        radius2 = edges[1].GetLength() / (2 * Math.PI);
+        Edge[] edges = _face.GetEdges();
 
         for (int i = 0; i < edges.Length; i++)
 		{
             Face[] faces = edges[i].GetFaces();
             foreach (Face f in faces)
             {
-                if (f != this.face)
-                {
-                    normalFaces[i] = f;
-                    break;
-                }
+                if (f == _face) continue;
+                _normalFaces[i] = f;
+                break;
             }
 		}
     }
 
-    void setDirectionAndPoint()
+    void SetDirectionAndPoint()
     {
         int voidInt;
         double voidDouble;
         double[] box = new double[6];
         double[] voidPoint = new double[3];
 
-        Config.TheUfSession.Modl.AskFaceData(this.face.Tag, out voidInt, voidPoint, this.direction, box, out voidDouble, out voidDouble, out voidInt);
+        Config.TheUfSession.Modl.AskFaceData(_face.Tag, out voidInt, voidPoint, _direction, 
+            box, out voidDouble, out voidDouble, out voidInt);
 
-        Edge[] edges = face.GetEdges();
+        Edge[] edges = _face.GetEdges();
         Point3d point1, point2;
         edges[0].GetVertices(out point1, out point2);
-        this.point = point1;
+        _point = point1;
     }
 
-    double[] reverseDirection()
+    double[] ReverseDirection()
     {
-        double[] dir = this.Direction;
-        this.rev *= -1;
+        double[] dir = Direction;
+        _rev *= -1;
 
         for (int i = 0; i < dir.Length; i++)
         {
-            dir[i] = this.rev * dir[i];
+            dir[i] = _rev * dir[i];
         }
 
         return dir;

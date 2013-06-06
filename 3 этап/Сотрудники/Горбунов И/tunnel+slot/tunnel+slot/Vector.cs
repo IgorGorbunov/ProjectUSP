@@ -91,19 +91,11 @@ public class Vector
     private Point3d _start, _end;
 
     /// <summary>
-    /// Инициализирует новый путой экземпляр класса.
-    /// </summary>
-    public Vector()
-        : this(new Point3d(), new Point3d())
-    {
-
-    }
-    /// <summary>
     /// Инициализирует новый экземпляр класса вектора по координатам начальной и конечной точки.
     /// </summary>
     /// <param name="start">Начальная точка вектора.</param>
     /// <param name="end">Конечная точка вектора.</param>
-    public Vector(Point3d start, Point3d end)
+    internal Vector(Point3d start, Point3d end)
     {
         InitPoints(start, end);
     }
@@ -155,7 +147,7 @@ public class Vector
     /// </summary>
     /// <param name="vec">Второй вектор.</param>
     /// <returns></returns>
-    public double GetAngle(Vector vec)
+    private double GetAngle(Vector vec)
     {
         UFSession theUfSession = UFSession.GetUFSession();
 
@@ -185,9 +177,9 @@ public class Vector
     /// </summary>
     /// <param name="vec">Второй вектор.</param>
     /// <returns></returns>
-    public bool IsNormal(Vector vec)
+    internal bool IsNormal(Vector vec)
     {
-        double angle = this.GetAngle(vec);
+        double angle = GetAngle(vec);
 
         return Math.Round(Math.Abs(angle)) == 90.0 || Math.Round(Math.Abs(angle)) == 270.0;
     }
@@ -198,9 +190,9 @@ public class Vector
     /// </summary>
     /// <param name="vec">Второй вектор.</param>
     /// <returns></returns>
-    public bool IsParallel(Vector vec)
+    internal bool IsParallel(Vector vec)
     {
-        double angle = this.GetAngle(vec);
+        double angle = GetAngle(vec);
 
         return Math.Round((Math.Abs(angle))) == 0.0 || Math.Round(Math.Abs(angle)) == 180.0;
     }
