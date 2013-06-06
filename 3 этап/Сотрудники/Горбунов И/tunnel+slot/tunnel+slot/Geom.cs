@@ -8,15 +8,13 @@ using NXOpen;
 static class Geom
 {
     public const int Dimensions = 3;
-    
-    
-    
 
-    public static double GetHalfPerimetr(double a, double b, double c)
+
+    private static double GetHalfPerimetr(double a, double b, double c)
     {
         return (a + b + c) / 2;
     }
-    public static double GetSquare(double a, double b, double c)
+    private static double GetSquare(double a, double b, double c)
     {
         double p = GetHalfPerimetr(a, b, c);
         return Math.Sqrt(p * (p - a) * (p - b) * (p - c));
@@ -72,11 +70,11 @@ static class Geom
     }
 
     /// <summary>
-    /// Возвращает точку пересечения плоскости и перпендикулярной прямой. Плоскость проведена через
+    /// Возвращает точку пересечения прямой и проведенным перпендикуляром к ней через заданную
     /// точку.
     /// </summary>
-    /// <param name="p"></param>
-    /// <param name="straight"></param>
+    /// <param name="p">Заданная точка, начало перпендикуляра.</param>
+    /// <param name="straight">Прямая.</param>
     /// <returns></returns>
     public static Point3d GetIntersectionPointStraight(Point3d p, Straight straight)
     {
@@ -310,7 +308,6 @@ static class Geom
         }
         return Config.Round(point1.Z) == Config.Round(point2.Z);
     }
-
     /// <summary>
     /// Возвращает значение, определяющее являются ли два массива эквивалентными с учетом
     /// рабочего округления.

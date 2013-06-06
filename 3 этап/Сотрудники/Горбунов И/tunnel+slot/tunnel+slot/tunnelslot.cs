@@ -129,8 +129,10 @@ public class tunnelslot
     Tunnel _tunnel1;
     SlotSet _slotSet1, _slotSet2;
     Slot _slot1, _slot2;
+
     SlotConstraint _slotConstr;
     TunnelConstraint _tunnelConstsr;
+    private ParallelConstraint _parallelConstr;
 
     bool _faceSelected;
     bool _pointSelected;
@@ -876,33 +878,53 @@ public class tunnelslot
 
     void SetConstraints()
     {
-        if (_faceSelected && _pointSelected)
+        if (!_faceSelected || !_pointSelected) return;
+        Log.WriteLine("Запущена процедура позиционирования.");
+
+        bool hasNearestSlot1 = _slotSet1.HasNearestSlot(out _slot1);
+        bool hasNearestSlot2 = _slotSet2.HasNearestSlot(out _slot2);
+
+        if (hasNearestSlot1 && hasNearestSlot2)
         {
-            Log.WriteLine("Запущена процедура позиционирования.");
+            _slot1.FindTopFace();
+            _slot2.FindTopFace();
 
-            bool hasNearestSlot1 = _slotSet1.HasNearestSlot(out _slot1);
-            bool hasNearestSlot2 = _slotSet2.HasNearestSlot(out _slot2);
+            _slotConstr = new SlotConstraint(_slot1, _slot2);
+            _slotConstr.SetCenterConstraint();
 
-            if (hasNearestSlot1 && hasNearestSlot2)
+            _parallelConstr = new ParallelConstraint();
+            _parallelConstr.Create(_element1.ElementComponent, _slot1.BottomFace,
+                                   _element2.ElementComponent, _slot2.BottomFace);
+
+            if (Geom.IsEqual(Geom.GetDirection(_slot1.BottomFace), 
+                            (Geom.GetDirection(_slot2.BottomFace))))
             {
-                _slotConstr = new SlotConstraint(_slot1, _slot2);
-                _slotConstr.SetCenterConstraint();
-
-                _slot1.FindTopFace();
-                _slot2.FindTopFace();
-                _tunnel1.SetSlot(_slot1);
-
-                _tunnelConstsr = new TunnelConstraint(_tunnel1, _slot2);
-                _tunnelConstsr.SetTouchFaceConstraint(false, false);
-
+                _parallelConstr.Reverse();
             }
-            else
-            {
-                string mess = "Ближайший слот для первого элемента найден - " + hasNearestSlot1 +
-                    Environment.NewLine;
-                mess += "Ближайший слот для второго элемента найден - " + hasNearestSlot2;
-                Log.WriteLine(mess);
-            }
+
+            Platan bottomPlatan = new Platan(_slot2.BottomFace);
+            Point3d tunnelProectionPoint = bottomPlatan.GetProection(_tunnel1.CentralPoint);
+
+            Log.WriteLine("Координаты проэкции центра туннеля на НГП: " + tunnelProectionPoint);
+            Log.WriteLine("Координаты проэкции точки выбора паза: " + _slot2.SlotPoint);
+
+            Vector moveVector = new Vector(tunnelProectionPoint, _slot2.SlotPoint);
+            move(_slot1.ParentComponent, moveVector);
+
+            
+            //_tunnel1.SetSlot(_slot1);
+
+            //_tunnelConstsr = new TunnelConstraint(_tunnel1, _slot2);
+            //_tunnelConstsr.SetTouchFaceConstraint(false, false);
+
+            Config.TheUfSession.Modl.Update();
+        }
+        else
+        {
+            string mess = "Ближайший слот для первого элемента найден - " + hasNearestSlot1 +
+                          Environment.NewLine;
+            mess += "Ближайший слот для второго элемента найден - " + hasNearestSlot2;
+            Log.WriteLine(mess);
         }
     }
 

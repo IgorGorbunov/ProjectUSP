@@ -46,6 +46,7 @@
     <Compile Include="Geom.cs" />
     <Compile Include="Instr.cs" />
     <Compile Include="Log.cs" />
+    <Compile Include="ParallelConstraint.cs" />
     <Compile Include="Platan.cs" />
     <Compile Include="Slot.cs" />
     <Compile Include="SlotConstraint.cs" />

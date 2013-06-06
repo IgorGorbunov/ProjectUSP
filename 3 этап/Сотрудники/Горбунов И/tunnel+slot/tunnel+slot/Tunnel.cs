@@ -56,6 +56,7 @@ public class Tunnel
     {
         get
         {
+            SetDirectionAndPoint();
             return _point;
         }
     }

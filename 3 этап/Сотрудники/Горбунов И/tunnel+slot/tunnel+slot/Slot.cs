@@ -84,12 +84,25 @@ public class Slot
             return _bottomDirection;
         }
     }
+    /// <summary>
+    /// Возвращает спроецированную точку паза.
+    /// </summary>
+    public Point3d SlotPoint
+    {
+        get
+        {
+            if (Geom.IsEqual(_slotPoint, new Point3d(0.0, 0.0, 0.0)))
+            {
+                SetSlotPoint();
+            }
+            return _slotPoint;
+        }
+    }
 
     Config.SlotType _type;
 
     readonly SlotSet _slotSet;
 
-    //Face bottomFace;
     readonly Face _sideFace1;
     readonly Face _sideFace2;
     Face _touchFace;
@@ -101,6 +114,8 @@ public class Slot
     Edge _touchEdge;
 
     double[] _bottomDirection;
+
+    private Point3d _slotPoint = new Point3d(0.0, 0.0, 0.0);
 
     KeyValuePair<Face, double>[] _ortFacePairs;
     
@@ -456,6 +471,19 @@ public class Slot
 
         return false;
     }*/
+
+    void SetSlotPoint()
+    {
+        Point3d slotSetPoint = _slotSet.SelectPoint;
+        Straight straight1 = new Straight(_edgeLong1);
+        Straight straight2 = new Straight(_edgeLong2);
+        Point3d intersection1 = Geom.GetIntersectionPointStraight(slotSetPoint, straight1);
+        Point3d intersection2 = Geom.GetIntersectionPointStraight(slotSetPoint, straight2);
+
+        _slotPoint = new Point3d((intersection1.X + intersection2.X)/2,
+                                 (intersection1.Y + intersection2.Y)/2,
+                                 (intersection1.Z + intersection2.Z)/2);
+    }
 
 }
 
