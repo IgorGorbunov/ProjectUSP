@@ -29,14 +29,6 @@ public class TouchConstraint : Constrainter
 
         ExecuteConstraints();
     }
-    /// <summary>
-    /// Удаляет соединение.
-    /// </summary>
-    public void Delete()
-    {
-        NXObject objectToDelete = Constr;
-        Config.TheSession.UpdateManager.AddToDeleteList(objectToDelete);
-    }
-
+    
 }
 

@@ -73,7 +73,6 @@ public class TunnelConstraint
             intersect = new ElementIntersection(_firstTunnel.Body, _slot.Body);
             comp2 = _slot.ParentComponent;
         }
-        Config.FreezeDisplay();
 
         for (int i = 0; i < pairs2.Length; i++)
         {
@@ -94,7 +93,7 @@ public class TunnelConstraint
         }
     End: { }
 
-        Config.UnFreezeDisplay();
+        //Config.UnFreezeDisplay();
     }
 
     /// <summary>

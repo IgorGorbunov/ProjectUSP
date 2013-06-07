@@ -1,4 +1,5 @@
-﻿using NXOpen.Positioning;
+﻿using NXOpen;
+using NXOpen.Positioning;
 
 /// <summary>
 /// Класс для создания различный связей и ограничений.
@@ -18,7 +19,7 @@ public class Constrainter
     /// <summary>
     /// Производит реверс констрэйнта.
     /// </summary>
-    public virtual void Reverse()
+    public void Reverse()
     {
         Constr.FlipAlignment();
         ExecuteConstraints();
@@ -37,7 +38,14 @@ public class Constrainter
         ComponentPositioner.ClearNetwork();
     }
 
+    /// <summary>
+    /// Удаляет соединение.
+    /// </summary>
+    public void Delete()
+    {
+        NXObject objectToDelete = Constr;
+        Config.TheSession.UpdateManager.AddToDeleteList(objectToDelete);
+    }
 
-    
 }
 
