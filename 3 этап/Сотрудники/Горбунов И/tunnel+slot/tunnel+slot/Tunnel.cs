@@ -40,7 +40,7 @@ public class Tunnel
     /// <summary>
     /// Возвращает направление базового отверстия.
     /// </summary>
-    public double[] Direction
+    private double[] Direction
     {
         get
         {
@@ -187,8 +187,10 @@ public class Tunnel
             i++;
         }
 
-        //TODO проверка на пустоту массива
-        Instr.QSortPair(_ortFacePairs, 0, _ortFacePairs.Length - 1);
+        if (_ortFacePairs.Length > 1)
+        {
+            Instr.QSortPair(_ortFacePairs, 0, _ortFacePairs.Length - 1);
+        }
     }
 
     void SetNormalFaces()

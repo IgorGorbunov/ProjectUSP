@@ -133,6 +133,7 @@ public class tunnelslot
     SlotConstraint _slotConstr;
     TunnelConstraint _tunnelConstsr;
     private ParallelConstraint _parallelConstr;
+    private DistanceConstraint _distanceConstr;
 
     bool _faceSelected;
     bool _pointSelected;
@@ -881,6 +882,8 @@ public class tunnelslot
         if (!_faceSelected || !_pointSelected) return;
         Log.WriteLine("Запущена процедура позиционирования.");
 
+
+
         bool hasNearestSlot1 = _slotSet1.HasNearestSlot(out _slot1);
         bool hasNearestSlot2 = _slotSet2.HasNearestSlot(out _slot2);
 
@@ -889,6 +892,17 @@ public class tunnelslot
             _slot1.FindTopFace();
             _slot2.FindTopFace();
 
+            Platan bottomPlatan = new Platan(_slot2.BottomFace);
+            //Point3d tunnelProectionPoint = bottomPlatan.GetProection(_tunnel1.CentralPoint);
+            Point3d tunnelProectionPoint = _tunnel1.CentralPoint;
+
+            Log.WriteLine("Координаты центра туннеля на НГП: " + tunnelProectionPoint);
+            Log.WriteLine("Координаты проэкции точки выбора паза: " + _slot2.SlotPoint);
+
+            Vector moveVector = new Vector(tunnelProectionPoint, _slot2.SlotPoint);
+            move(_slot1.ParentComponent, moveVector);
+            Config.TheUi.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, "! уже");
+
             _slotConstr = new SlotConstraint(_slot1, _slot2);
             _slotConstr.SetCenterConstraint();
 
@@ -896,26 +910,74 @@ public class tunnelslot
             _parallelConstr.Create(_element1.ElementComponent, _slot1.BottomFace,
                                    _element2.ElementComponent, _slot2.BottomFace);
 
-            if (Geom.IsEqual(Geom.GetDirection(_slot1.BottomFace), 
+            Config.TheUi.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, "!");
+
+            if (Geom.IsEqual(Geom.GetDirection(_slot1.BottomFace),
                             (Geom.GetDirection(_slot2.BottomFace))))
             {
                 _parallelConstr.Reverse();
             }
+            Config.TheUi.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, "! будет");
 
-            Platan bottomPlatan = new Platan(_slot2.BottomFace);
-            Point3d tunnelProectionPoint = bottomPlatan.GetProection(_tunnel1.CentralPoint);
 
-            Log.WriteLine("Координаты проэкции центра туннеля на НГП: " + tunnelProectionPoint);
-            Log.WriteLine("Координаты проэкции точки выбора паза: " + _slot2.SlotPoint);
+            Vector edgeVector = new Vector(_slot2.EdgeLong1);
+            Edge[] edges = _slotSet2.BottomFace.GetEdges();
+            foreach (Edge edge in edges)
+            {
+                if (Config.Round(edge.GetLength()) != Config.SlotWidth &&
+                    Config.Round(edge.GetLength()) != Config.PSlotWidth) continue;
+                Face[] faces = edge.GetFaces();
+                foreach (Face face in faces)
+                {
+                    if (face == _slotSet2.BottomFace) continue;
 
-            Vector moveVector = new Vector(tunnelProectionPoint, _slot2.SlotPoint);
-            move(_slot1.ParentComponent, moveVector);
+                    if (!Geom.IsEqual(Geom.GetDirection(face), edgeVector.Direction)) continue;
 
-            
-            //_tunnel1.SetSlot(_slot1);
+                    Vector edgeVector2 = new Vector(_slot1.EdgeLong1);
+                    Edge[] edges2 = _slotSet1.BottomFace.GetEdges();
+                    foreach (Edge edge2 in edges2)
+                    {
+                        if (Config.Round(edge2.GetLength()) != Config.SlotWidth &&
+                            Config.Round(edge2.GetLength()) != Config.PSlotWidth) continue;
+                        Face[] faces2 = edge2.GetFaces();
+                        foreach (Face face2 in faces2)
+                        {
+                            if (face2 == _slotSet1.BottomFace) continue;
 
-            //_tunnelConstsr = new TunnelConstraint(_tunnel1, _slot2);
-            //_tunnelConstsr.SetTouchFaceConstraint(false, false);
+                            if (!Geom.IsEqual(Geom.GetDirection(face2), edgeVector2.Direction))
+                                continue;
+
+                            Edge[] edges22 = face2.GetEdges();
+                            Point3d point3D, tmpP;
+                            edges22[0].GetVertices(out point3D, out tmpP);
+
+
+                            Platan facePlatan = new Platan(face);
+                            double distance =
+                                Math.Abs(facePlatan.GetDistanceToPoint(point3D));
+                            Config.TheUi.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error,
+                                                           point3D.ToString());
+                            Config.TheUi.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error,
+                                                           distance.ToString());
+
+                            _distanceConstr = new DistanceConstraint();
+                            _distanceConstr.Create(_slot1.ParentComponent, face2,
+                                                   _slot2.ParentComponent, face, distance);
+                            //_distanceConstr.Create(_slot1.ParentComponent, _slot1.BottomFace,
+                            //                       _slot2.ParentComponent, _slot2.BottomFace, distance);
+
+                            goto End;
+                        }
+                    }
+                }
+            }
+        End: { }
+
+
+            _tunnel1.SetSlot(_slot1);
+
+            _tunnelConstsr = new TunnelConstraint(_tunnel1, _slot2);
+            _tunnelConstsr.SetTouchFaceConstraint(false, false);
 
             Config.TheUfSession.Modl.Update();
         }
@@ -939,7 +1001,7 @@ public class tunnelslot
         componentNetwork2.SetMovingGroup(movableObjects2);
         componentNetwork2.BeginDrag();
 
-        Vector3d translation1 = vec.GetVector3D();
+        Vector3d translation1 = vec.GetCoordsVector3D();
         componentNetwork2.DragByTranslation(translation1);
         componentNetwork2.EndDrag();
         componentNetwork2.ResetDisplay();

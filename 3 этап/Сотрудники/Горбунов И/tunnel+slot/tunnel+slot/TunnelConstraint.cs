@@ -95,7 +95,6 @@ public class TunnelConstraint
     End: { }
 
         Config.UnFreezeDisplay();
-        Config.TheUfSession.Modl.Update();
     }
 
     /// <summary>

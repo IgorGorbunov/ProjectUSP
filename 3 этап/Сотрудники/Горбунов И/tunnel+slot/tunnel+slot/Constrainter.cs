@@ -24,7 +24,7 @@ public class Constrainter
         ExecuteConstraints();
     }
 
-    protected void InitConstraints()
+    private void InitConstraints()
     {
         ComponentPositioner = Config.WorkPart.ComponentAssembly.Positioner;
 
@@ -34,6 +34,7 @@ public class Constrainter
     protected void ExecuteConstraints()
     {
         _componentNetwork.Solve();
+        ComponentPositioner.ClearNetwork();
     }
 
 

@@ -22,10 +22,10 @@ public class TouchAxeConstraint : Constrainter
         Constr.ConstraintType = Constraint.Type.Touch;
 
         Constr.CreateConstraintReference(firstComponent,
-                                         firstFace, true, false, false);
+                                         firstFace, false, false, false);
 
         Constr.CreateConstraintReference(secondComponent,
-                                         secondFace, true, false, false);
+                                         secondFace, false, false, false);
 
         ExecuteConstraints();
     }

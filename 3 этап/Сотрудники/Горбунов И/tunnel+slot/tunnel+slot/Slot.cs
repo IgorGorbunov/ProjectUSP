@@ -91,13 +91,13 @@ public class Slot
     {
         get
         {
-            if (Geom.IsEqual(_slotPoint, new Point3d(0.0, 0.0, 0.0)))
-            {
-                SetSlotPoint();
-            }
+            SetSlotPoint();
             return _slotPoint;
         }
     }
+
+    public readonly Edge EdgeLong1;
+    private readonly Edge _edgeLong2;
 
     Config.SlotType _type;
 
@@ -108,8 +108,7 @@ public class Slot
     Face _touchFace;
     Face _topFace;
 
-    readonly Edge _edgeLong1;
-    readonly Edge _edgeLong2;
+    
     readonly List<Edge> _touchEdges = new List<Edge>();
     Edge _touchEdge;
 
@@ -129,7 +128,7 @@ public class Slot
     public Slot(SlotSet slotSet, Edge edgeLong1, Edge edgeLong2, Config.SlotType type)
     {
         _slotSet = slotSet;
-        _edgeLong1 = edgeLong1;
+        EdgeLong1 = edgeLong1;
         _edgeLong2 = edgeLong2;
         _type = type;
 
@@ -269,12 +268,12 @@ public class Slot
 
     public void Highlight()
     {
-        _edgeLong1.Highlight();
+        EdgeLong1.Highlight();
         _edgeLong2.Highlight();
     }
     public void Unhighlight()
     {
-        _edgeLong1.Unhighlight();
+        EdgeLong1.Unhighlight();
         _edgeLong2.Unhighlight();
     }
 
@@ -301,7 +300,7 @@ public class Slot
         _bottomDirection = Geom.GetDirection(BottomFace);
         double[] direction;
 
-        Edge edge = _edgeLong1;
+        Edge edge = EdgeLong1;
         Face face = _sideFace1;
 
         if (_type == Config.SlotType.Pslot)
@@ -475,7 +474,7 @@ public class Slot
     void SetSlotPoint()
     {
         Point3d slotSetPoint = _slotSet.SelectPoint;
-        Straight straight1 = new Straight(_edgeLong1);
+        Straight straight1 = new Straight(EdgeLong1);
         Straight straight2 = new Straight(_edgeLong2);
         Point3d intersection1 = Geom.GetIntersectionPointStraight(slotSetPoint, straight1);
         Point3d intersection2 = Geom.GetIntersectionPointStraight(slotSetPoint, straight2);
