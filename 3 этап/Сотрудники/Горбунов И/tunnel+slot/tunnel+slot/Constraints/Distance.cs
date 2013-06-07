@@ -6,7 +6,7 @@ using NXOpen.Positioning;
 /// <summary>
 /// Класс для создания ограничений по расстоянию.
 /// </summary>
-class DistanceConstraint : Constrainter
+class Distance : Constrainter
 {
     /// <summary>
     /// Создание соединения между двумя объектами.

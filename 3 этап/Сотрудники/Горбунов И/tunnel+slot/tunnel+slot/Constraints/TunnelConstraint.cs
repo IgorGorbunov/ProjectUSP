@@ -7,8 +7,8 @@ using NXOpen.Assemblies;
 /// </summary>
 public class TunnelConstraint
 {
-    readonly TouchAxeConstraint _axeConstr;
-    readonly TouchConstraint _touchConstr;
+    readonly TouchAxe _axeConstr;
+    readonly Touch _touchConstr;
 
     Session.UndoMarkId _markId1;
 
@@ -23,8 +23,8 @@ public class TunnelConstraint
     /// <param name="secondTunnel">Второе базовое отверстие.</param>
     public TunnelConstraint(Tunnel firstTunnel, Tunnel secondTunnel)
     {
-        _axeConstr = new TouchAxeConstraint();
-        _touchConstr = new TouchConstraint();
+        _axeConstr = new TouchAxe();
+        _touchConstr = new Touch();
 
         _firstTunnel = firstTunnel;
         _secondTunnel = secondTunnel;
@@ -33,8 +33,8 @@ public class TunnelConstraint
 
     public TunnelConstraint(Tunnel firstTunnel, Slot slot)
     {
-        _axeConstr = new TouchAxeConstraint();
-        _touchConstr = new TouchConstraint();
+        _axeConstr = new TouchAxe();
+        _touchConstr = new Touch();
 
         _firstTunnel = firstTunnel;
         _secondTunnel = null;

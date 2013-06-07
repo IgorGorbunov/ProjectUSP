@@ -3,7 +3,7 @@
 /// </summary>
 class SlotConstraint
 {
-    readonly CenterConstraint _centerConstr;
+    readonly Center _centerConstr;
 
     readonly Slot _firstSlot;
     readonly Slot _secondSlot;
@@ -18,7 +18,7 @@ class SlotConstraint
         _firstSlot = firstSlot;
         _secondSlot = secondSlot;
 
-        _centerConstr = new CenterConstraint();
+        _centerConstr = new Center();
     }
 
     /// <summary>

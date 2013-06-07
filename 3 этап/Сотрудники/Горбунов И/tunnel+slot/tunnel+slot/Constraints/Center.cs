@@ -5,7 +5,7 @@ using NXOpen.Positioning;
 /// <summary>
 /// Класс для соединения двух граней/рёбер центрированием.
 /// </summary>
-class CenterConstraint : Constrainter
+class Center : Constrainter
 {
     /// <summary>
     /// Cоздаёт соединение между объектами двух элементов.

@@ -5,7 +5,7 @@ using NXOpen.Positioning;
 /// <summary>
 /// Класс для создания ограничений параллельности.
 /// </summary>
-class ParallelConstraint : Constrainter
+class Parallel : Constrainter
 {
     /// <summary>
     /// Создание соединения между двумя объектами.

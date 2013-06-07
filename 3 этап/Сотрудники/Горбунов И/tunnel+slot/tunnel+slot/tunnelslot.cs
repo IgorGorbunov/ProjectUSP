@@ -134,8 +134,9 @@ public class tunnelslot
 
     SlotConstraint _slotConstr;
     TunnelConstraint _tunnelConstsr;
-    private ParallelConstraint _parallelConstr;
-    private DistanceConstraint _distanceConstr;
+    private Parallel _parallelConstr;
+    private Distance _distanceConstr;
+    private Fix _fixConstr;
 
     bool _faceSelected;
     bool _pointSelected;
@@ -899,11 +900,20 @@ public class tunnelslot
             Vector moveVector = new Vector(tunnelProectionPoint, _slot2.SlotPoint);
             Move(_slot1.ParentComponent, moveVector);
 
+            bool isFixed = false;
+            if (!_element2.ElementComponent.IsFixed)
+            {
+                isFixed = true;
+                _fixConstr = new Fix();
+                _fixConstr.Create(_element2.ElementComponent);
+            }
+            
+            
 
             _slotConstr = new SlotConstraint(_slot1, _slot2);
             _slotConstr.SetCenterConstraint();
 
-            _parallelConstr = new ParallelConstraint();
+            _parallelConstr = new Parallel();
             _parallelConstr.Create(_element1.ElementComponent, _slot1.BottomFace,
                                    _element2.ElementComponent, _slot2.BottomFace);
 
@@ -951,7 +961,7 @@ public class tunnelslot
                             double distance =
                                 Math.Abs(facePlatan.GetDistanceToPoint(point3D));
 
-                            _distanceConstr = new DistanceConstraint();
+                            _distanceConstr = new Distance();
                             _distanceConstr.Create(_slot1.ParentComponent, face2,
                                                    _slot2.ParentComponent, face, distance);
 
@@ -974,6 +984,11 @@ public class tunnelslot
 
             _parallelConstr.Delete();
             _distanceConstr.Delete();
+
+            if (isFixed)
+            {
+                _fixConstr.Delete();
+            }
 
             Config.TheUfSession.Modl.Update();
         }
