@@ -36,20 +36,6 @@ public class Slot
             return _sideFace2;
         }
     }
-    public Face TouchFace
-    {
-        get
-        {
-            return _touchFace;
-        }
-    }
-    public Face TopFace
-    {
-        get
-        {
-            return _topFace;
-        }
-    }
     /// <summary>
     /// Возвращает тело элемента, на котором расположен паз.
     /// </summary>
@@ -79,10 +65,7 @@ public class Slot
     /// </summary>
     public double[] BottomDirection
     {
-        get
-        {
-            return _bottomDirection;
-        }
+        get { return _bottomDirection ?? (_bottomDirection = Geom.GetDirection(BottomFace)); }
     }
     /// <summary>
     /// Возвращает спроецированную точку паза.
@@ -95,29 +78,36 @@ public class Slot
             return _slotPoint;
         }
     }
-
+    /// <summary>
+    /// Возвращает тот набор пазов, которому принадлежит паз.
+    /// </summary>
+    public SlotSet SlotSet
+    {
+        get { return _slotSet; }
+    }
+    /// <summary>
+    /// Один из двух рёбер на НГП.
+    /// </summary>
     public readonly Edge EdgeLong1;
     private readonly Edge _edgeLong2;
 
     Config.SlotType _type;
 
+    Face _touchFace;
+    Face _topFace;
+
+    Edge _touchEdge;
+
+    double[] _bottomDirection;
+    Point3d _slotPoint = new Point3d(0.0, 0.0, 0.0);
+    KeyValuePair<Face, double>[] _ortFacePairs;
+
     readonly SlotSet _slotSet;
 
     readonly Face _sideFace1;
     readonly Face _sideFace2;
-    Face _touchFace;
-    Face _topFace;
 
-    
     readonly List<Edge> _touchEdges = new List<Edge>();
-    Edge _touchEdge;
-
-    double[] _bottomDirection;
-
-    private Point3d _slotPoint = new Point3d(0.0, 0.0, 0.0);
-
-    KeyValuePair<Face, double>[] _ortFacePairs;
-    
     /// <summary>
     /// Инициализирует новый экземпляр класса паза.
     /// </summary>
@@ -135,7 +125,33 @@ public class Slot
         _sideFace1 = GetNotBottomFace(edgeLong1);
         _sideFace2 = GetNotBottomFace(edgeLong2);
     }
+    /// <summary>
+    /// Возвращает грань, перпендикулярную направлению паза.
+    /// </summary>
+    /// <returns></returns>
+    public Face GetOrtDirectionFace()
+    {
+        Vector edgeVector = new Vector(EdgeLong1);
+        Edge[] edges = _slotSet.BottomFace.GetEdges();
+        foreach (Edge edge in edges)
+        {
+            if (Config.Round(edge.GetLength()) != Config.SlotWidth &&
+                Config.Round(edge.GetLength()) != Config.PSlotWidth) continue;
+            Face[] faces = edge.GetFaces();
+            foreach (Face face in faces)
+            {
+                if (face == _slotSet.BottomFace) continue;
 
+                if (!Geom.IsEqual(Geom.GetDirection(face), edgeVector.Direction)) continue;
+
+                return face;
+            }
+        }
+
+        Log.WriteLine("Не найдена плоскость, нормальная по направлению паза для детали " + 
+                        ParentComponent);
+        return null;
+    }
 
     //public void setTouchEdge()
     //{
@@ -186,6 +202,7 @@ public class Slot
     {
         double[] direction1 = _bottomDirection;
 
+        FindTopFace();
 
         Edge[] pointEdges = _topFace.GetEdges();
         Edge pointEdge = pointEdges[0];
@@ -292,8 +309,8 @@ public class Slot
     }
 
 
-    //refactor slots
-    public void FindTopFace()
+    //TODO refactor
+    void FindTopFace()
     {
         Face topFace = null;
         Edge topEdge = null;
@@ -334,12 +351,12 @@ public class Slot
             //значит Т-образный паз второго исполнения
             if (topEdge == null)
             {
-                
+
                 topEdge = GetNextEdge(face, edge, Config.StepDownWidthTSlot2);
                 topFace = GetNextFace(topEdge, face);
                 edge = topEdge;
                 face = topFace;
-                
+
                 foreach (double d in Config.SlotHeight3)
                 {
                     topEdge = GetNextEdge(face, edge, d);
@@ -349,7 +366,7 @@ public class Slot
                         break;
                     }
                 }
-                
+
                 topFace = GetNextFace(topEdge, face);
                 edge = topEdge;
                 face = topFace;

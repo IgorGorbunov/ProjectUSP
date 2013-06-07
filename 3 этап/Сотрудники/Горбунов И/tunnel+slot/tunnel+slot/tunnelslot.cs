@@ -132,11 +132,7 @@ public class tunnelslot
     SlotSet _slotSet1, _slotSet2;
     Slot _slot1, _slot2;
 
-    SlotConstraint _slotConstr;
-    TunnelConstraint _tunnelConstsr;
-    private Parallel _parallelConstr;
-    private Distance _distanceConstr;
-    private Fix _fixConstr;
+    private TunnelSlotConstraint constraint;
 
     bool _faceSelected;
     bool _pointSelected;
@@ -885,112 +881,15 @@ public class tunnelslot
         if (!_faceSelected || !_pointSelected) return;
         Log.WriteLine("Запущена процедура позиционирования.");
 
-        
-
         bool hasNearestSlot1 = _slotSet1.HasNearestSlot(out _slot1);
         bool hasNearestSlot2 = _slotSet2.HasNearestSlot(out _slot2);
 
         if (hasNearestSlot1 && hasNearestSlot2)
         {
-            Point3d tunnelProectionPoint = _tunnel1.CentralPoint;
-
-            Log.WriteLine("Координаты центра туннеля на НГП: " + tunnelProectionPoint);
-            Log.WriteLine("Координаты проэкции точки выбора паза: " + _slot2.SlotPoint);
-
-            Vector moveVector = new Vector(tunnelProectionPoint, _slot2.SlotPoint);
-            Move(_slot1.ParentComponent, moveVector);
-
-            bool isFixed = false;
-            if (!_element2.ElementComponent.IsFixed)
-            {
-                isFixed = true;
-                _fixConstr = new Fix();
-                _fixConstr.Create(_element2.ElementComponent);
-            }
-            
-            
-
-            _slotConstr = new SlotConstraint(_slot1, _slot2);
-            _slotConstr.SetCenterConstraint();
-
-            _parallelConstr = new Parallel();
-            _parallelConstr.Create(_element1.ElementComponent, _slot1.BottomFace,
-                                   _element2.ElementComponent, _slot2.BottomFace);
-
-
-            if (Geom.IsEqual(Geom.GetDirection(_slot1.BottomFace),
-                            (Geom.GetDirection(_slot2.BottomFace))))
-            {
-                _parallelConstr.Reverse();
-            }
-
-
-            Vector edgeVector = new Vector(_slot2.EdgeLong1);
-            Edge[] edges = _slotSet2.BottomFace.GetEdges();
-            foreach (Edge edge in edges)
-            {
-                if (Config.Round(edge.GetLength()) != Config.SlotWidth &&
-                    Config.Round(edge.GetLength()) != Config.PSlotWidth) continue;
-                Face[] faces = edge.GetFaces();
-                foreach (Face face in faces)
-                {
-                    if (face == _slotSet2.BottomFace) continue;
-
-                    if (!Geom.IsEqual(Geom.GetDirection(face), edgeVector.Direction)) continue;
-
-                    Vector edgeVector2 = new Vector(_slot1.EdgeLong1);
-                    Edge[] edges2 = _slotSet1.BottomFace.GetEdges();
-                    foreach (Edge edge2 in edges2)
-                    {
-                        if (Config.Round(edge2.GetLength()) != Config.SlotWidth &&
-                            Config.Round(edge2.GetLength()) != Config.PSlotWidth) continue;
-                        Face[] faces2 = edge2.GetFaces();
-                        foreach (Face face2 in faces2)
-                        {
-                            if (face2 == _slotSet1.BottomFace) continue;
-
-                            if (!Geom.IsEqual(Geom.GetDirection(face2), edgeVector2.Direction))
-                                continue;
-
-                            Edge[] edges22 = face2.GetEdges();
-                            Point3d point3D, tmpP;
-                            edges22[0].GetVertices(out point3D, out tmpP);
-
-
-                            Platan facePlatan = new Platan(face);
-                            double distance =
-                                Math.Abs(facePlatan.GetDistanceToPoint(point3D));
-
-                            _distanceConstr = new Distance();
-                            _distanceConstr.Create(_slot1.ParentComponent, face2,
-                                                   _slot2.ParentComponent, face, distance);
-
-                            goto End;
-                        }
-                    }
-                }
-            }
-        End: { }
-
-            _slot1.FindTopFace();
-            _slot2.FindTopFace();
-
             _tunnel1.SetSlot(_slot1);
-            _tunnelConstsr = new TunnelConstraint(_tunnel1, _slot2);
 
-            Config.FreezeDisplay();
-            _tunnelConstsr.SetTouchFaceConstraint(false, false);
-            Config.UnFreezeDisplay();
-
-            _parallelConstr.Delete();
-            _distanceConstr.Delete();
-
-            if (isFixed)
-            {
-                _fixConstr.Delete();
-            }
-
-            Config.TheUfSession.Modl.Update();
+            constraint = new TunnelSlotConstraint(_element1, _tunnel1, _element2, _slot2);
+            constraint.Create();
         }
         else
         {
@@ -999,29 +898,6 @@ public class tunnelslot
             mess += "Ближайший слот для второго элемента найден - " + hasNearestSlot2;
             Log.WriteLine(mess);
         }
-
-        
     }
-
-    static void Move(Component comp, Vector vec)
-    {
-        NXOpen.Positioning.ComponentPositioner componentPositioner1 = Config.WorkPart.ComponentAssembly.Positioner;
-        componentPositioner1.BeginMoveComponent();
-        NXOpen.Positioning.Network network2 = componentPositioner1.EstablishNetwork();
-        NXOpen.Positioning.ComponentNetwork componentNetwork2 = (NXOpen.Positioning.ComponentNetwork)network2;
-        NXObject[] movableObjects2 = new NXObject[1];
-        movableObjects2[0] = comp;
-        componentNetwork2.SetMovingGroup(movableObjects2);
-        componentNetwork2.BeginDrag();
-
-        Vector3d translation1 = vec.GetCoordsVector3D();
-        componentNetwork2.DragByTranslation(translation1);
-        componentNetwork2.EndDrag();
-        componentNetwork2.ResetDisplay();
-        componentNetwork2.ApplyToModel();
-        componentNetwork2.Solve();
-        componentNetwork2.ResetDisplay();
-        componentNetwork2.ApplyToModel();
-        componentPositioner1.ClearNetwork();
-    }
+ 
 }

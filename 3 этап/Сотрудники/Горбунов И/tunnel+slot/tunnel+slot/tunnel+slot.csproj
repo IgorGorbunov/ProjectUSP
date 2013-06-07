@@ -43,6 +43,7 @@
     <Compile Include="Config.cs" />
     <Compile Include="Constraints\Constrainter.cs" />
     <Compile Include="Constraints\Distance.cs" />
+    <Compile Include="Constraints\TunnelSlotConstraint.cs" />
     <Compile Include="ElementIntersection.cs" />
     <Compile Include="Constraints\Fix.cs" />
     <Compile Include="Geom.cs" />

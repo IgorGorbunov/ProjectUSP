@@ -60,6 +60,13 @@ public class Tunnel
             return _point;
         }
     }
+    /// <summary>
+    /// Возвращает паз для данного базового отверстия.
+    /// </summary>
+    public Slot Slot
+    {
+        get { return _slot; }
+    }
 
     readonly Face _face;
     readonly Face[] _normalFaces = new Face[2];

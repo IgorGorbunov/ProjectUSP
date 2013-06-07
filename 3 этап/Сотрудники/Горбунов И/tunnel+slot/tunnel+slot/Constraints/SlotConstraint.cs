@@ -45,21 +45,6 @@ class SlotConstraint
         this.createSideTouch(slot1, slot2);
     }*/
 
-    /// <summary>
-    /// Производит соединение двух пазов.
-    /// </summary>
-    /// <param name="slot1">Первый паз.</param>
-    /// <param name="slot2">Второй паз.</param>
-    public void SetEachOtherConstraint(Slot slot1, Slot slot2)
-    {
-        //this.createLong(slot1, slot2);
-
-        slot1.FindTopFace();
-        slot2.FindTopFace();
-
-        //this.createTopTouch(slot1, slot2);
-    }
-
 
 
     /*void escapeOverConstrained(ComponentConstraint constrain)

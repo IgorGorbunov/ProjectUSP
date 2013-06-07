@@ -7,14 +7,14 @@ using NXOpen.Assemblies;
 /// </summary>
 public class TunnelConstraint
 {
-    readonly TouchAxe _axeConstr;
-    readonly Touch _touchConstr;
-
     Session.UndoMarkId _markId1;
 
     readonly Tunnel _firstTunnel;
     readonly Tunnel _secondTunnel;
     readonly Slot _slot;
+
+    readonly TouchAxe _axeConstr;
+    readonly Touch _touchConstr;
 
     /// <summary>
     /// Инициализирует новый экземпляр класса связей для соединения двух отверстий.
@@ -30,7 +30,12 @@ public class TunnelConstraint
         _secondTunnel = secondTunnel;
         _slot = null;
     }
-
+    /// <summary>
+    /// Инициализирует новый экземпляр класса связей для touch-соединения с проверкой на
+    /// пересечение отверстие-паз.
+    /// </summary>
+    /// <param name="firstTunnel">Отверстие.</param>
+    /// <param name="slot">Паз.</param>
     public TunnelConstraint(Tunnel firstTunnel, Slot slot)
     {
         _axeConstr = new TouchAxe();
