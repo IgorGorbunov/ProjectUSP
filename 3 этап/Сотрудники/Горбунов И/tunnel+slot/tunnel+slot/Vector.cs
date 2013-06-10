@@ -111,7 +111,10 @@ public class Vector
         InitPoints(start, end);
     }
 
-
+    /// <summary>
+    /// Возвращает строку, которая представляет текущий объект.
+    /// </summary>
+    /// <returns></returns>
     public override string ToString()
     {
         string st = "";
@@ -137,7 +140,7 @@ public class Vector
     /// Возвращает вектор.
     /// </summary>
     /// <returns></returns>
-    public Vector3d GetVector3D()
+    public Vector3d GetCoordsVector3D()
     {
         return new Vector3d(_end.X - _start.X, _end.Y - _start.Y, _end.Z - _start.Z);
     }

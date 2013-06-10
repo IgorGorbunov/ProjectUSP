@@ -8,29 +8,29 @@ using NXOpen.UF;
 /// </summary>
 public static class Config
 {
-    public static Session TheSession = Session.GetSession();
-    public static UI TheUi = UI.GetUI();
-    public static UFSession TheUfSession = UFSession.GetUFSession();
-    public static Part WorkPart= TheSession.Parts.Work;
+    public static readonly Session TheSession = Session.GetSession();
+    public static readonly UI TheUi = UI.GetUI();
+    public static readonly UFSession TheUfSession = UFSession.GetUFSession();
+    public static readonly Part WorkPart= TheSession.Parts.Work;
 
     public const int NPointsInEdge = 2;
 
     public const int NumberOfNearestEdges = 6;
 
-    public static double PSlotWidth = 12;
-    public static double PSlotHeight = 3;
+    public const double PSlotWidth = 12;
+    public const double PSlotHeight = 3;
 
-    public static double SlotA = 12;
-    public static double SlotWidth = 20;
-    public static double SlotB1 = 13;
-    public static double[] SlotHeight = { 6, 8, 10 };
-    public static double[] SlotHeight1 = { 4, 4.2, 7, 7.2, 7.5, 8, 9 };
-    public static double SlotHeight2 = 4;
-    public static double[] SlotHeight3 = { 2, 4, 6 };
+    private const double SlotA = 12;
+    public const double SlotWidth = 20;
+    private const double SlotB1 = 13;
+    public static readonly double[] SlotHeight = { 6, 8, 10 };
+    public static readonly double[] SlotHeight1 = { 4, 4.2, 7, 7.2, 7.5, 8, 9 };
+    public const double SlotHeight2 = 4;
+    public static readonly double[] SlotHeight3 = { 2, 4, 6 };
 
-    public static double StepWidthTSlot1 = (SlotWidth - SlotA) / 2.0;
-    public static double StepDownWidthTSlot2 = (SlotWidth - SlotB1) / 2.0;
-    public static double StepUpWidthTSlot2 = (SlotB1 - SlotA) / 2.0;
+    public const double StepWidthTSlot1 = (SlotWidth - SlotA)/2.0;
+    public const double StepDownWidthTSlot2 = (SlotWidth - SlotB1)/2.0;
+    public const double StepUpWidthTSlot2 = (SlotB1 - SlotA)/2.0;
 
     public enum SlotType
     {
@@ -40,7 +40,7 @@ public static class Config
         Tslot2
     };
 
-    public static char[] FaceNameSplitter = { '_' };
+    public static readonly char[] FaceNameSplitter = { '_' };
     public const string SlotSymbol = "SLOT";
     public const string SlotBottomSymbol = "BOTTOM";
 
@@ -53,16 +53,18 @@ public static class Config
     /// <summary>
     /// Папка с формами для диалогов.
     /// </summary>
-    public static string DlxFolder = @"dialogs\";
+    public const string DlxFolder = @"dialogs\";
 
     /// <summary>
     /// Имя файла с формой базирования элементов по отверстиям.
     /// </summary>
     public static string DlxTunnelTunnel = @"tunnel+tunnel.dlx";
+
     /// <summary>
     /// Имя файла с формой для базирования отверстие-паз.
     /// </summary>
-    public static string DlxTunnelSlot = @"tunnel+slot.dlx";
+    public const string DlxTunnelSlot = @"tunnel+slot.dlx";
+
     /// <summary>
     /// Имя файла с формой c двумя точками.
     /// </summary>

@@ -68,16 +68,19 @@ public class Tunnel
         get { return _slot; }
     }
 
-    readonly Face _face;
-    readonly Face[] _normalFaces = new Face[2];
+    
     KeyValuePair<Face, double>[] _ortFacePairs;
-    readonly UspElement _element;
-
-    readonly double[] _direction = new double[3];
+    
     Point3d _point;
     int _rev;
 
     Slot _slot;
+
+    readonly Face _face;
+    readonly Face[] _normalFaces = new Face[2];
+    readonly UspElement _element;
+
+    readonly double[] _direction = new double[3];
 
     /// <summary>
     /// Инициализирует новый экземпляр класса отверстия для базирования для данной грани 
@@ -138,7 +141,10 @@ public class Tunnel
         Vector vec1 = new Vector(point1, point2);
         return Geom.IsEqual(Direction, vec1.Direction) ? point1 : point2;
     }
-
+    /// <summary>
+    /// Прявязка базового отверстия к пазу.
+    /// </summary>
+    /// <param name="slot">Паз.</param>
     public void SetSlot(Slot slot)
     {
         _slot = slot;

@@ -113,6 +113,7 @@ public class UspElement
             {
                 someFace = (Face)_component.FindObject(
                     "PROTO#.Features|UNPARAMETERIZED_FEATURE(0)|FACE " + j);
+
                 break;
             }
             catch (NXException ex)

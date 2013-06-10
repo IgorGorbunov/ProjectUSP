@@ -35,7 +35,6 @@
 //These imports are needed for the following template code
 //------------------------------------------------------------------------------
 
-using System.Globalization;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.BlockStyler;
@@ -57,8 +56,9 @@ public class tunnelslot
     private UIBlock _integer0;// Block type: Position
     private UIBlock _selection01;// Block type: Selection
     private UIBlock _point0;// Block type: Specify Point
-    private UIBlock _point01;// Block type: Specify Point
     private UIBlock _direction01;// Block type: Reverse Direction
+
+    private UIBlock _selection02;// Block type: Selection
     //------------------------------------------------------------------------------
     //Bit Option for Property: SnapPointTypesEnabled
     //------------------------------------------------------------------------------
@@ -132,7 +132,7 @@ public class tunnelslot
     SlotSet _slotSet1, _slotSet2;
     Slot _slot1, _slot2;
 
-    private TunnelSlotConstraint constraint;
+    private TunnelSlotConstraint _constraint;
 
     bool _faceSelected;
     bool _pointSelected;
@@ -391,7 +391,7 @@ public class tunnelslot
             _selection01 = _theDialog.TopBlock.FindBlock("selection01");
             _point0 = _theDialog.TopBlock.FindBlock("point0");
             _direction01 = _theDialog.TopBlock.FindBlock("direction01");
-            _point01 = _theDialog.TopBlock.FindBlock("point01");
+            _selection02 = _theDialog.TopBlock.FindBlock("selection02");
         }
         catch (Exception ex)
         {
@@ -477,11 +477,13 @@ public class tunnelslot
             {
             //---------Enter your code here-----------
             }
-
-            if (block == _point01)
+            else if (block == _selection02)
             {
-                
+                //---------Enter your code here-----------
+
+                InsertFixture(block);
             }
+
         }
         catch (Exception ex)
         {
@@ -888,8 +890,9 @@ public class tunnelslot
         {
             _tunnel1.SetSlot(_slot1);
 
-            constraint = new TunnelSlotConstraint(_element1, _tunnel1, _element2, _slot2);
-            constraint.Create();
+            _constraint = new TunnelSlotConstraint(_element1, _tunnel1, _element2, _slot2);
+            _constraint.Create();
+
         }
         else
         {
@@ -898,6 +901,162 @@ public class tunnelslot
             mess += "Ближайший слот для второго элемента найден - " + hasNearestSlot2;
             Log.WriteLine(mess);
         }
+
+
+        
     }
+
+    void InsertFixture(UIBlock block)
+    {
+        PropertyList propList = block.GetProperties();
+        TaggedObject[] tagObs = propList.GetTaggedObjectVector("SelectedObjects");
+
+        Component fixture = Config.FindCompByBodyTag(tagObs[0].Tag);
+
+        Face bottomFace = null, tunnelFace;
+        Face[] sideFaces = null;
+
+        bool bottomIsSet = false, tunnelIsSet = false;
+
+        Body body = SetBody(fixture);
+
+        body.Unhighlight();
+
+            Face[] faces = body.GetFaces();
+
+            foreach (Face face in faces)
+            {
+                face.Highlight();
+                Config.TheUi.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, "TS");
+                face.Unhighlight();
+                switch (face.SolidFaceType)
+                {
+                    case Face.FaceType.Cylindrical:
+                        {
+                            tunnelFace = face;
+                            tunnelIsSet = true;
+                        }
+                        break;
+
+                    case Face.FaceType.Planar:
+                        {
+                            if (IsBottomFace(face))
+                            {
+                                Config.TheUi.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error,
+                                                               "tst");
+                                bottomFace = face;
+                                sideFaces = GetSideFaces(bottomFace);
+                                bottomIsSet = true;
+                            }
+                        }
+                        break;
+                }
+                if (tunnelIsSet && bottomIsSet)
+                {
+                    break;
+                }
+                
+            }
+        
+
+        Fix fix = new Fix();
+        fix.Create(_element2.ElementComponent);
+
+
+
+        Center center = new Center();
+        center.Create(fixture, sideFaces[0], sideFaces[1], _element2.ElementComponent,
+                        _slot2.SideFace1, _slot2.SideFace2);
+
+
+        Parallel parallel = new Parallel();
+        parallel.Create(fixture, bottomFace, _element2.ElementComponent, _slot2.BottomFace);
+
+        if (Geom.IsEqual(Geom.GetDirection(bottomFace),
+                         Geom.GetDirection(_slot2.BottomFace)))
+        {
+            parallel.Reverse();
+        }
+
+
+
+
+        Config.TheUfSession.Modl.Update();
+    }
+
+    bool IsBottomFace(Face face)
+    {
+        Edge[] edges = face.GetEdges();
+
+        for (int i = 0; i < edges.Length; i++)
+        {
+            if (edges[i].GetLength() != FixtureConfig.Width) continue;
+
+            for (int j = 0; j < edges.Length; j++)
+            {
+                if (edges[j].GetLength() == FixtureConfig.Length)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        return false;
+    }
+
+    Face[] GetSideFaces(Face bottomFace)
+    {
+        int i = 0;
+        Face[] sideFaces = new Face[2];
+
+        Edge[] edges = bottomFace.GetEdges();
+        foreach (Edge edge in edges)
+        {
+            if (edge.GetLength() != FixtureConfig.Length) continue;
+
+            Face[] faces = edge.GetFaces();
+            foreach (Face face in faces)
+            {
+                if (face == bottomFace) continue;
+
+                sideFaces[i++] = face;
+            }
+        }
+        return sideFaces;
+    }
+
+
+    //refactor
+    Face GetSomeFace(Component comp)
+    {
+        Face someFace = null;
+        for (int j = 1; j < 1960; j++)
+        {
+            try
+            {
+                someFace = (Face)comp.FindObject(
+                    "PARTIAL_PROTO#.Bodies|Body8|HANDLE R-" + j);
+                break;
+            }
+            catch (NXException ex)
+            {
+                if (ex.ErrorCode != 3520016)
+                {
+                    UI.GetUI().NXMessageBox.Show("Ошибка!",
+                                                 NXMessageBox.DialogType.Error,
+                                                 "Ашипка!");
+                }
+            }
+        }
+        return someFace;
+    }
+
+    Body SetBody(Component component)
+    {
+        Face someFace = GetSomeFace(component);
+        return someFace.GetBody();
+    }
+
  
 }

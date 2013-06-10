@@ -34,18 +34,6 @@ class SlotConstraint
         Config.TheUfSession.Modl.Update();
     }
 
-    /*void setLongConstraint(Slot slot1, Slot slot2)
-    {
-        this.createLong(slot1, slot2);
-        this.createBottom(slot1, slot2);
-
-        slot1.setTouchFace();
-        slot2.setTouchFace();
-
-        this.createSideTouch(slot1, slot2);
-    }*/
-
-
 
     /*void escapeOverConstrained(ComponentConstraint constrain)
     {

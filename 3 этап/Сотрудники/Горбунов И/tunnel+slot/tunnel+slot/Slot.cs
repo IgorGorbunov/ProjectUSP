@@ -93,7 +93,6 @@ public class Slot
 
     Config.SlotType _type;
 
-    Face _touchFace;
     Face _topFace;
 
     Edge _touchEdge;
@@ -187,22 +186,12 @@ public class Slot
         _touchEdge = otherEdge;
     }
 
-    public void SetTouchFace()
-    {
-        foreach (Face f in _touchEdge.GetFaces())
-        {
-            if (f == BottomFace) continue;
-            _touchFace = f;
-            break;
-        }
-    }
 
     //refactor
     void FindOrtFaces()
     {
-        double[] direction1 = _bottomDirection;
-
         FindTopFace();
+        double[] direction1 = _bottomDirection;
 
         Edge[] pointEdges = _topFace.GetEdges();
         Edge pointEdge = pointEdges[0];

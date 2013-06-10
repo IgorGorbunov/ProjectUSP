@@ -28,23 +28,9 @@ public class SlotSet
             return _element.ElementComponent;
         }
     }
-
-    //public Face BottomFace
-    //{
-    //    get
-    //    {
-    //        return this.bottomFace;
-    //    }
-    //}
-
-    //public List<Edge> TouchEdges
-    //{
-    //    get
-    //    {
-    //        return this.touchEdges;
-    //    }
-    //}
-
+    /// <summary>
+    /// Возвращает точку, по которой выбрался паз.
+    /// </summary>
     public Point3d SelectPoint
     {
         get
@@ -52,7 +38,9 @@ public class SlotSet
             return _selectPoint;
         }
     }
-
+    /// <summary>
+    /// Возвращает НГП.
+    /// </summary>
     public Face BottomFace
     {
         get
@@ -61,8 +49,6 @@ public class SlotSet
         }
     }
 
-    readonly UspElement _element;
-
     Face _bottomFace;
 
     Edge[] _edges;
@@ -70,7 +56,7 @@ public class SlotSet
 
     Point3d _selectPoint;
 
-
+    readonly UspElement _element;
     
     /// <summary>
     /// Инициализирует новый экземпляр класса для заданного элемента УСП.
