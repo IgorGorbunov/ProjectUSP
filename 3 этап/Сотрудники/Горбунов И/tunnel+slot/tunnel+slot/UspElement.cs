@@ -131,8 +131,20 @@ public class UspElement
 
     void SetBody()
     {
-        Face someFace = GetSomeFace();
-        _body = someFace.GetBody();
+        Body bb = null;
+        BodyCollection bc = ((Part)_component.Prototype).Bodies;
+        foreach (Body body in bc)
+        {
+            NXObject tmpNxObject = _component.FindOccurrence(body);
+            if (tmpNxObject != null)
+            {
+                bb = (Body)tmpNxObject;
+            }
+        }
+
+        _body = bb;
+        //Face someFace = GetSomeFace();
+        //_body = someFace.GetBody();
     }
 }
 

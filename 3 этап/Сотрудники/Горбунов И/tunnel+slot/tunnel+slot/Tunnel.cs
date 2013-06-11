@@ -76,7 +76,7 @@ public class Tunnel
 
     Slot _slot;
 
-    readonly Face _face;
+    Face _face;
     readonly Face[] _normalFaces = new Face[2];
     readonly UspElement _element;
 
@@ -92,6 +92,8 @@ public class Tunnel
     {
         _face = face;
         _element = element;
+
+        SetOccurenceFace();
 
         SetNormalFaces();
         SetDirectionAndPoint();
@@ -150,6 +152,32 @@ public class Tunnel
         _slot = slot;
     }
 
+    void SetOccurenceFace()
+    {
+        Edge[] edges1 = _face.GetEdges();
+        Point3d point3D1, tmpPoint;
+        edges1[0].GetVertices(out point3D1, out tmpPoint);
+
+        Face[] faces = _element.Body.GetFaces();
+        foreach (Face face in faces)
+        {
+            Edge[] edges2 = face.GetEdges();
+            foreach (Edge edge2 in edges2)
+            {
+                Point3d point3D2;
+                edge2.GetVertices(out point3D2, out tmpPoint);
+
+                Vector vec = new Vector(point3D1, point3D2);
+                if (Config.Round(vec.Length) == 0.0 &&
+                    face.SolidFaceType == Face.FaceType.Cylindrical)
+                {
+                    _face = face;
+                    goto End;
+                }
+            }
+        }
+        End:{}
+    }
     //refactor
     void FindOrtFaces(bool reverse)
     {

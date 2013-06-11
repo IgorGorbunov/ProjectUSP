@@ -22,10 +22,33 @@ public class TouchAxe : Constrainter
         Constr.ConstraintType = Constraint.Type.Touch;
 
         Constr.CreateConstraintReference(firstComponent,
-                                         firstFace, false, false, false);
+                                         firstFace, true, false, false);
+        Line line1;
+        line1 = Config.WorkPart.Lines.CreateFaceAxis(firstFace, 
+                SmartObject.UpdateOption.AfterModeling);
 
         Constr.CreateConstraintReference(secondComponent,
-                                         secondFace, false, false, false);
+                                         secondFace, true, false, false);
+
+        Line line2;
+        line2 = Config.WorkPart.Lines.CreateFaceAxis(secondFace, 
+                SmartObject.UpdateOption.AfterModeling);
+
+        ExecuteConstraints();
+    }
+
+    public void Create(Component firstComponent, Edge firstEdge,
+                       Component secondComponent, Edge secondEdge)
+    {
+        Constr = (ComponentConstraint)ComponentPositioner.CreateConstraint();
+        Constr.ConstraintAlignment = Constraint.Alignment.ContraAlign;
+        Constr.ConstraintType = Constraint.Type.Touch;
+
+        Constr.CreateConstraintReference(firstComponent,
+                                         firstEdge, true, false, false);
+
+        Constr.CreateConstraintReference(secondComponent,
+                                         secondEdge, true, false, false);
 
         ExecuteConstraints();
     }

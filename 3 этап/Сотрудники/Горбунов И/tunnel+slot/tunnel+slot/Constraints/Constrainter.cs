@@ -35,8 +35,7 @@ public class Constrainter
     protected void ExecuteConstraints()
     {
         _componentNetwork.Solve();
-        ComponentPositioner.ClearNetwork();
-        ComponentPositioner.DeleteNonPersistentConstraints();
+        //ComponentPositioner.DeleteNonPersistentConstraints();
     }
 
     /// <summary>
