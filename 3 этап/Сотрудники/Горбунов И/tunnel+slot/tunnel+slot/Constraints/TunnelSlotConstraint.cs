@@ -1,12 +1,11 @@
-﻿using System;
-using NXOpen;
+﻿using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.BlockStyler;
 
 /// <summary>
 /// Класс для соединения отверстие-паз посредством т-образного болта.
 /// </summary>
-public class TunnelSlotConstraint
+public sealed class TunnelSlotConstraint
 {
     
     SlotConstraint _slotConstr;
@@ -70,6 +69,22 @@ public class TunnelSlotConstraint
         Delete(isFixed);
         Config.TheUfSession.Modl.Update();
     }
+    /// <summary>
+    /// Реверс детали УСП вдоль паза.
+    /// </summary>
+    public void Reverse()
+    {
+        _fixConstr = new Fix();
+        _fixConstr.Create(_secondElement.ElementComponent);
+        _fixFixture = new Fix();
+        _fixFixture.Create(_fixture);
+
+        _slotConstr.Reverse();
+
+        _fixFixture.Delete();
+        _fixConstr.Delete();
+        Config.TheUfSession.Modl.Update();
+    }
 
     void InsertBolt()
     {
@@ -98,7 +113,6 @@ public class TunnelSlotConstraint
         bool bottomIsSet = false, tunnelIsSet = false;
 
         Body body = SetBody(_fixture);
-        //body.Unhighlight();
 
         Face[] faces = body.GetFaces();
         foreach (Face face in faces)

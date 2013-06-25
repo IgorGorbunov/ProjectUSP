@@ -53,10 +53,10 @@ public class tunnelslot
     private BlockDialog _theDialog;
     private UIBlock _selection0;// Block type: Selection
     private UIBlock _faceSelect0;// Block type: Face Collector
-    private UIBlock _integer0;// Block type: Position
+    private UIBlock _direction0;// Block type: Position
     private UIBlock _selection01;// Block type: Selection
     private UIBlock _point0;// Block type: Specify Point
-    private UIBlock _direction01;// Block type: Reverse Direction
+    private UIBlock _slotTunPoint;
 
     private UIBlock _selection02;// Block type: Selection
     //------------------------------------------------------------------------------
@@ -134,8 +134,8 @@ public class tunnelslot
 
     private TunnelSlotConstraint _constraint;
 
-    bool _faceSelected;
-    bool _pointSelected;
+    bool _secondPointSelected;
+    bool _firstPointSelected;
 
     //------------------------------------------------------------------------------
     //Constructor for NX Styler class
@@ -387,10 +387,10 @@ public class tunnelslot
         {
             _selection0 = _theDialog.TopBlock.FindBlock("selection0");
             _faceSelect0 = _theDialog.TopBlock.FindBlock("face_select0");
-            _integer0 = _theDialog.TopBlock.FindBlock("integer0");
+            _slotTunPoint = _theDialog.TopBlock.FindBlock("point01");
+            _direction0 = _theDialog.TopBlock.FindBlock("direction0");
             _selection01 = _theDialog.TopBlock.FindBlock("selection01");
             _point0 = _theDialog.TopBlock.FindBlock("point0");
-            _direction01 = _theDialog.TopBlock.FindBlock("direction01");
             _selection02 = _theDialog.TopBlock.FindBlock("selection02");
         }
         catch (Exception ex)
@@ -457,9 +457,16 @@ public class tunnelslot
                 Log.WriteLine("Нажат выбор первой грани.");
                 SetFirstFace(block);
             }
-            else if (block == _integer0)
+            else if (block == _slotTunPoint)
             {
-            //---------Enter your code here-----------
+                //---------Enter your code here-----------
+                Log.WriteLine("Нажата постановка первой точки.");
+                SetFirstPoint(block);
+            }
+            else if (block == _direction0)
+            {
+                //---------Enter your code here-----------
+                _constraint.Reverse();
             }
             else if(block == _selection01)
             {
@@ -473,15 +480,10 @@ public class tunnelslot
                 Log.WriteLine("Нажата постановка второй точки.");
                 SetSecondPoint(block);
             }
-            else if(block == _direction01)
-            {
-            //---------Enter your code here-----------
-            }
             else if (block == _selection02)
             {
                 //---------Enter your code here-----------
 
-                InsertFixture(block);
             }
 
         }
@@ -581,14 +583,18 @@ public class tunnelslot
         if (SetComponent(block, ref _element1))
         {
             SetEnable(_faceSelect0, true);
+            SetEnable(_slotTunPoint, false);
+            SetEnable(_direction0, false);
+
             _slotSet1 = new SlotSet(_element1);
             _element1.SetBottomFaces();
         }
         else
         {
             UnSelectObjects(_faceSelect0);
-            _faceSelected = false;
             SetEnable(_faceSelect0, false);
+            SetEnable(_slotTunPoint, false);
+            SetEnable(_direction0, false);
         }
     }
     void SetSecondComponent(UIBlock block)
@@ -601,12 +607,11 @@ public class tunnelslot
         }
         else
         {
-            _pointSelected = false;
+            _secondPointSelected = false;
             UnSelectObjects(_point0);
             SetEnable(_point0, false);
         }
     }
-
     static bool SetComponent(UIBlock block, ref UspElement element)
     {
         PropertyList propList = block.GetProperties();
@@ -645,35 +650,36 @@ public class tunnelslot
     {
         if (SetFace(block, ref _tunnel1, _element1))
         {
-            Point3d point = _tunnel1.GetEndRightDirection();
+            SetEnable(_slotTunPoint, true);
+            SetEnable(_direction0, false);
 
-            if (SetPoint(point, ref _slotSet1))
-            {
-                _faceSelected = true;
+            //if (SetPoint(point, ref _slotSet1))
+            //{
+            //    _faceSelected = true;
 
-                SetConstraints();
-            }
-            else
-            {
-                string message = "Базовые плоскости пазов не найдены!" + Environment.NewLine +
-                                    "Выберите другой элемент!";
-                Log.WriteWarning(message);
-                Config.TheUi.NXMessageBox.Show("Error!",
-                                               NXMessageBox.DialogType.Error,
-                                               message);
-                UnSelectObjects(block);
-                UnSelectObjects(_selection0);
+            //    SetConstraints();
+            //}
+            //else
+            //{
+            //    string message = "Базовые плоскости пазов не найдены!" + Environment.NewLine +
+            //                        "Выберите другой элемент!";
+            //    Log.WriteWarning(message);
+            //    Config.TheUi.NXMessageBox.Show("Error!",
+            //                                   NXMessageBox.DialogType.Error,
+            //                                   message);
+            //    UnSelectObjects(block);
+            //    UnSelectObjects(_selection0);
 
-                _faceSelected = false;
-                _selection0.Focus();
-            }
+            //    _faceSelected = false;
+            //    _selection0.Focus();
+            //}
         }
         else
         {
-            _faceSelected = false;
+            SetEnable(_slotTunPoint, false);
+            SetEnable(_direction0, false);
         }
     }
-
     static bool SetFace(UIBlock block, ref Tunnel tunnel, UspElement element)
     {
         PropertyList propertyList = block.GetProperties();
@@ -820,16 +826,31 @@ public class tunnelslot
         return false;
     }
 
-    void SetSecondPoint(UIBlock block)
+    void SetFirstPoint(UIBlock block)
     {
-        if (SetPoint(block, ref _slotSet2))
+        if (SetPoint(block, ref _slotSet1))
         {
-            _pointSelected = true;
+            _firstPointSelected = true;
             SetConstraints();
         }
         else
         {
-            _pointSelected = false;
+            _firstPointSelected = false;
+            UnSelectObjects(_faceSelect0);
+            _faceSelect0.Focus();
+            SetEnable(block, false);
+        }
+    }
+    void SetSecondPoint(UIBlock block)
+    {
+        if (SetPoint(block, ref _slotSet2))
+        {
+            _secondPointSelected = true;
+            SetConstraints();
+        }
+        else
+        {
+            _secondPointSelected = false;
             UnSelectObjects(_selection01);
             _selection01.Focus();
             SetEnable(block, false);
@@ -881,7 +902,7 @@ public class tunnelslot
 
     void SetConstraints()
     {
-        if (!_faceSelected || !_pointSelected) return;
+        if (!_firstPointSelected || !_secondPointSelected) return;
         Log.WriteLine("Запущена процедура позиционирования.");
 
         bool hasNearestSlot1 = _slotSet1.HasNearestSlot(out _slot1);
@@ -894,6 +915,7 @@ public class tunnelslot
             _constraint = new TunnelSlotConstraint(_element1, _tunnel1, _element2, _slot2, _selection02);
             _constraint.Create();
 
+            SetEnable(_direction0, true);
         }
         else
         {
@@ -902,19 +924,6 @@ public class tunnelslot
             mess += "Ближайший слот для второго элемента найден - " + hasNearestSlot2;
             Log.WriteLine(mess);
         }
-
-
-        
     }
 
-    void InsertFixture(UIBlock block)
-    {
-        
-    }
-
-    
-
-    
-
- 
 }

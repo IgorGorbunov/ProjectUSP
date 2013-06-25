@@ -6,7 +6,7 @@ using NXOpen.Assemblies;
 /// <summary>
 /// Класс содержащий набор пазов, имеющих одну общую нижнюю плоскость.
 /// </summary>
-public class SlotSet
+public sealed class SlotSet
 {
     /// <summary>
     /// Возвращает тело компонента, на котором расположены пазы.
@@ -78,10 +78,13 @@ public class SlotSet
         Log.WriteLine("Координаты точки - " + _selectPoint);
     }
 
+    //REFACTOR
     public bool HaveNearestBottomFace()
     {
+        List<Face> nearFaces = new List<Face>();
+
         double minLen = double.MaxValue;
-        Face nearFace = null;
+
         bool isFound = false;
         foreach (Face face in _element.SlotFaces)
 	    {
@@ -89,8 +92,15 @@ public class SlotSet
             Platan platan = new Platan(face);
             double len = Math.Abs(platan.GetDistanceToPoint(_selectPoint));
 
-	        if (Config.Round(len) > minLen) continue;
-	        nearFace = face;
+	        if (Config.Round(len).ToString() == Config.Round(minLen).ToString())
+	        {
+                nearFaces.Add(face);
+	        }
+	        if (Config.Round(len) >= minLen) continue;
+
+            nearFaces.Clear();
+            nearFaces.Add(face);
+
 	        minLen = len;
 	        isFound = true;
 	    }
@@ -99,8 +109,43 @@ public class SlotSet
         {
             return false;
         }
-        _bottomFace = nearFace;
-        _edges = nearFace.GetEdges();
+
+        if (nearFaces.Count == 1)
+        {
+            _bottomFace = nearFaces[0];
+        }
+        else
+        {
+            double minLenAmongFaces = double.MaxValue;
+
+            foreach (Face face in nearFaces)
+            {
+                Edge[] edges = face.GetEdges();
+                foreach (Edge edge in edges)
+                {
+                    Point3d point1, point2;
+                    edge.GetVertices(out point1, out point2);
+
+                    Vector vec = new Vector(_selectPoint, point1);
+                    if (vec.Length < minLenAmongFaces)
+                    {
+                        minLenAmongFaces = vec.Length;
+                        _bottomFace = face;
+                    }
+                    else 
+                    {
+                        vec = new Vector(_selectPoint, point2);
+                        if (vec.Length < minLenAmongFaces)
+                        {
+                            minLenAmongFaces = vec.Length;
+                            _bottomFace = face;
+                        }
+                    }
+                }
+            }
+        }
+        _edges = _bottomFace.GetEdges();
+        
         return true;
     }
 

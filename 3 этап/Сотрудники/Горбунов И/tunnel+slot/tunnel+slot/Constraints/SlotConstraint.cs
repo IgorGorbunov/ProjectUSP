@@ -33,7 +33,13 @@ class SlotConstraint
 
         Config.TheUfSession.Modl.Update();
     }
-
+    /// <summary>
+    /// Реверс детали УСП вдоль паза.
+    /// </summary>
+    public void Reverse()
+    {
+        _centerConstr.Reverse();
+    }
 
     /*void escapeOverConstrained(ComponentConstraint constrain)
     {
