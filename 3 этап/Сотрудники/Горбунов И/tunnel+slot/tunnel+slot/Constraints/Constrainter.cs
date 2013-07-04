@@ -7,7 +7,7 @@ using NXOpen.Positioning;
 public class Constrainter
 {
     protected ComponentConstraint Constr;
-    protected ComponentPositioner ComponentPositioner;
+    public ComponentPositioner ComponentPositioner;
 
     ComponentNetwork _componentNetwork;
 
@@ -22,7 +22,6 @@ public class Constrainter
     public void Reverse()
     {
         Constr.FlipAlignment();
-        ExecuteConstraints();
     }
 
     private void InitConstraints()
@@ -35,7 +34,9 @@ public class Constrainter
     protected void ExecuteConstraints()
     {
         _componentNetwork.Solve();
-        //ComponentPositioner.DeleteNonPersistentConstraints();
+
+        //для того чтобы нормально работали фиксы
+        ComponentPositioner.ClearNetwork();
     }
 
     /// <summary>

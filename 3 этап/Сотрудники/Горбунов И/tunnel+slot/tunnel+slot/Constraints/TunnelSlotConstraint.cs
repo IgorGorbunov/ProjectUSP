@@ -1,6 +1,7 @@
 ﻿using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.BlockStyler;
+using NXOpen.Positioning;
 
 /// <summary>
 /// Класс для соединения отверстие-паз посредством т-образного болта.
@@ -60,13 +61,9 @@ public sealed class TunnelSlotConstraint
             _touchAxe.Reverse();
         }
 
-
-        //Face face1 = _tunnel.Slot.GetOrtDirectionFace();
-        //Face face2 = _slot.GetOrtDirectionFace();
-        //SetDistance(face1, face2);
-
         Touch();
         Delete(isFixed);
+
         Config.TheUfSession.Modl.Update();
     }
     /// <summary>
@@ -74,15 +71,17 @@ public sealed class TunnelSlotConstraint
     /// </summary>
     public void Reverse()
     {
-        _fixConstr = new Fix();
-        _fixConstr.Create(_secondElement.ElementComponent);
-        _fixFixture = new Fix();
-        _fixFixture.Create(_fixture);
+        Fix fixFlement = new Fix();
+        Fix fixFixture = new Fix();
+
+        fixFixture.Create(_fixture);
+        fixFlement.Create(_secondElement.ElementComponent);
 
         _slotConstr.Reverse();
+        Config.TheUfSession.Modl.Update();
 
-        _fixFixture.Delete();
-        _fixConstr.Delete();
+        fixFixture.Delete();
+        fixFlement.Delete();
         Config.TheUfSession.Modl.Update();
     }
 
