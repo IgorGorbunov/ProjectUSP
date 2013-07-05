@@ -83,25 +83,28 @@ public sealed class SlotSet
     {
         List<Face> nearFaces = new List<Face>();
 
-        double minLen = double.MaxValue;
+        //todelete
+        //double minLen = double.MaxValue;
 
         bool isFound = false;
         foreach (Face face in _element.SlotFaces)
 	    {
-            
-            Platan platan = new Platan(face);
-            double len = Math.Abs(platan.GetDistanceToPoint(_selectPoint));
-
-	        if (Config.Round(len).ToString() == Config.Round(minLen).ToString())
-	        {
-                nearFaces.Add(face);
-	        }
-	        if (Config.Round(len) >= minLen) continue;
-
-            nearFaces.Clear();
             nearFaces.Add(face);
 
-	        minLen = len;
+            //todelete
+            //Platan platan = new Platan(face);
+            //double len = Math.Abs(platan.GetDistanceToPoint(_selectPoint));
+
+            //if (Config.Round(len).ToString() == Config.Round(minLen).ToString())
+            //{
+            //    nearFaces.Add(face);
+            //}
+            //if (Config.Round(len) >= minLen) continue;
+
+            //nearFaces.Clear();
+            //nearFaces.Add(face);
+
+            //minLen = len;
 	        isFound = true;
 	    }
 
@@ -110,40 +113,48 @@ public sealed class SlotSet
             return false;
         }
 
-        if (nearFaces.Count == 1)
-        {
-            _bottomFace = nearFaces[0];
-        }
-        else
-        {
-            double minLenAmongFaces = double.MaxValue;
+        //todelete
+        //if (nearFaces.Count == 1)
+        //{
+        //    _bottomFace = nearFaces[0];
+        //}
+        //else
+        //{
+        double minLenAmongFaces = double.MaxValue;
 
-            foreach (Face face in nearFaces)
+        foreach (Face face in nearFaces)
+        {
+            Edge[] edges = face.GetEdges();
+            foreach (Edge edge in edges)
             {
-                Edge[] edges = face.GetEdges();
-                foreach (Edge edge in edges)
-                {
-                    Point3d point1, point2;
-                    edge.GetVertices(out point1, out point2);
+                if (edge.SolidEdgeType != Edge.EdgeType.Linear) continue;
 
-                    Vector vec = new Vector(_selectPoint, point1);
-                    if (vec.Length < minLenAmongFaces)
-                    {
-                        minLenAmongFaces = vec.Length;
-                        _bottomFace = face;
-                    }
-                    else 
-                    {
-                        vec = new Vector(_selectPoint, point2);
-                        if (vec.Length < minLenAmongFaces)
-                        {
-                            minLenAmongFaces = vec.Length;
-                            _bottomFace = face;
-                        }
-                    }
+                Point3d point1, point2;
+                edge.GetVertices(out point1, out point2);
+                Straight straight = new Straight(edge);
+
+                Point3d projection = Geom.GetIntersectionPointStraight(_selectPoint, straight);
+                double length;
+                if (Geom.IsOnSegment(projection, edge))
+                {
+                    Vector vec = new Vector(projection, _selectPoint);
+                    length = vec.Length;
                 }
+                else
+                {
+                    Vector vec1 = new Vector(_selectPoint, point1);
+                    Vector vec2 = new Vector(_selectPoint, point2);
+
+                    length = vec1.Length < vec2.Length ? vec1.Length : vec2.Length;
+                }
+
+                if (length > minLenAmongFaces) continue;
+
+                minLenAmongFaces = length;
+                _bottomFace = face;
             }
         }
+
         _edges = _bottomFace.GetEdges();
         
         return true;
@@ -156,18 +167,26 @@ public sealed class SlotSet
         foreach (Edge edge in _edges)
         {
             if (edge.SolidEdgeType != Edge.EdgeType.Linear) continue;
+
             Point3d firstPoint, secondPoint;
             edge.GetVertices(out firstPoint, out  secondPoint);
+            Straight straight = new Straight(edge);
 
-            Vector vec1 = new Vector(_selectPoint, firstPoint);
-            Vector vec2 = new Vector(_selectPoint, secondPoint);
+            Point3d projection = Geom.GetIntersectionPointStraight(_selectPoint, straight);
+            double length;
+            if (Geom.IsOnSegment(projection, edge))
+            {
+                length = (new Vector(projection, _selectPoint)).Length;
+            }
+            else
+            {
+                Vector vec1 = new Vector(_selectPoint, firstPoint);
+                Vector vec2 = new Vector(_selectPoint, secondPoint);
 
-            double len1 = vec1.Length;
-            double len2 = vec2.Length;
+                length = vec1.Length < vec2.Length ? vec1.Length : vec2.Length;
+            }
 
-            double minLen = len1 < len2 ? len1 : len2;
-
-            AddInDictMinValue(edges, edge, minLen);
+            AddInDictMinValue(edges, edge, length);
         }
         _nearestEdges = edges;
     }

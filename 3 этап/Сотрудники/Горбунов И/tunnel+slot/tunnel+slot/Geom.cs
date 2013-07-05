@@ -25,8 +25,7 @@ static class Geom
         double len1 = straight1.GetDistance(projectionPoint);
         double len2 = straight2.GetDistance(projectionPoint);
         double len = straight1.GetDistance(straight2);
-        Config.TheUi.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error,
-                                       len1 + " " + len2 + " " + len + " ");
+
         return !(len < len1 + len2);
     }
 

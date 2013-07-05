@@ -272,10 +272,11 @@ public class Tunnel
         Config.TheUfSession.Modl.AskFaceData(_face.Tag, out voidInt, voidPoint, _direction, 
             box, out voidDouble, out voidDouble, out voidInt);
 
-        Edge[] edges = _face.GetEdges();
-        Point3d point1, point2;
-        edges[0].GetVertices(out point1, out point2);
-        _point = point1;
+        //попробую так
+        //Edge[] edges = _face.GetEdges();
+        //Point3d point1, point2;
+        //edges[0].GetVertices(out point1, out point2);
+        _point = new Point3d(voidPoint[0], voidPoint[1], voidPoint[2]);
     }
 
     double[] ReverseDirection()

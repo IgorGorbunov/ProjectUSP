@@ -51,7 +51,7 @@ public sealed class TunnelSlotConstraint
     {
         bool isFixed = Fix();
         InsertBolt();
-        
+
         Center();
         _touchAxe = new TouchAxe();
         _touchAxe.Create(_firstElement.ElementComponent, _tunnel.TunnelFace, _fixture, _tunnelFixtureFace);
@@ -65,6 +65,9 @@ public sealed class TunnelSlotConstraint
         Delete(isFixed);
 
         Config.TheUfSession.Modl.Update();
+        _slot.Unhighlight();
+        _slot.Highlight();
+
     }
     /// <summary>
     /// Реверс детали УСП вдоль паза.

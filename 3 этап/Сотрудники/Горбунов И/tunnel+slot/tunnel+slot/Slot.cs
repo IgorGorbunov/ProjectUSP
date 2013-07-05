@@ -289,13 +289,14 @@ public class Slot
 
     public void Highlight()
     {
-        EdgeLong1.Highlight();
-        EdgeLong2.Highlight();
+        _sideFace1.Highlight();
+        _sideFace2.Highlight();
     }
     public void Unhighlight()
     {
-        EdgeLong1.Unhighlight();
-        EdgeLong2.Unhighlight();
+        if (_sideFace1 == null || _sideFace2 == null) return;
+        _sideFace1.Unhighlight();
+        _sideFace2.Unhighlight();
     }
 
     Face GetNotBottomFace(Edge slotEdge)

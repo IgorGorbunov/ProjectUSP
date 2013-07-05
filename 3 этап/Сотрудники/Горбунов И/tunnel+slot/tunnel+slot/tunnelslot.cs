@@ -130,7 +130,8 @@ public class tunnelslot
     UspElement _element1, _element2;
     Tunnel _tunnel1;
     SlotSet _slotSet1, _slotSet2;
-    Slot _slot1, _slot2;
+    static Slot _slot1;
+    static Slot _slot2;
 
     private TunnelSlotConstraint _constraint;
 
@@ -344,6 +345,8 @@ public class tunnelslot
     //------------------------------------------------------------------------------
     private void Dispose()
     {
+        CleanUp();
+
         if(_theDialog != null)
         {
             _theDialog.Dispose();
@@ -529,6 +532,7 @@ public class tunnelslot
         {
             //---- Enter your callback code here -----
             Log.WriteLine("Нажата кнопка ОТМЕНА.");
+            CleanUp();
         }
         catch (Exception ex)
         {
@@ -595,10 +599,13 @@ public class tunnelslot
         }
         else
         {
+            SetEnable(_direction0, false);
+
+            SetEnable(_slotTunPoint, false);
+            UnSelectObjects(_slotTunPoint);
+
             UnSelectObjects(_faceSelect0);
             SetEnable(_faceSelect0, false);
-            SetEnable(_slotTunPoint, false);
-            SetEnable(_direction0, false);
         }
     }
     void SetSecondComponent(UIBlock block)
@@ -834,17 +841,19 @@ public class tunnelslot
     {
         if (SetPoint(block, ref _slotSet1))
         {
+            if (_firstPointSelected)
+            {
+                _slot1.Unhighlight();
+            }
             _firstPointSelected = true;
 
             hasNearestSlot1 = _slotSet1.HasNearestSlot(out _slot1);
-            _slot1.Highlight();
-            Config.TheUi.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, "");
-            _slot1.Unhighlight();
 
             if (hasNearestSlot1 && Geom.PointIsBetweenStraights(_tunnel1.CentralPoint, 
                                    new Platan(_slotSet1.BottomFace), 
                                    new Straight(_slot1.EdgeLong1), new Straight(_slot1.EdgeLong2)))
             {
+                _slot1.Highlight();
                 SetConstraints();
             }
             else
@@ -876,8 +885,14 @@ public class tunnelslot
     {
         if (SetPoint(block, ref _slotSet2))
         {
+            if (_secondPointSelected)
+            {
+                _slot2.Unhighlight();
+            }
             _secondPointSelected = true;
             hasNearestSlot2 = _slotSet2.HasNearestSlot(out _slot2);
+
+            _slot2.Highlight();
             SetConstraints();
         }
         else
@@ -937,8 +952,6 @@ public class tunnelslot
         if (!_firstPointSelected || !_secondPointSelected) return;
         Log.WriteLine("Запущена процедура позиционирования.");
 
-        
-
         if (hasNearestSlot1 && hasNearestSlot2)
         {
             _tunnel1.SetSlot(_slot1);
@@ -954,6 +967,18 @@ public class tunnelslot
                           Environment.NewLine;
             mess += "Ближайший слот для второго элемента найден - " + hasNearestSlot2;
             Log.WriteLine(mess);
+        }
+    }
+
+    static void CleanUp()
+    {
+        if (_slot1 != null)
+        {
+            _slot1.Unhighlight();
+        }
+        if (_slot2 != null)
+        {
+            _slot2.Unhighlight();
         }
     }
 
