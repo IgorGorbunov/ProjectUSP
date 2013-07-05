@@ -9,21 +9,25 @@ static class Geom
 {
     public const int Dimensions = 3;
 
+    /// <summary>
+    /// Возвращает true, если точка находится между заданными прямыми.
+    /// </summary>
+    /// <param name="point">Заданная точка.</param>
+    /// <param name="platan">Плоскость, в которых находится прямая.</param>
+    /// <param name="straight1">Первая заданная прямая.</param>
+    /// <param name="straight2">Вторая заданная прямая.</param>
+    /// <returns></returns>
+    public static bool PointIsBetweenStraights(Point3d point, Platan platan,
+                                                Straight straight1, Straight straight2)
+    {
+        Point3d projectionPoint = platan.GetProection(point);
 
-    private static double GetHalfPerimetr(double a, double b, double c)
-    {
-        return (a + b + c) / 2;
-    }
-    private static double GetSquare(double a, double b, double c)
-    {
-        double p = GetHalfPerimetr(a, b, c);
-        return Math.Sqrt(p * (p - a) * (p - b) * (p - c));
-    }
-    public static double GetPerpen(double a, double b, double c)
-    {
-        double s = GetSquare(a, b, c);
-
-        return (2 * s) / a;
+        double len1 = straight1.GetDistance(projectionPoint);
+        double len2 = straight2.GetDistance(projectionPoint);
+        double len = straight1.GetDistance(straight2);
+        Config.TheUi.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error,
+                                       len1 + " " + len2 + " " + len + " ");
+        return !(len < len1 + len2);
     }
 
 

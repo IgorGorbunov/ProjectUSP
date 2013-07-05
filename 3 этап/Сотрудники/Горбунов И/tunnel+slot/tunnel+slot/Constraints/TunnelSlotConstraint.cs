@@ -216,12 +216,12 @@ public sealed class TunnelSlotConstraint
 
     static void MoveByDirection(Component comp, Vector vec)
     {
-        NXOpen.Positioning.ComponentPositioner componentPositioner1 =
+        ComponentPositioner componentPositioner1 =
                 Config.WorkPart.ComponentAssembly.Positioner;
         componentPositioner1.BeginMoveComponent();
 
-        NXOpen.Positioning.Network network2 = componentPositioner1.EstablishNetwork();
-        NXOpen.Positioning.ComponentNetwork componentNetwork2 = (NXOpen.Positioning.ComponentNetwork)network2;
+        Network network2 = componentPositioner1.EstablishNetwork();
+        ComponentNetwork componentNetwork2 = (ComponentNetwork)network2;
 
         NXObject[] movableObjects2 = new NXObject[1];
         movableObjects2[0] = comp;

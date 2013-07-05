@@ -94,12 +94,33 @@ public class Straight
             return new Platan[] { _firstPlatane, _secondPlatane };
         }
     }
+    /// <summary>
+    /// Возвращает произвольную точку на прямой.
+    /// </summary>
+    public Point3d PointOnStraight
+    {
+        get
+        {
+            if (!_hasPointOn)
+            {
+                const string logMess = "Произвольной точки на прямой не существует!";
+                Config.TheUi.NXMessageBox.Show("Ошибка!", NXMessageBox.DialogType.Error,
+                                               logMess);
+                Log.WriteError(logMess);
+            }
+
+            return _pointOnStraight;
+        }
+    }
 
     //дробь представлена 2мя значениями - числителем и знаменателем
     private const int EquationRank = 2;
 
     double[,] _equation;
     Platan _firstPlatane, _secondPlatane;
+
+    private bool _hasPointOn;
+    private Point3d _pointOnStraight;
 
     /// <summary>
     /// Инициализирует новый экземпляр класса для математической прямой, проходящей через две
@@ -194,6 +215,29 @@ public class Straight
         mess += " }";
 
         return mess;
+    }
+    /// <summary>
+    /// Возвращает расстояние от прямой до заданной точки.
+    /// </summary>
+    /// <param name="point">Точка.</param>
+    /// <returns></returns>
+    public double GetDistance(Point3d point)
+    {
+        _pointOnStraight = Geom.GetIntersectionPointStraight(point, this);
+        _hasPointOn = true;
+
+        Vector vec = new Vector(point, _pointOnStraight);
+        return vec.Length;
+    }
+    /// <summary>
+    /// Возвращает расстояние до параллельной прямой.
+    /// </summary>
+    /// <param name="straight">Параллельная для данной прямой, прямая.</param>
+    /// <returns></returns>
+    public double GetDistance(Straight straight)
+    {
+        Point3d point = straight.PointOnStraight;
+        return GetDistance(point);
     }
 
     void SetEquation(Point3d firstPoint, Point3d secondPoint)

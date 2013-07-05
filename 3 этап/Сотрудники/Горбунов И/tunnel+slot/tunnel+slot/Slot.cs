@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using NXOpen;
 using NXOpen.Assemblies;
 
@@ -86,10 +87,13 @@ public class Slot
         get { return _slotSet; }
     }
     /// <summary>
-    /// Один из двух рёбер на НГП.
+    /// Первое рёберо на НГП.
     /// </summary>
     public readonly Edge EdgeLong1;
-    private readonly Edge _edgeLong2;
+    /// <summary>
+    /// Второе рёберо на НГП.
+    /// </summary>
+    public readonly Edge EdgeLong2;
 
     Config.SlotType _type;
 
@@ -118,7 +122,7 @@ public class Slot
     {
         _slotSet = slotSet;
         EdgeLong1 = edgeLong1;
-        _edgeLong2 = edgeLong2;
+        EdgeLong2 = edgeLong2;
         _type = type;
 
         _sideFace1 = GetNotBottomFace(edgeLong1);
@@ -209,11 +213,12 @@ public class Slot
             Platan pl = new Platan(f);
 
             //точка находится "под" необходимыми гранями
-            double distance = - pl.GetDistanceToPoint(point);
-                
-            if (distance >= 0 && !dictFaces.ContainsValue(Config.Round(distance)))
+            //округление для проверки нуля - added
+            double distance = - Config.Round(pl.GetDistanceToPoint(point));
+
+            if (distance >= 0 && !dictFaces.ContainsValue(distance))
             {
-                dictFaces.Add(f, Config.Round(distance));
+                dictFaces.Add(f, distance);
             }
         }
 
@@ -234,6 +239,16 @@ public class Slot
         {
             Instr.QSortPair(_ortFacePairs, 0, _ortFacePairs.Length - 1);            
         }
+
+        string logMess = "Паралельные грани для НГП " + ParentComponent.ToString() + " " +
+            ParentComponent.Name + " c расстоянием до неё:";
+        foreach (KeyValuePair<Face, double> keyValuePair in _ortFacePairs)
+        {
+            logMess += Environment.NewLine + keyValuePair.Key.ToString() + " - " +
+                keyValuePair.Value.ToString() + " мм";
+        }
+        logMess += Environment.NewLine + "=============";
+        Log.WriteLine(logMess);
     }
 
     /*Dictionary<Edge, double> getNearestEdges(Edge[] edges, Point3d from_point)
@@ -275,12 +290,12 @@ public class Slot
     public void Highlight()
     {
         EdgeLong1.Highlight();
-        _edgeLong2.Highlight();
+        EdgeLong2.Highlight();
     }
     public void Unhighlight()
     {
         EdgeLong1.Unhighlight();
-        _edgeLong2.Unhighlight();
+        EdgeLong2.Unhighlight();
     }
 
     Face GetNotBottomFace(Edge slotEdge)
@@ -481,7 +496,7 @@ public class Slot
     {
         Point3d slotSetPoint = _slotSet.SelectPoint;
         Straight straight1 = new Straight(EdgeLong1);
-        Straight straight2 = new Straight(_edgeLong2);
+        Straight straight2 = new Straight(EdgeLong2);
         Point3d intersection1 = Geom.GetIntersectionPointStraight(slotSetPoint, straight1);
         Point3d intersection2 = Geom.GetIntersectionPointStraight(slotSetPoint, straight2);
 

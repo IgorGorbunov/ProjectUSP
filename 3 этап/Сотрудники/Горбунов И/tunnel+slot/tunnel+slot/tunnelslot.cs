@@ -137,6 +137,9 @@ public class tunnelslot
     bool _secondPointSelected;
     bool _firstPointSelected;
 
+    private bool hasNearestSlot1;
+    private bool hasNearestSlot2;
+
     //------------------------------------------------------------------------------
     //Constructor for NX Styler class
     //------------------------------------------------------------------------------
@@ -466,6 +469,7 @@ public class tunnelslot
             else if (block == _direction0)
             {
                 //---------Enter your code here-----------
+                Log.WriteLine("Нажат реверс.");
                 _constraint.Reverse();
             }
             else if(block == _selection01)
@@ -831,14 +835,41 @@ public class tunnelslot
         if (SetPoint(block, ref _slotSet1))
         {
             _firstPointSelected = true;
-            SetConstraints();
+
+            hasNearestSlot1 = _slotSet1.HasNearestSlot(out _slot1);
+            _slot1.Highlight();
+            Config.TheUi.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, "");
+            _slot1.Unhighlight();
+
+            if (hasNearestSlot1 && Geom.PointIsBetweenStraights(_tunnel1.CentralPoint, 
+                                   new Platan(_slotSet1.BottomFace), 
+                                   new Straight(_slot1.EdgeLong1), new Straight(_slot1.EdgeLong2)))
+            {
+                SetConstraints();
+            }
+            else
+            {
+                string message = "Базовое отверстие не пересекается с пазом!" + Environment.NewLine +
+                         "Выберите другое отверстие или паз!";
+                Log.WriteWarning(message);
+                Config.TheUi.NXMessageBox.Show("Error!",
+                                               NXMessageBox.DialogType.Error,
+                                               message);
+                _firstPointSelected = false;
+                UnSelectObjects(_slotTunPoint);
+                _slotTunPoint.Focus();
+            }
         }
         else
         {
             _firstPointSelected = false;
-            UnSelectObjects(_faceSelect0);
-            _faceSelect0.Focus();
             SetEnable(block, false);
+
+            UnSelectObjects(_faceSelect0);
+            SetEnable(_faceSelect0, false);
+
+            UnSelectObjects(_selection0);
+            _selection0.Focus();
         }
     }
     void SetSecondPoint(UIBlock block)
@@ -846,14 +877,16 @@ public class tunnelslot
         if (SetPoint(block, ref _slotSet2))
         {
             _secondPointSelected = true;
+            hasNearestSlot2 = _slotSet2.HasNearestSlot(out _slot2);
             SetConstraints();
         }
         else
         {
             _secondPointSelected = false;
+            SetEnable(block, false);
+
             UnSelectObjects(_selection01);
             _selection01.Focus();
-            SetEnable(block, false);
         }
     }
 
@@ -875,7 +908,6 @@ public class tunnelslot
         UnSelectObjects(block);
         return false;
     }
-
     static bool SetPoint(Point3d point, ref SlotSet slotSet)
     {
         slotSet.SetPoint(point);
@@ -905,8 +937,7 @@ public class tunnelslot
         if (!_firstPointSelected || !_secondPointSelected) return;
         Log.WriteLine("Запущена процедура позиционирования.");
 
-        bool hasNearestSlot1 = _slotSet1.HasNearestSlot(out _slot1);
-        bool hasNearestSlot2 = _slotSet2.HasNearestSlot(out _slot2);
+        
 
         if (hasNearestSlot1 && hasNearestSlot2)
         {

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using NXOpen;
 using NXOpen.Assemblies;
 
@@ -206,11 +207,12 @@ public class Tunnel
                 Platan pl = new Platan(f);
 
                 //точка находится "под" необходимыми гранями
-                double distance = - pl.GetDistanceToPoint(point);
+                //округление для проверки нуля - added
+                double distance = - Config.Round(pl.GetDistanceToPoint(point));
 
-                if (distance >= 0 && !dictFaces.ContainsValue(Config.Round(distance)))
+                if (distance >= 0 && !dictFaces.ContainsValue(distance))
                 {
-                    dictFaces.Add(f, Config.Round(distance));
+                    dictFaces.Add(f, distance);
                 }
             }  
         }
@@ -232,6 +234,16 @@ public class Tunnel
         {
             Instr.QSortPair(_ortFacePairs, 0, _ortFacePairs.Length - 1);
         }
+
+        string logMess = "Паралельные грани для НГП " + ParentComponent.ToString() + " " + 
+            ParentComponent.Name + " c расстоянием до неё:";
+        foreach (KeyValuePair<Face, double> keyValuePair in _ortFacePairs)
+        {
+            logMess += Environment.NewLine + keyValuePair.Key.ToString() + " - " + 
+                keyValuePair.Value.ToString() + " мм";
+        }
+        logMess += Environment.NewLine + "=============";
+        Log.WriteLine(logMess);
     }
 
     void SetNormalFaces()

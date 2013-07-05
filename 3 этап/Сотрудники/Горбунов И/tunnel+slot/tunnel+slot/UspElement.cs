@@ -94,12 +94,12 @@ public class UspElement
             }
         }
 
-        string mess = "В качестве нижних граней паза выбраны:";
+        string mess = "НГП для данного элемента:";
         foreach (Face f in _bottomFaces)
         {
             mess += Environment.NewLine + f;
         }
-        mess += Environment.NewLine + "---------------";
+        mess += Environment.NewLine + "============";
         Log.WriteLine(mess);
     }
 

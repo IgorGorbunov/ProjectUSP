@@ -98,7 +98,6 @@ public class TunnelConstraint
         }
     End: { }
 
-        //Config.UnFreezeDisplay();
     }
 
     /// <summary>

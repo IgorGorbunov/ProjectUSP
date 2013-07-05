@@ -28,6 +28,9 @@ public class Touch : Constrainter
                                          secondFace, false, false, false);
 
         ExecuteConstraints();
+
+        string logMess = "Соединение касанием " + firstFace + " и " + secondFace;
+        Log.WriteLine(logMess);
     }
     
 }

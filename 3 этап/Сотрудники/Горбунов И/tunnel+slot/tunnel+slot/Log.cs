@@ -38,6 +38,16 @@ public static class Log
             Environment.NewLine + warning;
         WriteLine(message);
     }
+    /// <summary>
+    /// Записывает новую строку с сообщением об ошибки.
+    /// </summary>
+    /// <param name="warning"></param>
+    public static void WriteError(string warning)
+    {
+        string message = "************************************" +
+            Environment.NewLine + warning;
+        WriteLine(message);
+    }
 
     static void SetFile()
     {
