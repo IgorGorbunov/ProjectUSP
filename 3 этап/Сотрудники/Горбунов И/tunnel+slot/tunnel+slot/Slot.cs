@@ -214,7 +214,7 @@ public class Slot
 
             //точка находится "под" необходимыми гранями
             //округление для проверки нуля - added
-            double distance = - Config.Round(pl.GetDistanceToPoint(point));
+            double distance = Config.Round(pl.GetDistanceToPoint(point));
 
             if (distance >= 0 && !dictFaces.ContainsValue(distance))
             {
@@ -463,35 +463,6 @@ public class Slot
 
         return resultFace;
     }
-
-    /*bool isTypeTwo(Face face, Edge edge)
-    {
-        Vector vecEtalon = new Vector(edge);
-        Edge[] edges = face.GetEdges();
-        foreach (Edge e in edges)
-        {
-            if (e != edge)
-            {
-                Vector vecTmp = new Vector(e);
-
-                if (vecEtalon.isParallel(vecTmp))
-                {
-                    double[,] edgeEquation = Geom.getStraitEquation(e);
-                    Point3d heightStart = vecEtalon.start;
-                    Point3d pointOnStraight = Geom.getIntersectionPointStraight(heightStart, edgeEquation);
-                    Vector vecHeight = new Vector(heightStart, pointOnStraight);
-
-
-                    if (Config.doub(vecHeight.getLength()) == Config.STEP_DOWN_WIDTH_T_SLOT_2)
-                    {
-                        return true;
-                    }
-                }
-            }
-        }
-
-        return false;
-    }*/
 
     void SetSlotPoint()
     {

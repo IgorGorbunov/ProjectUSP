@@ -100,31 +100,6 @@ public class TunnelConstraint
 
     }
 
-    /// <summary>
-    /// Производит реверс вдоль отверстия.
-    /// </summary>
-    //public void reverseAfterItersect()
-    //{
-    //    //axeConstr.reverse();
-    //    Config.theUI.NXMessageBox.Show("Tst", NXMessageBox.DialogType.Error, "!!");
-    //    touchConstr.delete();
-
-    //    setTouchFaceConstraint(true, true);
-    //    Config.theUFSession.Modl.Update();
-    //}
-
-    /// <summary>
-    /// Производит реверс соединения базовых отверстий для одного/обоих элементов.
-    /// </summary>
-    /// <param name="first">True, если необходим реверс первого элемента.</param>
-    /// <param name="second">True, если необходим реверс второго элемента.</param>
-    public void Reverse(bool first, bool second)
-    {
-        _touchConstr.Delete();
-        _axeConstr.Reverse();
-
-        SetTouchFaceConstraint(first, second);
-    }
 
 }
 

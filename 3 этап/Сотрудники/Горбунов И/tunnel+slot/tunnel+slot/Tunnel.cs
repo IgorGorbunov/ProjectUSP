@@ -206,9 +206,9 @@ public class Tunnel
             {
                 Platan pl = new Platan(f);
 
-                //точка находится "под" необходимыми гранями
+                //точка находится "под" необходимыми гранями - изменил на +
                 //округление для проверки нуля - added
-                double distance = - Config.Round(pl.GetDistanceToPoint(point));
+                double distance = Config.Round(pl.GetDistanceToPoint(point));
 
                 if (distance >= 0 && !dictFaces.ContainsValue(distance))
                 {
