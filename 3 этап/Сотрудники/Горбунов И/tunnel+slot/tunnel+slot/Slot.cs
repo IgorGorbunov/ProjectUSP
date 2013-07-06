@@ -209,12 +209,13 @@ public class Slot
         {
             double[] direction2 = Geom.GetDirection(f);
 
-            if (!Geom.IsEqual(direction1, direction2) || f.SolidFaceType != Face.FaceType.Planar) continue;
+            if (f.SolidFaceType != Face.FaceType.Planar || 
+                !Geom.IsEqual(direction1, direction2)) continue;
+
             Platan pl = new Platan(f);
 
-            //точка находится "под" необходимыми гранями
             //округление для проверки нуля - added
-            double distance = Config.Round(pl.GetDistanceToPoint(point));
+            double distance = Config.Round(Math.Abs(pl.GetDistanceToPoint(point)));
 
             if (distance >= 0 && !dictFaces.ContainsValue(distance))
             {
@@ -317,6 +318,7 @@ public class Slot
     //TODO refactor
     void FindTopFace()
     {
+        Config.TheUi.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, "1");
         Face topFace = null;
         Edge topEdge = null;
         _bottomDirection = Geom.GetDirection(BottomFace);

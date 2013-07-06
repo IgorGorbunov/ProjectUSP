@@ -182,15 +182,15 @@ public class Tunnel
     //refactor
     void FindOrtFaces(bool reverse)
     {
-        double[] direction1;
+        double[] etalonDirection;
         if (reverse)
         {
-            direction1 = ReverseDirection();
+            etalonDirection = ReverseDirection();
         }
         else
         {
             _rev = 1;
-            direction1 = _slot.BottomDirection;
+            etalonDirection = _slot.BottomDirection;
         }
         
         Point3d point = CentralPoint;
@@ -200,15 +200,15 @@ public class Tunnel
         Face[] faces = Body.GetFaces();
         foreach (Face f in faces)
         {
-            double[] direction2 = Geom.GetDirection(f);
+            double[] faceDiriction = Geom.GetDirection(f);
 
-            if (Geom.IsEqual(direction1, direction2) && f.SolidFaceType == Face.FaceType.Planar)
+            if (f.SolidFaceType == Face.FaceType.Planar && 
+                Geom.IsEqual(etalonDirection, faceDiriction))
             {
                 Platan pl = new Platan(f);
 
-                //точка находится "под" необходимыми гранями - изменил на +
                 //округление для проверки нуля - added
-                double distance = Config.Round(pl.GetDistanceToPoint(point));
+                double distance = Config.Round(Math.Abs(pl.GetDistanceToPoint(point)));
 
                 if (distance >= 0 && !dictFaces.ContainsValue(distance))
                 {
