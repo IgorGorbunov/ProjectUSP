@@ -1,0 +1,16 @@
+C:\Documents and Settings\USP\Рабочий стол\NX\uspIntersection\uspIntersection\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\USP\Рабочий стол\NX\uspIntersection\uspIntersection\bin\Debug\uspIntersection.pdb
+C:\Documents and Settings\USP\Рабочий стол\NX\uspIntersection\uspIntersection\bin\Debug\NXOpen.dll
+C:\Documents and Settings\USP\Рабочий стол\NX\uspIntersection\uspIntersection\bin\Debug\NXOpen.UF.dll
+C:\Documents and Settings\USP\Рабочий стол\NX\uspIntersection\uspIntersection\bin\Debug\NXOpen.Utilities.dll
+C:\Documents and Settings\USP\Рабочий стол\NX\uspIntersection\uspIntersection\bin\Debug\NXOpenUI.dll
+C:\Documents and Settings\USP\Рабочий стол\NX\uspIntersection\uspIntersection\obj\Debug\uspIntersection.pdb
+C:\Documents and Settings\USP\Рабочий стол\NX\uspIntersection\uspIntersection\bin\Debug\uspIntersection.dll
+C:\Documents and Settings\USP\Рабочий стол\NX\uspIntersection\uspIntersection\obj\Debug\uspIntersection.dll
+C:\ug_customization\application\uspIntersection.dll
+C:\ug_customization\application\uspIntersection.pdb
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\uspIntersection\uspIntersection\obj\Debug\ResolveAssemblyReference.cache
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\uspIntersection\uspIntersection\obj\Debug\uspIntersection.dll
+G:\repos\ug_customization\application\uspIntersection.dll
+G:\repos\ug_customization\application\uspIntersection.pdb
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\uspIntersection\uspIntersection\obj\Debug\uspIntersection.pdb

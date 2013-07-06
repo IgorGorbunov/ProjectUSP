@@ -1,0 +1,11 @@
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\tunnel+slot\tunnel+slot\bin\Debug\tunnel+slot.exe
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\tunnel+slot\tunnel+slot\bin\Debug\tunnel+slot.pdb
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\tunnel+slot\tunnel+slot\bin\Debug\NXOpen.dll
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\tunnel+slot\tunnel+slot\bin\Debug\NXOpen.UF.dll
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\tunnel+slot\tunnel+slot\bin\Debug\NXOpen.Utilities.dll
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\tunnel+slot\tunnel+slot\bin\Debug\NXOpenUI.dll
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\tunnel+slot\tunnel+slot\obj\Debug\ResolveAssemblyReference.cache
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\tunnel+slot\tunnel+slot\obj\Debug\tunnel+slot.pdb
+C:\ug_customization\application\tunnel+slot.dll
+C:\ug_customization\application\tunnel+slot.pdb
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\tunnel+slot\tunnel+slot\obj\Debug\tunnel+slot.dll

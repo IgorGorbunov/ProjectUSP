@@ -1,0 +1,18 @@
+C:\Documents and Settings\USP\Рабочий стол\NX\dialogWith2Points\dialogWith2Points\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\USP\Рабочий стол\NX\dialogWith2Points\dialogWith2Points\bin\Debug\dialogWith2Points.dll
+C:\Documents and Settings\USP\Рабочий стол\NX\dialogWith2Points\dialogWith2Points\bin\Debug\dialogWith2Points.pdb
+C:\Documents and Settings\USP\Рабочий стол\NX\dialogWith2Points\dialogWith2Points\bin\Debug\NXOpen.dll
+C:\Documents and Settings\USP\Рабочий стол\NX\dialogWith2Points\dialogWith2Points\bin\Debug\NXOpen.UF.dll
+C:\Documents and Settings\USP\Рабочий стол\NX\dialogWith2Points\dialogWith2Points\bin\Debug\NXOpen.Utilities.dll
+C:\Documents and Settings\USP\Рабочий стол\NX\dialogWith2Points\dialogWith2Points\bin\Debug\NXOpenUI.dll
+C:\Documents and Settings\USP\Рабочий стол\NX\dialogWith2Points\dialogWith2Points\obj\Debug\dialogWith2Points.dll
+C:\Documents and Settings\USP\Рабочий стол\NX\dialogWith2Points\dialogWith2Points\obj\Debug\dialogWith2Points.pdb
+C:\ug_customization\application\dialogWith2Points.dll
+C:\ug_customization\application\dialogWith2Points.pdb
+G:\repos\ug_customization\application\dialogWith2Points.dll
+G:\repos\ug_customization\application\dialogWith2Points.pdb
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\dialogWith2Points\dialogWith2Points\obj\Debug\ResolveAssemblyReference.cache
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\dialogWith2Points\dialogWith2Points\obj\Debug\dialogWith2Points.dll
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\dialogWith2Points\dialogWith2Points\obj\Debug\dialogWith2Points.pdb
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\dialogWith2Points\dialogWith2Points\obj\Debug\dialogWith2Points.Properties.Resources.resources
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\dialogWith2Points\dialogWith2Points\obj\Debug\dialogWith2Points.csproj.GenerateResource.Cache

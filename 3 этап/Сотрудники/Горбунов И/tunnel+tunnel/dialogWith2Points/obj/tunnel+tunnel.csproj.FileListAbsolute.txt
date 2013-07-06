@@ -1,0 +1,7 @@
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\tunnel+tunnel\dialogWith2Points\obj\Debug\ResolveAssemblyReference.cache
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\tunnel+tunnel\dialogWith2Points\obj\Debug\tunnel+tunnel.csproj.GenerateResource.Cache
+C:\ug_customization\application\tt.dll
+C:\ug_customization\application\tt.pdb
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\tunnel+tunnel\dialogWith2Points\obj\Debug\tt.Properties.Resources.resources
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\tunnel+tunnel\dialogWith2Points\obj\Debug\tt.dll
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\tunnel+tunnel\dialogWith2Points\obj\Debug\tt.pdb

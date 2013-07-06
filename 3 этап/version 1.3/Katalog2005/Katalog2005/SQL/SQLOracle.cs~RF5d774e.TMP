@@ -1,0 +1,1164 @@
+using System;
+
+class SQLOracle
+{
+    static string _user = @"591014";
+    static string _password = @"591000";
+    static string _dataSource = @"eoi";
+    static string _connectionString = ("User id=PROG;password=591000;Data Source = (DESCRIPTION =(ADDRESS_LIST =(ADDRESS = (PROTOCOL = TCP)(HOST = tiger-ad37ad0d2)(PORT = 1521)))(CONNECT_DATA = (SERVICE_NAME = USP) ))"); // дополнение
+
+    //("User id=PROG;password=591000;Data Source = (DESCRIPTION =(ADDRESS_LIST =(ADDRESS = (PROTOCOL = TCP)(HOST = tiger-ad37ad0d2)(PORT = 1521)))(CONNECT_DATA = (SERVICE_NAME = USP) ))"); // дополнение
+
+    //("User id = 591014; password = 591000; Data Source = eoi");
+    //("User id=PROG;password=591000;Data Source = (DESCRIPTION =(ADDRESS_LIST =(ADDRESS = (PROTOCOL = TCP)(HOST = tiger-ad37ad0d2)(PORT = 1521)))(CONNECT_DATA = (SERVICE_NAME = USP) ))"); // дополнение
+
+
+   //static Oracle.DataAccess.Client.OracleConnection _conn = new Oracle.DataAccess.Client.OracleConnection("User id=591014;password=591000;Data Source = (DESCRIPTION =(ADDRESS_LIST =(ADDRESS = (PROTOCOL = TCP)(HOST = 10.6.4.250)(PORT = 1521)))(CONNECT_DATA = (SERVICE_NAME = eoi) ))");
+  
+    static Oracle.DataAccess.Client.OracleConnection _conn;
+    static void _open()
+    {
+        _conn = new Oracle.DataAccess.Client.OracleConnection(_connectionString);
+        _conn.Open();
+    }
+    static void _close()
+    {
+        _conn.Close();
+        _conn.Dispose();
+    }
+
+    public static bool connect(string login, string password)
+    {
+        string parentConnection = _conn.ConnectionString;
+        _conn.ConnectionString = @"Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.1.135)(PORT=1521)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=USP)));User Id=system;Password=sequritytool;";
+
+        try
+        {
+            _open();
+            return true;
+        }
+        catch (System.Exception e)
+        {
+            System.Windows.Forms.MessageBox.Show(e.ToString());
+            return false;
+        }
+        finally
+        {
+            _close();
+        }
+    }
+
+    public static System.Data.DataSet getDS(string sql)
+    {
+        System.Data.DataSet DS = new System.Data.DataSet();
+
+        _open();
+        try
+        {
+            Oracle.DataAccess.Client.OracleCommand Cmd = new Oracle.DataAccess.Client.OracleCommand(sql, _conn);
+            Cmd.CommandType = System.Data.CommandType.Text;
+
+            Oracle.DataAccess.Client.OracleDataAdapter DA = new Oracle.DataAccess.Client.OracleDataAdapter(Cmd);
+
+            DA.Fill(DS);
+
+            DA.Dispose();
+            Cmd.Dispose();
+        }
+        catch (System.Exception e)
+        {
+            System.Windows.Forms.MessageBox.Show(e.ToString());
+        }
+        finally
+        {
+            _close();
+        }
+
+        return DS;
+    }
+    
+
+    public static System.Collections.Generic.List<int> selectListInt(string cmdQuery)
+    {
+        System.Collections.Generic.List<int> list = new System.Collections.Generic.List<int>();
+
+        _open();
+        try
+        {
+            Oracle.DataAccess.Client.OracleCommand cmd = new Oracle.DataAccess.Client.OracleCommand(cmdQuery, _conn);
+            Oracle.DataAccess.Client.OracleDataReader reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+                list.Add(System.Int32.Parse(reader.GetValue(0).ToString()));
+
+            reader.Close();
+            cmd.Dispose();
+        }
+        catch (System.Exception e)
+        {
+            System.Windows.Forms.MessageBox.Show(e.ToString());
+        }
+        finally
+        {
+            _close();
+        }
+
+        return list;
+    }
+    public static System.Collections.Generic.List<long> selectListLong(string cmdQuery)
+    {
+        System.Collections.Generic.List<long> list = new System.Collections.Generic.List<long>();
+
+        _open();
+        try
+        {
+            Oracle.DataAccess.Client.OracleCommand cmd = new Oracle.DataAccess.Client.OracleCommand(cmdQuery, _conn);
+            Oracle.DataAccess.Client.OracleDataReader reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+                list.Add(System.Int32.Parse(reader.GetValue(0).ToString()));
+
+            reader.Close();
+            cmd.Dispose();
+        }
+        catch (System.Exception e)
+        {
+            System.Windows.Forms.MessageBox.Show(e.ToString());
+        }
+        finally
+        {
+            _close();
+        }
+
+        return list;
+    }
+    public static System.Collections.Generic.List<string> selectListStr(string cmdQuery)
+    {
+        System.Collections.Generic.List<string> list = new System.Collections.Generic.List<string>();
+
+        _open();
+        try
+        {
+            Oracle.DataAccess.Client.OracleCommand cmd = new Oracle.DataAccess.Client.OracleCommand(cmdQuery, _conn);
+            Oracle.DataAccess.Client.OracleDataReader reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+                list.Add(reader.GetString(0));
+
+            reader.Close();
+            cmd.Dispose();
+        }
+        catch (System.Exception e)
+        {
+            System.Windows.Forms.MessageBox.Show(e.ToString());
+        }
+        finally
+        {
+            _close();
+        }
+
+        return list;
+    }
+
+    public static bool selectBool(string cmdQuery)
+    {
+        bool value = false;
+
+        _open();
+        try
+        {
+            Oracle.DataAccess.Client.OracleCommand cmd = new Oracle.DataAccess.Client.OracleCommand(cmdQuery, _conn);
+            Oracle.DataAccess.Client.OracleDataReader reader = cmd.ExecuteReader();
+
+            if (reader.Read())
+                value = reader.GetBoolean(0);
+
+            reader.Close();
+            cmd.Dispose();
+        }
+        catch (System.Exception e)
+        {
+            System.Windows.Forms.MessageBox.Show(e.ToString());
+        }
+        finally
+        {
+            _close();
+        }
+
+        return value;
+    }
+    public static int selectInt(string cmdQuery)
+    {
+        int value = 0;
+
+        _open();
+        try
+        {
+            Oracle.DataAccess.Client.OracleCommand cmd = new Oracle.DataAccess.Client.OracleCommand(cmdQuery, _conn);
+            Oracle.DataAccess.Client.OracleDataReader reader = cmd.ExecuteReader();
+
+            if (reader.Read())
+                value = System.Int32.Parse(reader.GetValue(0).ToString());
+
+            reader.Close();
+            cmd.Dispose();
+        }
+        catch (System.Exception e)
+        {
+            System.Windows.Forms.MessageBox.Show(e.ToString());
+        }
+        finally
+        {
+            _close();
+        }
+
+        return value;
+    }
+    public static int selectInt(string cmdQuery, int nullValue)
+    {
+        int value = nullValue;
+
+        _open();
+        try
+        {
+            Oracle.DataAccess.Client.OracleCommand cmd = new Oracle.DataAccess.Client.OracleCommand(cmdQuery, _conn);
+            Oracle.DataAccess.Client.OracleDataReader reader = cmd.ExecuteReader();
+
+            if (reader.Read())
+                value = System.Int32.Parse(reader.GetValue(0).ToString());
+
+            reader.Close();
+            cmd.Dispose();
+        }
+        catch (System.Exception e)
+        {
+            System.Windows.Forms.MessageBox.Show(e.ToString());
+        }
+        finally
+        {
+            _close();
+        }
+
+        return value;
+    }
+    public static long selectLong(string cmdQuery)
+    {
+        long value = 0;
+
+        _open();
+        try
+        {
+            Oracle.DataAccess.Client.OracleCommand cmd = new Oracle.DataAccess.Client.OracleCommand(cmdQuery, _conn);
+            Oracle.DataAccess.Client.OracleDataReader reader = cmd.ExecuteReader();
+            
+            if (reader.Read())
+                value = System.Int32.Parse(reader.GetValue(0).ToString());
+
+            reader.Close();
+            cmd.Dispose();
+        }
+        catch (System.Exception e)
+        {
+            System.Windows.Forms.MessageBox.Show(e.ToString());
+        }
+        finally
+        {
+            _close();
+        }
+
+        return value;
+    }
+    public static long selectLong(string cmdQuery, long nullValue)
+    {
+        long value = nullValue;
+
+        _open();
+        try
+        {
+            Oracle.DataAccess.Client.OracleCommand cmd = new Oracle.DataAccess.Client.OracleCommand(cmdQuery, _conn);
+            Oracle.DataAccess.Client.OracleDataReader reader = cmd.ExecuteReader();
+
+            if (reader.Read())
+                value = System.Int32.Parse(reader.GetValue(0).ToString());
+
+            reader.Close();
+            cmd.Dispose();
+        }
+        catch (System.Exception e)
+        {
+            System.Windows.Forms.MessageBox.Show(e.ToString());
+        }
+        finally
+        {
+            _close();
+        }
+
+        return value;
+    }
+    public static string selectStr(string cmdQuery)
+    {
+        string value = "";
+
+        _open();
+        try
+        {
+            Oracle.DataAccess.Client.OracleCommand cmd = new Oracle.DataAccess.Client.OracleCommand(cmdQuery, _conn);
+            Oracle.DataAccess.Client.OracleDataReader reader = cmd.ExecuteReader();
+
+            if (reader.Read())
+                value = reader.GetString(0);
+
+            reader.Close();
+            cmd.Dispose();
+        }
+        catch (System.Exception e)
+        {
+            System.Windows.Forms.MessageBox.Show(e.ToString());
+        }
+        finally
+        {
+            _close();
+        }
+
+        return value;
+    }
+    public static string selectStr(string cmdQuery, string nullValue)
+    {
+        string value = nullValue;
+
+        _open();
+        try
+        {
+            Oracle.DataAccess.Client.OracleCommand cmd = new Oracle.DataAccess.Client.OracleCommand(cmdQuery, _conn);
+            Oracle.DataAccess.Client.OracleDataReader reader = cmd.ExecuteReader();
+
+            if (reader.Read())
+                value = reader.GetString(0);
+
+            reader.Close();
+            cmd.Dispose();
+        }
+        catch (System.Exception e)
+        {
+            System.Windows.Forms.MessageBox.Show(e.ToString());
+        }
+        finally
+        {
+            _close();
+        }
+
+        return value;
+    }
+
+    public static void update(string sqlUpdate)
+    {
+        _open();
+        try
+        {
+            Oracle.DataAccess.Client.OracleCommand cmdUpdate = new Oracle.DataAccess.Client.OracleCommand(sqlUpdate, _conn);
+
+            cmdUpdate.ExecuteNonQuery();
+            cmdUpdate.Dispose();
+        }
+        catch (System.Exception e)
+        {
+            System.Windows.Forms.MessageBox.Show(e.ToString());
+        }
+        finally
+        {
+            _close();
+        }
+    }
+
+    public static void alter(string sqlAlter)
+    {
+        _open();
+        try
+        {
+            Oracle.DataAccess.Client.OracleCommand cmdAlter = new Oracle.DataAccess.Client.OracleCommand(sqlAlter, _conn);
+
+            cmdAlter.ExecuteNonQuery();
+            cmdAlter.Dispose();
+        }
+        catch (System.Exception e)
+        {
+            System.Windows.Forms.MessageBox.Show(e.ToString());
+        }
+        finally
+        {
+            _close();
+        }
+    }
+
+    public static void insert(string sqlInsert)
+    {
+        _open();
+        try
+        {
+            Oracle.DataAccess.Client.OracleCommand cmdInsert = new Oracle.DataAccess.Client.OracleCommand(sqlInsert, _conn);
+
+            cmdInsert.ExecuteNonQuery();
+            cmdInsert.Dispose();
+        }
+        catch (System.Exception e)
+        {
+            System.Windows.Forms.MessageBox.Show(e.ToString());
+        }
+        finally
+        {
+            _close();
+        }
+    }
+
+    public static void delete(string sqlDelete)
+    {
+        _open();
+        try
+        {
+            Oracle.DataAccess.Client.OracleCommand cmdDelete = new Oracle.DataAccess.Client.OracleCommand(sqlDelete, _conn);
+
+            cmdDelete.ExecuteNonQuery();
+            cmdDelete.Dispose();
+        }
+        catch (System.Exception e)
+        {
+            System.Windows.Forms.MessageBox.Show(e.ToString());
+        }
+        finally
+        {
+            _close();
+        }
+    }
+
+    public static bool isVoid(string table)
+    {
+        bool flag = true;
+
+        _open();
+        try
+        {
+            string cmdQuery = "select * from " + table;
+
+            Oracle.DataAccess.Client.OracleCommand cmd = new Oracle.DataAccess.Client.OracleCommand(cmdQuery, _conn);
+            Oracle.DataAccess.Client.OracleDataReader reader = cmd.ExecuteReader();
+
+            if (reader.Read())
+                flag = false;
+            else
+                flag = true;
+
+            reader.Close();
+            cmd.Dispose();
+        }
+        catch (System.Exception e)
+        {
+            System.Windows.Forms.MessageBox.Show(e.ToString());
+        }
+        finally
+        {
+            _close();
+        }
+
+        return flag;
+    }
+    public static bool exist(string table, string where)
+    {
+        bool flag = false;
+
+        _open();
+        try
+        {
+            string cmdQuery = "select * from " + table + " where " + where;
+
+            Oracle.DataAccess.Client.OracleCommand cmd = new Oracle.DataAccess.Client.OracleCommand(cmdQuery, _conn);
+            Oracle.DataAccess.Client.OracleDataReader reader = cmd.ExecuteReader();
+
+            if (reader.Read())
+                flag = true;
+            else
+                flag = false;
+
+            reader.Close();
+            cmd.Dispose();
+        }
+        catch (System.Exception e)
+        {
+            System.Windows.Forms.MessageBox.Show(e.ToString());
+        }
+        finally
+        {
+            _close();
+        }
+
+        return flag;
+    }
+
+    public static int countInt(string table)
+    {
+        return selectInt("select COUNT(ID) from " + table);
+    }
+    public static long countLong(string table)
+    {
+        return selectLong("select COUNT(ID) from " + table);
+    }
+
+    public static int countInt(string table, string where)
+    {
+        return selectInt("select COUNT(ID) from " + table + " where " + where);
+    }
+    public static long countLong(string table, string where)
+    {
+        return selectLong("select COUNT(ID) from " + table + " where " + where);
+    }
+
+    public static int countIntDist(string table, string fieldDistinct)
+    {
+        return selectInt("select COUNT(DISTINCT " + fieldDistinct + ") from " + table);
+    }
+    public static long countLongDist(string table, string fieldDistinct)
+    {
+        return selectLong("select COUNT(DISTINCT " + fieldDistinct + ") from " + table);
+    }
+
+    public static int getMaxIndexInt(string field, string table)
+    {
+        return selectInt("select MAX(" + field + ") from " + table);
+    }
+    public static int getMinIndexInt(string field, string table)
+    {
+        return selectInt("select MIN(" + field + ") from " + table);
+    }
+
+   
+   
+    //Параметризированный запрос с n-количеством параметров
+
+    static private Oracle.DataAccess.Client.OracleDataAdapter oracleDataAdapter1;
+
+    static private System.Data.DataSet dataSet11;
+
+    static private Oracle.DataAccess.Client.OracleCommand oracleSelectCommand1;
+
+    static private Oracle.DataAccess.Client.OracleCommand oracleInsertCommand1;
+
+    static private Oracle.DataAccess.Client.OracleCommand oracleUpdateCommand1;
+
+    static private Oracle.DataAccess.Client.OracleDataReader reader;
+
+    //инициализация объектов для параметрезированного SELECT
+
+    static private void initObjectsForSelectQuery()
+     {
+
+         oracleDataAdapter1 = new Oracle.DataAccess.Client.OracleDataAdapter();
+
+         _conn = new Oracle.DataAccess.Client.OracleConnection(_connectionString);
+
+         dataSet11 = new System.Data.DataSet();
+
+         oracleSelectCommand1 = new Oracle.DataAccess.Client.OracleCommand();
+
+         oracleDataAdapter1.SelectCommand = oracleSelectCommand1;
+
+         oracleSelectCommand1.Connection = _conn;
+
+        
+     }
+
+
+     //инициализация объектов для параметрезированного INSERT
+
+    static private void initObjectsForInsertQuery()
+     {
+
+         oracleDataAdapter1 = new Oracle.DataAccess.Client.OracleDataAdapter();
+
+         _conn = new Oracle.DataAccess.Client.OracleConnection(_connectionString);
+
+         dataSet11 = new System.Data.DataSet();
+
+         oracleInsertCommand1 = new Oracle.DataAccess.Client.OracleCommand();
+
+         oracleDataAdapter1.InsertCommand = oracleInsertCommand1;
+
+         oracleInsertCommand1.Connection = _conn;
+     }
+
+     //инициализация объектов для параметрезированного UPDATE
+
+     static private void initObjectsForUpdateQuery()
+     {
+
+         oracleDataAdapter1 = new Oracle.DataAccess.Client.OracleDataAdapter();
+
+         _conn = new Oracle.DataAccess.Client.OracleConnection(_connectionString);
+
+         dataSet11 = new System.Data.DataSet();
+
+         oracleUpdateCommand1 = new Oracle.DataAccess.Client.OracleCommand();
+
+         oracleDataAdapter1.UpdateCommand = oracleUpdateCommand1;
+
+         oracleUpdateCommand1.Connection = _conn;
+     }
+
+
+     //разрушение объектов параметрезированного Select
+
+     static private void disposeObjectsForSelectQuery()
+     {  
+         oracleDataAdapter1.SelectCommand.Dispose();
+
+         oracleDataAdapter1.Dispose();
+
+         _conn.Dispose();
+
+         dataSet11.Dispose();
+
+         oracleSelectCommand1.Dispose();
+        
+     }
+
+    //разрушение объектов параметрезированного Insert
+
+    static private void disposeObjectsForInsertQuery()
+    {
+        oracleDataAdapter1.InsertCommand.Dispose();
+
+        oracleDataAdapter1.Dispose();
+
+        _conn.Dispose();
+
+        dataSet11.Dispose();
+
+        oracleInsertCommand1.Dispose();        
+
+    }
+
+    //разрушение объектов параметрезированного Update
+
+    static private void disposeObjectsForUpdateQuery()
+    {
+        oracleDataAdapter1.UpdateCommand.Dispose();
+
+        oracleDataAdapter1.Dispose();
+
+        _conn.Dispose();
+
+        dataSet11.Dispose();
+
+        oracleUpdateCommand1.Dispose();
+
+    }
+   
+    static public System.Data.DataSet ParamQuerySelect(string cmdQuery, System.Collections.Generic.List<string> Parameters, System.Collections.Generic.List<string> DataFromTextBox)
+    {
+
+        initObjectsForSelectQuery();
+
+
+        try
+        {
+            oracleSelectCommand1.Connection.Open();
+
+            oracleDataAdapter1.SelectCommand.CommandText = cmdQuery;
+
+            oracleSelectCommand1.Parameters.Clear();
+
+            for (int i = 0; i < Parameters.Count; i++)
+            {
+                oracleDataAdapter1.SelectCommand.Parameters.Add(new Oracle.DataAccess.Client.OracleParameter((string)(":" + Parameters[i].ToString()), (string)("%" + DataFromTextBox[i].ToString() + "%")));
+            }
+
+            if (dataSet11.Tables.Count > 0)
+            {
+                dataSet11.Tables[0].Clear();
+            }
+
+            oracleDataAdapter1.Fill(dataSet11);
+
+            oracleSelectCommand1.Connection.Close();
+
+            return dataSet11; 
+
+        }
+        catch (Oracle.DataAccess.Client.OracleException ex)
+        {
+            System.Windows.Forms.MessageBox.Show(ex.Message);
+
+            oracleSelectCommand1.Connection.Close();
+
+            return dataSet11; 
+        }
+        finally
+        {
+            disposeObjectsForSelectQuery();
+        }
+    
+    }
+
+    //запрос на параметризированную вставку с загрузкой картинки (специальный запрос)
+
+    static public void SpecificInsertQuery(string cmdQuery, System.Collections.Generic.List<string> Parameters, System.Collections.Generic.List<string> DataFromTextBox, byte[] BMPInByte)
+    {
+        initObjectsForInsertQuery();
+
+        try
+        {
+            oracleInsertCommand1.Connection.Open();
+
+            oracleInsertCommand1.CommandText = cmdQuery;
+
+            oracleInsertCommand1.Parameters.Clear();
+
+            for (int i = 0; i < Parameters.Count; i++)
+            {
+                oracleInsertCommand1.Parameters.Add(new Oracle.DataAccess.Client.OracleParameter((string)(":" + Parameters[i].ToString()), DataFromTextBox[i].ToString()));
+            }
+
+
+            oracleInsertCommand1.Parameters.Add(new Oracle.DataAccess.Client.OracleParameter(":DET", Oracle.DataAccess.Client.OracleDbType.Blob, BMPInByte.Length, System.Data.ParameterDirection.Input, false, 0, 0, null, System.Data.DataRowVersion.Current, BMPInByte));
+
+
+            oracleInsertCommand1.ExecuteNonQuery();
+
+            oracleInsertCommand1.Connection.Close();
+
+            System.Windows.Forms.MessageBox.Show("Параметры введены без ошибок.Загрузка прошла успешно!", "Сообщение!");
+
+        }
+        catch (Oracle.DataAccess.Client.OracleException ex)
+        {
+            System.Windows.Forms.MessageBox.Show(ex.Message);
+
+            oracleInsertCommand1.Connection.Close();
+        }
+        finally
+        {
+            disposeObjectsForInsertQuery();
+        }
+       
+
+        
+
+
+    }
+
+
+
+    //запрос на параметризированную вставку 
+
+    static public bool InsertQuery(string cmdQuery, System.Collections.Generic.List<string> Parameters, System.Collections.Generic.List<string> DataFromTextBox)
+    {
+        initObjectsForInsertQuery();
+
+        try
+        {
+            oracleInsertCommand1.Connection.Open();
+
+            oracleInsertCommand1.CommandText = cmdQuery;
+
+            oracleInsertCommand1.Parameters.Clear();
+
+            for (int i = 0; i < Parameters.Count; i++)
+            {
+                oracleInsertCommand1.Parameters.Add(new Oracle.DataAccess.Client.OracleParameter((string)(":" + Parameters[i].ToString()), DataFromTextBox[i].ToString()));
+            }
+
+            oracleInsertCommand1.ExecuteNonQuery();
+
+            oracleInsertCommand1.Connection.Close();
+
+            return true;
+            
+        }
+        catch (Oracle.DataAccess.Client.OracleException ex)
+        {            
+            System.Windows.Forms.MessageBox.Show(ex.Message,"Ошибка загрузки!");
+
+            oracleInsertCommand1.Connection.Close();
+
+            return false;
+        }
+        finally
+        {               
+            disposeObjectsForInsertQuery();
+        }
+    }
+
+
+    //проверка существования данных по полю, таблице и параметрам из where
+
+    public static bool exist(string idField,string table, string where)
+    {
+        bool flag = false;
+
+        _open();
+
+        try
+        {
+            string cmdQuery = "select " + idField + " from " + table + " where " + where;
+
+            Oracle.DataAccess.Client.OracleCommand cmd = new Oracle.DataAccess.Client.OracleCommand(cmdQuery, _conn);
+            Oracle.DataAccess.Client.OracleDataReader reader = cmd.ExecuteReader();
+
+            if (reader.Read())
+                flag = true;
+            else
+                flag = false;
+
+            reader.Close();
+            cmd.Dispose();
+            reader.Dispose();
+        }
+        catch (System.Exception e)
+        {
+            System.Windows.Forms.MessageBox.Show(e.ToString());
+        }
+        finally
+        {
+            _close();
+        }
+
+        return flag;
+    }
+
+    //функция параметризированного запроса на проверку наличия данных в таблице
+
+    public static bool existParamQuery(string id, string table, string parametr, string value)
+    {
+        bool flag = false;
+
+        initObjectsForSelectQuery();  
+
+        try
+        {
+            string cmdQuery = "select " + id + " from " + table + " where " + parametr + " = :" + parametr;
+
+            oracleSelectCommand1.Connection.Open();
+
+            oracleSelectCommand1.CommandText = cmdQuery;
+
+            oracleSelectCommand1.Parameters.Clear();
+
+            oracleSelectCommand1.Parameters.Add(new Oracle.DataAccess.Client.OracleParameter((string)(":" + parametr), value));
+
+            reader = oracleSelectCommand1.ExecuteReader();
+
+            
+           
+            if (reader.Read())
+                flag = true;
+            else
+                flag = false;
+
+            reader.Close();
+            
+            
+        }
+        catch (System.Exception ex)
+        {            
+            System.Windows.Forms.MessageBox.Show(ex.Message);
+                        
+        }
+        finally
+        {
+            reader.Dispose();
+            oracleSelectCommand1.Connection.Close();
+            disposeObjectsForSelectQuery();
+        }
+
+        return flag;
+    }
+
+
+    //функция параметризированного запроса на получение листа данных
+
+    public static System.Collections.Generic.List<string> GetInformationListWithParamQuery(string id, string table, string parametr, string value)
+    {
+        System.Collections.Generic.List<string> AcquiredInformation = new System.Collections.Generic.List<string>();
+
+        initObjectsForSelectQuery();
+
+        try
+        {
+            string cmdQuery = "select " + id + " from " + table + " where " + parametr + " = :" + parametr;
+
+            oracleSelectCommand1.Connection.Open();
+
+            oracleSelectCommand1.CommandText = cmdQuery;
+
+            oracleSelectCommand1.Parameters.Clear();
+
+            oracleSelectCommand1.Parameters.Add(new Oracle.DataAccess.Client.OracleParameter((string)(":" + parametr), value));
+
+            reader = oracleSelectCommand1.ExecuteReader();
+
+
+            while (reader.Read())
+            {
+                AcquiredInformation.Add(reader.GetString(0));
+            }   
+
+            reader.Close();
+
+            oracleSelectCommand1.Connection.Close();
+        }
+        catch (System.Exception ex)
+        {
+            System.Windows.Forms.MessageBox.Show(ex.Message);
+
+        }
+        finally
+        {
+            reader.Dispose();
+            oracleSelectCommand1.Connection.Close();
+            disposeObjectsForSelectQuery();
+        }
+
+        return AcquiredInformation;
+    }
+
+
+
+
+
+    static public string UnloadPartToTEMPFolder(string obonachenie)
+    {
+
+        System.Collections.Generic.List<string> AcquiredInformation = new System.Collections.Generic.List<string>();
+
+       initObjectsForSelectQuery();
+
+
+        try
+        {
+            System.String[] Path = { System.IO.Path.GetTempPath(), "\\", obonachenie, ".prt" };
+
+            System.String Path_dir = System.String.Concat(Path);
+
+
+            if (!System.IO.File.Exists(Path_dir))
+            {
+
+                System.IO.FileStream fs;
+
+                int Prt_file = 0;
+
+                string cmdQuery = "SELECT BL FROM FILE_BLOB21 WHERE NMF = :NMF";
+
+                oracleSelectCommand1.CommandText = cmdQuery;
+
+                oracleSelectCommand1.Parameters.Clear();
+
+                oracleSelectCommand1.Parameters.Add(new Oracle.DataAccess.Client.OracleParameter(":NMF", (string)(obonachenie + ".prt")));
+
+                oracleSelectCommand1.Connection.Open();
+
+                reader = oracleSelectCommand1.ExecuteReader();
+
+                reader.Read();
+
+                System.Byte[] b = new System.Byte[System.Convert.ToInt32((reader.GetBytes(Prt_file, 0, null, 0, System.Int32.MaxValue)))];
+
+                reader.GetBytes(Prt_file, 0, b, 0, b.Length);
+
+                reader.Close();
+
+                oracleSelectCommand1.Connection.Close();
+
+                fs = new System.IO.FileStream(Path_dir, System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write);
+
+                IDisposable d = (IDisposable)fs;
+
+                fs.Write(b, 0, b.Length);
+
+                d.Dispose();
+
+                
+            }
+
+            return Path_dir;
+        }
+        catch (Exception ex)
+        {
+            System.Windows.Forms.MessageBox.Show(ex.Message, "Ошибка");
+            return "0";
+        }
+        finally
+        {
+            reader.Dispose();
+
+            oracleSelectCommand1.Connection.Close();
+
+            disposeObjectsForSelectQuery();
+        }
+    }
+
+
+    public static System.Drawing.Image getBlobImageWithBuffer(string cmdQuery, string TheFirstParametr, string TheSecondParametr, string TheThirdParametr)
+    {
+
+        System.Drawing.Image returnImage;
+
+        initObjectsForSelectQuery();
+
+        try
+        {
+            int PictureCol = 0;
+
+            
+            oracleSelectCommand1.Parameters.Clear();
+
+            oracleSelectCommand1.Parameters.Add(new Oracle.DataAccess.Client.OracleParameter(":NAME", TheFirstParametr));
+
+            oracleSelectCommand1.Parameters.Add(new Oracle.DataAccess.Client.OracleParameter(":OBOZN", TheSecondParametr));
+
+            oracleSelectCommand1.Parameters.Add(new Oracle.DataAccess.Client.OracleParameter(":GOST", TheThirdParametr));
+
+            
+
+            oracleSelectCommand1.CommandText = cmdQuery;
+
+            oracleSelectCommand1.Connection.Open();
+        
+            reader = oracleSelectCommand1.ExecuteReader();
+
+            reader.Read();
+            
+            System.Byte[] b = new System.Byte[System.Convert.ToInt32((reader.GetBytes(PictureCol, 0, null, 0, System.Int32.MaxValue)))];
+
+            reader.GetBytes(PictureCol, 0, b, 0, b.Length);
+
+                oracleSelectCommand1.Connection.Close();
+
+                System.IO.MemoryStream str = new System.IO.MemoryStream(b);
+
+                str.Write(b, 0, b.Length);
+
+                returnImage = System.Drawing.Image.FromStream(str);
+
+                IDisposable d = (IDisposable)str;
+
+                str.Close();
+
+                d.Dispose();
+
+          
+           
+
+        }
+        catch(Exception ex)
+        {
+            oracleSelectCommand1.Connection.Close();
+                                    
+            returnImage = System.Drawing.Image.FromFile("C:\\UchetUSPcurrentv2\\Maket\\UchetUSP\\SQL\\noimage.jpg");
+
+        }
+        finally
+        {
+            reader.Close();
+            reader.Dispose();
+            disposeObjectsForSelectQuery();
+        }
+
+
+        return returnImage;
+
+    }
+
+
+
+
+    //запрос на параметризированную вставку 
+
+    static public void UpdateQuery(string cmdQuery, System.Collections.Generic.List<string> Parameters, System.Collections.Generic.List<string> DataFromTextBox)
+    {
+        initObjectsForUpdateQuery();
+       
+        try
+        {
+            oracleUpdateCommand1.Connection.Open();
+
+            oracleUpdateCommand1.CommandText = cmdQuery;
+
+            oracleUpdateCommand1.Parameters.Clear();
+
+            for (int i = 0; i < Parameters.Count; i++)
+            {
+                oracleUpdateCommand1.Parameters.Add(new Oracle.DataAccess.Client.OracleParameter((string)(":" + Parameters[i].ToString()), DataFromTextBox[i].ToString()));
+            }
+            
+            oracleUpdateCommand1.ExecuteNonQuery();
+           
+            oracleUpdateCommand1.Connection.Close();
+
+            System.Windows.Forms.MessageBox.Show("Параметры введены без ошибок.Обновление данных прошло успешно!", "Сообщение!");
+
+       
+       }
+        catch (Exception ex)
+        {
+            System.Windows.Forms.MessageBox.Show(ex.Message);
+
+            oracleUpdateCommand1.Connection.Close();
+        }
+        finally
+        {
+            disposeObjectsForUpdateQuery(); 
+            
+        }
+
+
+    }
+
+
+    //запрос на параметризированную вставку с загрузкой картинки (специальный запрос)
+
+    static public void SpecificUpdateQuery(string cmdQuery, System.Collections.Generic.List<string> Parameters, System.Collections.Generic.List<string> DataFromTextBox, byte[] BMPInByte)
+    {
+        initObjectsForUpdateQuery();
+
+        try
+        {
+            oracleUpdateCommand1.Connection.Open();
+
+            oracleUpdateCommand1.CommandText = cmdQuery;
+
+            oracleUpdateCommand1.Parameters.Clear();
+
+            for (int i = 0; i < (Parameters.Count-1); i++)
+            {
+                oracleUpdateCommand1.Parameters.Add(new Oracle.DataAccess.Client.OracleParameter((string)(":" + Parameters[i].ToString()), DataFromTextBox[i].ToString()));
+            }
+
+
+            oracleUpdateCommand1.Parameters.Add(new Oracle.DataAccess.Client.OracleParameter(":DET", Oracle.DataAccess.Client.OracleDbType.Blob, BMPInByte.Length, System.Data.ParameterDirection.Input, false, 0, 0, null, System.Data.DataRowVersion.Current, BMPInByte));
+
+            oracleUpdateCommand1.Parameters.Add(new Oracle.DataAccess.Client.OracleParameter((string)(":" + Parameters[(Parameters.Count - 1)].ToString()), DataFromTextBox[(Parameters.Count - 1)].ToString()));
+
+            oracleUpdateCommand1.ExecuteNonQuery();
+
+            oracleUpdateCommand1.Connection.Close();
+
+            System.Windows.Forms.MessageBox.Show("Параметры введены без ошибок.Обновление данных прошло успешно!", "Сообщение!");
+
+        }
+        catch (Oracle.DataAccess.Client.OracleException ex)
+        {
+            System.Windows.Forms.MessageBox.Show(ex.Message);
+
+            oracleUpdateCommand1.Connection.Close();
+        }
+        finally
+        {
+            disposeObjectsForUpdateQuery();
+        }
+
+    }
+
+
+
+
+
+}

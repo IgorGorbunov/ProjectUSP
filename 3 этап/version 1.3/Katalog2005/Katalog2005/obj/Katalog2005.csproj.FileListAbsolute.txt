@@ -1,0 +1,16 @@
+D:\ULGU\Katalog2005\Katalog2005.dll
+D:\ULGU\Katalog2005\Katalog2005.pdb
+D:\ULGU\USP\3 этап\Version\katalog2005\version 1.1\Katalog2005\Katalog2005\obj\Release\ResolveAssemblyReference.cache
+D:\ULGU\USP\3 этап\Version\katalog2005\version 1.1\Katalog2005\Katalog2005\obj\Release\Interop.Microsoft.Office.Interop.Excel.dll
+D:\ULGU\USP\3 этап\Version\katalog2005\version 1.1\Katalog2005\Katalog2005\obj\Release\Katalog2005.csproj.ResolveComReference.cache
+D:\ULGU\USP\3 этап\Version\katalog2005\version 1.1\Katalog2005\Katalog2005\obj\Release\Katalog2005.ConnectBD.resources
+D:\ULGU\USP\3 этап\Version\katalog2005\version 1.1\Katalog2005\Katalog2005\obj\Release\Katalog2005.Katalog.resources
+D:\ULGU\USP\3 этап\Version\katalog2005\version 1.1\Katalog2005\Katalog2005\obj\Release\Katalog2005.Properties.Resources.resources
+D:\ULGU\USP\3 этап\Version\katalog2005\version 1.1\Katalog2005\Katalog2005\obj\Release\Katalog2005.WinFroms.AddInformationAboutElements.AddInformation.resources
+D:\ULGU\USP\3 этап\Version\katalog2005\version 1.1\Katalog2005\Katalog2005\obj\Release\Katalog2005.WinFroms.AddInformationAboutElements.FindLoadedModels.resources
+D:\ULGU\USP\3 этап\Version\katalog2005\version 1.1\Katalog2005\Katalog2005\obj\Release\Katalog2005.WinFroms.LoadPartToNX.xyzPRM.resources
+D:\ULGU\USP\3 этап\Version\katalog2005\version 1.1\Katalog2005\Katalog2005\obj\Release\Katalog2005.WinFroms.search.InformAboutElement.resources
+D:\ULGU\USP\3 этап\Version\katalog2005\version 1.1\Katalog2005\Katalog2005\obj\Release\Katalog2005.WinFroms.search.search.resources
+D:\ULGU\USP\3 этап\Version\katalog2005\version 1.1\Katalog2005\Katalog2005\obj\Release\Katalog2005.csproj.GenerateResource.Cache
+D:\ULGU\USP\3 этап\Version\katalog2005\version 1.1\Katalog2005\Katalog2005\obj\Release\Katalog2005.dll
+D:\ULGU\USP\3 этап\Version\katalog2005\version 1.1\Katalog2005\Katalog2005\obj\Release\Katalog2005.pdb
