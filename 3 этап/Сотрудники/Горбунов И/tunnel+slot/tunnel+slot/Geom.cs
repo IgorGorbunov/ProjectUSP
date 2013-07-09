@@ -10,6 +10,16 @@ static class Geom
     public const int Dimensions = 3;
 
     /// <summary>
+    /// Возвращает диаметр окружности, образованной цилиндрическим ребром.
+    /// </summary>
+    /// <param name="edge">Циллиндрической ребро.</param>
+    /// <returns></returns>
+    public static double GetDiametr(Edge edge)
+    {
+        return edge.GetLength()/Math.PI;
+    }
+
+    /// <summary>
     /// Возвращает true, если точка находится между заданными прямыми.
     /// </summary>
     /// <param name="point">Заданная точка.</param>
@@ -583,4 +593,7 @@ static class Geom
         }
         return false;
     }
+
+
+    
 }

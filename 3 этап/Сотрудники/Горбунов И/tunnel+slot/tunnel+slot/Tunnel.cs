@@ -68,6 +68,13 @@ public class Tunnel
     {
         get { return _slot; }
     }
+    /// <summary>
+    /// Возвращает диаметр отверстия.
+    /// </summary>
+    public double Diametr
+    {
+        get { return _diametr; }
+    }
 
     
     KeyValuePair<Face, double>[] _ortFacePairs;
@@ -82,6 +89,8 @@ public class Tunnel
     readonly UspElement _element;
 
     readonly double[] _direction = new double[3];
+
+    private double _diametr;
 
     /// <summary>
     /// Инициализирует новый экземпляр класса отверстия для базирования для данной грани 
@@ -156,8 +165,10 @@ public class Tunnel
     void SetOccurenceFace()
     {
         Edge[] edges1 = _face.GetEdges();
-        Point3d point3D1, tmpPoint;
-        edges1[0].GetVertices(out point3D1, out tmpPoint);
+        _diametr = Geom.GetDiametr(edges1[0]);
+
+        Point3d point1, tmpPoint;
+        edges1[0].GetVertices(out point1, out tmpPoint);
 
         Face[] faces = _element.Body.GetFaces();
         foreach (Face face in faces)
@@ -165,10 +176,10 @@ public class Tunnel
             Edge[] edges2 = face.GetEdges();
             foreach (Edge edge2 in edges2)
             {
-                Point3d point3D2;
-                edge2.GetVertices(out point3D2, out tmpPoint);
+                Point3d point2;
+                edge2.GetVertices(out point2, out tmpPoint);
 
-                Vector vec = new Vector(point3D1, point3D2);
+                Vector vec = new Vector(point1, point2);
                 if (Config.Round(vec.Length) == 0.0 &&
                     face.SolidFaceType == Face.FaceType.Cylindrical)
                 {
@@ -291,5 +302,6 @@ public class Tunnel
 
         return dir;
     }
+
 }
 
