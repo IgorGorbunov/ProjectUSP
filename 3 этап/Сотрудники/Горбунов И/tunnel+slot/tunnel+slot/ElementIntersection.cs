@@ -78,7 +78,7 @@ public class ElementIntersection
         _si.SecondBody.Value = _element2;
 
         _result = _si.PerformCheck();
-        Log.WriteLine("Произведена проверка на пересечение элементов. Результат:" +
+        Logger.WriteLine("Произведена проверка на пересечение элементов. Результат:" +
                             Environment.NewLine + _result);
     }
 }

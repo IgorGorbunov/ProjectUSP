@@ -106,7 +106,7 @@ public class Straight
                 const string logMess = "Произвольной точки на прямой не существует!";
                 Config.TheUi.NXMessageBox.Show("Ошибка!", NXMessageBox.DialogType.Error,
                                                logMess);
-                Log.WriteError(logMess);
+                Logger.WriteError(logMess);
             }
 
             return _pointOnStraight;

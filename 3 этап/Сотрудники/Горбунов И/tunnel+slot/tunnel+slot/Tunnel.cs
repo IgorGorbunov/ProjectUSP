@@ -243,7 +243,7 @@ public class Tunnel
                 keyValuePair.Value.ToString() + " мм";
         }
         logMess += Environment.NewLine + "=============";
-        Log.WriteLine(logMess);
+        Logger.WriteLine(logMess);
     }
 
     void SetNormalFaces()

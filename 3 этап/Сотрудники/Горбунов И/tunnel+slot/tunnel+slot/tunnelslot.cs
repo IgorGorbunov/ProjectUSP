@@ -257,11 +257,11 @@ public class tunnelslot
     {
         try
         {
-            Log.WriteLine("++++++++++++++++++++++++++++++++++++++++++++++++" + " Начало работы программы");
+            Logger.WriteLine("++++++++++++++++++++++++++++++++++++++++++++++++" + " Начало работы программы");
             _thetunnelslot = new tunnelslot();
             // The following method shows the dialog immediately
             _thetunnelslot.Show();
-            Log.WriteLine("-------------------------------------------------" + " Конец работы программы");
+            Logger.WriteLine("-------------------------------------------------" + " Конец работы программы");
         }
         catch (Exception ex)
         {
@@ -433,7 +433,7 @@ public class tunnelslot
         try
         {
             //---- Enter your callback code here -----
-            Log.WriteLine("Нажата кнопка ПРИМЕНИТЬ.");
+            Logger.WriteLine("Нажата кнопка ПРИМЕНИТЬ.");
         }
         catch (Exception ex)
         {
@@ -454,37 +454,37 @@ public class tunnelslot
             if(block == _selection0)
             {
             //---------Enter your code here-----------
-                Log.WriteLine("Нажат выбор объекта по первому select.");
+                Logger.WriteLine("Нажат выбор объекта по первому select.");
                 SetFirstComponent(block);
             }
             else if(block == _faceSelect0)
             {
             //---------Enter your code here-----------
-                Log.WriteLine("Нажат выбор первой грани.");
+                Logger.WriteLine("Нажат выбор первой грани.");
                 SetFirstFace(block);
             }
             else if (block == _slotTunPoint)
             {
                 //---------Enter your code here-----------
-                Log.WriteLine("Нажата постановка первой точки.");
+                Logger.WriteLine("Нажата постановка первой точки.");
                 SetFirstPoint(block);
             }
             else if (block == _direction0)
             {
                 //---------Enter your code here-----------
-                Log.WriteLine("Нажат реверс.");
+                Logger.WriteLine("Нажат реверс.");
                 _constraint.Reverse();
             }
             else if(block == _selection01)
             {
             //---------Enter your code here-----------
-                Log.WriteLine("Нажат выбор объекта по второму select.");
+                Logger.WriteLine("Нажат выбор объекта по второму select.");
                 SetSecondComponent(block);
             }
             else if(block == _point0)
             {
             //---------Enter your code here-----------
-                Log.WriteLine("Нажата постановка второй точки.");
+                Logger.WriteLine("Нажата постановка второй точки.");
                 SetSecondPoint(block);
             }
             else if (block == _selection02)
@@ -512,7 +512,7 @@ public class tunnelslot
         {
             errorCode = apply_cb();
             //---- Enter your callback code here -----
-            Log.WriteLine("Нажата кнопка ОК.");
+            Logger.WriteLine("Нажата кнопка ОК.");
         }
         catch (Exception ex)
         {
@@ -531,7 +531,7 @@ public class tunnelslot
         try
         {
             //---- Enter your callback code here -----
-            Log.WriteLine("Нажата кнопка ОТМЕНА.");
+            Logger.WriteLine("Нажата кнопка ОТМЕНА.");
             CleanUp();
         }
         catch (Exception ex)
@@ -634,7 +634,7 @@ public class tunnelslot
             Component parentComponent = Config.FindCompByBodyTag(tagObs[0].Tag);
             if (Geom.IsComponent(tagObs[0]))
             {
-                Log.WriteLine("Объект - " + tagObs[0] +
+                Logger.WriteLine("Объект - " + tagObs[0] +
                     " - " + parentComponent.Name);
 
                 element = new UspElement(parentComponent);
@@ -642,8 +642,8 @@ public class tunnelslot
             }
             string message = "Выбрана не деталь УСП!" + Environment.NewLine +
                              "Пожалуйста, перевыберите элемент.";
-            Log.WriteWarning(message);
-            Log.WriteLine("Объект - " + tagObs[0]);
+            Logger.WriteWarning(message);
+            Logger.WriteLine("Объект - " + tagObs[0]);
             UnSelectObjects(block);
 
             Config.TheUi.NXMessageBox.Show("Error!",
@@ -653,7 +653,7 @@ public class tunnelslot
             block.Focus();
             return false;
         }
-        Log.WriteLine("Деселект объекта.");
+        Logger.WriteLine("Деселект объекта.");
         return false;
     }
 
@@ -674,7 +674,7 @@ public class tunnelslot
             //{
             //    string message = "Базовые плоскости пазов не найдены!" + Environment.NewLine +
             //                        "Выберите другой элемент!";
-            //    Log.WriteWarning(message);
+            //    Logger.WriteWarning(message);
             //    Config.TheUi.NXMessageBox.Show("Error!",
             //                                   NXMessageBox.DialogType.Error,
             //                                   message);
@@ -705,12 +705,12 @@ public class tunnelslot
                 if (face.SolidFaceType == Face.FaceType.Cylindrical)
                 {
 
-                    Log.WriteLine("Грань выбрана - " + face);
+                    Logger.WriteLine("Грань выбрана - " + face);
                     tunnel = new Tunnel(face, element);
                     return true;
                 }
 	            const string message = "Грань не цилиндрическая! Выберите другую грань!";
-	            Log.WriteWarning(message + Environment.NewLine + "Выбрана грань - " + face);
+	            Logger.WriteWarning(message + Environment.NewLine + "Выбрана грань - " + face);
 	            UnSelectObjects(block);
 	            Config.TheUi.NXMessageBox.Show("Error!",
 	                                           NXMessageBox.DialogType.Error,
@@ -720,14 +720,14 @@ public class tunnelslot
 	        }
 
             const string mess = "Грань не найдена! Выберите другую грань!";
-            Log.WriteWarning(mess);
+            Logger.WriteWarning(mess);
             Config.TheUi.NXMessageBox.Show("Error!",
                                            NXMessageBox.DialogType.Error,
                                            mess);
             block.Focus();
             return false;
         }
-        Log.WriteLine("Деселект грани");
+        Logger.WriteLine("Деселект грани");
         return false;
     }
     
@@ -795,7 +795,7 @@ public class tunnelslot
                                     {
                                         sttt += ss.Tag.ToString() + " ++ " + ff.JournalIdentifier + Environment.NewLine;
                                     }
-                                    Log.WriteLine(sttt);
+                                    Logger.WriteLine(sttt);
                                     
                             		 //Config.theUI.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, var.ToString());
 	                            }
@@ -860,7 +860,7 @@ public class tunnelslot
             {
                 string message = "Базовое отверстие не пересекается с пазом!" + Environment.NewLine +
                          "Выберите другое отверстие или паз!";
-                Log.WriteWarning(message);
+                Logger.WriteWarning(message);
                 Config.TheUi.NXMessageBox.Show("Error!",
                                                NXMessageBox.DialogType.Error,
                                                message);
@@ -916,7 +916,7 @@ public class tunnelslot
         }
         string message = "Базовые плоскости пазов не найдены!" + Environment.NewLine +
                          "Выберите другой элемент!";
-        Log.WriteWarning(message);
+        Logger.WriteWarning(message);
         Config.TheUi.NXMessageBox.Show("Error!",
                                        NXMessageBox.DialogType.Error,
                                        message);
@@ -950,7 +950,7 @@ public class tunnelslot
     void SetConstraints()
     {
         if (!_firstPointSelected || !_secondPointSelected) return;
-        Log.WriteLine("Запущена процедура позиционирования.");
+        Logger.WriteLine("Запущена процедура позиционирования.");
 
         if (hasNearestSlot1 && hasNearestSlot2)
         {
@@ -966,7 +966,7 @@ public class tunnelslot
             string mess = "Ближайший слот для первого элемента найден - " + hasNearestSlot1 +
                           Environment.NewLine;
             mess += "Ближайший слот для второго элемента найден - " + hasNearestSlot2;
-            Log.WriteLine(mess);
+            Logger.WriteLine(mess);
         }
     }
 

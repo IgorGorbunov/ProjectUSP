@@ -30,7 +30,7 @@ public class Touch : Constrainter
         ExecuteConstraints();
 
         string logMess = "Соединение касанием " + firstFace + " и " + secondFace;
-        Log.WriteLine(logMess);
+        Logger.WriteLine(logMess);
     }
     
 }

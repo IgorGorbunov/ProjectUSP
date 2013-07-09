@@ -100,7 +100,7 @@ public class UspElement
             mess += Environment.NewLine + f;
         }
         mess += Environment.NewLine + "============";
-        Log.WriteLine(mess);
+        Logger.WriteLine(mess);
     }
 
     //refactor

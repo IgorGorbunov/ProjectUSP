@@ -75,7 +75,7 @@ public sealed class SlotSet
     {
         _selectPoint = point;
 
-        Log.WriteLine("Координаты точки - " + _selectPoint);
+        Logger.WriteLine("Координаты точки - " + _selectPoint);
     }
 
     //REFACTOR

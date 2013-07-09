@@ -151,7 +151,7 @@ public class Slot
             }
         }
 
-        Log.WriteLine("Не найдена плоскость, нормальная по направлению паза для детали " + 
+        Logger.WriteLine("Не найдена плоскость, нормальная по направлению паза для детали " + 
                         ParentComponent);
         return null;
     }
@@ -249,7 +249,7 @@ public class Slot
                 keyValuePair.Value.ToString() + " мм";
         }
         logMess += Environment.NewLine + "=============";
-        Log.WriteLine(logMess);
+        Logger.WriteLine(logMess);
     }
 
     /*Dictionary<Edge, double> getNearestEdges(Edge[] edges, Point3d from_point)
@@ -318,7 +318,6 @@ public class Slot
     //TODO refactor
     void FindTopFace()
     {
-        Config.TheUi.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, "1");
         Face topFace = null;
         Edge topEdge = null;
         _bottomDirection = Geom.GetDirection(BottomFace);

@@ -6,11 +6,11 @@ using System.IO;
 /// <summary>
 /// Класс логирования.
 /// </summary>
-public static class Log
+public static class Logger
 {
     static StreamWriter _sW;
 
-    private const string Name = @"Log";
+    private const string Name = @"Logger";
     private const string Extension = @".log";
     private const int Count = 5;
 
@@ -20,7 +20,7 @@ public static class Log
     /// Записывает новую строку в лог.
     /// </summary>
     /// <param name="line">Строка.</param>
-    public static void WriteLine(string line)
+    public static void WriteLine(object line)
     {
         SetFile();
         _sW.WriteLine(DateTime.Now + Environment.NewLine + line + Environment.NewLine);
@@ -32,7 +32,7 @@ public static class Log
     /// Записывает новую строку с сообщением о предупреждении или ошибки пользователю.
     /// </summary>
     /// <param name="warning"></param>
-    public static void WriteWarning(string warning)
+    public static void WriteWarning(object warning)
     {
         string message = "||||||||||||||||||||||||||||||||||||||||||||" +
             Environment.NewLine + warning;
@@ -42,7 +42,7 @@ public static class Log
     /// Записывает новую строку с сообщением об ошибки.
     /// </summary>
     /// <param name="warning"></param>
-    public static void WriteError(string warning)
+    public static void WriteError(object warning)
     {
         string message = "************************************" +
             Environment.NewLine + warning;

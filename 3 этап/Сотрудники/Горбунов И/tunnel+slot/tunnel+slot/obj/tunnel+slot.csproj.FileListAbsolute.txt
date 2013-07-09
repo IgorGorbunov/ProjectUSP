@@ -5,7 +5,7 @@ G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\tunnel+s
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\tunnel+slot\tunnel+slot\bin\Debug\NXOpen.Utilities.dll
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\tunnel+slot\tunnel+slot\bin\Debug\NXOpenUI.dll
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\tunnel+slot\tunnel+slot\obj\Debug\ResolveAssemblyReference.cache
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\tunnel+slot\tunnel+slot\obj\Debug\tunnel+slot.pdb
 C:\ug_customization\application\tunnel+slot.dll
 C:\ug_customization\application\tunnel+slot.pdb
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\tunnel+slot\tunnel+slot\obj\Debug\tunnel+slot.dll
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\tunnel+slot\tunnel+slot\obj\Debug\tunnel+slot.pdb
