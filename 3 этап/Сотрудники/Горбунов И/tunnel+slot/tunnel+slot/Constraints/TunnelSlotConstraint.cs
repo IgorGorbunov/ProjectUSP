@@ -16,15 +16,14 @@ public sealed class TunnelSlotConstraint
 
     private readonly UspElement _firstElement;
     private readonly UspElement _secondElement;
+    private readonly Component _fixture;
 
     private readonly Tunnel _tunnel;
     private readonly Slot _slot;
 
-    private readonly UIBlock _selection02;
-    private Component _fixture;
     Face _tunnelFixtureFace;
     Face _bottomFace;
-    Face[] _sideFaces;
+    Face[] _tunnelSideFaces;
 
     /// <summary>
     /// Инициализирует новый экземпляр класса связей для соединения деталей.
@@ -32,9 +31,10 @@ public sealed class TunnelSlotConstraint
     /// <param name="firstElement">Первый элемент УСП.</param>
     /// <param name="tunnel">Базовое отверстие на первом элементе УСП.</param>
     /// <param name="secondElement">Второй элемент УСП.</param>
-    /// <param name="slot">Паз на втором элементе УСП</param>
+    /// <param name="slot">Паз на втором элементе УСП.</param>
+    /// <param name="fixture">Компонент болта для крепления.</param>
     public TunnelSlotConstraint(UspElement firstElement, Tunnel tunnel,
-                         UspElement secondElement, Slot slot, UIBlock block)
+                         UspElement secondElement, Slot slot, UspElement fixture)
     {
         _tunnel = tunnel;
         _slot = slot;
@@ -42,7 +42,7 @@ public sealed class TunnelSlotConstraint
         _firstElement = firstElement;
         _secondElement = secondElement;
 
-        _selection02 = block;
+        _fixture = fixture.ElementComponent;
     }
     /// <summary>
     /// Создание связей.
@@ -93,7 +93,7 @@ public sealed class TunnelSlotConstraint
         SetFixtureFaces();
 
         Center center = new Center();
-        center.Create(_fixture, _sideFaces[0], _sideFaces[1], _secondElement.ElementComponent,
+        center.Create(_fixture, _tunnelSideFaces[0], _tunnelSideFaces[1], _secondElement.ElementComponent,
                         _slot.SideFace1, _slot.SideFace2);
 
         Touch touch = new Touch();
@@ -107,11 +107,6 @@ public sealed class TunnelSlotConstraint
 
     void SetFixtureFaces()
     {
-        PropertyList propList = _selection02.GetProperties();
-        TaggedObject[] tagObs = propList.GetTaggedObjectVector("SelectedObjects");
-
-        _fixture = Config.FindCompByBodyTag(tagObs[0].Tag);
-
         bool bottomIsSet = false, tunnelIsSet = false;
 
         Body body = SetBody(_fixture);
@@ -125,6 +120,7 @@ public sealed class TunnelSlotConstraint
                     {
                         _tunnelFixtureFace = face;
                         tunnelIsSet = true;
+                        Logger.WriteLine("Цилиндрическая грань крепления болта - " + face);
                     }
                     break;
                 case Face.FaceType.Planar:
@@ -132,7 +128,8 @@ public sealed class TunnelSlotConstraint
                         if (IsBottomFace(face))
                         {
                             _bottomFace = face;
-                            _sideFaces = GetSideFaces(_bottomFace);
+                            Logger.WriteLine("Нижняя грань крепления болта - " + face);
+                            _tunnelSideFaces = GetSideFaces(_bottomFace);
                             bottomIsSet = true;
                         }
                     }

@@ -37,17 +37,17 @@ partial class SqlOracle
             cmd.Dispose();
 
             ProcessSuccess(cmdQuery, paramsDict, value);
+            return true;
         }
         catch (Exception ex)
         {
             ProcessUnSuccess(cmdQuery, paramsDict, ex);
+            return false;
         }
         finally
         {
             _close();
         }
-
-        return true;
     }
 
     public static bool Sel<T>(string cmdQuery, Dictionary<string, string> paramsDict, out List<T> values)
@@ -74,17 +74,17 @@ partial class SqlOracle
             cmd.Dispose();
 
             ProcessSuccess(cmdQuery, paramsDict, values);
+            return true;
         }
         catch (Exception ex)
         {
             ProcessUnSuccess(cmdQuery, paramsDict, ex);
+            return false;
         }
         finally
         {
             _close();
         }
-
-        return true;
     }
 
     public static bool Sel<T1, T2>(string cmdQuery, Dictionary<string, string> paramsDict, out Dictionary<T1, T2> values)
@@ -112,17 +112,17 @@ partial class SqlOracle
             cmd.Dispose();
 
             ProcessSuccess(cmdQuery, paramsDict, values);
+            return true;
         }
         catch (Exception ex)
         {
             ProcessUnSuccess(cmdQuery, paramsDict, ex);
+            return false;
         }
         finally
         {
             _close();
         }
-
-        return true;
     }
 
     public static List<string> testSelect(string cmdQuery)

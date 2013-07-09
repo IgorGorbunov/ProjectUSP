@@ -90,7 +90,7 @@ partial class SQLOracle
         try
         {
             string cmdQuery = "select " + idField + " from " + table + " where " + where;
-
+            Message.Show(cmdQuery);
             OracleCommand cmd = new OracleCommand(cmdQuery, _conn);
             OracleDataReader reader = cmd.ExecuteReader();
 

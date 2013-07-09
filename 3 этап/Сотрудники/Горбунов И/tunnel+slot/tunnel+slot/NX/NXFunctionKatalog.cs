@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using NXOpen;
+using NXOpen.Assemblies;
 
 namespace Katalog2005.Algorithm
 {
@@ -13,6 +14,8 @@ namespace Katalog2005.Algorithm
         static public Part workPart;
 
         static public Part displayPart, Part_Specification;
+
+        public static Component _unLoadedPart;
 
         /// <summary>
         /// Инициализация объектов UG
@@ -32,22 +35,22 @@ namespace Katalog2005.Algorithm
             Part_Specification = theSession.Parts.Display;
         }
 
-        public void defineTypeOfModel(string oboznOfUsp)
+        public static void defineTypeOfModel(string oboznOfUSP)
         {
-            if (SQLOracle.exist(oboznOfUsp, "HD", "MODEL_ATTR"))
+            if (SQLOracle.exist((object)oboznOfUSP, "HD", "MODEL_ATTR"))
             {
-                loadPartToTemp(oboznOfUsp);
+                loadPartToTemp(oboznOfUSP);
             }
-            else if (SQLOracle.exist(oboznOfUsp, "HD", "MODEL_ATTR20"))
+            else if (SQLOracle.exist((object)oboznOfUSP, "HD", "MODEL_ATTR20"))
             {
-                loadPartToTempSpecDet(oboznOfUsp);
+                loadPartToTempSpecDet(oboznOfUSP);
             }
         }
         /// <summary>
         /// Загрузка стандартной модели в Temp
         /// </summary>   
         /// <returns></returns>
-        public void loadPartToTemp(string oboznachenie)
+        public static void loadPartToTemp(string oboznachenie)
         {
             string curname;
 
@@ -79,7 +82,7 @@ namespace Katalog2005.Algorithm
         /// Загрузка не стандартной модели в Temp
         /// </summary>   
         /// <returns></returns>
-        public void loadPartToTempSpecDet(string oboznachenie)
+        public static void loadPartToTempSpecDet(string oboznachenie)
         {
 
             string NMF = SQLOracle.ParamQuerySelect("SELECT NMF FROM KTC.MODEL_ATTR20 WHERE HD = :HD", "HD", oboznachenie);
@@ -112,12 +115,9 @@ namespace Katalog2005.Algorithm
 
             try
             {
-
-                BasePart basePart1;
-
                 PartLoadStatus partLoadStatus1;
 
-                basePart1 = theSession.Parts.OpenBase((System.IO.Path.GetTempPath() + "UGH\\" + NMF), out partLoadStatus1);
+                BasePart basePart1 = Config.TheSession.Parts.OpenBase((System.IO.Path.GetTempPath() + "UGH\\" + NMF), out partLoadStatus1);
 
                 Part part1 = (Part)basePart1;
 
@@ -126,17 +126,6 @@ namespace Katalog2005.Algorithm
 
                 Point3d basePoint1 = new Point3d(Z_coor, Z_coor, Z_coor);
 
-                //if (MessageBox.Show("Задать координаты автоматически?", "Сообщение", MessageBoxButtons.YesNo) == DialogResult.No)
-                //{
-                //    WinFroms.LoadPartToNX.xyzPRM setNewCoord;
-                //    setNewCoord = new WinFroms.LoadPartToNX.xyzPRM();
-                //    setNewCoord.ShowDialog();
-                //    basePoint1.X = setNewCoord.xCoordPrm;
-                //    basePoint1.X = setNewCoord.xCoordPrm;
-                //    basePoint1.X = setNewCoord.xCoordPrm;
-
-
-                //}
 
                 Matrix3x3 orientation1;
 
@@ -160,9 +149,7 @@ namespace Katalog2005.Algorithm
 
                 PartLoadStatus partLoadStatus2;
 
-                NXOpen.Assemblies.Component component1;
-
-                component1 = workPart.ComponentAssembly.AddComponent(part1, "MODEL", NMF, basePoint1, orientation1, -1, out partLoadStatus2);
+                _unLoadedPart = Config.WorkPart.ComponentAssembly.AddComponent(part1, "MODEL", NMF, basePoint1, orientation1, -1, out partLoadStatus2);
 
                 partLoadStatus2.Dispose();
 
@@ -203,10 +190,7 @@ namespace Katalog2005.Algorithm
 
                     PartLoadStatus partLoadStatus2;
 
-                    NXOpen.Assemblies.Component component1;
-
-
-                    component1 = workPart.ComponentAssembly.AddComponent(part1, "MODEL", NMF, basePoint1, orientation1, -1, out partLoadStatus2);
+                    _unLoadedPart = workPart.ComponentAssembly.AddComponent(part1, "MODEL", NMF, basePoint1, orientation1, -1, out partLoadStatus2);
 
                     partLoadStatus2.Dispose();
 

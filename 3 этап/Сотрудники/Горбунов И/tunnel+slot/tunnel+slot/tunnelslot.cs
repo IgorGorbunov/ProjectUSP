@@ -948,22 +948,85 @@ public class tunnelslot
         propList.SetTaggedObjectVector("SelectedObjects", new TaggedObject[0]);
     }
 
-    void SetConstraints()
+
+
+
+
+    /// <summary>
+    /// Получение имени сервера
+    /// </summary>    
+    /// <param name="serverString">       
+    /// строка сервера</param>
+    /// <returns>Имя сервера</returns>
+    private static string findCorrectServerName(String serverString)
     {
+        int positionOfSym = 0, i = 0;
+
+        String correctServerString = "";
+
+        foreach (char findSym in serverString)
+        {
+            if (String.Compare((Convert.ToString(findSym)), "/") == 0)
+            {
+                positionOfSym = i;
+            }
+
+            i++;
+
+        }
+
+        if (positionOfSym == 0)
+        {
+            return serverString;
+        }
+
+        i = 0;
+
+
+        foreach (char findSym in serverString)
+        {
+
+            if (i > positionOfSym)
+            {
+                correctServerString += findSym;
+            }
+
+            i++;
+
+        }
+
+        return correctServerString;
+
+    }
+
+    private static void doMagic()
+    {
+        SQLOracle.BuildConnectionString("591014", "591000", "BASEEOI");
         SqlOracle.BuildConnectionString("591014", "591000", "BASEEOI");
 
         Dictionary<string, string> dict = new Dictionary<string, string>();
-        dict.Add("value", "%8%");
+        dict.Add("diametr", "%12%");
+        dict.Add("length", "50");
 
         Dictionary<string, string> dictionary;
-        SqlOracle.Sel("select OBOZN, L from DB_DATA where KATALOG_USP = 0 and GROUP_USP = 5 and D like :value and NAME = 'Болты пазовые'", dict, out dictionary);
+        SqlOracle.Sel("select OBOZN, L from DB_DATA where KATALOG_USP = 1 and GROUP_USP = 5 and D like :diametr and L >= :length and NAME = 'Болты  пазовые'", dict, out dictionary);
 
+        string title = "";
+        int minLen = int.MaxValue;
         foreach (KeyValuePair<string, string> keyValuePair in dictionary)
         {
-            Message.Tst(keyValuePair);
+            int len = Int32.Parse(keyValuePair.Value);
+            if (len >= minLen) continue;
+            title = keyValuePair.Key;
+            minLen = len;
         }
 
+        Katalog2005.Algorithm.SpecialFunctions.defineTypeOfModel(title);
+    }
 
+
+    void SetConstraints()
+    {
         if (!_firstPointSelected || !_secondPointSelected) return;
         Logger.WriteLine("Запущена процедура позиционирования.");
 
@@ -971,7 +1034,10 @@ public class tunnelslot
         {
             _tunnel1.SetSlot(_slot1);
 
-            _constraint = new TunnelSlotConstraint(_element1, _tunnel1, _element2, _slot2, _selection02);
+            doMagic();
+            UspElement fixture = new UspElement(Katalog2005.Algorithm.SpecialFunctions._unLoadedPart);
+
+            _constraint = new TunnelSlotConstraint(_element1, _tunnel1, _element2, _slot2, fixture);
             _constraint.Create();
 
             SetEnable(_direction0, true);
