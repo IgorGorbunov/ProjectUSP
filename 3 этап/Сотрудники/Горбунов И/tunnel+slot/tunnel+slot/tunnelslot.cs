@@ -35,6 +35,7 @@
 //These imports are needed for the following template code
 //------------------------------------------------------------------------------
 
+using System.Collections.Generic;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.BlockStyler;
@@ -949,6 +950,20 @@ public class tunnelslot
 
     void SetConstraints()
     {
+        SqlOracle.BuildConnectionString("591014", "591000", "BASEEOI");
+
+        Dictionary<string, string> dict = new Dictionary<string, string>();
+        dict.Add("value", "%8%");
+
+        Dictionary<string, string> dictionary;
+        SqlOracle.Sel("select OBOZN, L from DB_DATA where KATALOG_USP = 0 and GROUP_USP = 5 and D like :value and NAME = 'Болты пазовые'", dict, out dictionary);
+
+        foreach (KeyValuePair<string, string> keyValuePair in dictionary)
+        {
+            Message.Tst(keyValuePair);
+        }
+
+
         if (!_firstPointSelected || !_secondPointSelected) return;
         Logger.WriteLine("Запущена процедура позиционирования.");
 

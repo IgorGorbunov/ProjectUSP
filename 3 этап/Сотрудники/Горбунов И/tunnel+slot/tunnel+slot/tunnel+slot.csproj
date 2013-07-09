@@ -76,6 +76,7 @@
     <Compile Include="tunnelslot.cs" />
     <Compile Include="UspElement.cs" />
     <Compile Include="Vector.cs" />
+    <Compile Include="Мой SQL с блекджеком и шлюхами\SQL Select.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="NXOpen, Version=7.5.0.32, Culture=neutral, processorArchitecture=MSIL">

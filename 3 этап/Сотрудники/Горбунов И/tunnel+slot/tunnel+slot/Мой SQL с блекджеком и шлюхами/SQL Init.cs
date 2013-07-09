@@ -25,6 +25,7 @@ static partial class SqlOracle
         {
             _conn = new OracleConnection(_connectionString);
             _conn.Open();
+            Logger.WriteLine("Соединение открыто!");
         }
         catch (Exception ex)
         {
@@ -83,7 +84,7 @@ static partial class SqlOracle
     /// <returns></returns>
     public static void BuildConnectionString(string user, string password, string dataSource)
     {
-        string connectionString = "User id=" + user +
+        _connectionString = "User id=" + user +
                             ";password=" + password +
                             ";Data Source = " + dataSource;
     }
