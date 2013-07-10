@@ -53,22 +53,31 @@ public static class Config
     /// <summary>
     /// Папка с формами для диалогов.
     /// </summary>
-    public const string DlxFolder = @"dialogs\";
+    public const string DlxFolder = @"dialogs";
 
+    /// <summary>
+    /// Возвращает наименование temp-папки для проекта.
+    /// </summary>
+    public const string TmpFolder = @"UGH";
+
+    /// <summary>
+    /// Расширение файлов деталей УСП.
+    /// </summary>
+    public const string PartFileExtension = ".prt";
     /// <summary>
     /// Имя файла с формой базирования элементов по отверстиям.
     /// </summary>
     public static string DlxTunnelTunnel = @"tunnel+tunnel.dlx";
-
     /// <summary>
     /// Имя файла с формой для базирования отверстие-паз.
     /// </summary>
     public const string DlxTunnelSlot = @"tunnel+slot.dlx";
-
     /// <summary>
     /// Имя файла с формой c двумя точками.
     /// </summary>
     public static string DlxPointPoint = @"point+point.dlx";
+
+    
 
     //------------------------ Methods ------------------------------------------------------------
 

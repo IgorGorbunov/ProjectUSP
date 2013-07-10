@@ -35,11 +35,12 @@
 //These imports are needed for the following template code
 //------------------------------------------------------------------------------
 
+using System;
+using System.IO;
 using System.Collections.Generic;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.BlockStyler;
-using System;
 
 //------------------------------------------------------------------------------
 //Represents Block Styler application class
@@ -59,7 +60,6 @@ public class tunnelslot
     private UIBlock _point0;// Block type: Specify Point
     private UIBlock _slotTunPoint;
 
-    private UIBlock _selection02;// Block type: Selection
     //------------------------------------------------------------------------------
     //Bit Option for Property: SnapPointTypesEnabled
     //------------------------------------------------------------------------------
@@ -139,8 +139,8 @@ public class tunnelslot
     bool _secondPointSelected;
     bool _firstPointSelected;
 
-    private bool hasNearestSlot1;
-    private bool hasNearestSlot2;
+    private bool _hasNearestSlot1;
+    private bool _hasNearestSlot2;
 
     //------------------------------------------------------------------------------
     //Constructor for NX Styler class
@@ -150,7 +150,7 @@ public class tunnelslot
         try
         {
             _theDialogName = AppDomain.CurrentDomain.BaseDirectory +
-                Config.DlxFolder + Config.DlxTunnelSlot;
+                Config.DlxFolder + Path.DirectorySeparatorChar + Config.DlxTunnelSlot;
 
             _theDialog = Config.TheUi.CreateDialog(_theDialogName);
             _theDialog.AddApplyHandler(apply_cb);
@@ -398,7 +398,6 @@ public class tunnelslot
             _direction0 = _theDialog.TopBlock.FindBlock("direction0");
             _selection01 = _theDialog.TopBlock.FindBlock("selection01");
             _point0 = _theDialog.TopBlock.FindBlock("point0");
-            _selection02 = _theDialog.TopBlock.FindBlock("selection02");
         }
         catch (Exception ex)
         {
@@ -488,12 +487,6 @@ public class tunnelslot
                 Logger.WriteLine("Нажата постановка второй точки.");
                 SetSecondPoint(block);
             }
-            else if (block == _selection02)
-            {
-                //---------Enter your code here-----------
-
-            }
-
         }
         catch (Exception ex)
         {
@@ -848,9 +841,9 @@ public class tunnelslot
             }
             _firstPointSelected = true;
 
-            hasNearestSlot1 = _slotSet1.HasNearestSlot(out _slot1);
+            _hasNearestSlot1 = _slotSet1.HasNearestSlot(out _slot1);
 
-            if (hasNearestSlot1 && Geom.PointIsBetweenStraights(_tunnel1.CentralPoint, 
+            if (_hasNearestSlot1 && Geom.PointIsBetweenStraights(_tunnel1.CentralPoint, 
                                    new Platan(_slotSet1.BottomFace), 
                                    new Straight(_slot1.EdgeLong1), new Straight(_slot1.EdgeLong2)))
             {
@@ -891,7 +884,7 @@ public class tunnelslot
                 _slot2.Unhighlight();
             }
             _secondPointSelected = true;
-            hasNearestSlot2 = _slotSet2.HasNearestSlot(out _slot2);
+            _hasNearestSlot2 = _slotSet2.HasNearestSlot(out _slot2);
 
             _slot2.Highlight();
             SetConstraints();
@@ -1021,7 +1014,7 @@ public class tunnelslot
             minLen = len;
         }
 
-        Katalog2005.Algorithm.SpecialFunctions.defineTypeOfModel(title);
+        Katalog2005.Algorithm.SpecialFunctions.DefineTypeOfModel(title);
     }
 
 
@@ -1030,12 +1023,12 @@ public class tunnelslot
         if (!_firstPointSelected || !_secondPointSelected) return;
         Logger.WriteLine("Запущена процедура позиционирования.");
 
-        if (hasNearestSlot1 && hasNearestSlot2)
+        if (_hasNearestSlot1 && _hasNearestSlot2)
         {
             _tunnel1.SetSlot(_slot1);
 
             doMagic();
-            UspElement fixture = new UspElement(Katalog2005.Algorithm.SpecialFunctions._unLoadedPart);
+            UspElement fixture = new UspElement(Katalog2005.Algorithm.SpecialFunctions.UnLoadedPart);
 
             _constraint = new TunnelSlotConstraint(_element1, _tunnel1, _element2, _slot2, fixture);
             _constraint.Create();
@@ -1044,9 +1037,9 @@ public class tunnelslot
         }
         else
         {
-            string mess = "Ближайший слот для первого элемента найден - " + hasNearestSlot1 +
+            string mess = "Ближайший слот для первого элемента найден - " + _hasNearestSlot1 +
                           Environment.NewLine;
-            mess += "Ближайший слот для второго элемента найден - " + hasNearestSlot2;
+            mess += "Ближайший слот для второго элемента найден - " + _hasNearestSlot2;
             Logger.WriteLine(mess);
         }
     }
