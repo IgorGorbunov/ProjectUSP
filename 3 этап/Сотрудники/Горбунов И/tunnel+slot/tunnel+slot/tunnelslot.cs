@@ -591,22 +591,18 @@ public class Tunnelslot
         if (SetComponent(block, ref _element1))
         {
             SetEnable(_faceSelect0, true);
-            SetEnable(_slotTunPoint, false);
-            SetEnable(_direction0, false);
 
             _slotSet1 = new SlotSet(_element1);
             _element1.SetBottomFaces();
         }
         else
         {
-            SetEnable(_direction0, false);
-
-            SetEnable(_slotTunPoint, false);
-            UnSelectObjects(_slotTunPoint);
-
-            UnSelectObjects(_faceSelect0);
             SetEnable(_faceSelect0, false);
         }
+        SetEnable(_direction0, false);
+        UnSelectSlot(_slot1, _slotTunPoint);
+        _firstPointSelected = false;
+        UnSelectObjects(_faceSelect0);
     }
     void SetSecondComponent(UIBlock block)
     {
@@ -618,10 +614,15 @@ public class Tunnelslot
         }
         else
         {
-            _secondPointSelected = false;
-            UnSelectObjects(_point0);
             SetEnable(_point0, false);
         }
+        _secondPointSelected = false;
+        if (_slot2 != null)
+        {
+            _slot2.Unhighlight();
+        }
+        UnSelectObjects(_point0);
+        SetEnable(_direction0, false);
     }
     static bool SetComponent(UIBlock block, ref UspElement element)
     {
@@ -662,13 +663,18 @@ public class Tunnelslot
         if (SetFace(block, ref _tunnel1, _element1))
         {
             SetEnable(_slotTunPoint, true);
-            SetEnable(_direction0, false);
         }
         else
         {
             SetEnable(_slotTunPoint, false);
-            SetEnable(_direction0, false);
         }
+        _firstPointSelected = false;
+        if (_slot1 != null)
+        {
+            _slot1.Unhighlight();
+        }
+        UnSelectObjects(_slotTunPoint);
+        SetEnable(_direction0, false);
     }
     static bool SetFace(UIBlock block, ref Tunnel tunnel, UspElement element)
     {
@@ -926,7 +932,15 @@ public class Tunnelslot
         propList.SetTaggedObjectVector("SelectedObjects", new TaggedObject[0]);
     }
 
-
+    static void UnSelectSlot(Slot slot, UIBlock slotSetBlock)
+    {
+        if (slot != null)
+        {
+            slot.Unhighlight();
+        }
+        UnSelectObjects(slotSetBlock);
+        SetEnable(slotSetBlock, false);
+    }
 
 
 

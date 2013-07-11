@@ -13,11 +13,11 @@ public static class Message
 
     public static void Tst(object mess)
     {
-        Show("tst", MessageIcon.Error, mess);
+        Show("test", MessageIcon.Error, mess);
     }
     public static void Tst()
     {
-        Show("tst", MessageIcon.Error, "");
+        Show("test", MessageIcon.Error, "");
     }
 
     public static void Show(object message)

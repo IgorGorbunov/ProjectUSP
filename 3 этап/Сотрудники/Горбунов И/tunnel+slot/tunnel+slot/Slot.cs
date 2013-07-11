@@ -107,8 +107,8 @@ public class Slot
 
     readonly SlotSet _slotSet;
 
-    readonly Face _sideFace1;
-    readonly Face _sideFace2;
+    static Face _sideFace1;
+    static Face _sideFace2;
 
     readonly List<Edge> _touchEdges = new List<Edge>();
     /// <summary>
@@ -194,10 +194,10 @@ public class Slot
     //refactor
     void FindOrtFaces()
     {
-        FindTopFace();
-        double[] direction1 = _bottomDirection;
+        //FindTopFace();
+        double[] direction1 = Geom.GetDirection(BottomFace);
 
-        Edge[] pointEdges = _topFace.GetEdges();
+        Edge[] pointEdges = BottomFace.GetEdges();
         Edge pointEdge = pointEdges[0];
         Point3d point, tempPoint;
         pointEdge.GetVertices(out point, out tempPoint);
@@ -419,7 +419,7 @@ public class Slot
     }
 
 
-    static Edge GetNextEdge(Face face, Edge edge, double distance)
+    Edge GetNextEdge(Face face, Edge edge, double distance)
     {
         //поиск верхнего левого ребра
         Edge resultEdge = null;
@@ -427,8 +427,10 @@ public class Slot
         foreach (Edge e in face.GetEdges())
         {
             if (e == edge) continue;
+
             Vector vecTmp = new Vector(e);
             if (!vecEtalon.IsParallel(vecTmp)) continue;
+
             Straight edgeStraight = new Straight(e);
             Point3d heightStart = vecEtalon.Start;
             Point3d pointOnStraight = Geom.GetIntersectionPointStraight(heightStart, edgeStraight);
@@ -436,6 +438,7 @@ public class Slot
             Vector vecHeight = new Vector(heightStart, pointOnStraight);
 
             if (Config.Round(vecHeight.Length) != distance) continue;
+
             resultEdge = e;
             break;
         }
