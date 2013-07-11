@@ -136,11 +136,11 @@ public class tunnelslot
 
     private TunnelSlotConstraint _constraint;
 
-    bool _secondPointSelected;
-    bool _firstPointSelected;
+    static bool _secondPointSelected;
+    static bool _firstPointSelected;
 
-    private bool _hasNearestSlot1;
-    private bool _hasNearestSlot2;
+    private static bool _hasNearestSlot1;
+    private static bool _hasNearestSlot2;
 
     //------------------------------------------------------------------------------
     //Constructor for NX Styler class
@@ -434,12 +434,14 @@ public class tunnelslot
         {
             //---- Enter your callback code here -----
             Logger.WriteLine("Нажата кнопка ПРИМЕНИТЬ.");
+            CleanUp();
         }
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
             errorCode = 1;
             Config.TheUi.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            Logger.WriteError(ex.ToString());
         }
         return errorCode;
     }
@@ -492,6 +494,7 @@ public class tunnelslot
         {
             //---- Enter your exception handling code here -----
             Config.TheUi.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            Logger.WriteError(ex.ToString());
         }
         return 0;
     }
@@ -507,12 +510,14 @@ public class tunnelslot
             errorCode = apply_cb();
             //---- Enter your callback code here -----
             Logger.WriteLine("Нажата кнопка ОК.");
+            CleanUp();
         }
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
             errorCode = 1;
             Config.TheUi.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            Logger.WriteError(ex.ToString());
         }
         return errorCode;
     }
@@ -532,6 +537,7 @@ public class tunnelslot
         {
             //---- Enter your exception handling code here -----
             Config.TheUi.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            Logger.WriteError(ex.ToString());
         }
         return 0;
     }
@@ -1054,6 +1060,11 @@ public class tunnelslot
         {
             _slot2.Unhighlight();
         }
+        _secondPointSelected = false;
+        _firstPointSelected = false;
+
+        _hasNearestSlot1 = false;
+        _hasNearestSlot2 = false;
     }
 
 }

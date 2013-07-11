@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using NXOpen;
 using NXOpen.Assemblies;
@@ -121,26 +122,38 @@ namespace Katalog2005.Algorithm
         private static void LoadPartToNx(string nmf)
         {
 
-            //try
-            //{
+
             PartLoadStatus partLoadStatus1;
-            BasePart basePart1 =
-                Config.TheSession.Parts.OpenBase(nmf, out partLoadStatus1);
-
-            if (partLoadStatus1.NumberUnloadedParts > 0)
+            Part part1 = null;
+            try
             {
-                for (int i = 0; i < partLoadStatus1.NumberUnloadedParts; i++)
+                BasePart basePart1 = Config.TheSession.Parts.OpenBase(nmf, out partLoadStatus1);
+                if (partLoadStatus1.NumberUnloadedParts > 0)
                 {
-                    Logger.WriteLine(partLoadStatus1.GetStatusDescription(i));
+                    for (int i = 0; i < partLoadStatus1.NumberUnloadedParts; i++)
+                    {
+                        Logger.WriteLine(partLoadStatus1.GetStatusDescription(i));
+                    }
                 }
+                else
+                {
+                    Logger.WriteLine("Деталь загружена в NX!");
+                }
+                part1 = (Part)basePart1;
             }
-            else
+            catch (Exception ex)
             {
-                Logger.WriteLine("Деталь загружена в NX!");
+                if (String.CompareOrdinal(ex.Message, "File already exists") == 0)
+                {
+                    part1 = (Part)Config.TheSession.Parts.FindObject(nmf);
+                }
+                else
+                {
+                    Logger.WriteError(ex.ToString());
+                    Message.Show("Ошибка в загрузке детали!");
+                }
+                
             }
-            
-
-            Part part1 = (Part) basePart1;
 
             Point3d basePoint1 = new Point3d(0, 0, 0);
 
@@ -160,9 +173,10 @@ namespace Katalog2005.Algorithm
             UnLoadedPart = Config.WorkPart.ComponentAssembly.AddComponent(part1, "MODEL", nmf,
                                                                            basePoint1, orientation1,
                                                                            -1, out partLoadStatus1);
-            //    }
-            //    catch (Exception ex)
-            //    {
+                //}
+                //catch (Exception ex)
+                //{
+
 
             //        if (String.Compare(ex.Message, "File already exists") == 0)
             //        {
@@ -213,7 +227,7 @@ namespace Katalog2005.Algorithm
             //            //MessageBox.Show(ex.Message, "Ошибка");
             //            Message.Show(ex);
             //        }
-            //    }
+                //}
 
             //    Z_coor = Z_coor + 50;
 

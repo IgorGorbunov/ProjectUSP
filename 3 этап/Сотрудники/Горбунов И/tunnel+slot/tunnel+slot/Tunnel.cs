@@ -85,7 +85,6 @@ public class Tunnel
     Slot _slot;
 
     Face _face;
-    readonly Face[] _normalFaces = new Face[2];
     readonly UspElement _element;
 
     readonly double[] _direction = new double[3];
@@ -105,7 +104,6 @@ public class Tunnel
 
         SetOccurenceFace();
 
-        SetNormalFaces();
         SetDirectionAndPoint();
     }
     /// <summary>
@@ -255,22 +253,6 @@ public class Tunnel
         }
         logMess += Environment.NewLine + "=============";
         Logger.WriteLine(logMess);
-    }
-
-    void SetNormalFaces()
-    {
-        Edge[] edges = _face.GetEdges();
-
-        for (int i = 0; i < edges.Length; i++)
-		{
-            Face[] faces = edges[i].GetFaces();
-            foreach (Face f in faces)
-            {
-                if (f == _face) continue;
-                _normalFaces[i] = f;
-                break;
-            }
-		}
     }
 
     void SetDirectionAndPoint()
