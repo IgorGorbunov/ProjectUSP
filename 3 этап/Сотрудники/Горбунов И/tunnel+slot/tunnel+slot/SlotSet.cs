@@ -83,28 +83,10 @@ public sealed class SlotSet
     {
         List<Face> nearFaces = new List<Face>();
 
-        //todelete
-        //double minLen = double.MaxValue;
-
         bool isFound = false;
         foreach (Face face in _element.SlotFaces)
 	    {
             nearFaces.Add(face);
-
-            //todelete
-            //Platan platan = new Platan(face);
-            //double len = Math.Abs(platan.GetDistanceToPoint(_selectPoint));
-
-            //if (Config.Round(len).ToString() == Config.Round(minLen).ToString())
-            //{
-            //    nearFaces.Add(face);
-            //}
-            //if (Config.Round(len) >= minLen) continue;
-
-            //nearFaces.Clear();
-            //nearFaces.Add(face);
-
-            //minLen = len;
 	        isFound = true;
 	    }
 
@@ -113,13 +95,6 @@ public sealed class SlotSet
             return false;
         }
 
-        //todelete
-        //if (nearFaces.Count == 1)
-        //{
-        //    _bottomFace = nearFaces[0];
-        //}
-        //else
-        //{
         double minLenAmongFaces = double.MaxValue;
 
         foreach (Face face in nearFaces)

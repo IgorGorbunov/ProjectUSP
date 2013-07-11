@@ -1,6 +1,5 @@
 ﻿using NXOpen;
 using NXOpen.Assemblies;
-using NXOpen.BlockStyler;
 using NXOpen.Positioning;
 
 /// <summary>
@@ -258,7 +257,7 @@ public sealed class TunnelSlotConstraint
         _tunnelConstsr = new TunnelConstraint(_tunnel, _slot);
 
         Config.FreezeDisplay();
-        _tunnelConstsr.SetTouchFaceConstraint(false, false);
+        _tunnelConstsr.SetTouchFaceConstraint();
         Config.UnFreezeDisplay();
     }
 

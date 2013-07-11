@@ -15,12 +15,15 @@ public static class Message
     {
         Show("tst", MessageIcon.Error, mess);
     }
+    public static void Tst()
+    {
+        Show("tst", MessageIcon.Error, "");
+    }
 
     public static void Show(object message)
     {
         Show("Error", MessageIcon.Error, message);
     }
-
     public static void Show(string title, MessageIcon icon, object mess)
     {
         NXMessageBox.DialogType dialog = NXMessageBox.DialogType.Error;

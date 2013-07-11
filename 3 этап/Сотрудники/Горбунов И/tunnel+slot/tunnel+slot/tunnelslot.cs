@@ -46,11 +46,11 @@ using NXOpen.BlockStyler;
 //Represents Block Styler application class
 //------------------------------------------------------------------------------
 // ReSharper disable UnusedMember.Global
-public class tunnelslot
+public class Tunnelslot
 // ReSharper restore UnusedMember.Global
 {
     //class members
-    private static tunnelslot _thetunnelslot;
+    private static Tunnelslot _thetunnelslot;
     private readonly string _theDialogName;
     private BlockDialog _theDialog;
     private UIBlock _selection0;// Block type: Selection
@@ -145,7 +145,7 @@ public class tunnelslot
     //------------------------------------------------------------------------------
     //Constructor for NX Styler class
     //------------------------------------------------------------------------------
-    public tunnelslot()
+    public Tunnelslot()
     {
         try
         {
@@ -259,7 +259,7 @@ public class tunnelslot
         try
         {
             Logger.WriteLine("++++++++++++++++++++++++++++++++++++++++++++++++" + " Начало работы программы");
-            _thetunnelslot = new tunnelslot();
+            _thetunnelslot = new Tunnelslot();
             // The following method shows the dialog immediately
             _thetunnelslot.Show();
             Logger.WriteLine("-------------------------------------------------" + " Конец работы программы");
@@ -365,7 +365,7 @@ public class tunnelslot
     {
         try
         {
-            _thetunnelslot = new tunnelslot();
+            _thetunnelslot = new Tunnelslot();
             // The following method shows the dialog immediately
             _thetunnelslot.Show();
         }
@@ -663,27 +663,6 @@ public class tunnelslot
         {
             SetEnable(_slotTunPoint, true);
             SetEnable(_direction0, false);
-
-            //if (SetPoint(point, ref _slotSet1))
-            //{
-            //    _faceSelected = true;
-
-            //    SetConstraints();
-            //}
-            //else
-            //{
-            //    string message = "Базовые плоскости пазов не найдены!" + Environment.NewLine +
-            //                        "Выберите другой элемент!";
-            //    Logger.WriteWarning(message);
-            //    Config.TheUi.NXMessageBox.Show("Error!",
-            //                                   NXMessageBox.DialogType.Error,
-            //                                   message);
-            //    UnSelectObjects(block);
-            //    UnSelectObjects(_selection0);
-
-            //    _faceSelected = false;
-            //    _selection0.Focus();
-            //}
         }
         else
         {

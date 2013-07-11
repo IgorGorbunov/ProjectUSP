@@ -75,6 +75,14 @@ public class Tunnel
     {
         get { return _diametr; }
     }
+    /// <summary>
+    /// Возвращает пару (Грань-Расстояние)ортогональных базовому отверстию граней с расстоянием до них.
+    /// </summary>
+    /// <returns></returns>
+    public KeyValuePair<Face, double>[] GetOrtFacePairs()
+    {
+        return _slot.OrtFaces;
+    }
 
     
     KeyValuePair<Face, double>[] _ortFacePairs;
@@ -106,19 +114,7 @@ public class Tunnel
 
         SetDirectionAndPoint();
     }
-    /// <summary>
-    /// Возвращает пару (Грань-Расстояние)ортогональных базовому отверстию граней с расстоянием до них.
-    /// </summary>
-    /// <param name="reverse">True, если необходимо изменить направление поиска граней.</param>
-    /// <returns></returns>
-    public KeyValuePair<Face, double>[] GetOrtFacePairs(bool reverse)
-    {
-        if (_ortFacePairs == null || reverse)
-        {
-            FindOrtFaces(reverse);
-        }
-        return _ortFacePairs;
-    }
+    
     /// <summary>
     /// Возвращает центр окружности, находящейся по направлению предполагаемой
     /// ВЕРНОЙ нормали базового отверстия.
@@ -189,19 +185,9 @@ public class Tunnel
         End:{}
     }
     //refactor
-    void FindOrtFaces(bool reverse)
+    void FindOrtFaces()
     {
-        double[] etalonDirection;
-        if (reverse)
-        {
-            etalonDirection = ReverseDirection();
-        }
-        else
-        {
-            _rev = 1;
-            etalonDirection = _slot.BottomDirection;
-        }
-        
+        double[] etalonDirection = _slot.BottomDirection;
         Point3d point = CentralPoint;
 
         Dictionary<Face, double> dictFaces = new Dictionary<Face, double>();
@@ -244,12 +230,12 @@ public class Tunnel
             Instr.QSortPair(_ortFacePairs, 0, _ortFacePairs.Length - 1);
         }
 
-        string logMess = "Паралельные грани для НГП " + ParentComponent.ToString() + " " + 
+        string logMess = "Паралельные грани для НГП " + ParentComponent + " " + 
             ParentComponent.Name + " c расстоянием до неё:";
         foreach (KeyValuePair<Face, double> keyValuePair in _ortFacePairs)
         {
-            logMess += Environment.NewLine + keyValuePair.Key.ToString() + " - " + 
-                keyValuePair.Value.ToString() + " мм";
+            logMess += Environment.NewLine + keyValuePair.Key + " - " + 
+                keyValuePair.Value + " мм";
         }
         logMess += Environment.NewLine + "=============";
         Logger.WriteLine(logMess);

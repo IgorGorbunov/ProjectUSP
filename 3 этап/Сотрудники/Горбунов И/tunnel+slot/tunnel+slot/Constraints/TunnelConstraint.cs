@@ -59,16 +59,16 @@ public class TunnelConstraint
     /// </summary>
     /// <param name="firstRev">True, если необходимо перевернуть первый элемент.</param>
     /// <param name="secondRev">True, если необходимо перевернуть второй элемент.</param>
-    public void SetTouchFaceConstraint(bool firstRev, bool secondRev)
+    public void SetTouchFaceConstraint()
     {
-        KeyValuePair<Face, double>[] pairs1 = _firstTunnel.GetOrtFacePairs(firstRev);
+        KeyValuePair<Face, double>[] pairs1 = _firstTunnel.GetOrtFacePairs();
         KeyValuePair<Face, double>[] pairs2;
         ElementIntersection intersect;
 
         Component comp2;
         if (_slot == null)
         {
-            pairs2 = _secondTunnel.GetOrtFacePairs(secondRev);
+            pairs2 = _secondTunnel.GetOrtFacePairs();
             intersect = new ElementIntersection(_firstTunnel.Body, _secondTunnel.Body);
             comp2 = _secondTunnel.ParentComponent;
         }

@@ -243,7 +243,7 @@ static class Geom
         return IsOnSegment(p, v.Start, v.End);
     }
 
-    public static bool IsOnSegment(Point3d p, Point3d vecPoint1, Point3d vecPoint2)
+    private static bool IsOnSegment(Point3d p, Point3d vecPoint1, Point3d vecPoint2)
     {
         //AB - отрезок, Х - точка
         Vector vecAb = new Vector(vecPoint1, vecPoint2);
@@ -251,12 +251,11 @@ static class Geom
 
         Point3d aBcoords = vecAb.GetCoords();
         Point3d aXcoords = vecAx.GetCoords();
-
         double[] ratio = new double[Dimensions];
 
-        ratio[0] = aXcoords.X / aBcoords.X;
-        ratio[1] = aXcoords.Y / aBcoords.Y;
-        ratio[2] = aXcoords.Z / aBcoords.Z;
+        ratio[0] = GetRatio(aXcoords.X, aBcoords.X);
+        ratio[1] = GetRatio(aXcoords.Y, aBcoords.Y);
+        ratio[2] = GetRatio(aXcoords.Z, aBcoords.Z);
 
         for (int i = 0; i < Dimensions; i++)
         {
@@ -265,7 +264,6 @@ static class Geom
                 return false;
             }
         }
-
         return true;
     }
 
@@ -594,6 +592,12 @@ static class Geom
         return false;
     }
 
-
-    
+    static double GetRatio(double d1, double d2)
+    {
+        if (Config.Round(d1) == 0 && Config.Round(d2) == 0)
+        {
+            return 0;
+        }
+        return d1 / d2;
+    }
 }

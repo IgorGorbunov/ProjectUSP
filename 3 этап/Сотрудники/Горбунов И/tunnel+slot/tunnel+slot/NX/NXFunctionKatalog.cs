@@ -121,8 +121,6 @@ namespace Katalog2005.Algorithm
         /// <returns></returns>
         private static void LoadPartToNx(string nmf)
         {
-
-
             PartLoadStatus partLoadStatus1;
             Part part1 = null;
             try
