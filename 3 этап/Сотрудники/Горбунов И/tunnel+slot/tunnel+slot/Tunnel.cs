@@ -41,7 +41,7 @@ public class Tunnel
     /// <summary>
     /// Возвращает направление базового отверстия.
     /// </summary>
-    private double[] Direction
+    public double[] Direction
     {
         get
         {

@@ -834,9 +834,11 @@ public class Tunnelslot
 
             _hasNearestSlot1 = _slotSet1.HasNearestSlot(out _slot1);
 
-            if (_hasNearestSlot1 && Geom.PointIsBetweenStraights(_tunnel1.CentralPoint, 
-                                   new Platan(_slotSet1.BottomFace), 
-                                   new Straight(_slot1.EdgeLong1), new Straight(_slot1.EdgeLong2)))
+            if (_hasNearestSlot1 && 
+                Geom.PointIsBetweenStraights(_tunnel1.CentralPoint, 
+                          new Platan(_slotSet1.BottomFace), 
+                          new Straight(_slot1.EdgeLong1), new Straight(_slot1.EdgeLong2)) &&
+                Geom.DirectionsAreOnStraight(_tunnel1.Direction, _slot1.BottomDirection))
             {
                 _slot1.Highlight();
                 SetConstraints();

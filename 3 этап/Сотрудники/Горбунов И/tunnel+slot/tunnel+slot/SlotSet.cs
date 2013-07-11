@@ -50,8 +50,8 @@ public sealed class SlotSet
     }
 
     Face _bottomFace;
+    private Edge _someEdgeOnBottom;
 
-    Edge[] _edges;
     Dictionary<Edge, double> _nearestEdges;
 
     Point3d _selectPoint;
@@ -126,44 +126,111 @@ public sealed class SlotSet
                 if (length > minLenAmongFaces) continue;
 
                 minLenAmongFaces = length;
-                _bottomFace = face;
+                _someEdgeOnBottom = edge;
             }
         }
 
-        _edges = _bottomFace.GetEdges();
+        //_edges = _bottomFace.GetEdges();
         
         return true;
     }
 
     public void SetNearestEdges()
     {
-        Dictionary<Edge, double> edges = new Dictionary<Edge, double>();
+        Face[] faces = _someEdgeOnBottom.GetFaces();
+        Dictionary<Edge, double>[] edgesList = new Dictionary<Edge, double>[2];
 
-        foreach (Edge edge in _edges)
+        int numberOfNearestSlots = 0;
+        bool[] isSlotFace = {false, false};
+        for (int i = 0; i < edgesList.Length; i++)
         {
-            if (edge.SolidEdgeType != Edge.EdgeType.Linear) continue;
+            if (faces[i].Name != Config.SlotBottomName) continue;
+            
+            isSlotFace[i] = true;
+            numberOfNearestSlots++;
 
-            Point3d firstPoint, secondPoint;
-            edge.GetVertices(out firstPoint, out  secondPoint);
-            Straight straight = new Straight(edge);
+            edgesList[i] = new Dictionary<Edge, double>();
+            Edge[] edges = faces[i].GetEdges();
 
-            Point3d projection = Geom.GetIntersectionPointStraight(_selectPoint, straight);
-            double length;
-            if (Geom.IsOnSegment(projection, edge))
+            for (int j = 0; j < edges.Length; j++)
             {
-                length = (new Vector(projection, _selectPoint)).Length;
+                edgesList[i].Add(edges[j], 0.0);
+            }
+        }
+
+        int start = 0;
+        int end = edgesList.Length;
+        if (numberOfNearestSlots < 2)
+        {
+            if (isSlotFace[0])
+            {
+                start = 0;
+                end = 1;
             }
             else
             {
-                Vector vec1 = new Vector(_selectPoint, firstPoint);
-                Vector vec2 = new Vector(_selectPoint, secondPoint);
-
-                length = vec1.Length < vec2.Length ? vec1.Length : vec2.Length;
+               start = 1;
+               end = 2; 
             }
-
-            AddInDictMinValue(edges, edge, length);
         }
-        _nearestEdges = edges;
+
+        double[] nProjections = new double[2];
+        for (int i = start; i < end; i++)
+        {
+            nProjections[i] = 0;
+
+            foreach (Edge edge in edgesList[i].Keys)
+            {
+                if (edge.SolidEdgeType != Edge.EdgeType.Linear) continue;
+
+                Point3d firstPoint, secondPoint;
+                edge.GetVertices(out firstPoint, out  secondPoint);
+                Straight straight = new Straight(edge);
+
+                Point3d projection = Geom.GetIntersectionPointStraight(_selectPoint, straight);
+                double length;
+                if (Geom.IsOnSegment(projection, edge))
+                {
+                    nProjections[i]++;
+                    length = (new Vector(projection, _selectPoint)).Length;
+                }
+                else
+                {
+                    Vector vec1 = new Vector(_selectPoint, firstPoint);
+                    Vector vec2 = new Vector(_selectPoint, secondPoint);
+
+                    length = vec1.Length < vec2.Length ? vec1.Length : vec2.Length;
+                }
+
+                AddInDictMinValue(edgesList[i], edge, length);
+            }
+        }
+
+        //если по одному ребру есть две НГП
+        if (end == 2)
+        {
+            int n = nProjections[0] > nProjections[1] ? 0 : 1;
+
+            Platan pl1 = new Platan(faces[0]);
+            Platan pl2 = new Platan(faces[1]);
+            double d1 = pl1.GetDistanceToPoint(_selectPoint);
+            double d2 = pl2.GetDistanceToPoint(_selectPoint);
+            if (Config.Round(d1) == 0.0)
+            {
+                n = 0;
+            }
+            if (Config.Round(d2) == 0.0)
+            {
+                n = 1;
+            }
+            _bottomFace = faces[n];
+            _nearestEdges = edgesList[n];
+        }
+        else
+        {
+            _bottomFace = faces[start];
+            _nearestEdges = edgesList[start];
+        }
     }
 
     public bool HasNearestSlot(out Slot slot)
@@ -177,16 +244,19 @@ public sealed class SlotSet
         bool isFound = false;
         for (int i = 0; i < edges.Count; i++)
         {
-            
             for (int j = i + 1; j < edges.Count; j++)
             {
+                if (edges[i].SolidEdgeType != Edge.EdgeType.Linear ||
+                    edges[j].SolidEdgeType != Edge.EdgeType.Linear)
+                    continue;
+
                 Vector vec1 = new Vector(edges[i]);
                 Vector vec2 = new Vector(edges[j]);
 
                 double slotWidth;
-                if (!IsSlot(vec1, vec2, out slotWidth)) continue;
+                if (!IsSlot(vec1, vec2, out slotWidth, edges[i], edges[j])) continue;
+
                 Edge edgeLong1 = edges[i];
-                    
                 Point3d start, end;
                 edgeLong1.GetVertices(out start, out end);
 
@@ -240,7 +310,7 @@ public sealed class SlotSet
 
                 if (minLen == -1 || min < minLen)
                 {
-                        
+                    
                     minLen = min;
                     edge1 = edgeLong1;
                     edge2 = edgeLong2;
@@ -306,6 +376,8 @@ public sealed class SlotSet
 
     static void AddInDictMinValue(Dictionary<Edge, double> dictionary, Edge key, double value)
     {
+        if (dictionary.ContainsKey(key)) return;
+
         Edge minKey = null;
         double minValue = value;
 
@@ -328,27 +400,26 @@ public sealed class SlotSet
         dictionary.Add(key, value);
     }
 
-    static bool IsSlot(Vector vec1, Vector vec2, out double distance)
+    static bool IsSlot(Vector vec1, Vector vec2, out double distance, Edge e1, Edge e2)
     {
         distance = 0;
         if (vec1.IsParallel(vec2))
         {
             int nPerpendicular = 0;
-            const int nPointsInEdge = 2;
             const int nVectors = 2;
 
-            Point3d[] points = new Point3d[nPointsInEdge * nVectors];
+            Point3d[] points = new Point3d[Config.NPointsInEdge * nVectors];
             points[0] = vec1.Start;
             points[1] = vec1.End;
             points[2] = vec2.Start;
             points[3] = vec2.End;
 
-            for (int i = 1; i <= nPointsInEdge; i++)
+            for (int i = 0; i < Config.NPointsInEdge; i++)
             {
-                for (int j = nPointsInEdge + 1; j <= nPointsInEdge * 2; j++)
+                for (int j = Config.NPointsInEdge; j < Config.NPointsInEdge * 2; j++)
                 {
 
-                    Vector tempVec = new Vector(points[i - 1], points[j - 1]);
+                    Vector tempVec = new Vector(points[i], points[j]);
 
                     if (vec1.IsNormal(tempVec))
                     {
@@ -363,7 +434,7 @@ public sealed class SlotSet
                 }
             }
 
-            return nPerpendicular > 0 && HaveNormals(vec1, vec2);
+            return nPerpendicular > 0 && HaveNormals(vec1, vec2, e1, e2);
         }
         return false;
     }
@@ -372,33 +443,30 @@ public sealed class SlotSet
 
     }*/
 
-    static bool HaveNormals(Vector vec1, Vector vec2)
+    static bool HaveNormals(Vector vec1, Vector vec2, Edge e1, Edge e2)
     {
         //для первого вектора
         Point3d[] points1 = new Point3d[Config.NPointsInEdge];
         points1[0] = vec1.Start;
         points1[1] = vec1.End;
-        //double[,] straight1 = Geom.getStraitEquation(points1[0], points1[1]);
         Straight straight1 = new Straight(vec1);
 
         //для второго вектора
         Point3d[] points2 = new Point3d[Config.NPointsInEdge];
         points2[0] = vec2.Start;
         points2[1] = vec2.End;
-        //double[,] straight2 = Geom.getStraitEquation(points2[0], points2[1]);
         Straight straight2 = new Straight(vec2);
 
         int alignment = 0;
 
         //первое ребро
-        bool onPoint = false;
         for (int i = 0; i < Config.NPointsInEdge; i++)
         {
+            bool onPoint = false;
             Point3d intersect1 = Geom.GetIntersectionPointStraight(points1[i], straight2);
 
             for (int j = 0; j < Config.NPointsInEdge; j++)
             {
-
                 if (Geom.IsEqual(intersect1, points2[j]))
                 {
                     alignment++;
@@ -414,9 +482,9 @@ public sealed class SlotSet
         }
 
         //второе ребро
-        onPoint = false;
         for (int i = 0; i < Config.NPointsInEdge; i++)
         {
+            bool onPoint = false;
             Point3d intersect1 = Geom.GetIntersectionPointStraight(points2[i], straight1);
 
             for (int j = 0; j < Config.NPointsInEdge; j++)
@@ -429,7 +497,6 @@ public sealed class SlotSet
 
             if (!onPoint && Geom.IsOnSegment(intersect1, vec1))
             {
-
                 return true;
             }
         }

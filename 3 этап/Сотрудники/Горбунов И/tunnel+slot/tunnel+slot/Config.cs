@@ -43,6 +43,7 @@ public static class Config
     public static readonly char[] FaceNameSplitter = { '_' };
     public const string SlotSymbol = "SLOT";
     public const string SlotBottomSymbol = "BOTTOM";
+    public static readonly string SlotBottomName = SlotSymbol + FaceNameSplitter[0] + SlotBottomSymbol;
 
     //снизил с 4 на 3 из-за невозможности пазирования (почему-то) коротких пазов на главной
     //плоскости с длинными на боковых у плит

@@ -35,7 +35,7 @@ static class Geom
         double len1 = straight1.GetDistance(projectionPoint);
         double len2 = straight2.GetDistance(projectionPoint);
         double len = straight1.GetDistance(straight2);
-
+        
         return !(len < len1 + len2);
     }
 
@@ -381,7 +381,38 @@ static class Geom
         return split[0] == "Component";
     }
 
-
+    public static bool DirectionsAreOnStraight(double[] dir1, double[] dir2)
+    {
+        if (dir1.Length == dir2.Length)
+        {
+            bool notCoDirect = false;
+            for (int i = 0; i < dir1.Length; i++)
+            {
+                if (Config.Round(dir1[i]) != Config.Round(dir2[i]))
+                {
+                    notCoDirect = true;
+                }
+                if (notCoDirect)
+                {
+                    break;
+                }
+            }
+            if (notCoDirect)
+            {
+                for (int i = 0; i < dir1.Length; i++)
+                {
+                    if (Config.Round(dir1[i]) != - Config.Round(dir2[i]))
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            return true;
+        }
+        Config.TheUi.NXMessageBox.Show("Error!", NXMessageBox.DialogType.Error, "Массивы различны по длине!");
+        return false;
+    }
 
 
 

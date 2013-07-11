@@ -107,8 +107,8 @@ public class Slot
 
     readonly SlotSet _slotSet;
 
-    static Face _sideFace1;
-    static Face _sideFace2;
+    readonly Face _sideFace1;
+    readonly Face _sideFace2;
 
     readonly List<Edge> _touchEdges = new List<Edge>();
     /// <summary>
@@ -195,6 +195,7 @@ public class Slot
     void FindOrtFaces()
     {
         //FindTopFace();
+        
         double[] direction1 = Geom.GetDirection(BottomFace);
 
         Edge[] pointEdges = BottomFace.GetEdges();
@@ -215,8 +216,8 @@ public class Slot
             Platan pl = new Platan(f);
 
             //округление для проверки нуля - added
-            double distance = Config.Round(Math.Abs(pl.GetDistanceToPoint(point)));
-
+            double distance = - Config.Round(pl.GetDistanceToPoint(point));
+            
             if (distance >= 0 && !dictFaces.ContainsValue(distance))
             {
                 dictFaces.Add(f, distance);
@@ -241,12 +242,11 @@ public class Slot
             Instr.QSortPair(_ortFacePairs, 0, _ortFacePairs.Length - 1);            
         }
 
-        string logMess = "Паралельные грани для НГП " + ParentComponent.ToString() + " " +
+        string logMess = "Паралельные грани для НГП " + ParentComponent + " " +
             ParentComponent.Name + " c расстоянием до неё:";
         foreach (KeyValuePair<Face, double> keyValuePair in _ortFacePairs)
         {
-            logMess += Environment.NewLine + keyValuePair.Key.ToString() + " - " +
-                keyValuePair.Value.ToString() + " мм";
+            logMess += Environment.NewLine + keyValuePair.Key + " - " + keyValuePair.Value + " мм";
         }
         logMess += Environment.NewLine + "=============";
         Logger.WriteLine(logMess);

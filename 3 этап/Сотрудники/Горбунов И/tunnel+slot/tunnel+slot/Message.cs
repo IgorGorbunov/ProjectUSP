@@ -1,3 +1,4 @@
+using  System;
 using NXOpen;
 
 
@@ -11,14 +12,24 @@ public static class Message
         Question = 3
     }
 
-    public static void Tst(object mess)
-    {
-        Show("test", MessageIcon.Error, mess);
-    }
     public static void Tst()
     {
         Show("test", MessageIcon.Error, "");
     }
+    public static void Tst(object mess)
+    {
+        Show("test", MessageIcon.Error, mess);
+    }
+    public static void Tst(params object[] vars)
+    {
+        string mess = "";
+        for (int i = 0; i < vars.Length; i++)
+        {
+            mess += vars[i] + Environment.NewLine;
+        }
+        Show("test", MessageIcon.Error, mess);
+    }
+    
 
     public static void Show(object message)
     {
