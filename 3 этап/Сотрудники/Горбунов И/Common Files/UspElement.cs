@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using NXOpen;
 using NXOpen.Assemblies;
 
@@ -16,7 +15,7 @@ public class UspElement
     {
         get
         {
-            return this.component;
+            return _component;
         }
     }
     /// <summary>
@@ -26,7 +25,7 @@ public class UspElement
     {
         get
         {
-            return this.bottomFaces;
+            return _bottomFaces;
         }
     }
     /// <summary>
@@ -36,18 +35,16 @@ public class UspElement
     {
         get
         {
-            return this.body;
+            return _body;
         }
     }
 
-    Component component;
-    Body body;
+    readonly Component _component;
+    Body _body;
 
-    List<Face> bottomFaces;
+    List<Face> _bottomFaces;
 
-    int magic_number = 1680;//TODO
-
-    
+    private const int MagicNumber = 1680; //TODO
 
 
     /// <summary>
@@ -56,19 +53,19 @@ public class UspElement
     /// <param name="component">Компонент из сборки NX.</param>
     public UspElement(Component component)
     {
-        this.component = component;
+        _component = component;
 
-        this.setBody();
+        SetBody();
     }
 
     /// <summary>
     /// Проводит поиск и устанавливает нижние плоскости пазов.
     /// </summary>
-    public void setBottomFace()
+    public void SetBottomFaces()
     {
-        Face[] faces = this.body.GetFaces();
+        Face[] faces = _body.GetFaces();
 
-        this.bottomFaces = new List<Face>();
+        _bottomFaces = new List<Face>();
         for (int j = 0; j < faces.Length; j++)
         {
             try
@@ -77,50 +74,51 @@ public class UspElement
 
                 if (face.Name != null)
                 {
-                    string[] split = face.Name.Split(Config.FACE_NAME_SPLITTER);
+                    string[] split = face.Name.Split(Config.FaceNameSplitter);
 
-                    if (split[0] == Config.SLOT_SYMBOL && 
-                        split[1] == Config.SLOT_BOTTOM_SYMBOL)
+                    if (split[0] == Config.SlotSymbol && 
+                        split[1] == Config.SlotBottomSymbol)
                     {
-                        this.bottomFaces.Add(face);
+                        _bottomFaces.Add(face);
                     }
                 }
             }
-            catch (NXException Ex)
+            catch (NXException ex)
             {
-                if (Ex.ErrorCode == 3520016) //No object found exeption
+                if (ex.ErrorCode != 3520016)
                 {
-
-                }
-                else
-                {
-                    UI.GetUI().NXMessageBox.Show("Ошибка!", 
-                                                 NXMessageBox.DialogType.Error, 
+                    UI.GetUI().NXMessageBox.Show("Ошибка!",
+                                                 NXMessageBox.DialogType.Error,
                                                  "Ашипка!");
                 }
             }
         }
+
+        string mess = "НГП для данного элемента:";
+        foreach (Face f in _bottomFaces)
+        {
+            mess += Environment.NewLine + f;
+        }
+        mess += Environment.NewLine + "============";
+        Logger.WriteLine(mess);
     }
 
     //refactor
-    Face getSomeFace()
+    Face GetSomeFace()
     {
         Face someFace = null;
-        for (int j = 1; j < magic_number; j++)
+        for (int j = 1; j < MagicNumber; j++)
         {
             try
             {
-                someFace = (Face)this.component.FindObject(
+                someFace = (Face)_component.FindObject(
                     "PROTO#.Features|UNPARAMETERIZED_FEATURE(0)|FACE " + j);
+
                 break;
             }
-            catch (NXException Ex)
+            catch (NXException ex)
             {
-                if (Ex.ErrorCode == 3520016) //No object found exeption
-                {
-
-                }
-                else
+                if (ex.ErrorCode != 3520016)
                 {
                     UI.GetUI().NXMessageBox.Show("Ошибка!",
                                                  NXMessageBox.DialogType.Error,
@@ -131,10 +129,22 @@ public class UspElement
         return someFace;
     }
 
-    void setBody()
+    void SetBody()
     {
-        Face someFace = this.getSomeFace();
-        this.body = someFace.GetBody();
+        Body bb = null;
+        BodyCollection bc = ((Part)_component.Prototype).Bodies;
+        foreach (Body body in bc)
+        {
+            NXObject tmpNxObject = _component.FindOccurrence(body);
+            if (tmpNxObject != null)
+            {
+                bb = (Body)tmpNxObject;
+            }
+        }
+
+        _body = bb;
+        //Face someFace = GetSomeFace();
+        //_body = someFace.GetBody();
     }
 }
 

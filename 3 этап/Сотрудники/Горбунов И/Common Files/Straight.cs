@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using NXOpen;
 
 /// <summary>
@@ -18,7 +16,7 @@ public class Straight
     {
         get
         {
-            return this.equation;
+            return _equation;
         }
     }
     /// <summary>
@@ -28,7 +26,7 @@ public class Straight
     {
         get
         {
-            return this.equation[0, 0];
+            return _equation[0, 0];
         }
     }
     /// <summary>
@@ -38,7 +36,7 @@ public class Straight
     {
         get
         {
-            return this.equation[0, 1];
+            return _equation[0, 1];
         }
     }
     /// <summary>
@@ -48,7 +46,7 @@ public class Straight
     {
         get
         {
-            return this.equation[0, 2];
+            return _equation[0, 2];
         }
     }
     /// <summary>
@@ -58,7 +56,7 @@ public class Straight
     {
         get
         {
-            return this.equation[1, 0];
+            return _equation[1, 0];
         }
     }
     /// <summary>
@@ -68,7 +66,7 @@ public class Straight
     {
         get
         {
-            return this.equation[1, 1];
+            return _equation[1, 1];
         }
     }
     /// <summary>
@@ -78,7 +76,7 @@ public class Straight
     {
         get
         {
-            return this.equation[1, 2];
+            return _equation[1, 2];
         }
     }
 
@@ -89,19 +87,40 @@ public class Straight
     {
         get
         {
-            if (firstPlatane == null || secondPlatane == null)
+            if (_firstPlatane == null || _secondPlatane == null)
             {
-                this.setPlatanes();
+                SetPlatanes();
             }
-            return new Platan[] { firstPlatane, secondPlatane };
+            return new Platan[] { _firstPlatane, _secondPlatane };
+        }
+    }
+    /// <summary>
+    /// Возвращает произвольную точку на прямой.
+    /// </summary>
+    public Point3d PointOnStraight
+    {
+        get
+        {
+            if (!_hasPointOn)
+            {
+                const string logMess = "Произвольной точки на прямой не существует!";
+                Config.TheUi.NXMessageBox.Show("Ошибка!", NXMessageBox.DialogType.Error,
+                                               logMess);
+                Logger.WriteError(logMess);
+            }
+
+            return _pointOnStraight;
         }
     }
 
     //дробь представлена 2мя значениями - числителем и знаменателем
-    int equationRank = 2;
+    private const int EquationRank = 2;
 
-    double[,] equation;
-    Platan firstPlatane, secondPlatane;
+    double[,] _equation;
+    Platan _firstPlatane, _secondPlatane;
+
+    private bool _hasPointOn;
+    private Point3d _pointOnStraight;
 
     /// <summary>
     /// Инициализирует новый экземпляр класса для математической прямой, проходящей через две
@@ -111,7 +130,7 @@ public class Straight
     /// <param name="point2">Вторая точка.</param>
     public Straight(Point3d point1, Point3d point2)
     {
-        this.setEquation(point1, point2);
+        SetEquation(point1, point2);
     }
     /// <summary>
     /// Инициализирует новый экземпляр класса для математической прямой,проходящей через
@@ -123,7 +142,7 @@ public class Straight
         Point3d start, end;
         edge.GetVertices(out start, out end);
 
-        this.setEquation(start, end);
+        SetEquation(start, end);
     }
     /// <summary>
     /// Инициализирует новый экземпляр класса для математической прямой, проходящей через
@@ -131,9 +150,27 @@ public class Straight
     /// </summary>
     /// <param name="vector">Вектор.</param>
     public Straight(Vector vector)
-        : this(vector.start, vector.end)
+        : this(vector.Start, vector.End)
     {
 
+    }
+    /// <summary>
+    /// Инициализирует новый экземпляр класса для математической прямой, проходящей через заданную 
+    /// точку, перпендикулярно заданной плоскости.
+    /// </summary>
+    /// <param name="p">Точка, через которую проходит прямая.</param>
+    /// <param name="pl">Плоскость, перпендикулярно которой проходит прямая.</param>
+    public Straight(Point3d p, Platan pl)
+    {
+        _equation = new double[EquationRank, Geom.Dimensions];
+
+        _equation[0, 0] = - p.X;
+        _equation[0, 1] = - p.Y;
+        _equation[0, 2] = - p.Z;
+
+        _equation[1, 0] = pl.X;
+        _equation[1, 1] = pl.Y;
+        _equation[1, 2] = pl.Z; 
     }
     /// <summary>
     /// Инициализирует новый экземпляр класса для математической прямой, заданной каноническим
@@ -142,12 +179,12 @@ public class Straight
     /// <param name="equation">Массив коэффициентов канонического уравнения.</param>
     public Straight(double[,] equation)
     {
-        this.equation = new double[this.equationRank, Geom.DIMENSIONS];
-        for (int i = 0; i < this.equationRank; i++)
+        _equation = new double[EquationRank, Geom.Dimensions];
+        for (int i = 0; i < EquationRank; i++)
         {
-            for (int j = 0; j < Geom.DIMENSIONS; j++)
+            for (int j = 0; j < Geom.Dimensions; j++)
             {
-                this.equation[i, j] = equation[i, j];
+                _equation[i, j] = equation[i, j];
             }
         }
     }
@@ -162,35 +199,58 @@ public class Straight
         mess += "{ ";
 
         mess += "{ ";
-        mess += "X: " + NumX.ToString() + " ";
-        mess += "Y: " + NumY.ToString() + " ";
-        mess += "Z: " + NumZ.ToString();
+        mess += "X: " + NumX + " ";
+        mess += "Y: " + NumY + " ";
+        mess += "Z: " + NumZ;
         mess += " }";
 
         mess += Environment.NewLine;
 
         mess += "   { ";
-        mess += "X: " + DenX.ToString() + " ";
-        mess += "Y: " + DenY.ToString() + " ";
-        mess += "Z: " + DenZ.ToString();
+        mess += "X: " + DenX + " ";
+        mess += "Y: " + DenY + " ";
+        mess += "Z: " + DenZ;
         mess += " }";
 
         mess += " }";
 
         return mess;
     }
-
-    void setEquation(Point3d firstPoint, Point3d secondPoint)
+    /// <summary>
+    /// Возвращает расстояние от прямой до заданной точки.
+    /// </summary>
+    /// <param name="point">Точка.</param>
+    /// <returns></returns>
+    public double GetDistance(Point3d point)
     {
-        this.equation = new double[equationRank, Geom.DIMENSIONS];
-        this.equation[0, 0] = -secondPoint.X;
-        this.equation[0, 1] = -secondPoint.Y;
-        this.equation[0, 2] = -secondPoint.Z;
-        this.equation[1, 0] = secondPoint.X - firstPoint.X;
-        this.equation[1, 1] = secondPoint.Y - firstPoint.Y;
-        this.equation[1, 2] = secondPoint.Z - firstPoint.Z;
+        _pointOnStraight = Geom.GetIntersectionPointStraight(point, this);
+        _hasPointOn = true;
+
+        Vector vec = new Vector(point, _pointOnStraight);
+        return vec.Length;
     }
-    void setPlatanes()
+    /// <summary>
+    /// Возвращает расстояние до параллельной прямой.
+    /// </summary>
+    /// <param name="straight">Параллельная для данной прямой, прямая.</param>
+    /// <returns></returns>
+    public double GetDistance(Straight straight)
+    {
+        Point3d point = straight.PointOnStraight;
+        return GetDistance(point);
+    }
+
+    void SetEquation(Point3d firstPoint, Point3d secondPoint)
+    {
+        _equation = new double[EquationRank, Geom.Dimensions];
+        _equation[0, 0] = -secondPoint.X;
+        _equation[0, 1] = -secondPoint.Y;
+        _equation[0, 2] = -secondPoint.Z;
+        _equation[1, 0] = secondPoint.X - firstPoint.X;
+        _equation[1, 1] = secondPoint.Y - firstPoint.Y;
+        _equation[1, 2] = secondPoint.Z - firstPoint.Z;
+    }
+    void SetPlatanes()
     {
         //if (Config.round(this.DenX) != 0 || Config.round(this.DenY) != 0)
         //{
@@ -225,28 +285,28 @@ public class Straight
         //        //straight_equation[1, 2] * straight_equation[0, 1] -
         //        //straight_equation[1, 1] * straight_equation[0, 2];
         //}
-        int nPlatanes = 2;
-        int nCoefficients = 4;
+        const int nPlatanes = 2;
+        const int nCoefficients = 4;
         double[,] matrix = new double[nPlatanes, nCoefficients];
 
         int k = 0;
-        if (Config.round(this.DenX) != 0)
+        if (Config.Round(DenX) != 0)
         {
-            this.setXY(matrix, k);
+            SetXy(matrix, k);
             k++;
-            this.setXZ(matrix, k);
+            SetXz(matrix, k);
         }
-        else if (Config.round(this.DenY) != 0)
+        else if (Config.Round(DenY) != 0)
         {
-            this.setXY(matrix, k);
+            SetXy(matrix, k);
             k++;
-            this.setYZ(matrix, k);
+            SetYz(matrix, k);
         }
-        else if (Config.round(this.DenZ) != 0)
+        else if (Config.Round(DenZ) != 0)
         {
-            this.setXZ(matrix, k);
+            SetXz(matrix, k);
             k++;
-            this.setYZ(matrix, k);
+            SetYz(matrix, k);
         }
 
         Platan[] platans = new Platan[nPlatanes];
@@ -260,37 +320,36 @@ public class Straight
             platans[i] = new Platan(row);
         }
 
-        this.firstPlatane = platans[0];
-        this.secondPlatane = platans[1];
+        _firstPlatane = platans[0];
+        _secondPlatane = platans[1];
     }
-    void setXY(double[,] matrix, int k)
+    void SetXy(double[,] matrix, int k)
     {
-        matrix[k, 0] = this.DenY;//-straight_equation[1, 0];
-        matrix[k, 1] = -this.DenX;//straight_equation[1, 1];
+        matrix[k, 0] = DenY;//-straight_equation[1, 0];
+        matrix[k, 1] = -DenX;//straight_equation[1, 1];
         matrix[k, 2] = 0;
-        matrix[k, 3] = this.DenY * this.NumX - this.DenX * this.NumY;
+        matrix[k, 3] = DenY * NumX - DenX * NumY;
         //straight_equation[1, 1] * straight_equation[0, 0] -
         //straight_equation[1, 0] * straight_equation[0, 1];
     }
-    void setYZ(double[,] matrix, int k)
+    void SetYz(double[,] matrix, int k)
     {
         matrix[k, 0] = 0;
-        matrix[k, 1] = this.DenZ;//-straight_equation[1, 1];
-        matrix[k, 2] = -this.DenY;//straight_equation[1, 2];
-        matrix[k, 3] = this.DenZ * this.NumY - this.DenY * this.NumZ;
+        matrix[k, 1] = DenZ;//-straight_equation[1, 1];
+        matrix[k, 2] = -DenY;//straight_equation[1, 2];
+        matrix[k, 3] = DenZ * NumY - DenY * NumZ;
         //straight_equation[1, 2] * straight_equation[0, 1] -
         //straight_equation[1, 1] * straight_equation[0, 2];
     }
-    void setXZ(double[,] matrix, int k)
+    void SetXz(double[,] matrix, int k)
     {
-        matrix[k, 0] = this.DenZ;//-straight_equation[1, 0];
+        matrix[k, 0] = DenZ;//-straight_equation[1, 0];
         matrix[k, 1] = 0;
-        matrix[k, 2] = -this.DenX;//straight_equation[1, 2];
-        matrix[k, 3] = this.DenZ * this.NumX - this.DenX * this.NumZ;
+        matrix[k, 2] = -DenX;//straight_equation[1, 2];
+        matrix[k, 3] = DenZ * NumX - DenX * NumZ;
         //straight_equation[1, 2] * straight_equation[0, 0] -
         //straight_equation[1, 0] * straight_equation[0, 2];
     }
 
 
 }
-

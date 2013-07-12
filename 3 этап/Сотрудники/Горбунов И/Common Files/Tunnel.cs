@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using NXOpen;
 using NXOpen.Assemblies;
 
@@ -16,7 +15,7 @@ public class Tunnel
     {
         get
         {
-            return this.element.ElementComponent;
+            return _element.ElementComponent;
         }
     }
     /// <summary>
@@ -26,7 +25,7 @@ public class Tunnel
     {
         get
         {
-            return this.element.Body;
+            return _element.Body;
         }
     }
     /// <summary>
@@ -36,7 +35,7 @@ public class Tunnel
     {
         get
         {
-            return face;
+            return _face;
         }
     }
     /// <summary>
@@ -47,9 +46,8 @@ public class Tunnel
         get
         {
             //считаем каждый раз заново, ибо может поменяться
-            this.setDirectionAndPoint();
-            //Config.theUI.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, this.direction[0].ToString() + " - " + this.direction[1].ToString() + " - " + this.direction[2].ToString());
-            return this.direction;
+            SetDirectionAndPoint();
+            return _direction;
         }
     }
     /// <summary>
@@ -59,19 +57,47 @@ public class Tunnel
     {
         get
         {
-            return this.point;
+            SetDirectionAndPoint();
+            return _point;
         }
     }
+    /// <summary>
+    /// Возвращает паз для данного базового отверстия.
+    /// </summary>
+    public Slot Slot
+    {
+        get { return _slot; }
+    }
+    /// <summary>
+    /// Возвращает диаметр отверстия.
+    /// </summary>
+    public double Diametr
+    {
+        get { return _diametr; }
+    }
+    /// <summary>
+    /// Возвращает пару (Грань-Расстояние)ортогональных базовому отверстию граней с расстоянием до них.
+    /// </summary>
+    /// <returns></returns>
+    public KeyValuePair<Face, double>[] GetOrtFacePairs()
+    {
+        return _slot.OrtFaces;
+    }
 
-    Face face;
-    Face[] normalFaces = new Face[2];
-    KeyValuePair<Face, double>[] ortFacePairs = null;
-    UspElement element;
+    
+    KeyValuePair<Face, double>[] _ortFacePairs;
+    
+    Point3d _point;
+    int _rev;
 
-    double radius1, radius2;
-    double[] direction = new double[3];
-    Point3d point;
-    int rev;
+    Slot _slot;
+
+    Face _face;
+    readonly UspElement _element;
+
+    readonly double[] _direction = new double[3];
+
+    private double _diametr;
 
     /// <summary>
     /// Инициализирует новый экземпляр класса отверстия для базирования для данной грани 
@@ -81,129 +107,169 @@ public class Tunnel
     /// <param name="element">Элемент УСП для данной грани.</param>
     public Tunnel(Face face, UspElement element)
     {
-        this.face = face;
-        this.element = element;
+        _face = face;
+        _element = element;
 
-        this.setNormalFaces();
-        this.setDirectionAndPoint();
+        SetOccurenceFace();
+
+        SetDirectionAndPoint();
+    }
+    
+    /// <summary>
+    /// Возвращает центр окружности, находящейся по направлению предполагаемой
+    /// ВЕРНОЙ нормали базового отверстия.
+    /// </summary>
+    /// <returns></returns>
+    public Point3d GetEndRightDirection()
+    {
+        Edge[] edges = _face.GetEdges();
+        Point3d point1, point2, tempPoint;
+
+        edges[0].GetVertices(out point1, out tempPoint);
+        edges[1].GetVertices(out point2, out tempPoint);
+
+        Vector vec1 = new Vector(point1, point2);
+        return Geom.IsEqual(Direction, vec1.Direction) ? point2 : point1;
     }
     /// <summary>
-    /// Возвращает пару (Грань-Расстояние)ортогональных базовому отверстию граней с расстоянием до них.
+    /// Возвращает центр окружности, находящейся противоположно направлению предполагаемой
+    /// ВЕРНОЙ нормали базового отверстия.
     /// </summary>
-    /// <param name="reverse">True, если необходимо изменить направление поиска граней.</param>
     /// <returns></returns>
-    public KeyValuePair<Face, double>[] getOrtFacePairs(bool reverse)
+    public Point3d GetBeginRightDirection()
     {
-        if (this.ortFacePairs == null || reverse)
-        {
-            this.findOrtFaces(reverse);
-        }
-        return this.ortFacePairs;
+        Edge[] edges = _face.GetEdges();
+        Point3d point1, point2, tempPoint;
+
+        edges[0].GetVertices(out point1, out tempPoint);
+        edges[1].GetVertices(out point2, out tempPoint);
+
+        Vector vec1 = new Vector(point1, point2);
+        return Geom.IsEqual(Direction, vec1.Direction) ? point1 : point2;
+    }
+    /// <summary>
+    /// Прявязка базового отверстия к пазу.
+    /// </summary>
+    /// <param name="slot">Паз.</param>
+    public void SetSlot(Slot slot)
+    {
+        _slot = slot;
     }
 
-    void findOrtFaces(bool reverse)
+    void SetOccurenceFace()
     {
-        Face[] faces = this.Body.GetFaces();
+        Edge[] edges1 = _face.GetEdges();
+        _diametr = Geom.GetDiametr(edges1[0]);
 
-        double[] direction1;
-        if (reverse)
+        Point3d point1, tmpPoint;
+        edges1[0].GetVertices(out point1, out tmpPoint);
+
+        Face[] faces = _element.Body.GetFaces();
+        foreach (Face face in faces)
         {
-            direction1 = this.reverseDirection();
+            Edge[] edges2 = face.GetEdges();
+            foreach (Edge edge2 in edges2)
+            {
+                Point3d point2;
+                edge2.GetVertices(out point2, out tmpPoint);
+
+                Vector vec = new Vector(point1, point2);
+                if (Config.Round(vec.Length) == 0.0 &&
+                    face.SolidFaceType == Face.FaceType.Cylindrical)
+                {
+                    _face = face;
+                    goto End;
+                }
+            }
         }
-        else
-        {
-            this.rev = 1;
-            direction1 = this.Direction;
-        }
-        
-        Point3d point = this.CentralPoint;
+        End:{}
+    }
+    //refactor
+    void FindOrtFaces()
+    {
+        double[] etalonDirection = _slot.BottomDirection;
+        Point3d point = CentralPoint;
 
         Dictionary<Face, double> dictFaces = new Dictionary<Face, double>();
- 
+
+        Face[] faces = Body.GetFaces();
         foreach (Face f in faces)
         {
-            double[] direction2 = Geom.getDirection(f);
+            double[] faceDiriction = Geom.GetDirection(f);
 
-            if (Geom.isEqual(direction1, direction2) && f.SolidFaceType == Face.FaceType.Planar)
+            if (f.SolidFaceType == Face.FaceType.Planar && 
+                Geom.IsEqual(etalonDirection, faceDiriction))
             {
                 Platan pl = new Platan(f);
 
-                //точка находится "под" необходимыми гранями
-                double distance = - pl.getDistanceToPoint(point);
+                //округление для проверки нуля - added
+                double distance = Config.Round(Math.Abs(pl.GetDistanceToPoint(point)));
 
-                if (distance >= 0 && !dictFaces.ContainsValue(Config.round(distance)))
+                if (distance >= 0 && !dictFaces.ContainsValue(distance))
                 {
-                    dictFaces.Add(f, Config.round(distance));
+                    dictFaces.Add(f, distance);
                 }
             }  
         }
 
-        this.setOrtFaces(dictFaces);
+        SetOrtFaces(dictFaces);
     }
 
-    void setOrtFaces(Dictionary<Face, double> dictFaces)
+    void SetOrtFaces(Dictionary<Face, double> dictFaces)
     {
-        this.ortFacePairs = new KeyValuePair<Face, double>[dictFaces.Count];
+        _ortFacePairs = new KeyValuePair<Face, double>[dictFaces.Count];
         int i = 0;
         foreach (KeyValuePair<Face, double> pair in dictFaces)
         {
-            this.ortFacePairs[i] = pair;
+            _ortFacePairs[i] = pair;
             i++;
         }
-        //TODO проверка на пустоту массива
-        Instr.qSortPair(this.ortFacePairs, 0, this.ortFacePairs.Length - 1);
+
+        if (_ortFacePairs.Length > 1)
+        {
+            Instr.QSortPair(_ortFacePairs, 0, _ortFacePairs.Length - 1);
+        }
+
+        string logMess = "Паралельные грани для НГП " + ParentComponent + " " + 
+            ParentComponent.Name + " c расстоянием до неё:";
+        foreach (KeyValuePair<Face, double> keyValuePair in _ortFacePairs)
+        {
+            logMess += Environment.NewLine + keyValuePair.Key + " - " + 
+                keyValuePair.Value + " мм";
+        }
+        logMess += Environment.NewLine + "=============";
+        Logger.WriteLine(logMess);
     }
 
-    void setNormalFaces()
-    {
-        Edge[] edges = face.GetEdges();
-
-        radius1 = edges[0].GetLength() / (2 * Math.PI);
-        radius2 = edges[1].GetLength() / (2 * Math.PI);
-
-        for (int i = 0; i < edges.Length; i++)
-		{
-            Face[] faces = edges[i].GetFaces();
-            foreach (Face f in faces)
-            {
-                if (f != this.face)
-                {
-                    normalFaces[i] = f;
-                    break;
-                }
-            }
-		}
-    }
-
-    void setDirectionAndPoint()
+    void SetDirectionAndPoint()
     {
         int voidInt;
         double voidDouble;
         double[] box = new double[6];
         double[] voidPoint = new double[3];
 
-        Config.theUFSession.Modl.AskFaceData(this.face.Tag, out voidInt, voidPoint, this.direction, box, out voidDouble, out voidDouble, out voidInt);
+        Config.TheUfSession.Modl.AskFaceData(_face.Tag, out voidInt, voidPoint, _direction, 
+            box, out voidDouble, out voidDouble, out voidInt);
 
-        Edge[] edges = face.GetEdges();
-        Point3d point1, point2;
-        edges[0].GetVertices(out point1, out point2);
-        this.point = point1;
+        //попробую так
+        //Edge[] edges = _face.GetEdges();
+        //Point3d point1, point2;
+        //edges[0].GetVertices(out point1, out point2);
+        _point = new Point3d(voidPoint[0], voidPoint[1], voidPoint[2]);
     }
 
-    double[] reverseDirection()
+    double[] ReverseDirection()
     {
-        double[] dir = this.Direction;
-        this.rev *= -1;
+        double[] dir = Direction;
+        _rev *= -1;
 
-        string st = "";
         for (int i = 0; i < dir.Length; i++)
         {
-            dir[i] = this.rev * dir[i];
-            st += dir[i] + " - ";
+            dir[i] = _rev * dir[i];
         }
-        //Config.theUI.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, st);
 
         return dir;
     }
+
 }
 

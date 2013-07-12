@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using NXOpen;
 using NXOpen.Assemblies;
-using NXOpen.BlockStyler;
-using NXOpen.Positioning;
 
 /// <summary>
 /// Класс Т-образного и П-образного паза.
@@ -15,7 +12,7 @@ public class Slot
     {
         get
         {
-            return this.slotSet.ParentComponent;
+            return _slotSet.ParentComponent;
         }
     }
 
@@ -23,68 +20,141 @@ public class Slot
     {
         get
         {
-            return this.slotSet.BottomFace;
+            return _slotSet.BottomFace;
         }
     }
     public Face SideFace1
     {
         get
         {
-            return sideFace1;
+            return _sideFace1;
         }
     }
     public Face SideFace2
     {
         get
         {
-            return sideFace2;
+            return _sideFace2;
         }
     }
-    public Face TouchFace
+    /// <summary>
+    /// Возвращает тело элемента, на котором расположен паз.
+    /// </summary>
+    public Body Body
     {
         get
         {
-            return touchFace;
+            return _slotSet.Body;
         }
     }
-    public Face TopFace
+    /// <summary>
+    /// Возвращает набор граней и расстояний до них от ВГП, параллельных пазу и находящихся выше него.
+    /// </summary>
+    public KeyValuePair<Face, double>[] OrtFaces
     {
         get
         {
-            return topFace;
+            if (_ortFacePairs == null)
+            {
+                FindOrtFaces();
+            }
+            return _ortFacePairs;
         }
     }
+    /// <summary>
+    /// Возвращает направление НГП.
+    /// </summary>
+    public double[] BottomDirection
+    {
+        get { return _bottomDirection ?? (_bottomDirection = Geom.GetDirection(BottomFace)); }
+    }
+    /// <summary>
+    /// Возвращает спроецированную точку паза.
+    /// </summary>
+    public Point3d SlotPoint
+    {
+        get
+        {
+            SetSlotPoint();
+            return _slotPoint;
+        }
+    }
+    /// <summary>
+    /// Возвращает тот набор пазов, которому принадлежит паз.
+    /// </summary>
+    public SlotSet SlotSet
+    {
+        get { return _slotSet; }
+    }
+    /// <summary>
+    /// Первое рёберо на НГП.
+    /// </summary>
+    public readonly Edge EdgeLong1;
+    /// <summary>
+    /// Второе рёберо на НГП.
+    /// </summary>
+    public readonly Edge EdgeLong2;
 
-    Config.SlotType type;
+    Config.SlotType _type;
 
-    SlotSet slotSet;
+    Face _topFace;
 
-    //Face bottomFace;
-    Face sideFace1, sideFace2;
-    Face touchFace;
-    Face topFace;
+    Edge _touchEdge;
 
-    Edge edgeLong1, edgeLong2;
-    List<Edge> touchEdges = new List<Edge>();
-    Edge touchEdge;
+    double[] _bottomDirection;
+    Point3d _slotPoint = new Point3d(0.0, 0.0, 0.0);
+    KeyValuePair<Face, double>[] _ortFacePairs;
 
-    Straight straight;
-    double[] bottomDirection;
-    
+    readonly SlotSet _slotSet;
 
+    readonly Face _sideFace1;
+    readonly Face _sideFace2;
+
+    readonly List<Edge> _touchEdges = new List<Edge>();
+    /// <summary>
+    /// Инициализирует новый экземпляр класса паза.
+    /// </summary>
+    /// <param name="slotSet">Набор пазов.</param>
+    /// <param name="edgeLong1">Первое боковое ребро паза.</param>
+    /// <param name="edgeLong2">Второе боковое ребро паза.</param>
+    /// <param name="type">Тип паза.</param>
     public Slot(SlotSet slotSet, Edge edgeLong1, Edge edgeLong2, Config.SlotType type)
     {
-        this.slotSet = slotSet;
-        this.edgeLong1 = edgeLong1;
-        this.edgeLong2 = edgeLong2;
-        this.type = type;
+        _slotSet = slotSet;
+        EdgeLong1 = edgeLong1;
+        EdgeLong2 = edgeLong2;
+        _type = type;
 
-        this.sideFace1 = this.getNotBottomFace(edgeLong1);
-        this.sideFace2 = this.getNotBottomFace(edgeLong2);
-
-        this.setStraitEquation();
+        _sideFace1 = GetNotBottomFace(edgeLong1);
+        _sideFace2 = GetNotBottomFace(edgeLong2);
     }
+    /// <summary>
+    /// Возвращает грань, перпендикулярную направлению паза.
+    /// </summary>
+    /// <returns></returns>
+    public Face GetOrtDirectionFace()
+    {
+        Vector edgeVector = new Vector(EdgeLong1);
+        Edge[] edges = _slotSet.BottomFace.GetEdges();
+        foreach (Edge edge in edges)
+        {
+            if (Config.Round(edge.GetLength()) != Config.SlotWidth &&
+                Config.Round(edge.GetLength()) != Config.PSlotWidth) continue;
+            Face[] faces = edge.GetFaces();
+            foreach (Face face in faces)
+            {
+                if (face == _slotSet.BottomFace) continue;
 
+                if (!Geom.IsEqual(Geom.GetDirection(face), edgeVector.Direction)) continue;
+
+                return face;
+            }
+        }
+
+        Logger.WriteLine("Не найдена плоскость, нормальная по направлению паза для детали " + 
+                        ParentComponent);
+        return null;
+    }
 
     //public void setTouchEdge()
     //{
@@ -107,34 +177,80 @@ public class Slot
     //    }
     //    this.touchEdge = nearestEdge;
     //}
-    public void reverseTouchEdge()
+    public void ReverseTouchEdge()
     {
         Edge otherEdge = null;
 
-        foreach (Edge e in this.touchEdges)
+        foreach (Edge e in _touchEdges)
         {
-            if (e != touchEdge)
-            {
-                otherEdge = e;
-                break;
-            }
-            
+            if (e == _touchEdge) continue;
+            otherEdge = e;
+            break;
         }
-        this.touchEdge = otherEdge;
+        _touchEdge = otherEdge;
     }
 
-    public void setTouchFace()
+
+    //refactor
+    void FindOrtFaces()
     {
-        foreach (Face f in this.touchEdge.GetFaces())
+        //FindTopFace();
+        
+        double[] direction1 = Geom.GetDirection(BottomFace);
+
+        Edge[] pointEdges = BottomFace.GetEdges();
+        Edge pointEdge = pointEdges[0];
+        Point3d point, tempPoint;
+        pointEdge.GetVertices(out point, out tempPoint);
+
+        Dictionary<Face, double> dictFaces = new Dictionary<Face, double>();
+
+        Face[] faces = Body.GetFaces();
+        foreach (Face f in faces)
         {
-            if (f != this.BottomFace)
+            double[] direction2 = Geom.GetDirection(f);
+
+            if (f.SolidFaceType != Face.FaceType.Planar || 
+                !Geom.IsEqual(direction1, direction2)) continue;
+
+            Platan pl = new Platan(f);
+
+            //округление для проверки нуля - added
+            double distance = - Config.Round(pl.GetDistanceToPoint(point));
+            
+            if (distance >= 0 && !dictFaces.ContainsValue(distance))
             {
-                this.touchFace = f;
-                break;
+                dictFaces.Add(f, distance);
             }
         }
+
+        SetOrtFaces(dictFaces);
     }
 
+    void SetOrtFaces(Dictionary<Face, double> dictFaces)
+    {
+        _ortFacePairs = new KeyValuePair<Face, double>[dictFaces.Count];
+        int i = 0;
+        foreach (KeyValuePair<Face, double> pair in dictFaces)
+        {
+            _ortFacePairs[i] = pair;
+            i++;
+        }
+
+        if (_ortFacePairs.Length > 1)
+        {
+            Instr.QSortPair(_ortFacePairs, 0, _ortFacePairs.Length - 1);            
+        }
+
+        string logMess = "Паралельные грани для НГП " + ParentComponent + " " +
+            ParentComponent.Name + " c расстоянием до неё:";
+        foreach (KeyValuePair<Face, double> keyValuePair in _ortFacePairs)
+        {
+            logMess += Environment.NewLine + keyValuePair.Key + " - " + keyValuePair.Value + " мм";
+        }
+        logMess += Environment.NewLine + "=============";
+        Logger.WriteLine(logMess);
+    }
 
     /*Dictionary<Edge, double> getNearestEdges(Edge[] edges, Point3d from_point)
     {
@@ -172,23 +288,24 @@ public class Slot
         return Edges;
     }*/
 
-    public void highlight()
+    public void Highlight()
     {
-        edgeLong1.Highlight();
-        edgeLong2.Highlight();
+        _sideFace1.Highlight();
+        _sideFace2.Highlight();
     }
-    public void unhighlight()
+    public void Unhighlight()
     {
-        edgeLong1.Unhighlight();
-        edgeLong2.Unhighlight();
+        if (_sideFace1 == null || _sideFace2 == null) return;
+        _sideFace1.Unhighlight();
+        _sideFace2.Unhighlight();
     }
 
-    Face getNotBottomFace(Edge slotEdge)
+    Face GetNotBottomFace(Edge slotEdge)
     {
         Face[] faces = slotEdge.GetFaces();
         foreach (Face f in faces)
         {
-            if (f != this.BottomFace)
+            if (f != BottomFace)
             {
                 return f;
             }
@@ -196,149 +313,140 @@ public class Slot
 
         return null;
     }
-    void setStraitEquation()
-    {
-        this.straight = new Straight(this.edgeLong1);
-    }
 
 
-    //refactor slots
-    public void findTopFace()
+    //TODO refactor
+    void FindTopFace()
     {
         Face topFace = null;
         Edge topEdge = null;
-        Face face;
-        Edge edge;
-        this.bottomDirection = Geom.getDirection(this.BottomFace);
+        _bottomDirection = Geom.GetDirection(BottomFace);
         double[] direction;
 
-        edge = this.edgeLong1;
-        face = this.sideFace1;
+        Edge edge = EdgeLong1;
+        Face face = _sideFace1;
 
-        if (this.type == Config.SlotType.Pslot)
+        if (_type == Config.SlotType.Pslot)
         {
-            topEdge = this.getNextEdge(face, edge, Config.P_SLOT_HEIGHT);
-            topFace = this.getNextFace(topEdge, face);
-            direction = Geom.getDirection(topFace);
+            topEdge = GetNextEdge(face, edge, Config.PSlotHeight);
+            topFace = GetNextFace(topEdge, face);
+            direction = Geom.GetDirection(topFace);
 
-            if (!Geom.isEqual(this.bottomDirection, direction))
+            if (!Geom.IsEqual(_bottomDirection, direction))
             {
-                Config.theUI.NXMessageBox.Show("Error!", NXMessageBox.DialogType.Error, "Печаль с П-образным пазом!");
+                Config.TheUi.NXMessageBox.Show("Error!", NXMessageBox.DialogType.Error, "Печаль с П-образным пазом!");
             }
         }
-        else if (this.type == Config.SlotType.Tslot)
+        else if (_type == Config.SlotType.Tslot)
         {
-            foreach (double slotHeight in Config.T_SLOT_HEIGHT1)
+            foreach (double slotHeight in Config.SlotHeight1)
             {
-                topEdge = this.getNextEdge(face, edge, slotHeight);
+                topEdge = GetNextEdge(face, edge, slotHeight);
 
                 if (topEdge != null)
                 {
                     break;
                 }
             }
-            topFace = this.getNextFace(topEdge, face);
+            topFace = GetNextFace(topEdge, face);
             edge = topEdge;
             face = topFace;
 
-            topEdge = this.getNextEdge(face, edge, Config.STEP_WIDTH_T_SLOT_1);
+            topEdge = GetNextEdge(face, edge, Config.StepWidthTSlot1);
 
             //значит Т-образный паз второго исполнения
             if (topEdge == null)
             {
-                
-                topEdge = this.getNextEdge(face, edge, Config.STEP_DOWN_WIDTH_T_SLOT_2);
-                topFace = this.getNextFace(topEdge, face);
+
+                topEdge = GetNextEdge(face, edge, Config.StepDownWidthTSlot2);
+                topFace = GetNextFace(topEdge, face);
                 edge = topEdge;
                 face = topFace;
-                
-                foreach (double d in Config.T_SLOT_HEIGHT3)
+
+                foreach (double d in Config.SlotHeight3)
                 {
-                    topEdge = this.getNextEdge(face, edge, d);
+                    topEdge = GetNextEdge(face, edge, d);
 
                     if (topEdge != null)
                     {
                         break;
                     }
                 }
-                
-                topFace = this.getNextFace(topEdge, face);
+
+                topFace = GetNextFace(topEdge, face);
                 edge = topEdge;
                 face = topFace;
 
 
-                topEdge = this.getNextEdge(face, edge, Config.STEP_UP_WIDTH_T_SLOT_2);
-                topFace = this.getNextFace(topEdge, face);
+                topEdge = GetNextEdge(face, edge, Config.StepUpWidthTSlot2);
+                topFace = GetNextFace(topEdge, face);
                 edge = topEdge;
                 face = topFace;
 
-                topEdge = this.getNextEdge(face, edge, Config.T_SLOT_HEIGHT2);
-                this.type = Config.SlotType.Tslot2;
+                topEdge = GetNextEdge(face, edge, Config.SlotHeight2);
+                _type = Config.SlotType.Tslot2;
             }
             else
             {
-                topFace = this.getNextFace(topEdge, face);
+                topFace = GetNextFace(topEdge, face);
                 edge = topEdge;
                 face = topFace;
 
-                foreach (double d in Config.T_SLOT_HEIGHT)
+                foreach (double d in Config.SlotHeight)
                 {
-                    topEdge = this.getNextEdge(face, edge, d);
+                    topEdge = GetNextEdge(face, edge, d);
 
                     if (topEdge != null)
                     {
                         break;
                     }
                 }
-                this.type = Config.SlotType.Tslot1;
+                _type = Config.SlotType.Tslot1;
             }
 
-            topFace = this.getNextFace(topEdge, face);
+            topFace = GetNextFace(topEdge, face);
         }
 
-        direction = Geom.getDirection(topFace);
+        direction = Geom.GetDirection(topFace);
 
-        if (!Geom.isEqual(this.bottomDirection, direction))
+        if (!Geom.IsEqual(_bottomDirection, direction))
         {
-            Config.theUI.NXMessageBox.Show("Error!", NXMessageBox.DialogType.Error, "Печаль с T-образным пазом!");
+            Config.TheUi.NXMessageBox.Show("Error!", NXMessageBox.DialogType.Error, "Печаль с T-образным пазом!");
         }
 
 
-        this.topFace = topFace;
+        _topFace = topFace;
     }
 
 
-    Edge getNextEdge(Face face, Edge edge, double distance)
+    Edge GetNextEdge(Face face, Edge edge, double distance)
     {
         //поиск верхнего левого ребра
         Edge resultEdge = null;
         Vector vecEtalon = new Vector(edge);
         foreach (Edge e in face.GetEdges())
         {
-            if (e != edge)
-            {
-                Vector vecTmp = new Vector(e);
-                if (vecEtalon.isParallel(vecTmp))
-                {
-                    Straight edgeStraight = new Straight(e);
-                    Point3d heightStart = vecEtalon.start;
-                    Point3d pointOnStraight = Geom.getIntersectionPointStraight(heightStart, edgeStraight);
+            if (e == edge) continue;
 
-                    Vector vecHeight = new Vector(heightStart, pointOnStraight);
+            Vector vecTmp = new Vector(e);
+            if (!vecEtalon.IsParallel(vecTmp)) continue;
 
-                    if (Config.round(vecHeight.Length) == distance)
-                    {
-                        resultEdge = e;
-                        break;
-                    }
-                }
-            }
+            Straight edgeStraight = new Straight(e);
+            Point3d heightStart = vecEtalon.Start;
+            Point3d pointOnStraight = Geom.GetIntersectionPointStraight(heightStart, edgeStraight);
+
+            Vector vecHeight = new Vector(heightStart, pointOnStraight);
+
+            if (Config.Round(vecHeight.Length) != distance) continue;
+
+            resultEdge = e;
+            break;
         }
 
         return resultEdge;
     }
 
-    Face getNextFace(Edge edge, Face face)
+    static Face GetNextFace(Edge edge, Face face)
     {
         //поиск верхней горизонтальной поверхности
         Face resultFace = null;
@@ -354,40 +462,24 @@ public class Slot
 
         if (resultFace == null)
         {
-            Config.theUI.NXMessageBox.Show("Error!", NXMessageBox.DialogType.Error, "Верхняя горизонтальная поверхность не найдена!");
+            Config.TheUi.NXMessageBox.Show("Error!", NXMessageBox.DialogType.Error, "Верхняя горизонтальная поверхность не найдена!");
         }
 
         return resultFace;
     }
 
-    /*bool isTypeTwo(Face face, Edge edge)
+    void SetSlotPoint()
     {
-        Vector vecEtalon = new Vector(edge);
-        Edge[] edges = face.GetEdges();
-        foreach (Edge e in edges)
-        {
-            if (e != edge)
-            {
-                Vector vecTmp = new Vector(e);
+        Point3d slotSetPoint = _slotSet.SelectPoint;
+        Straight straight1 = new Straight(EdgeLong1);
+        Straight straight2 = new Straight(EdgeLong2);
+        Point3d intersection1 = Geom.GetIntersectionPointStraight(slotSetPoint, straight1);
+        Point3d intersection2 = Geom.GetIntersectionPointStraight(slotSetPoint, straight2);
 
-                if (vecEtalon.isParallel(vecTmp))
-                {
-                    double[,] edgeEquation = Geom.getStraitEquation(e);
-                    Point3d heightStart = vecEtalon.start;
-                    Point3d pointOnStraight = Geom.getIntersectionPointStraight(heightStart, edgeEquation);
-                    Vector vecHeight = new Vector(heightStart, pointOnStraight);
-
-
-                    if (Config.doub(vecHeight.getLength()) == Config.STEP_DOWN_WIDTH_T_SLOT_2)
-                    {
-                        return true;
-                    }
-                }
-            }
-        }
-
-        return false;
-    }*/
+        _slotPoint = new Point3d((intersection1.X + intersection2.X)/2,
+                                 (intersection1.Y + intersection2.Y)/2,
+                                 (intersection1.Z + intersection2.Z)/2);
+    }
 
 }
 

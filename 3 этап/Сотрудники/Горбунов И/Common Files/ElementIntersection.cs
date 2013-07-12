@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using NXOpen;
 using NXOpen.GeometricAnalysis;
 
@@ -17,17 +15,14 @@ public class ElementIntersection
     {
         get
         {
-            this.checkIntersection(false);
-            if (this.result == SimpleInterference.Result.NoInterference)
+            CheckIntersection(false);
+            if (_result == SimpleInterference.Result.NoInterference)
             {
-                SI.Reset();
+                _si.Reset();
                 return false;
             }
-            else
-            {
-                SI.Reset();
-                return true;
-            }
+            _si.Reset();
+            return true;
         }
     }
 
@@ -38,23 +33,21 @@ public class ElementIntersection
     {
         get
         {
-            this.checkIntersection(true);
-            if (this.result == SimpleInterference.Result.OnlyEdgesOrFacesInterfere)
+            CheckIntersection(true);
+            if (_result == SimpleInterference.Result.OnlyEdgesOrFacesInterfere)
             {
-                SI.Reset();
+                _si.Reset();
                 return true;
             }
-            else
-            {
-                SI.Reset();
-                return false;
-            }
+            _si.Reset();
+            return false;
         }
     }
 
-    SimpleInterference SI;
-    SimpleInterference.Result result;
-    Body element1, element2;
+    readonly SimpleInterference _si;
+    SimpleInterference.Result _result;
+    readonly Body _element1;
+    readonly Body _element2;
 
     /// <summary>
     /// Инициализирует новый экземпляр класса для проверки пересечения.
@@ -63,30 +56,30 @@ public class ElementIntersection
     /// <param name="body2">Второе тело.</param>
     public ElementIntersection(Body body1, Body body2)
     {
-        SI = Config.workPart.AnalysisManager.CreateSimpleInterferenceObject();
+        _si = Config.WorkPart.AnalysisManager.CreateSimpleInterferenceObject();
 
-        this.element1 = body1;
-        this.element2 = body2;
+        _element1 = body1;
+        _element2 = body2;
     }
 
-    void checkIntersection(bool touch)
+    void CheckIntersection(bool touch)
     {
         if (touch)
         {
-            SI.InterferenceType = SimpleInterference.InterferenceMethod.InterferenceSolid;
+            _si.InterferenceType = SimpleInterference.InterferenceMethod.InterferenceSolid;
         }
         else
         {
-            SI.InterferenceType = SimpleInterference.InterferenceMethod.InterferingFaces;
-            SI.FaceInterferenceType = SimpleInterference.FaceInterferenceMethod.FirstPairOnly;
+            _si.InterferenceType = SimpleInterference.InterferenceMethod.InterferingFaces;
+            _si.FaceInterferenceType = SimpleInterference.FaceInterferenceMethod.FirstPairOnly;
         }
 
-        SI.FirstBody.Value = this.element1;
-        SI.SecondBody.Value = this.element2;
+        _si.FirstBody.Value = _element1;
+        _si.SecondBody.Value = _element2;
 
-        this.result = SI.PerformCheck();
-        Log.writeLine("Произведена проверка на пересечение элементов. Результат:" +
-                            Environment.NewLine + result.ToString());
+        _result = _si.PerformCheck();
+        Logger.WriteLine("Произведена проверка на пересечение элементов. Результат:" +
+                            Environment.NewLine + _result);
     }
 }
 

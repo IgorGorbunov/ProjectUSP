@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using NXOpen;
 
 /// <summary>
@@ -8,25 +7,36 @@ using NXOpen;
 /// </summary>
 static class Geom
 {
-    public const int DIMENSIONS = 3;
-    
-    
-    
+    public const int Dimensions = 3;
 
-    public static double getHalfPerimetr(double a, double b, double c)
+    /// <summary>
+    /// Возвращает диаметр окружности, образованной цилиндрическим ребром.
+    /// </summary>
+    /// <param name="edge">Циллиндрической ребро.</param>
+    /// <returns></returns>
+    public static double GetDiametr(Edge edge)
     {
-        return (a + b + c) / 2;
+        return edge.GetLength()/Math.PI;
     }
-    public static double getSquare(double a, double b, double c)
-    {
-        double p = getHalfPerimetr(a, b, c);
-        return Math.Sqrt(p * (p - a) * (p - b) * (p - c));
-    }
-    public static double getPerpen(double a, double b, double c)
-    {
-        double S = getSquare(a, b, c);
 
-        return (2 * S) / a;
+    /// <summary>
+    /// Возвращает true, если точка находится между заданными прямыми.
+    /// </summary>
+    /// <param name="point">Заданная точка.</param>
+    /// <param name="platan">Плоскость, в которых находится прямая.</param>
+    /// <param name="straight1">Первая заданная прямая.</param>
+    /// <param name="straight2">Вторая заданная прямая.</param>
+    /// <returns></returns>
+    public static bool PointIsBetweenStraights(Point3d point, Platan platan,
+                                                Straight straight1, Straight straight2)
+    {
+        Point3d projectionPoint = platan.GetProection(point);
+
+        double len1 = straight1.GetDistance(projectionPoint);
+        double len2 = straight2.GetDistance(projectionPoint);
+        double len = straight1.GetDistance(straight2);
+        
+        return !(len < len1 + len2);
     }
 
 
@@ -52,7 +62,7 @@ static class Geom
     //    return getStraitEquation(start, end);
     //}
 
-    public static bool isEdgePointOnStraight(Edge edge, Straight straight, 
+    public static bool IsEdgePointOnStraight(Edge edge, Straight straight, 
                                                 out double length, Point3d measurePoint)
     {
         length = -1.0;
@@ -60,10 +70,10 @@ static class Geom
         Point3d[] points = new Point3d[2];
         edge.GetVertices(out points[0], out points[1]);
 
-        double[,] straight_equation = straight.Equation;
+        double[,] straightEquation = straight.Equation;
         foreach (Point3d p in points)
         {
-            if (isPointOnStrait(p, straight_equation, out length, measurePoint))
+            if (IsPointOnStrait(p, straightEquation, out length, measurePoint))
             {
                 return true;
             }
@@ -72,28 +82,18 @@ static class Geom
         return false;
     }
 
-    public static Point3d getIntersectionPointStraight(Point3d P, Straight straight)
+    /// <summary>
+    /// Возвращает точку пересечения прямой и проведенным перпендикуляром к ней через заданную
+    /// точку.
+    /// </summary>
+    /// <param name="p">Заданная точка, начало перпендикуляра.</param>
+    /// <param name="straight">Прямая.</param>
+    /// <returns></returns>
+    public static Point3d GetIntersectionPointStraight(Point3d p, Straight straight)
     {
-        Platan plain = new Platan(P, straight);
+        Platan plain = new Platan(p, straight);
 
-        double[] freeArg;
-        double[,] matrix = getMatrixIntersection(straight, plain, out freeArg);
-
-        double det = getDet3x3(matrix);
-
-        double[,] copyMatr = copy3x3(matrix);
-        double[,] matrixX = setCol3x3(copyMatr, freeArg, 0);
-        double detX = getDet3x3(matrixX);
-
-        copyMatr = copy3x3(matrix);
-        double[,] matrixY = setCol3x3(copyMatr, freeArg, 1);
-        double detY = getDet3x3(matrixY);
-
-        copyMatr = copy3x3(matrix);
-        double[,] matrixZ = setCol3x3(copyMatr, freeArg, 2);
-        double detZ = getDet3x3(matrixZ);
-
-        return new Point3d(detX / det, detY / det, detZ / det);
+        return SolveSlae(straight, plain);
     }
 
 
@@ -168,15 +168,15 @@ static class Geom
 
     //    return matrix;
     //}
-    public static double[,] getMatrixIntersection(Straight straight, Platan platan, out double[] freeArg)
+    static double[,] GetMatrixIntersection(Straight straight, Platan platan, out double[] freeArg)
     {
-        double[,] matrix = new double[DIMENSIONS, DIMENSIONS]; //REFACTOR
-        freeArg = new double[DIMENSIONS];
+        double[,] matrix = new double[Dimensions, Dimensions]; //REFACTOR
+        freeArg = new double[Dimensions];
 
         Platan[] straightPlatans = straight.Platanes;
 
         int i = 0;
-        while (i < DIMENSIONS - 1)
+        while (i < Dimensions - 1)
         {
             matrix[i, 0] = straightPlatans[i].X;
             matrix[i, 1] = straightPlatans[i].Y;
@@ -208,48 +208,62 @@ static class Geom
 
         return matrix;
     }
+    
+    public static Point3d SolveSlae(Straight straight, Platan plain)
+    {
+        double[] freeArg;
+        double[,] matrix = GetMatrixIntersection(straight, plain, out freeArg);
 
-    public static bool isOnSegment(Point3d P, Edge E)
+        double det = GetDet3X3(matrix);
+
+        double[,] copyMatr = Copy3X3(matrix);
+        double[,] matrixX = SetCol3X3(copyMatr, freeArg, 0);
+        double detX = GetDet3X3(matrixX);
+
+        copyMatr = Copy3X3(matrix);
+        double[,] matrixY = SetCol3X3(copyMatr, freeArg, 1);
+        double detY = GetDet3X3(matrixY);
+
+        copyMatr = Copy3X3(matrix);
+        double[,] matrixZ = SetCol3X3(copyMatr, freeArg, 2);
+        double detZ = GetDet3X3(matrixZ);
+
+        return new Point3d(detX / det, detY / det, detZ / det);
+    }
+
+    public static bool IsOnSegment(Point3d p, Edge e)
     {
         Point3d start, end;
-        E.GetVertices(out start, out end);
+        e.GetVertices(out start, out end);
 
-        return isOnSegment(P, start, end);
+        return IsOnSegment(p, start, end);
     }
-    public static bool isOnSegment(Point3d P, Vector v)
+    public static bool IsOnSegment(Point3d p, Vector v)
     {
-        if (isOnSegment(P, v.start, v.end))
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return IsOnSegment(p, v.Start, v.End);
     }
-    public static bool isOnSegment(Point3d P, Point3d vecPoint1, Point3d vecPoint2)
+
+    private static bool IsOnSegment(Point3d p, Point3d vecPoint1, Point3d vecPoint2)
     {
         //AB - отрезок, Х - точка
-        Vector vecAB = new Vector(vecPoint1, vecPoint2);
-        Vector vecAX = new Vector(vecPoint1, P);
+        Vector vecAb = new Vector(vecPoint1, vecPoint2);
+        Vector vecAx = new Vector(vecPoint1, p);
 
-        Point3d ABcoords = vecAB.getCoords();
-        Point3d AXcoords = vecAX.getCoords();
+        Point3d aBcoords = vecAb.GetCoords();
+        Point3d aXcoords = vecAx.GetCoords();
+        double[] ratio = new double[Dimensions];
 
-        double[] p = new double[DIMENSIONS];
+        ratio[0] = GetRatio(aXcoords.X, aBcoords.X);
+        ratio[1] = GetRatio(aXcoords.Y, aBcoords.Y);
+        ratio[2] = GetRatio(aXcoords.Z, aBcoords.Z);
 
-        p[0] = AXcoords.X / ABcoords.X;
-        p[1] = AXcoords.Y / ABcoords.Y;
-        p[2] = AXcoords.Z / ABcoords.Z;
-
-        for (int i = 0; i < DIMENSIONS; i++)
+        for (int i = 0; i < Dimensions; i++)
         {
-            if (Config.round(p[i]) < 0 || Config.round(p[i]) > 1)
+            if (Config.Round(ratio[i]) < 0 || Config.Round(ratio[i]) > 1)
             {
                 return false;
             }
         }
-
         return true;
     }
 
@@ -258,7 +272,7 @@ static class Geom
     /// </summary>
     /// <param name="face">Целевая грань.</param>
     /// <returns></returns>
-    public static double[] getDirection(Face face)
+    public static double[] GetDirection(Face face)
     {
         int voidInt;
         double voidDouble;
@@ -266,7 +280,7 @@ static class Geom
         double[] box = new double[6];
         double[] point = new double[3];
 
-        Config.theUFSession.Modl.AskFaceData(face.Tag, out voidInt, point, dir, box, out voidDouble, out voidDouble, out voidInt);
+        Config.TheUfSession.Modl.AskFaceData(face.Tag, out voidInt, point, dir, box, out voidDouble, out voidDouble, out voidInt);
         return dir;
     }
     /// <summary>
@@ -274,7 +288,7 @@ static class Geom
     /// </summary>
     /// <param name="face">Целевая грань.</param>
     /// <returns></returns>
-    public static double[] getPoint(Face face)
+    public static double[] GetPoint(Face face)
     {
         int voidInt;
         double voidDouble;
@@ -282,7 +296,7 @@ static class Geom
         double[] box = new double[6];
         double[] point = new double[3];
 
-        Config.theUFSession.Modl.AskFaceData(face.Tag, out voidInt, point, dir, box, out voidDouble, out voidDouble, out voidInt);
+        Config.TheUfSession.Modl.AskFaceData(face.Tag, out voidInt, point, dir, box, out voidDouble, out voidDouble, out voidInt);
         return point;
     }
 
@@ -293,24 +307,17 @@ static class Geom
     /// <param name="point1">Первая точка.</param>
     /// <param name="point2">Вторая точка.</param>
     /// <returns></returns>
-    public static bool isEqual(Point3d point1, Point3d point2)
+    public static bool IsEqual(Point3d point1, Point3d point2)
     {
-        if (Config.round(point1.X) != Config.round(point2.X))
+        if (Config.Round(point1.X) != Config.Round(point2.X))
         {
             return false;
         }
-        else if (Config.round(point1.Y) != Config.round(point2.Y))
+        if (Config.Round(point1.Y) != Config.Round(point2.Y))
         {
             return false;
         }
-        else if (Config.round(point1.Z) != Config.round(point2.Z))
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
+        return Config.Round(point1.Z) == Config.Round(point2.Z);
     }
     /// <summary>
     /// Возвращает значение, определяющее являются ли два массива эквивалентными с учетом
@@ -319,43 +326,92 @@ static class Geom
     /// <param name="d1">Первый одномерный массив.</param>
     /// <param name="d2">Второй одномерный массив.</param>
     /// <returns></returns>
-    public static bool isEqual(double[] d1, double[] d2)
+    public static bool IsEqual(double[] d1, double[] d2)
     {
         if (d1.Length == d2.Length)
         {
             for (int i = 0; i < d1.Length; i++)
             {
-                if (Config.round(d1[i]) != Config.round(d2[i]))
+                if (Config.Round(d1[i]) != Config.Round(d2[i]))
                 {
                     return false;
                 }
             }
             return true;
         }
-        else
-        {
-            Config.theUI.NXMessageBox.Show("Error!", NXMessageBox.DialogType.Error, "Массивы различны по длине!");
-            return false;
-        }
+        Config.TheUi.NXMessageBox.Show("Error!", NXMessageBox.DialogType.Error, "Массивы различны по длине!");
+        return false;
     }
+    /// <summary>
+    /// Возвращает значение, определяющее являются ли два направления, заданные разными способами,
+    /// эквивалентными с учетом рабочего округления.
+    /// </summary>
+    /// <param name="d1">Направление, заданное одномерным массивом.</param>
+    /// <param name="d2">Направление, заданное экземпляром класса Point3D</param>
+    /// <returns></returns>
+    public static bool IsEqual(double[] d1, Point3d d2)
+    {
+        if (d1.Length == 3)
+        {
+            if (Config.Round(d1[0]) != Config.Round(d2.X))
+            {
+                return false;
+            }
+            if (Config.Round(d1[1]) != Config.Round(d2.Y))
+            {
+                return false;
+            }
+            return Config.Round(d1[2]) == Config.Round(d2.Z);
+        }
+        Config.TheUi.NXMessageBox.Show("Error!", NXMessageBox.DialogType.Error, "Длина массива не равна 3!");
+        return false;
+    }
+
+
     /// <summary>
     /// Возвращает true, если объект является компонентом.
     /// </summary>
     /// <param name="tO">Объект в формате TaggedObject.</param>
     /// <returns></returns>
-    public static bool isComponent(TaggedObject tO)
+    public static bool IsComponent(TaggedObject tO)
     {
-        string strTO = tO.ToString();
-        string[] split = strTO.Split(' ');
+        string strTo = tO.ToString();
+        string[] split = strTo.Split(' ');
 
-        if (split[0] == "Component")
+        return split[0] == "Component";
+    }
+
+    public static bool DirectionsAreOnStraight(double[] dir1, double[] dir2)
+    {
+        if (dir1.Length == dir2.Length)
         {
+            bool notCoDirect = false;
+            for (int i = 0; i < dir1.Length; i++)
+            {
+                if (Config.Round(dir1[i]) != Config.Round(dir2[i]))
+                {
+                    notCoDirect = true;
+                }
+                if (notCoDirect)
+                {
+                    break;
+                }
+            }
+            if (notCoDirect)
+            {
+                for (int i = 0; i < dir1.Length; i++)
+                {
+                    if (Config.Round(dir1[i]) != - Config.Round(dir2[i]))
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
             return true;
         }
-        else
-        {
-            return false;
-        }
+        Config.TheUi.NXMessageBox.Show("Error!", NXMessageBox.DialogType.Error, "Массивы различны по длине!");
+        return false;
     }
 
 
@@ -364,40 +420,38 @@ static class Geom
 
 
 
-
-
-    static double getDet2x2(double[,] matrix)
+    static double GetDet2X2(double[,] matrix)
     {
         return matrix[0, 0] * matrix[1, 1] - matrix[1, 0] * matrix[0, 1];
     }
 
-    static double getDet3x3(double[,] matrix)
+    static double GetDet3X3(double[,] matrix)
     {
         double[,] matr1 = new double[2, 2];
         matr1[0,0] = matrix[1,1];
         matr1[0,1] = matrix[1,2];
         matr1[1,0] = matrix[2,1];
         matr1[1,1] = matrix[2,2];
-        double d1 = matrix[0, 0] * getDet2x2(matr1);
+        double d1 = matrix[0, 0] * GetDet2X2(matr1);
 
         double[,] matr2 = new double[2, 2];
         matr2[0, 0] = matrix[1, 0];
         matr2[0, 1] = matrix[1, 2];
         matr2[1, 0] = matrix[2, 0];
         matr2[1, 1] = matrix[2, 2];
-        double d2 = matrix[0, 1] * getDet2x2(matr2);
+        double d2 = matrix[0, 1] * GetDet2X2(matr2);
 
         double[,] matr3 = new double[2, 2];
         matr3[0, 0] = matrix[1, 0];
         matr3[0, 1] = matrix[1, 1];
         matr3[1, 0] = matrix[2, 0];
         matr3[1, 1] = matrix[2, 1];
-        double d3 = matrix[0, 2] * getDet2x2(matr3);
+        double d3 = matrix[0, 2] * GetDet2X2(matr3);
 
         return (d1 - d2 + d3);
     }
 
-    static double[,] setCol3x3(double[,] matr, double[] colValues, int col)
+    static double[,] SetCol3X3(double[,] matr, double[] colValues, int col)
     {
         for (int i = 0; i < colValues.Length; i++)
         {
@@ -407,7 +461,7 @@ static class Geom
         return matr;
     }
 
-    static double[,] copy3x3(double[,] matr)
+    static double[,] Copy3X3(double[,] matr)
     {
         double[,] m = new double[3, 3];
 
@@ -424,12 +478,13 @@ static class Geom
 
 
 
+/*
     /// <summary>
     /// Возвращает массив соответствующий указанной строке матрицы. Отсчет строк идет с 0.
     /// </summary>
-    static double[] getRow(double[,] matrix, int row)
+    static double[] GetRow(double[,] matrix, int row)
     {
-        int size = DIMENSIONS;
+        int size = Dimensions;
         double[] ret = new double[size];
 
         for (int i = 0; i < size; i++)
@@ -439,18 +494,22 @@ static class Geom
 
         return ret;
     }
+*/
 
+/*
     /// <summary>
     /// Заполняет указанную строку матрицы значениями из массива. Если размер массива и размер строки не совпадают, то строка будет - либо заполнена не полностью, либо "лишние" значения массива будут проигнорированы.
     /// </summary>
     static void SetRow(double[,] matrix, int row, double[] rowValues)
     {
-        int size = DIMENSIONS;
+        int size = Dimensions;
 
         for (int i = 0; i < size; i++)
             matrix[row, i] = rowValues[i];
     }
+*/
 
+/*
     /// <summary>
     /// Поэлементное умножение массивов
     /// </summary>
@@ -461,7 +520,9 @@ static class Geom
             ret[i] *= number;
         return ret;
     }
+*/
 
+/*
     /// <summary>
     /// поэлементное вычитание массивов.
     /// </summary>
@@ -472,15 +533,16 @@ static class Geom
             ret[i] -= B[i];
         return ret;
     }
+*/
 
 
 
-    static bool isPointOnStrait(Point3d point, double[,] straight_equation, 
+    static bool IsPointOnStrait(Point3d point, double[,] straightEquation, 
                                     out double length, Point3d measurePoint)
     {
         length = -1;
 
-        int nDimensions = DIMENSIONS;
+        const int nDimensions = Dimensions;
         int nNulls = 0;
 
         // Массив с для обозначения осей, в перпендикулярных плоскостях которых лежит прямая
@@ -491,7 +553,7 @@ static class Geom
         {
             // Если знаменатель равен 0, то прямая лежит в плоскости перпендикулярной 
             // соответствующей оси по i (x - 0 | y - 1 | z - 2).
-            if (Math.Round(straight_equation[1, i]) == 0.0)
+            if (Math.Round(straightEquation[1, i]) == 0.0)
             {
                 isConstantAxe[i] = true;
                 nNulls++;
@@ -504,9 +566,9 @@ static class Geom
 
         //REFACTOR
         double[] arrPoint = new double[nDimensions];
-        arrPoint[0] = Config.round(point.X);
-        arrPoint[1] = Config.round(point.Y);
-        arrPoint[2] = Config.round(point.Z);
+        arrPoint[0] = Config.Round(point.X);
+        arrPoint[1] = Config.Round(point.Y);
+        arrPoint[2] = Config.Round(point.Z);
 
         double[] coefficient = new double[nDimensions]; 
         for (int i = 0; i < nDimensions; i++)
@@ -516,7 +578,7 @@ static class Geom
             if (!isConstantAxe[i])
 	        {
         	    coefficient[i] = 
-                    (arrPoint[i] + straight_equation[0, i]) / straight_equation[1, i];
+                    (arrPoint[i] + straightEquation[0, i]) / straightEquation[1, i];
 	        }
         }
 
@@ -537,7 +599,7 @@ static class Geom
         int equelity = 0;
         for (int i = 1; i < axeNo.Count; i++)
         {
-            if (Config.round(coefficient[axeNo[i - 1]]) == Config.round(coefficient[axeNo[i]]))
+            if (Config.Round(coefficient[axeNo[i - 1]]) == Config.Round(coefficient[axeNo[i]]))
             {
                 equelity++;
             }
@@ -546,8 +608,8 @@ static class Geom
         for (int i = 0; i < constAxeNo.Count; i++)
         {
             int axeDirection = constAxeNo[i];
-            if (Config.round(arrPoint[axeDirection]) == 
-                    Config.round(- straight_equation[0, axeDirection]))
+            if (Config.Round(arrPoint[axeDirection]) == 
+                    Config.Round(- straightEquation[0, axeDirection]))
             {
                 equelity++;
             }
@@ -558,10 +620,15 @@ static class Geom
             length = vecLen.Length;
             return true;
         }
-        else
-        {
-            return false;
-        }
+        return false;
+    }
 
+    static double GetRatio(double d1, double d2)
+    {
+        if (Config.Round(d1) == 0 && Config.Round(d2) == 0)
+        {
+            return 0;
+        }
+        return d1 / d2;
     }
 }
