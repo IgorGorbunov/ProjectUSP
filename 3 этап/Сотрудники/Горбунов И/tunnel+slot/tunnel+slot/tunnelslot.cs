@@ -879,6 +879,20 @@ public class Tunnelslot
             _secondPointSelected = true;
             _hasNearestSlot2 = _slotSet2.HasNearestSlot(out _slot2);
 
+            if (_slot2.Type == Config.SlotType.Pslot)
+            {
+                string message = "Должен быть выбран Т-образный паз!" + Environment.NewLine +
+                         "Выберите другой паз!";
+                Logger.WriteWarning(message);
+                Config.TheUi.NXMessageBox.Show("Error!",
+                                               NXMessageBox.DialogType.Error,
+                                               message);
+
+                _secondPointSelected = false;
+                UnSelectObjects(block);
+                return;
+            }
+
             _slot2.Highlight();
             SetConstraints();
         }

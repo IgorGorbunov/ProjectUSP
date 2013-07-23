@@ -87,6 +87,13 @@ public class Slot
         get { return _slotSet; }
     }
     /// <summary>
+    /// Возвращает тип паза.
+    /// </summary>
+    public Config.SlotType Type
+    {
+        get { return _type; }
+    }
+    /// <summary>
     /// Первое рёберо на НГП.
     /// </summary>
     public readonly Edge EdgeLong1;
@@ -96,8 +103,6 @@ public class Slot
     public readonly Edge EdgeLong2;
 
     Config.SlotType _type;
-
-    Face _topFace;
 
     Edge _touchEdge;
 
@@ -415,7 +420,6 @@ public class Slot
         }
 
 
-        _topFace = topFace;
     }
 
 

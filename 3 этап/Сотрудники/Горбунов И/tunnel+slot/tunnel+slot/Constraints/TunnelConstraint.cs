@@ -12,6 +12,7 @@ public class TunnelConstraint
     readonly Tunnel _firstTunnel;
     readonly Tunnel _secondTunnel;
     readonly Slot _slot;
+    private UspElement _fixture;
 
     readonly TouchAxe _axeConstr;
     readonly Touch _touchConstr;
@@ -30,13 +31,15 @@ public class TunnelConstraint
         _secondTunnel = secondTunnel;
         _slot = null;
     }
+
     /// <summary>
     /// Инициализирует новый экземпляр класса связей для touch-соединения с проверкой на
     /// пересечение отверстие-паз.
     /// </summary>
     /// <param name="firstTunnel">Отверстие.</param>
     /// <param name="slot">Паз.</param>
-    public TunnelConstraint(Tunnel firstTunnel, Slot slot)
+    /// <param name="fixture">Крепеж.</param>
+    public TunnelConstraint(Tunnel firstTunnel, Slot slot, Component fixture)
     {
         _axeConstr = new TouchAxe();
         _touchConstr = new Touch();
@@ -44,6 +47,7 @@ public class TunnelConstraint
         _firstTunnel = firstTunnel;
         _secondTunnel = null;
         _slot = slot;
+        _fixture = new UspElement(fixture);
     }
 
     /// <summary>
@@ -63,7 +67,7 @@ public class TunnelConstraint
     {
         KeyValuePair<Face, double>[] pairs1 = _firstTunnel.GetOrtFacePairs();
         KeyValuePair<Face, double>[] pairs2;
-        ElementIntersection intersect;
+        ElementIntersection intersect, fixIntersect = null;
 
         Component comp2;
         if (_slot == null)
@@ -76,6 +80,7 @@ public class TunnelConstraint
         {
             pairs2 = _slot.OrtFaces;
             intersect = new ElementIntersection(_firstTunnel.Body, _slot.Body);
+            fixIntersect = new ElementIntersection(_firstTunnel.Body, _fixture.Body);
             comp2 = _slot.ParentComponent;
         }
 
@@ -89,7 +94,7 @@ public class TunnelConstraint
                 _touchConstr.Create(_firstTunnel.ParentComponent, pairs1[j].Key,
                                    comp2, pairs2[i].Key);
 
-                if (intersect.TouchExists)
+                if (intersect.TouchExists && !fixIntersect.InterferenseExists)
                 {
                     goto End;
                 }

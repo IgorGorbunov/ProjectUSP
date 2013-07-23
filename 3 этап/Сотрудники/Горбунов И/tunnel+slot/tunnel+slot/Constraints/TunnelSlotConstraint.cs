@@ -254,7 +254,7 @@ public sealed class TunnelSlotConstraint
 
     void Touch()
     {
-        _tunnelConstsr = new TunnelConstraint(_tunnel, _slot);
+        _tunnelConstsr = new TunnelConstraint(_tunnel, _slot, _fixture);
 
         Config.FreezeDisplay();
         _tunnelConstsr.SetTouchFaceConstraint();
