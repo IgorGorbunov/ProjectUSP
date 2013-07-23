@@ -40,6 +40,9 @@
   </Target>
   -->
   <ItemGroup>
+    <Compile Include="CatalogData\Catalog.cs" />
+    <Compile Include="CatalogData\Catalog_12.cs" />
+    <Compile Include="CatalogData\Catalog_8.cs" />
     <Compile Include="Constraints\Center.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Constraints\Constrainter.cs" />
@@ -51,6 +54,8 @@
     <Compile Include="Geom.cs" />
     <Compile Include="Instr.cs" />
     <Compile Include="Log\Log.cs" />
+    <Compile Include="SqlAccess\SqlUspElement.cs" />
+    <Compile Include="SqlTables\SqlTabUspData.cs" />
     <Compile Include="Мой Log с блекджеком и шлюхами\Logger.cs" />
     <Compile Include="Constraints\Parallel.cs" />
     <Compile Include="Message.cs" />

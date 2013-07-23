@@ -398,6 +398,9 @@ public class Tunnelslot
             _direction0 = _theDialog.TopBlock.FindBlock("direction0");
             _selection01 = _theDialog.TopBlock.FindBlock("selection01");
             _point0 = _theDialog.TopBlock.FindBlock("point0");
+
+            SQLOracle.BuildConnectionString("591014", "591000", "BASEEOI");
+            SqlOracle.BuildConnectionString("591014", "591000", "BASEEOI");
         }
         catch (Exception ex)
         {
@@ -488,6 +491,7 @@ public class Tunnelslot
             //---------Enter your code here-----------
                 Logger.WriteLine("Нажата постановка второй точки.");
                 SetSecondPoint(block);
+                
             }
         }
         catch (Exception ex)
@@ -1009,9 +1013,6 @@ public class Tunnelslot
 
     private static void doMagic()
     {
-        SQLOracle.BuildConnectionString("591014", "591000", "BASEEOI");
-        SqlOracle.BuildConnectionString("591014", "591000", "BASEEOI");
-
         Dictionary<string, string> dict = new Dictionary<string, string>();
         dict.Add("diametr", "%12%");
         dict.Add("length", "50");

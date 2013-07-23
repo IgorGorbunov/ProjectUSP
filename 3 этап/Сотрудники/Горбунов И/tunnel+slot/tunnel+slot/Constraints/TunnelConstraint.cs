@@ -79,7 +79,7 @@ public class TunnelConstraint
         else
         {
             pairs2 = _slot.OrtFaces;
-            intersect = new ElementIntersection(_firstTunnel.Body, _slot.Body);
+            intersect = new ElementIntersection(_firstTunnel.Body, _slot.SlotSet.Body);
             fixIntersect = new ElementIntersection(_firstTunnel.Body, _fixture.Body);
             comp2 = _slot.ParentComponent;
         }

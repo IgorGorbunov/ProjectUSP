@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using NXOpen;
 using NXOpen.Assemblies;
 
@@ -47,6 +46,13 @@ public sealed class SlotSet
         {
             return _bottomFace;
         }
+    }
+    /// <summary>
+    /// Возвращает элемент УСП.
+    /// </summary>
+    public UspElement UspElement
+    {
+        get { return _element; }
     }
 
     Face _bottomFace;
@@ -323,7 +329,7 @@ public sealed class SlotSet
 
         if (isFound)
         {
-            slot = new Slot(this, edge1, edge2, Config.GetSlotType(minSlotWidth));
+            slot = new Slot(this, edge1, edge2, Config.GetSlotType(minSlotWidth, _element.UspCatalog));
             return true;
         }
         return false;
@@ -400,7 +406,7 @@ public sealed class SlotSet
         dictionary.Add(key, value);
     }
 
-    static bool IsSlot(Vector vec1, Vector vec2, out double distance, Edge e1, Edge e2)
+    bool IsSlot(Vector vec1, Vector vec2, out double distance, Edge e1, Edge e2)
     {
         distance = 0;
         if (vec1.IsParallel(vec2))
@@ -424,8 +430,8 @@ public sealed class SlotSet
                     if (vec1.IsNormal(tempVec))
                     {
                         double length = tempVec.Length;
-                        if (Config.Round(length) == Config.PSlotWidth || 
-                            Config.Round(length) == Config.SlotWidth)
+                        if (Config.Round(length) == _element.UspCatalog.PSlotWidth ||
+                            Config.Round(length) == _element.UspCatalog.SlotWidthB)
                         {
                             distance = length;
                             nPerpendicular++;

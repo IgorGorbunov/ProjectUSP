@@ -125,7 +125,7 @@ partial class SqlOracle
         }
     }
 
-    public static List<string> testSelect(string cmdQuery)
+    public static List<string> TestSelect(string cmdQuery)
     {
         _open();
         Logger.WriteLine(cmdQuery);
