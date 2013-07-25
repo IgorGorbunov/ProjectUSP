@@ -26,8 +26,13 @@ public sealed class TouchAxe : Constrainter
 
         Constr.CreateConstraintReference(secondComponent,
                                          secondFace, true, false, false);
-
+        
         ExecuteConstraints();
+
+        if (Constr.GetConstraintStatus() == Constraint.SolverStatus.OverConstrained)
+        {
+            Reverse();
+        }
     }
 }
 

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using NXOpen;
 using NXOpen.Assemblies;
 
@@ -48,9 +47,16 @@ public sealed class SlotSet
             return _bottomFace;
         }
     }
+    /// <summary>
+    /// Возвращает элемент УСП.
+    /// </summary>
+    public UspElement UspElement
+    {
+        get { return _element; }
+    }
 
     Face _bottomFace;
-    private Edge _someEdgeOnBottom;
+    private Edge _nearestEdge;
 
     Dictionary<Edge, double> _nearestEdges;
 
@@ -126,7 +132,7 @@ public sealed class SlotSet
                 if (length > minLenAmongFaces) continue;
 
                 minLenAmongFaces = length;
-                _someEdgeOnBottom = edge;
+                _nearestEdge = edge;
             }
         }
 
@@ -137,7 +143,7 @@ public sealed class SlotSet
 
     public void SetNearestEdges()
     {
-        Face[] faces = _someEdgeOnBottom.GetFaces();
+        Face[] faces = _nearestEdge.GetFaces();
         Dictionary<Edge, double>[] edgesList = new Dictionary<Edge, double>[2];
 
         int numberOfNearestSlots = 0;
@@ -157,19 +163,19 @@ public sealed class SlotSet
                 edgesList[i].Add(edges[j], 0.0);
             }
         }
-
+        
         int start = 0;
         int end = edgesList.Length;
         if (numberOfNearestSlots < 2)
         {
             if (isSlotFace[0])
             {
-                start = 0;
+                start = 0; 
                 end = 1;
             }
             else
             {
-               start = 1;
+                start = 1; 
                end = 2; 
             }
         }
@@ -207,7 +213,7 @@ public sealed class SlotSet
         }
 
         //если по одному ребру есть две НГП
-        if (end == 2)
+        if (end == 2 && start == 0)
         {
             int n = nProjections[0] > nProjections[1] ? 0 : 1;
 
@@ -323,7 +329,7 @@ public sealed class SlotSet
 
         if (isFound)
         {
-            slot = new Slot(this, edge1, edge2, Config.GetSlotType(minSlotWidth));
+            slot = new Slot(this, edge1, edge2, Config.GetSlotType(minSlotWidth, _element.UspCatalog));
             return true;
         }
         return false;
@@ -400,7 +406,7 @@ public sealed class SlotSet
         dictionary.Add(key, value);
     }
 
-    static bool IsSlot(Vector vec1, Vector vec2, out double distance, Edge e1, Edge e2)
+    bool IsSlot(Vector vec1, Vector vec2, out double distance, Edge e1, Edge e2)
     {
         distance = 0;
         if (vec1.IsParallel(vec2))
@@ -424,8 +430,8 @@ public sealed class SlotSet
                     if (vec1.IsNormal(tempVec))
                     {
                         double length = tempVec.Length;
-                        if (Config.Round(length) == Config.PSlotWidth || 
-                            Config.Round(length) == Config.SlotWidth)
+                        if (Config.Round(length) == _element.UspCatalog.PSlotWidth ||
+                            Config.Round(length) == _element.UspCatalog.SlotWidthB)
                         {
                             distance = length;
                             nPerpendicular++;

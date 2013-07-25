@@ -38,14 +38,34 @@ public class UspElement
             return _body;
         }
     }
+    /// <summary>
+    /// Возвращает каталог для данного элемента.
+    /// </summary>
+    public Catalog UspCatalog
+    {
+        get
+        {
+            if (_catalog == null)
+            {
+                string catalogNum = SqlUspElement.GetCatalogNum(ElementComponent.Name);
+                if (catalogNum == "0")
+                {
+                    _catalog = new Catalog8();
+                }
+                if (catalogNum == "1")
+                {
+                    _catalog = new Catalog12();
+                }
+            }
+            return _catalog;
+        }
+    }
 
-    readonly Component _component;
-    Body _body;
+    private readonly Component _component;
+    private Body _body;
+    private Catalog _catalog;
 
     List<Face> _bottomFaces;
-
-    private const int MagicNumber = 1680; //TODO
-
 
     /// <summary>
     /// Инициализирует новый экземпляр класса элемента УСП для заданного компонента.
@@ -103,36 +123,12 @@ public class UspElement
         Logger.WriteLine(mess);
     }
 
-    //refactor
-    Face GetSomeFace()
-    {
-        Face someFace = null;
-        for (int j = 1; j < MagicNumber; j++)
-        {
-            try
-            {
-                someFace = (Face)_component.FindObject(
-                    "PROTO#.Features|UNPARAMETERIZED_FEATURE(0)|FACE " + j);
-
-                break;
-            }
-            catch (NXException ex)
-            {
-                if (ex.ErrorCode != 3520016)
-                {
-                    UI.GetUI().NXMessageBox.Show("Ошибка!",
-                                                 NXMessageBox.DialogType.Error,
-                                                 "Ашипка!");
-                }
-            }
-        }
-        return someFace;
-    }
-
     void SetBody()
     {
         Body bb = null;
         BodyCollection bc = ((Part)_component.Prototype).Bodies;
+        Logger.WriteLine("У объекта \"" + ElementComponent.Name + " " + ElementComponent.ToString() +
+                         "\" " + bc.ToArray().Length + " тел(о).");
         foreach (Body body in bc)
         {
             NXObject tmpNxObject = _component.FindOccurrence(body);
@@ -143,8 +139,6 @@ public class UspElement
         }
 
         _body = bb;
-        //Face someFace = GetSomeFace();
-        //_body = someFace.GetBody();
     }
 }
 

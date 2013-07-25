@@ -17,20 +17,20 @@ public static class Config
 
     public const int NumberOfNearestEdges = 6;
 
-    public const double PSlotWidth = 12;
-    public const double PSlotHeight = 3;
+    //public const double PSlotWidth = 12;
+    //public const double PSlotHeight = 3;
 
-    private const double SlotA = 12;
-    public const double SlotWidth = 20;
-    private const double SlotB1 = 13;
-    public static readonly double[] SlotHeight = { 6, 8, 10 };
-    public static readonly double[] SlotHeight1 = { 4, 4.2, 7, 7.2, 7.5, 8, 9 };
-    public const double SlotHeight2 = 4;
-    public static readonly double[] SlotHeight3 = { 2, 4, 6 };
+    //private const double SlotA = 12;
+    //public const double SlotWidth = 20;
+    //private const double SlotB1 = 13;
+    //public static readonly double[] SlotHeight = { 6, 8, 10 };
+    //public static readonly double[] SlotHeight1 = { 4, 4.2, 7, 7.2, 7.5, 8, 9 };
+    //public const double SlotHeight2 = 4;
+    //public static readonly double[] SlotHeight3 = { 2, 4, 6 };
 
-    public const double StepWidthTSlot1 = (SlotWidth - SlotA)/2.0;
-    public const double StepDownWidthTSlot2 = (SlotWidth - SlotB1)/2.0;
-    public const double StepUpWidthTSlot2 = (SlotB1 - SlotA)/2.0;
+    //public const double StepWidthTSlot1 = (SlotWidth - SlotA)/2.0;
+    //public const double StepDownWidthTSlot2 = (SlotWidth - SlotB1)/2.0;
+    //public const double StepUpWidthTSlot2 = (SlotB1 - SlotA)/2.0;
 
     public enum SlotType
     {
@@ -43,6 +43,10 @@ public static class Config
     public static readonly char[] FaceNameSplitter = { '_' };
     public const string SlotSymbol = "SLOT";
     public const string SlotBottomSymbol = "BOTTOM";
+
+    /// <summary>
+    /// Наименование НГП.
+    /// </summary>
     public static readonly string SlotBottomName = SlotSymbol + FaceNameSplitter[0] + SlotBottomSymbol;
 
     //снизил с 4 на 3 из-за невозможности пазирования (почему-то) коротких пазов на главной
@@ -102,9 +106,15 @@ public static class Config
         return Math.Round(d, Precision);
     }
 
-    public static SlotType GetSlotType(double slotWidth)
+    /// <summary>
+    /// Возвращает тип паза в зависимости от расстояния между НРП и типа каталога.
+    /// </summary>
+    /// <param name="slotWidth">Расстояние между Нижними рёбрами паза.</param>
+    /// <param name="catalog">Каталог.</param>
+    /// <returns></returns>
+    public static SlotType GetSlotType(double slotWidth, Catalog catalog)
     {
-        return Round(slotWidth) == SlotWidth ? SlotType.Tslot : SlotType.Pslot;
+        return Round(slotWidth) == catalog.SlotWidthB ? SlotType.Tslot : SlotType.Pslot;
     }
 
     /// <summary>
