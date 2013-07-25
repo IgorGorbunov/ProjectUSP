@@ -12,7 +12,7 @@ public class TunnelConstraint
     readonly Tunnel _firstTunnel;
     readonly Tunnel _secondTunnel;
     readonly Slot _slot;
-    private UspElement _fixture;
+    private readonly UspElement _fixture;
 
     readonly TouchAxe _axeConstr;
     readonly Touch _touchConstr;
@@ -43,11 +43,11 @@ public class TunnelConstraint
         _axeConstr.Create(_firstTunnel.ParentComponent, _firstTunnel.TunnelFace,
                          _secondTunnel.ParentComponent, _secondTunnel.TunnelFace);
     }
+
     /// <summary>
     /// Производит соединение двух деталей с отверстиями по ортогональным плоскостям.
     /// </summary>
-    /// <param name="firstRev">True, если необходимо перевернуть первый элемент.</param>
-    /// <param name="secondRev">True, если необходимо перевернуть второй элемент.</param>
+    /// <param name="withFix">True, если соединение происходит с креплением.</param>
     public void SetTouchFaceConstraint(bool withFix)
     {
         KeyValuePair<Face, double>[] pairs1 = _firstTunnel.GetOrtFacePairs();
@@ -59,8 +59,6 @@ public class TunnelConstraint
         {
             fixIntersect = new ElementIntersection(_firstTunnel.Body, _fixture.Body);
         }
-        
-        Component comp2 = _slot.ParentComponent;
 
         for (int i = 0; i < pairs2.Length; i++)
         {
@@ -69,8 +67,10 @@ public class TunnelConstraint
                 _markId1 = Config.TheSession.SetUndoMark(Session.MarkVisibility.Invisible, 
                                                                 "SetTouch");
 
+                MoveToEachOther(pairs1[j].Key, pairs2[i].Key);
+
                 _touchConstr.Create(_firstTunnel.ParentComponent, pairs1[j].Key,
-                                   comp2, pairs2[i].Key);
+                                    _slot.ParentComponent, pairs2[i].Key);
 
                 //против бага intersect в версиях ниже 8.5
                 bool bugChecked;
@@ -93,6 +93,21 @@ public class TunnelConstraint
         }
     End: { }
 
+    }
+
+    private void MoveToEachOther(Face face1, Face face2)
+    {
+        Point3d p1 = _firstTunnel.Slot.SlotPoint;
+        Point3d p2 = _slot.SlotPoint;
+
+        Platan pl1 = new Platan(face1);
+        Platan pl2 = new Platan(face2);
+
+        Point3d projection1 = pl1.GetProection(p1);
+        Point3d projection2 = pl2.GetProection(p2);
+
+        Vector vec = new Vector(projection1, projection2);
+        Movement.MoveByDirection(_firstTunnel.ParentComponent, vec);
     }
 
 

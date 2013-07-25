@@ -50,16 +50,17 @@
     <Compile Include="Constraints\TunnelSlotConstraint.cs" />
     <Compile Include="ElementIntersection.cs" />
     <Compile Include="Constraints\Fix.cs" />
-    <Compile Include="Geom.cs" />
+    <Compile Include="Math\Geom.cs" />
     <Compile Include="Instr.cs" />
     <Compile Include="Log\Log.cs" />
+    <Compile Include="Movement.cs" />
     <Compile Include="SqlAccess\SqlUspElement.cs" />
     <Compile Include="SqlTables\SqlTabUspData.cs" />
     <Compile Include="Мой Log с блекджеком и шлюхами\Logger.cs" />
     <Compile Include="Constraints\Parallel.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="NX\NXFunctionKatalog.cs" />
-    <Compile Include="Platan.cs" />
+    <Compile Include="Math\Platan.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Slot.cs" />
     <Compile Include="Constraints\SlotConstraint.cs" />
@@ -72,14 +73,14 @@
     <Compile Include="SQL\SQL Update.cs" />
     <Compile Include="Мой SQL с блекджеком и шлюхами\SQL BLOB.cs" />
     <Compile Include="Мой SQL с блекджеком и шлюхами\SQL Init.cs" />
-    <Compile Include="Straight.cs" />
+    <Compile Include="Math\Straight.cs" />
     <Compile Include="Constraints\TouchAxe.cs" />
     <Compile Include="Constraints\Touch.cs" />
     <Compile Include="Tunnel.cs" />
     <Compile Include="Constraints\TunnelConstraint.cs" />
     <Compile Include="tunnelslot.cs" />
     <Compile Include="UspElement.cs" />
-    <Compile Include="Vector.cs" />
+    <Compile Include="Math\Vector.cs" />
     <Compile Include="Мой SQL с блекджеком и шлюхами\SQL Select.cs" />
   </ItemGroup>
   <ItemGroup>
