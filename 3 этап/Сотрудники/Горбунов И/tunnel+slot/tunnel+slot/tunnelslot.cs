@@ -512,7 +512,9 @@ public class Tunnelslot
     //------------------------------------------------------------------------------
     private static int ok_cb()
     {
+// ReSharper disable RedundantAssignment
         int errorCode = 0;
+// ReSharper restore RedundantAssignment
         try
         {
             errorCode = apply_cb();
@@ -991,54 +993,6 @@ public class Tunnelslot
         SetEnable(slotSetBlock, false);
     }
 
-
-
-    /// <summary>
-    /// Получение имени сервера
-    /// </summary>    
-    /// <param name="serverString">       
-    /// строка сервера</param>
-    /// <returns>Имя сервера</returns>
-    private static string findCorrectServerName(String serverString)
-    {
-        int positionOfSym = 0, i = 0;
-
-        String correctServerString = "";
-
-        foreach (char findSym in serverString)
-        {
-            if (String.Compare((Convert.ToString(findSym)), "/") == 0)
-            {
-                positionOfSym = i;
-            }
-
-            i++;
-
-        }
-
-        if (positionOfSym == 0)
-        {
-            return serverString;
-        }
-
-        i = 0;
-
-
-        foreach (char findSym in serverString)
-        {
-
-            if (i > positionOfSym)
-            {
-                correctServerString += findSym;
-            }
-
-            i++;
-
-        }
-
-        return correctServerString;
-
-    }
 
     private static void DoMagic()
     {
