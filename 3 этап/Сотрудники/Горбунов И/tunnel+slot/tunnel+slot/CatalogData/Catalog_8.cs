@@ -7,6 +7,14 @@ sealed class Catalog8 : Catalog
     {
         get { return _SERIES; }
     }
+    public override SqlTabUspData.CatalogUsp CatalogUsp
+    {
+        get { return SqlTabUspData.CatalogUsp.Slot8; }
+    }
+    public override double Diametr
+    {
+        get { return _DIAMETR; }
+    }
     public override double PSlotWidth
     {
         get { return _P_SLOT_WIDTH; }
@@ -38,6 +46,7 @@ sealed class Catalog8 : Catalog
 
 
     private const int _SERIES = 2;
+    private const double _DIAMETR = 8;
 
     private const double _P_SLOT_WIDTH = 8;
     private const double _P_SLOT_HEIGHT = 2.5;

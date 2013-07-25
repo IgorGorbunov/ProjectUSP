@@ -11,6 +11,20 @@ public abstract class Catalog
         get { return 0; }
     }
     /// <summary>
+    /// Возвращает индекс каталога в SQL-таблице.
+    /// </summary>
+    public virtual SqlTabUspData.CatalogUsp CatalogUsp
+    {
+        get { return 0; }
+    }
+    /// <summary>
+    /// Возвращает диаметр базового отверстия для каталога.
+    /// </summary>
+    public virtual double Diametr
+    {
+        get { return 0; }
+    }
+    /// <summary>
     /// Возвращает ширину П-образного паза.
     /// </summary>
     public virtual double PSlotWidth

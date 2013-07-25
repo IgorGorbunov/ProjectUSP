@@ -994,14 +994,10 @@ public class Tunnelslot
     }
 
 
-    private static void DoMagic()
+    private void DoMagic()
     {
-        Dictionary<string, string> dict = new Dictionary<string, string>();
-        dict.Add("diametr", "%12%");
-        dict.Add("length", "50");
-
-        Dictionary<string, string> dictionary;
-        SqlOracle.Sel("select OBOZN, L from DB_DATA where KATALOG_USP = 1 and GROUP_USP = 5 and D like :diametr and L >= :length and NAME = 'Болты  пазовые'", dict, out dictionary);
+        Dictionary<string, string> dictionary = 
+            SqlUspElement.GetTitleMinLengthFixture(50, _element2.UspCatalog);
 
         string title = "";
         int minLen = int.MaxValue;
