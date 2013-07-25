@@ -128,16 +128,19 @@ public class Tunnelslot
     
     //---------------------------------------------------------------------------------
 
-    UspElement _element1, _element2;
-    Tunnel _tunnel1;
-    SlotSet _slotSet1, _slotSet2;
-    static Slot _slot1;
-    static Slot _slot2;
+    private UspElement _element1, _element2;
+    private Tunnel _tunnel1;
+    private SlotSet _slotSet1, _slotSet2;
+    private static Slot _slot1;
+    private static Slot _slot2;
 
     private TunnelSlotConstraint _constraint;
 
-    static bool _secondPointSelected;
-    static bool _firstPointSelected;
+    private Catalog _firstElementCatalog;
+    private Catalog _secondElementCatalog;
+
+    private static bool _secondPointSelected;
+    private static bool _firstPointSelected;
 
     private static bool _hasNearestSlot1;
     private static bool _hasNearestSlot2;
@@ -163,10 +166,11 @@ public class Tunnelslot
             _theDialog.AddKeyboardFocusNotifyHandler(keyboardFocusNotify_cb);
             _theDialog.AddDialogShownHandler(dialogShown_cb);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             //---- Enter your exception handling code here -----
-            throw ex;
+            Message.Show("Конструктор NX диалога не запустился!");
+            throw;
         }
     }
     //------------------------------- DIALOG LAUNCHING ---------------------------------
@@ -592,8 +596,9 @@ public class Tunnelslot
 
     void SetFirstComponent(UIBlock block)
     {
-        if (SetComponent(block, ref _element1))
+        if (SetComponent(block, ref _element1, _secondElementCatalog))
         {
+            _firstElementCatalog = _element1.UspCatalog;
             SetEnable(_faceSelect0, true);
 
             _slotSet1 = new SlotSet(_element1);
@@ -601,6 +606,7 @@ public class Tunnelslot
         }
         else
         {
+            _firstElementCatalog = null;
             SetEnable(_faceSelect0, false);
         }
         SetEnable(_direction0, false);
@@ -610,14 +616,17 @@ public class Tunnelslot
     }
     void SetSecondComponent(UIBlock block)
     {
-        if (SetComponent(block, ref _element2))
+        if (SetComponent(block, ref _element2, _firstElementCatalog))
         {
+            _secondElementCatalog = _element2.UspCatalog;
             SetEnable(_point0, true);
+
             _slotSet2 = new SlotSet(_element2);
             _element2.SetBottomFaces();
         }
         else
         {
+            _secondElementCatalog = null;
             SetEnable(_point0, false);
         }
         _secondPointSelected = false;
@@ -628,7 +637,8 @@ public class Tunnelslot
         UnSelectObjects(_point0);
         SetEnable(_direction0, false);
     }
-    static bool SetComponent(UIBlock block, ref UspElement element)
+    bool SetComponent(UIBlock block, ref UspElement element,
+                      Catalog anotherElementCatalog)
     {
         PropertyList propList = block.GetProperties();
         TaggedObject[] tagObs = propList.GetTaggedObjectVector("SelectedObjects");
@@ -643,6 +653,25 @@ public class Tunnelslot
                     " - " + parentComponent.Name);
 
                 element = new UspElement(parentComponent);
+
+                if (anotherElementCatalog != null)
+                {
+                    if (element.UspCatalog != anotherElementCatalog)
+                    {
+                        string mess = "Детали не из одного каталога!" + Environment.NewLine +
+                             "Пожалуйста, перевыберите элемент.";
+                        Logger.WriteWarning(mess);
+                        Logger.WriteLine("Объект - " + tagObs[0]);
+                        UnSelectObjects(block);
+
+                        Message.Show(mess);
+
+                        block.Focus();
+
+                        element = null;
+                        return false;
+                    }
+                }
                 return true;
             }
             string message = "Выбрана не деталь УСП!" + Environment.NewLine +
@@ -1011,7 +1040,7 @@ public class Tunnelslot
 
     }
 
-    private static void doMagic()
+    private static void DoMagic()
     {
         Dictionary<string, string> dict = new Dictionary<string, string>();
         dict.Add("diametr", "%12%");
@@ -1043,7 +1072,7 @@ public class Tunnelslot
         {
             _tunnel1.SetSlot(_slot1);
 
-            doMagic();
+            DoMagic();
             UspElement fixture = new UspElement(Katalog2005.Algorithm.SpecialFunctions.UnLoadedPart);
 
             _constraint = new TunnelSlotConstraint(_element1, _tunnel1, _element2, _slot2, fixture);

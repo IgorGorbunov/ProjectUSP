@@ -62,7 +62,7 @@ public static class Message
                 }
         }
 
-        Config.TheUi.NXMessageBox.Show(title, dialog, mess.ToString());
+        Config.TheUi.NXMessageBox.Show(title, dialog, mess == null ? "null" : mess.ToString());
     }
 }
 

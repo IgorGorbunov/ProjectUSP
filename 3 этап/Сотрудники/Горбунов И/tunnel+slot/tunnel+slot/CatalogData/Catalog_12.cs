@@ -1,9 +1,9 @@
 ﻿/// <summary>
 /// Класс каталога с информацией о 12ом пазе.
 /// </summary>
-class Catalog12 : Catalog
+sealed class Catalog12 : Catalog
 {
-    public override int Series
+    protected override int Series
     {
         get { return _SERIES; }
     }
@@ -11,11 +11,11 @@ class Catalog12 : Catalog
     {
         get { return _P_SLOT_WIDTH; }
     }
-    public override double PSlotHeight
+    protected override double PSlotHeight
     {
         get { return _P_SLOT_HEIGHT; }
     }
-    public override double SlotWidthA
+    protected override double SlotWidthA
     {
         get { return _SLOT_WIDTH_A; }
     }
@@ -23,23 +23,23 @@ class Catalog12 : Catalog
     {
         get { return _SLOT_WIDTH_B; }
     }
-    public override double SlotWidthB1
+    protected override double SlotWidthB1
     {
         get { return _SLOT_WIDTH_B1; }
     }
-    public override double[] SlotHeight
+    protected override double[] SlotHeight
     {
         get { return _SLOT_HEIGHT; }
     }
-    public override double[] SlotHeight1
+    protected override double[] SlotHeight1
     {
         get { return _SLOT_HEIGHT1; }
     }
-    public override double SlotHeight2
+    protected override double SlotHeight2
     {
         get { return _SLOT_HEIGHT2; }
     }
-    public override double StepWidthTSlot1
+    protected override double StepWidthTSlot1
     {
         get { return _STEP_WIDTH_T_SLOT1; }
     }

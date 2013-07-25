@@ -56,7 +56,7 @@ public sealed class SlotSet
     }
 
     Face _bottomFace;
-    private Edge _someEdgeOnBottom;
+    private Edge _nearestEdge;
 
     Dictionary<Edge, double> _nearestEdges;
 
@@ -132,7 +132,7 @@ public sealed class SlotSet
                 if (length > minLenAmongFaces) continue;
 
                 minLenAmongFaces = length;
-                _someEdgeOnBottom = edge;
+                _nearestEdge = edge;
             }
         }
 
@@ -143,7 +143,7 @@ public sealed class SlotSet
 
     public void SetNearestEdges()
     {
-        Face[] faces = _someEdgeOnBottom.GetFaces();
+        Face[] faces = _nearestEdge.GetFaces();
         Dictionary<Edge, double>[] edgesList = new Dictionary<Edge, double>[2];
 
         int numberOfNearestSlots = 0;
@@ -163,19 +163,19 @@ public sealed class SlotSet
                 edgesList[i].Add(edges[j], 0.0);
             }
         }
-
+        
         int start = 0;
         int end = edgesList.Length;
         if (numberOfNearestSlots < 2)
         {
             if (isSlotFace[0])
             {
-                start = 0;
+                start = 0; 
                 end = 1;
             }
             else
             {
-               start = 1;
+                start = 1; 
                end = 2; 
             }
         }
@@ -213,7 +213,7 @@ public sealed class SlotSet
         }
 
         //если по одному ребру есть две НГП
-        if (end == 2)
+        if (end == 2 && start == 0)
         {
             int n = nProjections[0] > nProjections[1] ? 0 : 1;
 
