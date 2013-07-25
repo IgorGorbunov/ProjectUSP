@@ -82,7 +82,6 @@ public class TunnelConstraint
                 {
                     bugChecked = true;
                 }
-                Message.Tst();
 
                 if (intersect.TouchExists && bugChecked)
                 {
@@ -97,7 +96,7 @@ public class TunnelConstraint
 
     private void MoveToEachOther(Face face1, Face face2)
     {
-        Point3d p1 = _firstTunnel.Slot.SlotPoint;
+        Point3d p1 = _firstTunnel.CentralPoint;
         Point3d p2 = _slot.SlotPoint;
 
         Platan pl1 = new Platan(face1);

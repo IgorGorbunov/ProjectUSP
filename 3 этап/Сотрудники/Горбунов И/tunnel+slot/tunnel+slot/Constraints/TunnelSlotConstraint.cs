@@ -10,6 +10,7 @@ public sealed class TunnelSlotConstraint
     
     SlotConstraint _slotConstr;
     TunnelConstraint _tunnelConstsr;
+    private Parallel _parallel;
     private Fix _fixConstr, _fixFixture;
     private TouchAxe _touchAxe;
 
@@ -44,7 +45,7 @@ public sealed class TunnelSlotConstraint
         _secondElement = secondElement;
 
         _fixture = fixture.ElementComponent;
-        _hasFixture = false;
+        _hasFixture = true;
     }
     /// <summary>
     /// Создание связей.
@@ -52,18 +53,27 @@ public sealed class TunnelSlotConstraint
     public void Create()
     {
         bool isFixed = Fix();
-        //InsertBolt();
 
         Center();
-        _touchAxe = new TouchAxe();
-        //_touchAxe.Create(_firstElement.ElementComponent, _tunnel.TunnelFace, _fixture, _tunnelFixtureFace);
-        //if (Geom.IsEqual(Geom.GetDirection(_tunnel.Slot.BottomFace),
-        //                (Geom.GetDirection(_slot.BottomFace))))
-        //{
-        //    _touchAxe.Reverse();
-        //}
+
+        //чтобы ровно в то место, что нужно встала
+        Parallel();
+        _parallel.Delete();
 
         Touch();
+
+        InsertBolt();
+
+        _touchAxe = new TouchAxe();
+        _touchAxe.Create(_firstElement.ElementComponent, _tunnel.TunnelFace, _fixture, _tunnelFixtureFace);
+
+        
+        if (Geom.IsEqual(Geom.GetDirection(_tunnel.Slot.BottomFace),
+                        (Geom.GetDirection(_slot.BottomFace))))
+        {
+            _touchAxe.Reverse();
+        }
+
         Delete(isFixed);
 
         Config.TheUfSession.Modl.Update();
@@ -260,13 +270,20 @@ public sealed class TunnelSlotConstraint
         _slotConstr.SetCenterConstraint();
     }
 
+    void Parallel()
+    {
+        _parallel = new Parallel();
+        _parallel.Create(_firstElement.ElementComponent, _tunnel.Slot.BottomFace,
+                         _secondElement.ElementComponent, _slot.BottomFace);
+    }
+
     void Touch()
     {
         _tunnelConstsr = new TunnelConstraint(_tunnel, _slot, _fixture);
 
-        //Config.FreezeDisplay();
+        Config.FreezeDisplay();
         _tunnelConstsr.SetTouchFaceConstraint(false);
-        //Config.UnFreezeDisplay();
+        Config.UnFreezeDisplay();
     }
 
     void Delete(bool isFixed)

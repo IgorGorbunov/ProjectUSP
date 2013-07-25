@@ -2,8 +2,16 @@
 using NXOpen.Assemblies;
 using NXOpen.Positioning;
 
+/// <summary>
+/// Класс перемещений объектов в NX.
+/// </summary>
 public static class Movement
 {
+    /// <summary>
+    /// Перемещение компонента по заданному направлению.
+    /// </summary>
+    /// <param name="comp">Перемещаемый компонент.</param>
+    /// <param name="vec">Вектор перемещения.</param>
     public static void MoveByDirection(Component comp, Vector vec)
     {
         ComponentPositioner componentPositioner1 =
