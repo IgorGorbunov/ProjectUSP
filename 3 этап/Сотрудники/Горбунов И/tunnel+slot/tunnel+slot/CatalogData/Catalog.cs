@@ -25,6 +25,20 @@ public abstract class Catalog
         get { return 0; }
     }
     /// <summary>
+    /// Возвращает ширину шляпки Т-образного болта.
+    /// </summary>
+    public virtual double SlotBoltWidth
+    {
+        get { return 0; }
+    }
+    /// <summary>
+    /// Возвращает длина шляпки Т-образного болта.
+    /// </summary>
+    public virtual double SlotBoltLength
+    {
+        get { return 0; }
+    }
+    /// <summary>
     /// Возвращает ширину П-образного паза.
     /// </summary>
     public virtual double PSlotWidth

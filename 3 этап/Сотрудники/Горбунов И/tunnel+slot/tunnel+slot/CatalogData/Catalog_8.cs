@@ -15,6 +15,14 @@ sealed class Catalog8 : Catalog
     {
         get { return _DIAMETR; }
     }
+    public override double SlotBoltWidth
+    {
+        get { return _SLOT_BOLT_WIDTH; }
+    }
+    public override double SlotBoltLength
+    {
+        get { return _SLOT_BOLT_LENGTH; }
+    }
     public override double PSlotWidth
     {
         get { return _P_SLOT_WIDTH; }
@@ -47,6 +55,9 @@ sealed class Catalog8 : Catalog
 
     private const int _SERIES = 2;
     private const double _DIAMETR = 8;
+
+    private const double _SLOT_BOLT_WIDTH = 12;
+    private const double _SLOT_BOLT_LENGTH = 20;
 
     private const double _P_SLOT_WIDTH = 8;
     private const double _P_SLOT_HEIGHT = 2.5;

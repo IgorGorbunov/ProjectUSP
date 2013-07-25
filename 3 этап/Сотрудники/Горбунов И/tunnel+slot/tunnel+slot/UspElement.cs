@@ -127,6 +127,8 @@ public class UspElement
     {
         Body bb = null;
         BodyCollection bc = ((Part)_component.Prototype).Bodies;
+        Logger.WriteLine("У объекта \"" + ElementComponent.Name + " " + ElementComponent.ToString() +
+                         "\" " + bc.ToArray().Length + " тел(о).");
         foreach (Body body in bc)
         {
             NXObject tmpNxObject = _component.FindOccurrence(body);
@@ -137,8 +139,6 @@ public class UspElement
         }
 
         _body = bb;
-        //Face someFace = GetSomeFace();
-        //_body = someFace.GetBody();
     }
 }
 

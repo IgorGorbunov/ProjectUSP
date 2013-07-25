@@ -997,7 +997,7 @@ public class Tunnelslot
     private void DoMagic()
     {
         Dictionary<string, string> dictionary = 
-            SqlUspElement.GetTitleMinLengthFixture(50, _element2.UspCatalog);
+            SqlUspElement.GetTitleMinLengthFixture(14, _element2.UspCatalog);
 
         string title = "";
         int minLen = int.MaxValue;

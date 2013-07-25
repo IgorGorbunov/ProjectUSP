@@ -50,7 +50,6 @@
     <Compile Include="Constraints\TunnelSlotConstraint.cs" />
     <Compile Include="ElementIntersection.cs" />
     <Compile Include="Constraints\Fix.cs" />
-    <Compile Include="FixtureConfig.cs" />
     <Compile Include="Geom.cs" />
     <Compile Include="Instr.cs" />
     <Compile Include="Log\Log.cs" />

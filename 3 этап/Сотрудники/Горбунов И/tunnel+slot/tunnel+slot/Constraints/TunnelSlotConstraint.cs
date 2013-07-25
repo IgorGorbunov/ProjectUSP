@@ -134,6 +134,7 @@ public sealed class TunnelSlotConstraint
                     }
                     break;
             }
+
             if (tunnelIsSet && bottomIsSet)
             {
                 break;
@@ -171,28 +172,32 @@ public sealed class TunnelSlotConstraint
         return bb;
     }
 
-    static bool IsBottomFace(Face face)
+    bool IsBottomFace(Face face)
     {
         Edge[] edges = face.GetEdges();
+        //4 стороны - 4 ребра
+        if (edges.Length != 4)
+        {
+            return false;
+        }
 
         for (int i = 0; i < edges.Length; i++)
         {
-            if (Config.Round(edges[i].GetLength()) != FixtureConfig.Width) continue;
-
+            if (Config.Round(edges[i].GetLength()) != _secondElement.UspCatalog.SlotBoltWidth) continue;
+            
             for (int j = 0; j < edges.Length; j++)
             {
-                if (Config.Round(edges[j].GetLength()) == FixtureConfig.Length)
+                if (Config.Round(edges[j].GetLength()) == _secondElement.UspCatalog.SlotBoltLength)
                 {
                     return true;
                 }
             }
             return false;
         }
-
         return false;
     }
 
-    static Face[] GetSideFaces(Face bottomFace)
+    Face[] GetSideFaces(Face bottomFace)
     {
         int i = 0;
         Face[] sideFaces = new Face[2];
@@ -200,7 +205,7 @@ public sealed class TunnelSlotConstraint
         Edge[] edges = bottomFace.GetEdges();
         foreach (Edge edge in edges)
         {
-            if (Config.Round(edge.GetLength()) != FixtureConfig.Length) continue;
+            if (Config.Round(edge.GetLength()) != _secondElement.UspCatalog.SlotBoltLength) continue;
 
             Face[] faces = edge.GetFaces();
             foreach (Face face in faces)

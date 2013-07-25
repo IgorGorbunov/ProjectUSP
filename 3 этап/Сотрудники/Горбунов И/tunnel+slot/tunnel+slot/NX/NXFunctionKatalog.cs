@@ -135,7 +135,7 @@ namespace Katalog2005.Algorithm
                 }
                 else
                 {
-                    Logger.WriteLine("Деталь загружена в NX!");
+                    Logger.WriteLine("Деталь " + nmf + " загружена в NX!");
                 }
                 part1 = (Part)basePart1;
             }
