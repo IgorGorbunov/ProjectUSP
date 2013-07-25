@@ -750,90 +750,6 @@ public class Tunnelslot
         Logger.WriteLine("Деселект грани");
         return false;
     }
-    
-/*
-    bool findFaceOooooold(TaggedObject[] to, UspElement element, out Face face)
-    {
-        TaggedObject t = to[0];
-
-        PartCollection PC = Config.TheSession.Parts;
-        foreach (Part p in PC)
-        {
-            Config.TheUi.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, p.ToString());
-            BodyCollection BC = p.Bodies;
-
-            foreach (Body b in BC)
-            {
-                Config.TheUi.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, b.ToString());
-                Face[] FC = b.GetFaces();
-
-                foreach (Face f in FC)
-                {
-                    if (f.Tag == t.Tag)
-                    {
-                        Config.TheUi.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, f.Tag.ToString() + " | " + f.JournalIdentifier);
-                        int type;
-                        double[] point = new double[3];
-                        double[] dir = new double[3];
-                        double[] box = new double[6];
-                        double radius;
-                        double raddata;
-                        int normDir;
-
-                        Config.TheUfSession.Modl.AskFaceData(f.Tag, out type, point, dir, box, out radius,
-                            out raddata, out normDir);
-
-                        foreach (Face ff in element.Body.GetFaces())
-                        {
-                            int type2;
-                            double[] point2 = new double[3];
-                            double[] dir2 = new double[3];
-                            double[] box2 = new double[6];
-                            double radius2;
-                            double raddata2;
-                            int normDir2;
-
-                            Config.TheUfSession.Modl.AskFaceData(ff.Tag, out type2, point2, dir2, box2,
-                                out radius2, out raddata2, out normDir2);
-
-                            if (type == type2 && normDir == normDir2 &&
-                                Config.Round(radius) == Config.Round(radius2) &&
-                                Config.Round(raddata) == Config.Round(raddata2) &&
-                                Geom.IsEqual(point, point2) && Geom.IsEqual(dir, dir2))
-                            {
-                                //Config.theUI.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, ff.Tag.ToString() + " | " + ff.JournalIdentifier);
-
-                                //tst
-                                Part prt = (Part)element.ElementComponent.OwningPart;
-                                Config.TheUi.NXMessageBox.Show("tsttttt", NXMessageBox.DialogType.Error, prt.ToString());
-                                BodyCollection bbb = prt.Bodies;
-                                string sttt = "";
-                                foreach (Body var in bbb)
-	                            {
-                                    Config.TheUi.NXMessageBox.Show("tstttt", NXMessageBox.DialogType.Error, var.ToString());
-                                    foreach (Face ss in var.GetFaces())
-                                    {
-                                        sttt += ss.Tag.ToString() + " ++ " + ff.JournalIdentifier + Environment.NewLine;
-                                    }
-                                    Logger.WriteLine(sttt);
-                                    
-                            		 //Config.theUI.NXMessageBox.Show("tst", NXMessageBox.DialogType.Error, var.ToString());
-	                            }
-
-
-
-                                face = ff;
-                                return true;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        face = null;
-        return false;
-    }
-*/
 
     static bool FindFace(TaggedObject[] to, UspElement element, out Face face)
     {
@@ -994,24 +910,6 @@ public class Tunnelslot
     }
 
 
-    private void DoMagic()
-    {
-        Dictionary<string, string> dictionary = 
-            SqlUspElement.GetTitleMinLengthFixture(14, _element2.UspCatalog);
-
-        string title = "";
-        int minLen = int.MaxValue;
-        foreach (KeyValuePair<string, string> keyValuePair in dictionary)
-        {
-            int len = Int32.Parse(keyValuePair.Value);
-            if (len >= minLen) continue;
-            title = keyValuePair.Key;
-            minLen = len;
-        }
-
-        Katalog2005.Algorithm.SpecialFunctions.DefineTypeOfModel(title);
-    }
-
 
     void SetConstraints()
     {
@@ -1022,10 +920,7 @@ public class Tunnelslot
         {
             _tunnel1.SetSlot(_slot1);
 
-            DoMagic();
-            UspElement fixture = new UspElement(Katalog2005.Algorithm.SpecialFunctions.UnLoadedPart);
-
-            _constraint = new TunnelSlotConstraint(_element1, _tunnel1, _element2, _slot2, fixture);
+            _constraint = new TunnelSlotConstraint(_element1, _tunnel1, _element2, _slot2);
             _constraint.Create();
 
             SetEnable(_direction0, true);

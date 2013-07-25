@@ -1,4 +1,6 @@
-﻿using NXOpen;
+﻿using System;
+using System.Collections.Generic;
+using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.Positioning;
 
@@ -16,7 +18,7 @@ public sealed class TunnelSlotConstraint
 
     private readonly UspElement _firstElement;
     private readonly UspElement _secondElement;
-    private readonly Component _fixture;
+    private UspElement _fixture;
 
     private readonly Tunnel _tunnel;
     private readonly Slot _slot;
@@ -36,7 +38,7 @@ public sealed class TunnelSlotConstraint
     /// <param name="slot">Паз на втором элементе УСП.</param>
     /// <param name="fixture">Компонент болта для крепления.</param>
     public TunnelSlotConstraint(UspElement firstElement, Tunnel tunnel,
-                         UspElement secondElement, Slot slot, UspElement fixture)
+                         UspElement secondElement, Slot slot)
     {
         _tunnel = tunnel;
         _slot = slot;
@@ -44,7 +46,6 @@ public sealed class TunnelSlotConstraint
         _firstElement = firstElement;
         _secondElement = secondElement;
 
-        _fixture = fixture.ElementComponent;
         _hasFixture = true;
     }
     /// <summary>
@@ -55,17 +56,16 @@ public sealed class TunnelSlotConstraint
         bool isFixed = Fix();
 
         Center();
-
         //чтобы ровно в то место, что нужно встала
         Parallel();
         _parallel.Delete();
-
         Touch();
 
         InsertBolt();
 
         _touchAxe = new TouchAxe();
-        _touchAxe.Create(_firstElement.ElementComponent, _tunnel.TunnelFace, _fixture, _tunnelFixtureFace);
+        _touchAxe.Create(_firstElement.ElementComponent, _tunnel.TunnelFace,
+                         _fixture.ElementComponent, _tunnelFixtureFace);
 
         
         if (Geom.IsEqual(Geom.GetDirection(_tunnel.Slot.BottomFace),
@@ -89,7 +89,7 @@ public sealed class TunnelSlotConstraint
         Fix fixFlement = new Fix();
         Fix fixFixture = new Fix();
 
-        fixFixture.Create(_fixture);
+        fixFixture.Create(_fixture.ElementComponent);
         fixFlement.Create(_secondElement.ElementComponent);
 
         _slotConstr.Reverse();
@@ -102,26 +102,95 @@ public sealed class TunnelSlotConstraint
 
     void InsertBolt()
     {
+        double length;
+        SetBoltParams(out length);
+        UnloadBolt(length);
+
         SetFixtureFaces();
 
         Center center = new Center();
-        center.Create(_fixture, _tunnelSideFaces[0], _tunnelSideFaces[1], _secondElement.ElementComponent,
-                        _slot.SideFace1, _slot.SideFace2);
+        center.Create(_fixture.ElementComponent, _tunnelSideFaces[0], _tunnelSideFaces[1],
+                      _secondElement.ElementComponent, _slot.SideFace1, _slot.SideFace2);
 
         Touch touch = new Touch();
-        touch.Create(_fixture, _bottomFace, _secondElement.ElementComponent, _slot.BottomFace);
+        touch.Create(_fixture.ElementComponent, _bottomFace,
+                     _secondElement.ElementComponent, _slot.BottomFace);
 
         MoveBolt();
 
         _fixFixture = new Fix();
-        _fixFixture.Create(_fixture);
+        _fixFixture.Create(_fixture.ElementComponent);
+    }
+
+    void SetBoltParams(out double len)
+    {
+        Point3d topPoint = GetTopPoint();
+        KeyValuePair<Face, double>[] faces = _tunnel.Slot.ParallelFaces;
+
+        double maxLen = double.MinValue;
+        foreach (KeyValuePair<Face, double> pair in faces)
+        {
+            Platan platan = new Platan(pair.Key);
+            Point3d projection = platan.GetProection(topPoint);
+            Vector vector = new Vector(topPoint, projection);
+
+            double length = vector.Length;
+            if (length >= maxLen)
+            {
+                maxLen = length;
+            }
+        }
+        len = maxLen;
+    }
+
+    Point3d GetTopPoint()
+    {
+        Point3d topPoint;
+        Edge[] sigeEdges = _slot.SideFace1.GetEdges();
+        foreach (Edge sigeEdge in sigeEdges)
+        {
+            Face[] faces = sigeEdge.GetFaces();
+            foreach (Face face in faces)
+            {
+                double[] dir = Geom.GetDirection(face);
+
+                if (face.Name != Config.SlotBottomName &&
+                    Geom.DirectionsAreOnStraight(dir, _slot.BottomDirection))
+                {
+                    Point3d tmpPoint;
+                    sigeEdge.GetVertices(out topPoint, out tmpPoint);
+                    return topPoint;
+                }
+            }
+        }
+        return new Point3d();
+    }
+
+    void UnloadBolt(double setLen)
+    {
+        double requiredLen = setLen + _secondElement.UspCatalog.SlotBoltLendthTolerance;
+        Dictionary<string, string> dictionary =
+            SqlUspElement.GetTitleMinLengthFixture(requiredLen, _secondElement.UspCatalog);
+
+        string title = "";
+        int minLen = int.MaxValue;
+        foreach (KeyValuePair<string, string> keyValuePair in dictionary)
+        {
+            int len = Int32.Parse(keyValuePair.Value);
+            if (len >= minLen || len < requiredLen) continue;
+            title = keyValuePair.Key;
+            minLen = len;
+        }
+
+        Katalog2005.Algorithm.SpecialFunctions.DefineTypeOfModel(title);
+        _fixture = new UspElement(Katalog2005.Algorithm.SpecialFunctions.UnLoadedPart);
     }
 
     void SetFixtureFaces()
     {
         bool bottomIsSet = false, tunnelIsSet = false;
 
-        Body body = SetBody(_fixture);
+        Body body = SetBody(_fixture.ElementComponent);
 
         Face[] faces = body.GetFaces();
         foreach (Face face in faces)
@@ -166,7 +235,7 @@ public sealed class TunnelSlotConstraint
             tunnelProectionPoint = point3D;
         }
         Vector vec = new Vector(tunnelProectionPoint, _slot.SlotPoint);
-        MoveByDirection(_fixture, vec);
+        MoveByDirection(_fixture.ElementComponent, vec);
     }
 
     static Body SetBody(Component component)
@@ -279,7 +348,7 @@ public sealed class TunnelSlotConstraint
 
     void Touch()
     {
-        _tunnelConstsr = new TunnelConstraint(_tunnel, _slot, _fixture);
+        _tunnelConstsr = new TunnelConstraint(_tunnel, _slot);
 
         Config.FreezeDisplay();
         _tunnelConstsr.SetTouchFaceConstraint(false);

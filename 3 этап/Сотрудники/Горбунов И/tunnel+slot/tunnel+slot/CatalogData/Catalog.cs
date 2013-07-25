@@ -38,6 +38,10 @@ public abstract class Catalog
     {
         get { return 0; }
     }
+    public virtual double SlotBoltLendthTolerance
+    {
+        get { return 10; }
+    }
     /// <summary>
     /// Возвращает ширину П-образного паза.
     /// </summary>

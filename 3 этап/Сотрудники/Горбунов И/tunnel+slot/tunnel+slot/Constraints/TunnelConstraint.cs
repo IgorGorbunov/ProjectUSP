@@ -1,20 +1,17 @@
 ﻿using System.Collections.Generic;
 using NXOpen;
-using NXOpen.Assemblies;
 
 /// <summary>
 /// Класс для создания связей между двумя базовыми отверстиями.
 /// </summary>
-public class TunnelConstraint
+public sealed class TunnelConstraint
 {
     Session.UndoMarkId _markId1;
 
     readonly Tunnel _firstTunnel;
-    readonly Tunnel _secondTunnel;
     readonly Slot _slot;
-    private readonly UspElement _fixture;
+    private readonly UspElement _fixture = null;
 
-    readonly TouchAxe _axeConstr;
     readonly Touch _touchConstr;
 
     /// <summary>
@@ -23,25 +20,12 @@ public class TunnelConstraint
     /// </summary>
     /// <param name="firstTunnel">Отверстие.</param>
     /// <param name="slot">Паз.</param>
-    /// <param name="fixture">Крепеж.</param>
-    public TunnelConstraint(Tunnel firstTunnel, Slot slot, Component fixture)
+    public TunnelConstraint(Tunnel firstTunnel, Slot slot)
     {
-        _axeConstr = new TouchAxe();
         _touchConstr = new Touch();
 
         _firstTunnel = firstTunnel;
-        _secondTunnel = null;
         _slot = slot;
-        _fixture = new UspElement(fixture);
-    }
-
-    /// <summary>
-    /// Производит соединение двух деталей с отверстиями по оси.
-    /// </summary>
-    public void SetTouchAxeConstraint()
-    {
-        _axeConstr.Create(_firstTunnel.ParentComponent, _firstTunnel.TunnelFace,
-                         _secondTunnel.ParentComponent, _secondTunnel.TunnelFace);
     }
 
     /// <summary>
