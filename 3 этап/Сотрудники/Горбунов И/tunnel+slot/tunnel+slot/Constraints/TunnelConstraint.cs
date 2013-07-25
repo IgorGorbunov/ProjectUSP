@@ -18,21 +18,6 @@ public class TunnelConstraint
     readonly Touch _touchConstr;
 
     /// <summary>
-    /// Инициализирует новый экземпляр класса связей для соединения двух отверстий.
-    /// </summary>
-    /// <param name="firstTunnel">Первое базовое отверстие.</param>
-    /// <param name="secondTunnel">Второе базовое отверстие.</param>
-    public TunnelConstraint(Tunnel firstTunnel, Tunnel secondTunnel)
-    {
-        _axeConstr = new TouchAxe();
-        _touchConstr = new Touch();
-
-        _firstTunnel = firstTunnel;
-        _secondTunnel = secondTunnel;
-        _slot = null;
-    }
-
-    /// <summary>
     /// Инициализирует новый экземпляр класса связей для touch-соединения с проверкой на
     /// пересечение отверстие-паз.
     /// </summary>
@@ -63,26 +48,19 @@ public class TunnelConstraint
     /// </summary>
     /// <param name="firstRev">True, если необходимо перевернуть первый элемент.</param>
     /// <param name="secondRev">True, если необходимо перевернуть второй элемент.</param>
-    public void SetTouchFaceConstraint()
+    public void SetTouchFaceConstraint(bool withFix)
     {
         KeyValuePair<Face, double>[] pairs1 = _firstTunnel.GetOrtFacePairs();
-        KeyValuePair<Face, double>[] pairs2;
-        ElementIntersection intersect, fixIntersect = null;
+        KeyValuePair<Face, double>[] pairs2 = _slot.OrtFaces;
 
-        Component comp2;
-        if (_slot == null)
+        ElementIntersection intersect = new ElementIntersection(_firstTunnel.Body, _slot.SlotSet.Body);
+        ElementIntersection fixIntersect = null;
+        if (withFix)
         {
-            pairs2 = _secondTunnel.GetOrtFacePairs();
-            intersect = new ElementIntersection(_firstTunnel.Body, _secondTunnel.Body);
-            comp2 = _secondTunnel.ParentComponent;
-        }
-        else
-        {
-            pairs2 = _slot.OrtFaces;
-            intersect = new ElementIntersection(_firstTunnel.Body, _slot.SlotSet.Body);
             fixIntersect = new ElementIntersection(_firstTunnel.Body, _fixture.Body);
-            comp2 = _slot.ParentComponent;
         }
+        
+        Component comp2 = _slot.ParentComponent;
 
         for (int i = 0; i < pairs2.Length; i++)
         {
@@ -94,7 +72,19 @@ public class TunnelConstraint
                 _touchConstr.Create(_firstTunnel.ParentComponent, pairs1[j].Key,
                                    comp2, pairs2[i].Key);
 
-                if (intersect.TouchExists && !fixIntersect.InterferenseExists)
+                //против бага intersect в версиях ниже 8.5
+                bool bugChecked;
+                if (withFix)
+                {
+                    bugChecked = !fixIntersect.InterferenseExists;
+                }
+                else
+                {
+                    bugChecked = true;
+                }
+                Message.Tst();
+
+                if (intersect.TouchExists && bugChecked)
                 {
                     goto End;
                 }

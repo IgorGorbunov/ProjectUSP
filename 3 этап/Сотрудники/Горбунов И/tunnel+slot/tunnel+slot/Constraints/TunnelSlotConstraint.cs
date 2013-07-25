@@ -20,6 +20,8 @@ public sealed class TunnelSlotConstraint
     private readonly Tunnel _tunnel;
     private readonly Slot _slot;
 
+    private readonly bool _hasFixture;
+
     Face _tunnelFixtureFace;
     Face _bottomFace;
     Face[] _tunnelSideFaces;
@@ -42,6 +44,7 @@ public sealed class TunnelSlotConstraint
         _secondElement = secondElement;
 
         _fixture = fixture.ElementComponent;
+        _hasFixture = false;
     }
     /// <summary>
     /// Создание связей.
@@ -49,16 +52,16 @@ public sealed class TunnelSlotConstraint
     public void Create()
     {
         bool isFixed = Fix();
-        InsertBolt();
+        //InsertBolt();
 
         Center();
         _touchAxe = new TouchAxe();
-        _touchAxe.Create(_firstElement.ElementComponent, _tunnel.TunnelFace, _fixture, _tunnelFixtureFace);
-        if (Geom.IsEqual(Geom.GetDirection(_tunnel.Slot.BottomFace),
-                        (Geom.GetDirection(_slot.BottomFace))))
-        {
-            _touchAxe.Reverse();
-        }
+        //_touchAxe.Create(_firstElement.ElementComponent, _tunnel.TunnelFace, _fixture, _tunnelFixtureFace);
+        //if (Geom.IsEqual(Geom.GetDirection(_tunnel.Slot.BottomFace),
+        //                (Geom.GetDirection(_slot.BottomFace))))
+        //{
+        //    _touchAxe.Reverse();
+        //}
 
         Touch();
         Delete(isFixed);
@@ -261,14 +264,18 @@ public sealed class TunnelSlotConstraint
     {
         _tunnelConstsr = new TunnelConstraint(_tunnel, _slot, _fixture);
 
-        Config.FreezeDisplay();
-        _tunnelConstsr.SetTouchFaceConstraint();
-        Config.UnFreezeDisplay();
+        //Config.FreezeDisplay();
+        _tunnelConstsr.SetTouchFaceConstraint(false);
+        //Config.UnFreezeDisplay();
     }
 
     void Delete(bool isFixed)
     {
-        _fixFixture.Delete();
+        if (_hasFixture)
+        {
+            _fixFixture.Delete();
+        }
+        
         if (isFixed)
         {
             _fixConstr.Delete();
