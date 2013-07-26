@@ -164,11 +164,7 @@ public class Platan
 
         return numerator / denominator;
     }
-    /// <summary>
-    /// Возвращает проекцию заданной точки на данную плоскость.
-    /// </summary>
-    /// <param name="point">Точка для проэцирования.</param>
-    /// <returns></returns>
+
     public Point3d GetProection(Point3d point)
     {
         Straight straight = new Straight(point, this);

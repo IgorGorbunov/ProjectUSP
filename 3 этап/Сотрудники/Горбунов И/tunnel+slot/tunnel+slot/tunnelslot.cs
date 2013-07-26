@@ -724,10 +724,20 @@ public class Tunnelslot
 	        {
                 if (face.SolidFaceType == Face.FaceType.Cylindrical)
                 {
-
-                    Logger.WriteLine("Грань выбрана - " + face);
-                    tunnel = new Tunnel(face, element);
-                    return true;
+                    if (2 * Geom.GetRadius(face) >= element.UspCatalog.Diametr)
+                    {
+                        Logger.WriteLine("Грань выбрана - " + face);
+                        tunnel = new Tunnel(face, element);
+                        return true;
+                    }
+                    const string message1 = "Отверстие слишком маленькое! Выберите другую грань!";
+                    Logger.WriteWarning(message1 + Environment.NewLine + "Выбрана грань - " + face);
+                    UnSelectObjects(block);
+                    Config.TheUi.NXMessageBox.Show("Error!",
+                                                   NXMessageBox.DialogType.Error,
+                                                   message1);
+                    block.Focus();
+                    return false;
                 }
 	            const string message = "Грань не цилиндрическая! Выберите другую грань!";
 	            Logger.WriteWarning(message + Environment.NewLine + "Выбрана грань - " + face);

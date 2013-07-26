@@ -67,7 +67,6 @@ partial class SqlOracle
             while (reader.Read())
             {
                 values.Add((T)reader.GetValue(0));
-                Message.Show((T)reader.GetValue(0));
             }
 
             reader.Close();
@@ -153,7 +152,7 @@ partial class SqlOracle
         mess = RecordQuery(mess, cmdQuery, paramsDict);
         mess += Environment.NewLine + "-";
         mess += Environment.NewLine + "Data:";
-        mess += Environment.NewLine + value;
+        mess += Environment.NewLine + "\"" + value + "\"";
         Logger.WriteLine(mess);
     }
     static void ProcessSuccess<T>(string cmdQuery, Dictionary<string, string> paramsDict, List<T> values)
@@ -164,7 +163,7 @@ partial class SqlOracle
         mess += Environment.NewLine + "Data:";
         foreach (T value in values)
         {
-            mess += Environment.NewLine + value;
+            mess += Environment.NewLine + "\"" + value + "\"";
         }
         Logger.WriteLine(mess);
     }
@@ -192,12 +191,12 @@ partial class SqlOracle
 
     static string RecordQuery(string mess, string cmdQuery, Dictionary<string, string> paramsDict)
     {
-        mess += Environment.NewLine + cmdQuery;
+        mess += Environment.NewLine + "\"" + cmdQuery + "\"";
         mess += Environment.NewLine + "-";
         mess += Environment.NewLine + "Parametrs:";
         foreach (KeyValuePair<string, string> pair in paramsDict)
         {
-            mess += Environment.NewLine + pair.Key + " - " + pair.Value;
+            mess += Environment.NewLine + "\"" + pair.Key + " - " + pair.Value + "\"";
         }
         return mess;
     }

@@ -1,0 +1,5 @@
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Debug\ResolveAssemblyReference.cache
+C:\ug_customization\application\turningBase.dll
+C:\ug_customization\application\turningBase.pdb
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Debug\turningBase.dll
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Debug\turningBase.pdb

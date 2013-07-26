@@ -159,7 +159,7 @@ public class Tunnel
     void SetOccurenceFace()
     {
         Edge[] edges1 = _face.GetEdges();
-        _diametr = Geom.GetDiametr(edges1[0]);
+        //_diametr = Geom.GetDiametr(edges1[0]);
 
         Point3d point1, tmpPoint;
         edges1[0].GetVertices(out point1, out tmpPoint);
