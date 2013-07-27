@@ -35,10 +35,12 @@
 //These imports are needed for the following template code
 //------------------------------------------------------------------------------
 using System;
+using System.Collections.Generic;
 using System.IO;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.BlockStyler;
+using NXOpen.Utilities;
 
 //------------------------------------------------------------------------------
 //Represents Block Styler application class
@@ -49,13 +51,20 @@ public sealed class TurningBase
     private static TurningBase _theturningBase;
     private readonly string _theDialogName;
     private BlockDialog _theDialog;
+// ReSharper disable NotAccessedField.Local
     private UIBlock _group0;// Block type: Group
+// ReSharper restore NotAccessedField.Local
     private UIBlock _faceSelect0;// Block type: Face Collector
 
-    private Point3d _point;
+    private Point3d _centrePoint;
     private double[] _direct;
 
     private bool _faceSelected;
+
+    private Platan _projectPlatan;
+    private readonly List<Point3d> _projectList = new List<Point3d>();
+
+    private Catalog _catalog;
 
     
     //------------------------------------------------------------------------------
@@ -69,19 +78,20 @@ public sealed class TurningBase
                 Config.DlxFolder + Path.DirectorySeparatorChar + Config.DlxTurningBase;
 
             _theDialog = Config.TheUi.CreateDialog(_theDialogName);
-            _theDialog.AddApplyHandler(new NXOpen.BlockStyler.BlockDialog.Apply(apply_cb));
-            _theDialog.AddOkHandler(new NXOpen.BlockStyler.BlockDialog.Ok(ok_cb));
-            _theDialog.AddUpdateHandler(new NXOpen.BlockStyler.BlockDialog.Update(update_cb));
-            _theDialog.AddCancelHandler(new NXOpen.BlockStyler.BlockDialog.Cancel(cancel_cb));
-            _theDialog.AddInitializeHandler(new NXOpen.BlockStyler.BlockDialog.Initialize(initialize_cb));
-            _theDialog.AddFocusNotifyHandler(new NXOpen.BlockStyler.BlockDialog.FocusNotify(focusNotify_cb));
-            _theDialog.AddKeyboardFocusNotifyHandler(new NXOpen.BlockStyler.BlockDialog.KeyboardFocusNotify(keyboardFocusNotify_cb));
-            _theDialog.AddDialogShownHandler(new NXOpen.BlockStyler.BlockDialog.DialogShown(dialogShown_cb));
+            _theDialog.AddApplyHandler(apply_cb);
+            _theDialog.AddOkHandler(ok_cb);
+            _theDialog.AddUpdateHandler(update_cb);
+            _theDialog.AddCancelHandler(cancel_cb);
+            _theDialog.AddInitializeHandler(initialize_cb);
+            _theDialog.AddFocusNotifyHandler(focusNotify_cb);
+            _theDialog.AddKeyboardFocusNotifyHandler(keyboardFocusNotify_cb);
+            _theDialog.AddDialogShownHandler(dialogShown_cb);
         }
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            throw ex;
+            Message.Show(ex);
+            throw;
         }
     }
     //------------------------------- DIALOG LAUNCHING ---------------------------------
@@ -109,15 +119,18 @@ public sealed class TurningBase
     //        2) Invoke the Shared Library through File->Execute->NX Open menu.
     //
     //------------------------------------------------------------------------------
+// ReSharper disable UnusedMember.Global
     public static void Main()
+// ReSharper restore UnusedMember.Global
     {
         try
         {
-            Logger.WriteLine("++++++++++++++++++++++++++++++++++++++++++++++++" + " Начало работы программы " + Environment.CommandLine);
             _theturningBase = new TurningBase();
+            Logger.WriteLine("++++++++++++++++++++++++++++++++++++++++++++++++" + " Начало работы программы " + _theturningBase.GetType().Name);
+            
             // The following method shows the dialog immediately
             _theturningBase.Show();
-            Logger.WriteLine("--------------------------------------------------" + " Конец работы программы " + Environment.CommandLine);
+            Logger.WriteLine("--------------------------------------------------" + " Конец работы программы " + _theturningBase.GetType().Name);
         }
         catch (Exception ex)
         {
@@ -146,10 +159,14 @@ public sealed class TurningBase
     // MUST NOT use this option since it will UNLOAD your NX Open application image
     // from the menubar.
     //------------------------------------------------------------------------------
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedParameter.Global
      public static int GetUnloadOption(string arg)
+// ReSharper restore UnusedParameter.Global
+// ReSharper restore UnusedMember.Global
     {
         //return System.Convert.ToInt32(Session.LibraryUnloadOption.Explicitly);
-         return System.Convert.ToInt32(Session.LibraryUnloadOption.Immediately);
+         return Convert.ToInt32(Session.LibraryUnloadOption.Immediately);
         // return System.Convert.ToInt32(Session.LibraryUnloadOption.AtTermination);
     }
     
@@ -157,7 +174,11 @@ public sealed class TurningBase
     // Following method cleanup any housekeeping chores that may be needed.
     // This method is automatically called by NX.
     //------------------------------------------------------------------------------
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedParameter.Global
     public static int UnloadLibrary(string arg)
+// ReSharper restore UnusedParameter.Global
+// ReSharper restore UnusedMember.Global
     {
         try
         {
@@ -174,7 +195,7 @@ public sealed class TurningBase
     //------------------------------------------------------------------------------
     //This method shows the dialog on the screen
     //------------------------------------------------------------------------------
-    private NXOpen.UIStyler.DialogResponse Show()
+    private void Show()
     {
         try
         {
@@ -185,9 +206,8 @@ public sealed class TurningBase
             //---- Enter your exception handling code here -----
             Message.Show(ex);
         }
-        return 0;
     }
-    
+
     //------------------------------------------------------------------------------
     //Method Name: Dispose
     //------------------------------------------------------------------------------
@@ -213,6 +233,10 @@ public sealed class TurningBase
         {
             _group0 = _theDialog.TopBlock.FindBlock("group0");
             _faceSelect0 = _theDialog.TopBlock.FindBlock("face_select0");
+
+            SQLOracle.BuildConnectionString("591014", "591000", "BASEEOI");
+            SqlOracle.BuildConnectionString("591014", "591000", "BASEEOI");
+            _catalog = new Catalog12();
         }
         catch (Exception ex)
         {
@@ -285,7 +309,9 @@ public sealed class TurningBase
     //------------------------------------------------------------------------------
     private int ok_cb()
     {
+// ReSharper disable RedundantAssignment
         int errorCode = 0;
+// ReSharper restore RedundantAssignment
         try
         {
             errorCode = apply_cb();
@@ -353,9 +379,18 @@ public sealed class TurningBase
 
     void SetFirstFace(UIBlock block)
     {
-        if (SetFace(block, out _point, out _direct))
+        if (SetFace(block, out _centrePoint, out _direct))
         {
-            Message.Tst(_point, _direct[0], _direct[1], _direct[2]);
+            //Message.Tst(_centrePoint, _direct[0], _direct[1], _direct[2]);
+            Point3d point2 = new Point3d();
+            point2.X = _centrePoint.X + _direct[0];
+            point2.Y = _centrePoint.Y + _direct[1];
+            point2.Z = _centrePoint.Z + _direct[2];
+
+            Straight straight = new Straight(_centrePoint, point2);
+            _projectPlatan = new Platan(_centrePoint, straight);
+
+            DoMagic();
         }
 
     }
@@ -405,5 +440,107 @@ public sealed class TurningBase
     {
         PropertyList propList = block.GetProperties();
         propList.SetTaggedObjectVector("SelectedObjects", new TaggedObject[0]);
+    }
+
+    void DoMagic()
+    {
+        PartCollection partCollection = Config.TheSession.Parts;
+
+        foreach (Part part in partCollection)
+        {
+            Tag[] occurences;
+            Config.TheUfSession.Assem.AskOccsOfPart(Config.WorkPart.Tag, part.Tag, out occurences);
+
+            foreach (Tag tag in occurences)
+            {
+                Component component = (Component) NXObjectManager.Get(tag);
+                if (component.IsBlanked) continue;
+
+                UspElement element = new UspElement(component);
+
+                double[] minCorner = new double[3];
+                double[] distances = new double[3];
+                double[,] directions = new double[3, 3];
+                Config.TheUfSession.Modl.AskBoundingBoxExact(element.Body.Tag, Tag.Null, minCorner, directions, distances);
+
+                AddToProjectList(new Point3d(minCorner[0], minCorner[1], minCorner[2]));
+                AddToProjectList(new Point3d(minCorner[0] + distances[0], minCorner[1], minCorner[2]));
+                AddToProjectList(new Point3d(minCorner[0], minCorner[1] + distances[1], minCorner[2]));
+                AddToProjectList(new Point3d(minCorner[0], minCorner[1], minCorner[2] + distances[2]));
+
+                AddToProjectList(new Point3d(minCorner[0] + distances[0], minCorner[1] + distances[1], minCorner[2]));
+                AddToProjectList(new Point3d(minCorner[0] + distances[0], minCorner[1], minCorner[2] + distances[2]));
+                AddToProjectList(new Point3d(minCorner[0], minCorner[1] + distances[1], minCorner[2] + distances[2]));
+                AddToProjectList(new Point3d(minCorner[0] + distances[0], minCorner[1] + distances[1], minCorner[2] + distances[2]));
+            }
+        }
+        double radius = FindMaxLen();
+
+        Dictionary<string, string> bases = SqlUspElement.GetTitleLengthRoundPlates(_catalog);
+        KeyValuePair<string, double>[] correctNumBases = new KeyValuePair<string, double>[bases.Count];
+        int i = 0;
+        foreach (KeyValuePair<string, string> keyValuePair in bases)
+        {
+            double value = Int32.Parse(keyValuePair.Value);
+            correctNumBases[i] = new KeyValuePair<string, double>(keyValuePair.Key, value);
+            i++;
+        }
+        if (correctNumBases.Length > 1)
+        {
+            Instr.QSortPairs(correctNumBases, 0, correctNumBases.Length - 1);
+        }
+
+        string title = null;
+        for (int j = 0; j < correctNumBases.Length; j++)
+        {
+            if (correctNumBases[j].Value < radius * 2) continue;
+            title = correctNumBases[j].Key;
+            break;
+        }
+        if (title != null)
+        {
+            Katalog2005.Algorithm.SpecialFunctions.LoadPart(title);
+        }
+        else
+        {
+            Message.Show("Подходящая база не найдена!");
+        }
+
+        
+        
+    }
+
+    void AddToProjectList(Point3d point)
+    {
+        Point3d projectPoint = _projectPlatan.GetProection(point);
+
+        bool alreadyHave = false;
+        foreach (Point3d point3D in _projectList)
+        {
+            if (!Geom.IsEqual(projectPoint, point3D)) continue;
+
+            alreadyHave = true;
+            break;
+        }
+        if (!alreadyHave)
+        {
+            _projectList.Add(projectPoint);
+        }
+    }
+
+    double FindMaxLen()
+    {
+        double maxLen = double.MinValue;
+        Point3d centreProj = _projectPlatan.GetProection(_centrePoint);
+        foreach (Point3d point in _projectList)
+        {
+            double len = (new Vector(centreProj, point)).Length;
+            if (len > maxLen)
+            {
+                maxLen = len;
+            }
+        }
+        Logger.WriteLine("Минимальный радиус выгружаемой базы = " + maxLen);
+        return maxLen;
     }
 }

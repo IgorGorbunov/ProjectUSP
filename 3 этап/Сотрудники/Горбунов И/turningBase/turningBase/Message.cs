@@ -25,6 +25,10 @@ public static class Message
         string mess = "";
         for (int i = 0; i < vars.Length; i++)
         {
+            if (vars[i] == null)
+            {
+                mess += "null" + Environment.NewLine;
+            }
             mess += vars[i] + Environment.NewLine;
         }
         Show("test", MessageIcon.Error, mess);

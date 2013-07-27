@@ -38,19 +38,34 @@ public static class SqlTabUspData
     /// </summary>
     public enum NameUsp
     {
-        SlotBolt = 0
+        /// <summary>
+        /// 'Болты пазовые'
+        /// </summary>
+        SlotBolt = 0,
+        /// <summary>
+        /// 'Плиты круглые'
+        /// </summary>
+        RoundPlates = 1,
+        /// <summary>
+        /// 'Плита круглая'
+        /// </summary>
+        RoundPlate = 2
     }
     /// <summary>
-    /// Возвращает наименова ние ГОСТа.
+    /// Возвращает наименование ГОСТа.
     /// </summary>
     /// <param name="name">ГОСТ</param>
     /// <returns></returns>
     public static string GetName(NameUsp name)
     {
-        switch (name)
+        switch ((int)name)
         {
             case 0:
                 return "'Болты пазовые'";
+            case 1:
+                return "Плиты круглые";
+            case 2:
+                return "Плита круглая";
         }
         return "''";
     }
@@ -59,7 +74,13 @@ public static class SqlTabUspData
     /// </summary>
     public enum CatalogUsp
     {
+        /// <summary>
+        /// Каталог на 8ой паз (серия 2).
+        /// </summary>
         Slot8 = 0,
+        /// <summary>
+        /// Каталог на 12ый паз (серия 3).
+        /// </summary>
         Slot12 = 1
     }
     /// <summary>
@@ -67,6 +88,13 @@ public static class SqlTabUspData
     /// </summary>
     public enum GroupUsp
     {
+        /// <summary>
+        /// Базовые детали.
+        /// </summary>
+        Base = 0,
+        /// <summary>
+        /// Крепежные детали.
+        /// </summary>
         Fixture = 5
     }
 }
