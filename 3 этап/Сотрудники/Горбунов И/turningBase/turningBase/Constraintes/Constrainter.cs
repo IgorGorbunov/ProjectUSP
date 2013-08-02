@@ -7,7 +7,7 @@ using NXOpen.Positioning;
 public class Constrainter
 {
     protected ComponentConstraint Constr;
-    public ComponentPositioner ComponentPositioner;
+    protected ComponentPositioner ComponentPositioner;
 
     ComponentNetwork _componentNetwork;
 

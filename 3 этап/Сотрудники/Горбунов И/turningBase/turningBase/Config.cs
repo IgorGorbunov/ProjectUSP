@@ -21,9 +21,7 @@ public static class Config
     public enum SlotType
     {
         Pslot,
-        Tslot,
-        Tslot1,
-        Tslot2
+        Tslot
     };
 
     public static readonly char[] FaceNameSplitter = { '_' };
@@ -34,6 +32,11 @@ public static class Config
     /// Наименование НГП.
     /// </summary>
     public static readonly string SlotBottomName = SlotSymbol + FaceNameSplitter[0] + SlotBottomSymbol;
+
+    /// <summary>
+    /// Наименование главного отверстия на токарной базе.
+    /// </summary>
+    public const string BaseHoleName = "BASE_HOLE";
 
     //снизил с 4 на 3 из-за невозможности пазирования (почему-то) коротких пазов на главной
     //плоскости с длинными на боковых у плит
@@ -58,7 +61,7 @@ public static class Config
     /// <summary>
     /// Имя файла с формой базирования элементов по отверстиям.
     /// </summary>
-    public static string DlxTunnelTunnel = @"tunnel+tunnel.dlx";
+    public const string DlxTunnelTunnel = @"tunnel+tunnel.dlx";
     /// <summary>
     /// Имя файла с формой для базирования отверстие-паз.
     /// </summary>
@@ -66,13 +69,12 @@ public static class Config
     /// <summary>
     /// Имя файла с формой c двумя точками.
     /// </summary>
-    public static string DlxPointPoint = @"point+point.dlx";
+    public const string DlxPointPoint = @"point+point.dlx";
     /// <summary>
     /// Возвращает имя файла с формой для выгрузки токарной базы.
     /// </summary>
-    public static string DlxTurningBase = @"turningBase.dlx";
+    public const string DlxTurningBase = @"turningBase.dlx";
 
-    
 
     //------------------------ Methods ------------------------------------------------------------
 

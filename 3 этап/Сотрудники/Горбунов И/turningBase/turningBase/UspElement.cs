@@ -6,7 +6,7 @@ using NXOpen.Assemblies;
 /// <summary>
 /// Класс содержащий элемент УСП.
 /// </summary>
-public class UspElement
+public sealed class UspElement
 {
     /// <summary>
     /// Возвращает компонент элемента.
@@ -123,6 +123,25 @@ public class UspElement
         Logger.WriteLine(mess);
     }
 
+    /// <summary>
+    /// Возвращает грань объекта по её имени.
+    /// </summary>
+    /// <param name="faceName"></param>
+    /// <returns></returns>
+    public Face GetFace(string faceName)
+    {
+        Face[] faces = _body.GetFaces();
+        foreach (Face face in faces)
+        {
+            //Message.Tst(face.Name);
+            if (face.Name == faceName)
+            {
+                return face;
+            }
+        }
+        return null;
+    }
+
     void SetBody()
     {
         Body bb = null;
@@ -140,5 +159,7 @@ public class UspElement
 
         _body = bb;
     }
+
+    
 }
 

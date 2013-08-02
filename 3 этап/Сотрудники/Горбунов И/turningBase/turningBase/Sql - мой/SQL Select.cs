@@ -30,7 +30,7 @@ partial class SqlOracle
             OracleDataReader reader = cmd.ExecuteReader();
             if (reader.Read())
             {
-                value = (T)reader.GetValue(0);
+                value = (T) reader.GetValue(0);
             }
 
             reader.Close();
@@ -125,17 +125,17 @@ partial class SqlOracle
         }
     }
 
-    public static List<string> TestSelect(string cmdQuery)
+    public static object TestSelect(string cmdQuery)
     {
         _open();
         Logger.WriteLine(cmdQuery);
-        List<string> list = new List<string>();
+        object val = 0;
 
         OracleCommand cmd = new OracleCommand(cmdQuery, _conn);
         OracleDataReader reader = cmd.ExecuteReader();
         while (reader.Read())
         {
-            list.Add(reader.GetValue(0).ToString());
+            val = reader.GetValue(0);
             Message.Show(reader.GetValue(0));
         }
 
@@ -143,7 +143,7 @@ partial class SqlOracle
         cmd.Dispose();
         _close();
 
-        return list;
+        return val;
     }
 
 

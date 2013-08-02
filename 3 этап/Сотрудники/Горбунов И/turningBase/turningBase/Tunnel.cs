@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using NXOpen;
 using NXOpen.Assemblies;
 
@@ -112,7 +111,7 @@ public class Tunnel
 
         SetOccurenceFace();
 
-        SetDirectionAndPoint();
+        //SetDirectionAndPoint();
     }
     
     /// <summary>
@@ -184,62 +183,6 @@ public class Tunnel
         }
         End:{}
     }
-    //refactor
-    void FindOrtFaces()
-    {
-        double[] etalonDirection = _slot.BottomDirection;
-        Point3d point = CentralPoint;
-
-        Dictionary<Face, double> dictFaces = new Dictionary<Face, double>();
-
-        Face[] faces = Body.GetFaces();
-        foreach (Face f in faces)
-        {
-            double[] faceDiriction = Geom.GetDirection(f);
-
-            if (f.SolidFaceType == Face.FaceType.Planar && 
-                Geom.IsEqual(etalonDirection, faceDiriction))
-            {
-                Platan pl = new Platan(f);
-
-                //округление для проверки нуля - added
-                double distance = Config.Round(Math.Abs(pl.GetDistanceToPoint(point)));
-
-                if (distance >= 0 && !dictFaces.ContainsValue(distance))
-                {
-                    dictFaces.Add(f, distance);
-                }
-            }  
-        }
-
-        SetOrtFaces(dictFaces);
-    }
-
-    void SetOrtFaces(Dictionary<Face, double> dictFaces)
-    {
-        _ortFacePairs = new KeyValuePair<Face, double>[dictFaces.Count];
-        int i = 0;
-        foreach (KeyValuePair<Face, double> pair in dictFaces)
-        {
-            _ortFacePairs[i] = pair;
-            i++;
-        }
-
-        if (_ortFacePairs.Length > 1)
-        {
-            Instr.QSortPairs(_ortFacePairs, 0, _ortFacePairs.Length - 1);
-        }
-
-        string logMess = "Паралельные грани для НГП " + ParentComponent + " " + 
-            ParentComponent.Name + " c расстоянием до неё:";
-        foreach (KeyValuePair<Face, double> keyValuePair in _ortFacePairs)
-        {
-            logMess += Environment.NewLine + keyValuePair.Key + " - " + 
-                keyValuePair.Value + " мм";
-        }
-        logMess += Environment.NewLine + "=============";
-        Logger.WriteLine(logMess);
-    }
 
     void SetDirectionAndPoint()
     {
@@ -257,19 +200,5 @@ public class Tunnel
         //edges[0].GetVertices(out point1, out point2);
         _point = new Point3d(voidPoint[0], voidPoint[1], voidPoint[2]);
     }
-
-    double[] ReverseDirection()
-    {
-        double[] dir = Direction;
-        _rev *= -1;
-
-        for (int i = 0; i < dir.Length; i++)
-        {
-            dir[i] = _rev * dir[i];
-        }
-
-        return dir;
-    }
-
 }
 

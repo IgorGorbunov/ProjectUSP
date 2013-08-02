@@ -1,4 +1,4 @@
-//==============================================================================
+﻿//==============================================================================
 //  WARNING!!  This file is overwritten by the Block UI Styler while generating
 //  the automation code. Any modifications to this file will be lost after
 //  generating the code again.
@@ -55,18 +55,43 @@ public sealed class TurningBase
     private UIBlock _group0;// Block type: Group
 // ReSharper restore NotAccessedField.Local
     private UIBlock _faceSelect0;// Block type: Face Collector
+    private UIBlock _enum0;// Block type: Enumeration
+    private UIBlock _group1;// Block type: Group
+    private UIBlock _direction0;
+    private UIBlock _selection0;
+    private UIBlock _double0;
+    private UIBlock _linearDim0;// Block type: Linear Dim
+    private UIBlock _group;// Block type: Group
+    private UIBlock _button0;// Block type: Button
+    private UIBlock _button01;// Block type: Button
+    private UIBlock _label0;// Block type: Label
 
     private Point3d _centrePoint;
+    private Point3d _basePoint;
     private double[] _direct;
 
     private bool _faceSelected;
+    private bool _partIsLoaded;
 
     private Platan _projectPlatan;
     private readonly List<Point3d> _projectList = new List<Point3d>();
 
     private Catalog _catalog;
+    private string _slotType;
+    private double _radius;
 
-    
+    private Face _turningFace;
+    private UspElement _turningElement;
+
+    private Face _baseFace;
+    private UspElement _baseElement;
+
+    private Vector _workpeaceBaseVector;
+    private Point3d _oldPointMovement;
+
+    private TouchAxe _touchAxe;
+
+
     //------------------------------------------------------------------------------
     //Constructor for NX Styler class
     //------------------------------------------------------------------------------
@@ -126,11 +151,11 @@ public sealed class TurningBase
         try
         {
             _theturningBase = new TurningBase();
-            Logger.WriteLine("++++++++++++++++++++++++++++++++++++++++++++++++" + " ������ ������ ��������� " + _theturningBase.GetType().Name);
+            Logger.WriteLine("++++++++++++++++++++++++++++++++++++++++++++++++" + " Начало работы программы " + _theturningBase.GetType().Name);
             
             // The following method shows the dialog immediately
             _theturningBase.Show();
-            Logger.WriteLine("--------------------------------------------------" + " ����� ������ ��������� " + _theturningBase.GetType().Name);
+            Logger.WriteLine("--------------------------------------------------" + " Конец работы программы " + _theturningBase.GetType().Name);
         }
         catch (Exception ex)
         {
@@ -233,9 +258,19 @@ public sealed class TurningBase
         {
             _group0 = _theDialog.TopBlock.FindBlock("group0");
             _faceSelect0 = _theDialog.TopBlock.FindBlock("face_select0");
+            _enum0 = _theDialog.TopBlock.FindBlock("enum0");
+            _group1 = _theDialog.TopBlock.FindBlock("group1");
+            _direction0 = _theDialog.TopBlock.FindBlock("direction0");
+            _linearDim0 = _theDialog.TopBlock.FindBlock("linear_dim0");
+            _group = _theDialog.TopBlock.FindBlock("group");
+            _button0 = _theDialog.TopBlock.FindBlock("button0");
+            _button01 = _theDialog.TopBlock.FindBlock("button01");
+            _label0 = _theDialog.TopBlock.FindBlock("label0");
+            _selection0 = _theDialog.TopBlock.FindBlock("selection0");
+            _double0 = _theDialog.TopBlock.FindBlock("double0");
 
-            SQLOracle.BuildConnectionString("591014", "591000", "BASEEOI");
-            SqlOracle.BuildConnectionString("591014", "591000", "BASEEOI");
+            SQLOracle.BuildConnectionString("ktc", "ktc", "BASEEOI");
+            SqlOracle.BuildConnectionString("ktc", "ktc", "BASEEOI");
             _catalog = new Catalog12();
         }
         catch (Exception ex)
@@ -289,11 +324,66 @@ public sealed class TurningBase
     {
         try
         {
+            if (block == _enum0)
+            {
+                //---------Enter your code here-----------
+                Logger.WriteLine("Нажат выбор типа паза.");
+                UpdateLoad();
+            }
             if(block == _faceSelect0)
             {
             //---------Enter your code here-----------
-                Logger.WriteLine("����� ����� �����.");
+                Logger.WriteLine("Нажат выбор грани.");
                 SetFirstFace(block);
+                UpdateLoad();
+            }
+            else if (block == _direction0)
+            {
+                //---------Enter your code here-----------
+                Logger.WriteLine("Нажат реверс.");
+                _touchAxe.Reverse();
+            }
+            else if (block == _selection0)
+            {
+                //---------Enter your code here-----------
+                Logger.WriteLine("Нажат выбор компонента.");
+                PropertyList propertyList = _selection0.GetProperties();
+                TaggedObject[] taggedObjects = propertyList.GetTaggedObjectVector("SelectedObjects");
+                _turningElement = new UspElement((Component)NXObjectManager.Get(taggedObjects[0].Tag));
+
+                
+            }
+            else if (block == _linearDim0)
+            {
+                //---------Enter your code here-----------
+                PropertyList propertyList = _linearDim0.GetProperties();
+                double doub = propertyList.GetDouble("Value");
+                Point3d newPoint = _workpeaceBaseVector.GetPoint(doub);
+                Vector newVector = new Vector(_oldPointMovement, newPoint);
+                Movement.MoveByDirection(_baseElement.ElementComponent, newVector);
+                _oldPointMovement = newPoint;
+            }
+            else if (block == _double0)
+            {
+                //---------Enter your code here-----------
+                PropertyList propertyList = _double0.GetProperties();
+                double doub = propertyList.GetDouble("Value");
+                Point3d newPoint = _workpeaceBaseVector.GetPoint(doub);
+                Vector newVector = new Vector(_oldPointMovement, newPoint);
+                Movement.MoveByDirection(_baseElement.ElementComponent, newVector);
+                _oldPointMovement = newPoint;
+            }
+            else if (block == _button0)
+            {
+                //---------Enter your code here-----------
+                Logger.WriteLine("Нажата кнопка меньшего диаметра.");
+                UpdateLoad();
+            }
+            else if (block == _button01)
+            {
+                //---------Enter your code here-----------
+                Logger.WriteLine("Нажата кнопка большего диаметра.");
+                UpdateLoad();
             }
         }
         catch (Exception ex)
@@ -377,11 +467,19 @@ public sealed class TurningBase
         }
     }
 
+    void SetBaseType()
+    {
+        PropertyList propertyList = _enum0.GetProperties();
+        _slotType = propertyList.GetEnumAsString("Value");
+        Logger.WriteLine("Тип паза - " + _slotType);
+    }
+
     void SetFirstFace(UIBlock block)
     {
         if (SetFace(block, out _centrePoint, out _direct))
         {
-            //Message.Tst(_centrePoint, _direct[0], _direct[1], _direct[2]);
+            _faceSelected = true;
+
             Point3d point2 = new Point3d();
             point2.X = _centrePoint.X + _direct[0];
             point2.Y = _centrePoint.Y + _direct[1];
@@ -389,12 +487,14 @@ public sealed class TurningBase
 
             Straight straight = new Straight(_centrePoint, point2);
             _projectPlatan = new Platan(_centrePoint, straight);
-
-            DoMagic();
+        }
+        else
+        {
+            _faceSelected = false;
         }
 
     }
-    static bool SetFace(UIBlock block, out Point3d point3D, out double[] direction)
+    bool SetFace(UIBlock block, out Point3d point3D, out double[] direction)
     {
         point3D = new Point3d();
         direction = new double[3];
@@ -402,7 +502,7 @@ public sealed class TurningBase
         PropertyList propertyList = block.GetProperties();
         TaggedObject[] to = propertyList.GetTaggedObjectVector("SelectedObjects");
 
-        //���� �� ��������
+        //если не деселект
         if (to.Length > 0)
         {
             TaggedObject face = to[0];
@@ -415,24 +515,42 @@ public sealed class TurningBase
 
             Config.TheUfSession.Modl.AskFaceData(face.Tag, out type, point, dir, box, out voidDouble, out voidDouble, out type);
 
-            //�������������� �����
+            //цилиндрическая грань
             if (type == 16)
             {
                 point3D.X = point[0];
                 point3D.Y = point[1];
                 point3D.Z = point[2];
-
                 direction = dir;
 
+                Logger.WriteLine("Точка обр. грани - " + point3D);
+                _turningFace = (Face)NXObjectManager.Get(face.Tag);
+                //Face face1 = (Face)NXObjectManager.Get((Tag)38733);
+
+                //Message.Tst(_turningFace + " " +_turningFace.IsOccurrence);
+                //face1.Highlight();
+                //Message.Tst(face1 + " " + face1.IsOccurrence);
+                //face1.Unhighlight();
+                //Message.Tst(_turningElement.ElementComponent.IsOccurrence);
+
+                //Tag t = Config.TheUfSession.Assem.AskPrototypeOfOcc(face1.Tag);
+                //Tag tttt = Config.TheUfSession.Assem.AskPartOccurrence(face1.Tag);
+                //Message.Tst(t + " " + tttt + " " + _turningElement.ElementComponent.Tag);
+
+                //Body b = _turningFace.GetBody();
+                //b.Highlight();
+                //Message.Tst(_turningFace.GetBody().Tag);
+                //b.Unhighlight();
+                 
                 return true;
             }
-            const string message = "����� �� ��������������! �������� ������ �����!";
-            Logger.WriteWarning(message + Environment.NewLine + "������� ����� - " + face);
+            const string message = "Грань не цилиндрическая! Выберите другую грань!";
+            Logger.WriteWarning(message + Environment.NewLine + "Выбрана грань - " + face);
             Message.Show(message);
             UnSelectObjects(block);
             return false;
         }
-        Logger.WriteLine("�������� �����");
+        Logger.WriteLine("Деселект грани");
         return false;
     }
 
@@ -442,10 +560,17 @@ public sealed class TurningBase
         propList.SetTaggedObjectVector("SelectedObjects", new TaggedObject[0]);
     }
 
-    void DoMagic()
+    static void SetEnable(UIBlock block, bool enable)
+    {
+        PropertyList propList = block.GetProperties();
+        propList.SetLogical("Enable", enable);
+    }
+
+    void SetPoints()
     {
         PartCollection partCollection = Config.TheSession.Parts;
 
+        Logger.WriteLine("Пишем точки");
         foreach (Part part in partCollection)
         {
             Tag[] occurences;
@@ -453,7 +578,7 @@ public sealed class TurningBase
 
             foreach (Tag tag in occurences)
             {
-                Component component = (Component) NXObjectManager.Get(tag);
+                Component component = (Component)NXObjectManager.Get(tag);
                 if (component.IsBlanked) continue;
 
                 UspElement element = new UspElement(component);
@@ -474,46 +599,11 @@ public sealed class TurningBase
                 AddToProjectList(new Point3d(minCorner[0] + distances[0], minCorner[1] + distances[1], minCorner[2] + distances[2]));
             }
         }
-        double radius = FindMaxLen();
-
-        Dictionary<string, string> bases = SqlUspElement.GetTitleLengthRoundPlates(_catalog);
-        KeyValuePair<string, double>[] correctNumBases = new KeyValuePair<string, double>[bases.Count];
-        int i = 0;
-        foreach (KeyValuePair<string, string> keyValuePair in bases)
-        {
-            double value = Int32.Parse(keyValuePair.Value);
-            correctNumBases[i] = new KeyValuePair<string, double>(keyValuePair.Key, value);
-            i++;
-        }
-        if (correctNumBases.Length > 1)
-        {
-            Instr.QSortPairs(correctNumBases, 0, correctNumBases.Length - 1);
-        }
-
-        string title = null;
-        for (int j = 0; j < correctNumBases.Length; j++)
-        {
-            if (correctNumBases[j].Value < radius * 2) continue;
-            title = correctNumBases[j].Key;
-            break;
-        }
-        if (title != null)
-        {
-            Katalog2005.Algorithm.SpecialFunctions.LoadPart(title);
-        }
-        else
-        {
-            Message.Show("���������� ���� �� �������!");
-        }
-
-        
-        
     }
 
     void AddToProjectList(Point3d point)
     {
         Point3d projectPoint = _projectPlatan.GetProection(point);
-
         bool alreadyHave = false;
         foreach (Point3d point3D in _projectList)
         {
@@ -522,10 +612,10 @@ public sealed class TurningBase
             alreadyHave = true;
             break;
         }
-        if (!alreadyHave)
-        {
-            _projectList.Add(projectPoint);
-        }
+        if (alreadyHave) return;
+
+        _projectList.Add(projectPoint);
+        Logger.WriteLine(projectPoint);
     }
 
     double FindMaxLen()
@@ -540,7 +630,184 @@ public sealed class TurningBase
                 maxLen = len;
             }
         }
-        Logger.WriteLine("����������� ������ ����������� ���� = " + maxLen);
+        Logger.WriteLine("Минимальный радиус выгружаемой базы = " + maxLen);
         return maxLen;
+    }
+
+    KeyValuePair<string, double>[] GetAllBases()
+    {
+        Dictionary<string, string> bases = new Dictionary<string, string>();
+        switch (_slotType)
+        {
+            case "Крестообразное":
+                bases = SqlUspElement.GetTitleLengthRoundCrossPlates(_catalog);
+                break;
+            case "Радиально-поперечное":
+                bases = SqlUspElement.GetTitleLengthRoundRadialPlates(_catalog);
+                break;
+        }
+
+        KeyValuePair<string, double>[] correctNumBases = new KeyValuePair<string, double>[bases.Count];
+        int i = 0;
+        foreach (KeyValuePair<string, string> keyValuePair in bases)
+        {
+            double value = Int32.Parse(keyValuePair.Value);
+            correctNumBases[i] = new KeyValuePair<string, double>(keyValuePair.Key, value);
+            i++;
+        }
+        if (correctNumBases.Length > 1)
+        {
+            Instr.QSortPairs(correctNumBases, 0, correctNumBases.Length - 1);
+        }
+
+        return correctNumBases;
+    }
+
+    double[] GetThreeBases(KeyValuePair<string, double>[] bases,
+                                                 out string title)
+    {
+        title = "";
+        double prevD = 0.0, d = 0.0, nextD = 0.0;
+        for (int j = 0; j < bases.Length; j++)
+        {
+            if (bases[j].Value < _radius * 2) continue;
+
+            if (j > 0)
+            {
+                prevD = bases[j-1].Value;
+            }
+
+            title = bases[j].Key;
+            d = bases[j].Value;
+
+            if (j < bases.Length - 1)
+            {
+                nextD = bases[j + 1].Value;
+            }
+
+            break;
+        }
+        double[] arr = { prevD, d, nextD };
+        return arr;
+    }
+
+    void UpdateLoad()
+    {
+        if (!_faceSelected) return;
+
+        if (_partIsLoaded)
+        {
+            
+
+            
+        }
+        else
+        {
+            _partIsLoaded = true;
+
+            SetEnable(_group1, true);
+            SetEnable(_group, true);
+
+            SetPoints();
+            _radius = FindMaxLen();
+
+            SetBaseType();
+            KeyValuePair<string, double>[] bases = GetAllBases();
+
+            string title;
+            double[] threeBases = GetThreeBases(bases, out title);
+            SetPrevBttnText(threeBases[0]);
+            SetLabelDiametr(threeBases[1]);
+            SetNextBttnText(threeBases[2]);
+            if (title != null)
+            {
+                Katalog2005.Algorithm.SpecialFunctions.LoadPart(title);
+                SetConstraints();
+            }
+            else
+            {
+                Message.Show("Подходящая база не найдена!");
+            }
+        }
+
+    }
+
+    void SetLabelDiametr(double diametr)
+    {
+        PropertyList propertyList = _label0.GetProperties();
+        if (diametr == 0.0)
+        {
+            propertyList.SetString("Label", "Текущий диаметр");
+        }
+        else
+        {
+            propertyList.SetString("Label", "Текущий диаметр - " + diametr + " мм");
+        }
+        
+    }
+
+    void SetPrevBttnText(double diametr)
+    {
+        if (diametr == 0.0)
+        {
+            SetBttnText(_button0, "Меньший диаметр");
+            SetEnable(_button0, false);
+        }
+        else
+        {
+            SetBttnText(_button0, "Меньший диаметр - " + diametr + " мм");
+            SetEnable(_button0, true);
+        }
+    }
+
+    void SetNextBttnText(double diametr)
+    {
+        if (diametr == 0.0)
+        {
+            SetBttnText(_button01, "Больший диаметр");
+            SetEnable(_button01, false);
+        }
+        else
+        {
+            SetBttnText(_button01, "Больший диаметр - " + diametr + " мм");
+            SetEnable(_button01, true);
+        }
+    }
+
+    static void SetBttnText(UIBlock block, string text)
+    {
+        PropertyList propertyList = block.GetProperties();
+        propertyList.SetString("Label", text);
+    }
+
+    void SetConstraints()
+    {
+        _baseElement = new UspElement(Katalog2005.Algorithm.SpecialFunctions.LoadedPart);
+        _baseFace = _baseElement.GetFace(Config.BaseHoleName);
+
+        _touchAxe = new TouchAxe();
+        _touchAxe.Create(_turningElement.ElementComponent, _turningFace,
+                         _baseElement.ElementComponent, _baseFace);
+        Config.TheUfSession.Modl.Update();
+
+        SetBasePoint();
+    }
+
+    void SetBasePoint()
+    {
+        int type;
+        double voidDouble;
+        double[] dir = new double[3];
+        double[] box = new double[6];
+        double[] point = new double[3];
+
+        Config.TheUfSession.Modl.AskFaceData(_baseFace.Tag, out type, point, dir, box, out voidDouble, out voidDouble, out type);
+
+        _basePoint.X = point[0];
+        _basePoint.Y = point[1];
+        _basePoint.Z = point[2];
+
+        _oldPointMovement = _basePoint;
+        _workpeaceBaseVector = new Vector(_centrePoint, _basePoint);
     }
 }

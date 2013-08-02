@@ -417,9 +417,6 @@ static class Geom
 
 
 
-
-
-
     static double GetDet2X2(double[,] matrix)
     {
         return matrix[0, 0] * matrix[1, 1] - matrix[1, 0] * matrix[0, 1];
@@ -478,72 +475,13 @@ static class Geom
 
 
 
-/*
-    /// <summary>
-    /// Возвращает массив соответствующий указанной строке матрицы. Отсчет строк идет с 0.
-    /// </summary>
-    static double[] GetRow(double[,] matrix, int row)
-    {
-        int size = Dimensions;
-        double[] ret = new double[size];
-
-        for (int i = 0; i < size; i++)
-        {
-            ret[i] = matrix[row, i];
-        }
-
-        return ret;
-    }
-*/
-
-/*
-    /// <summary>
-    /// Заполняет указанную строку матрицы значениями из массива. Если размер массива и размер строки не совпадают, то строка будет - либо заполнена не полностью, либо "лишние" значения массива будут проигнорированы.
-    /// </summary>
-    static void SetRow(double[,] matrix, int row, double[] rowValues)
-    {
-        int size = Dimensions;
-
-        for (int i = 0; i < size; i++)
-            matrix[row, i] = rowValues[i];
-    }
-*/
-
-/*
-    /// <summary>
-    /// Поэлементное умножение массивов
-    /// </summary>
-    static double[] MulArrayConst(double[] array, double number)
-    {
-        double[] ret = (double[])array.Clone();
-        for (int i = 0; i < ret.Length; i++)
-            ret[i] *= number;
-        return ret;
-    }
-*/
-
-/*
-    /// <summary>
-    /// поэлементное вычитание массивов.
-    /// </summary>
-    static double[] SubArray(double[] A, double[] B)
-    {
-        double[] ret = (double[])A.Clone();
-        for (int i = 0; i < (A.Length > B.Length ? A.Length : B.Length); i++)
-            ret[i] -= B[i];
-        return ret;
-    }
-*/
-
-
-
     static bool IsPointOnStrait(Point3d point, double[,] straightEquation, 
                                     out double length, Point3d measurePoint)
     {
         length = -1;
 
         const int nDimensions = Dimensions;
-        int nNulls = 0;
+        
 
         // Массив с для обозначения осей, в перпендикулярных плоскостях которых лежит прямая
         // по уравнению straight_equation. Это важно для проверки точки на принадлежность к
@@ -556,7 +494,6 @@ static class Geom
             if (Math.Round(straightEquation[1, i]) == 0.0)
             {
                 isConstantAxe[i] = true;
-                nNulls++;
             }
             else
             {

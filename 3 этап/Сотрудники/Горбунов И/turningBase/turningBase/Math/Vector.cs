@@ -51,41 +51,6 @@ public class Vector
         }
     }
 
-    public double X
-    {
-        get
-        {
-
-            if (Geom.IsEqual(_direction, new Point3d(0.0, 0.0, 0.0)))
-            {
-                SetDirection();
-            }
-            return _direction.X;
-        }
-    }
-    public double Y
-    {
-        get
-        {
-            if (Geom.IsEqual(_direction, new Point3d(0.0, 0.0, 0.0)))
-            {
-                SetDirection();
-            }
-            return _direction.Y;
-        }
-    }
-    public double Z
-    {
-        get
-        {
-            if (Geom.IsEqual(_direction, new Point3d(0.0, 0.0, 0.0)))
-            {
-                SetDirection();
-            }
-            return _direction.Z;
-        }
-    }
-
     double _length = -1.0;
     Point3d _direction = new Point3d(0.0, 0.0, 0.0);
     private Point3d _start, _end;
@@ -143,6 +108,21 @@ public class Vector
     public Vector3d GetCoordsVector3D()
     {
         return new Vector3d(_end.X - _start.X, _end.Y - _start.Y, _end.Z - _start.Z);
+    }
+
+    /// <summary>
+    /// Возвращает точку лежащей на прямой, проходящей через данный вектор и лежащей на заданном
+    /// расстоянии от конца вектора.
+    /// </summary>
+    /// <param name="length">Расстояние от конца вектора.</param>
+    /// <returns></returns>
+    public Point3d GetPoint(double length)
+    {
+        double xD = _end.X + Direction.X * length;
+        double yD = _end.Y + Direction.Y * length;
+        double zD = _end.Z + Direction.Z * length;
+
+        return new Point3d(xD, yD, zD);
     }
 
     /// <summary>

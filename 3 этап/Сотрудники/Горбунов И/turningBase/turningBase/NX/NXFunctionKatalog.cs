@@ -11,6 +11,11 @@ namespace Katalog2005.Algorithm
     {
         public static Component LoadedPart;
 
+
+        /// <summary>
+        /// Загрузка детали в NX.
+        /// </summary>
+        /// <param name="oboznOfUsp"></param>
         public static void LoadPart(string oboznOfUsp)
         {
             string path = Path.GetTempPath() + Config.TmpFolder + Path.DirectorySeparatorChar;
@@ -48,7 +53,7 @@ namespace Katalog2005.Algorithm
         /// <returns></returns>
         private static void LoadPartToTemp(string oboznachenie)
         {
-            string openPart = SQLOracle.UnloadPartToTEMPFolder(oboznachenie);
+            SQLOracle.UnloadPartToTEMPFolder(oboznachenie);
 
             List<string> childComponents = SQLOracle.GetInformationListWithParamQuery("NMF",
                                                                                       "MODEL_STRUCT21",
@@ -61,23 +66,6 @@ namespace Katalog2005.Algorithm
                 string curname = Path.GetFileNameWithoutExtension(childComponents[i]);
                 SQLOracle.UnloadPartToTEMPFolder(curname);
             }
-
-            //if (String.Compare(openPart, "0") != 0)
-            //{
-            //    if (
-            //        string.Compare(
-            //            SQLOracle.ParamQuerySelect(
-            //                "select nalichi from db_data where obozn = :obozn", "obozn",
-            //                oboznachenie), "0") != 0)
-            //    {
-            //        SpecialFunctions.loadPartToNX(oboznachenie + ".prt");
-            //    }
-            //    else
-            //    {
-            //        Message.Show("Данной детали нет в наличии на складе");
-            //        //MessageBox.Show("Данной детали нет в наличии на складе");
-            //    }
-            //}
         }
 
         /// <summary>

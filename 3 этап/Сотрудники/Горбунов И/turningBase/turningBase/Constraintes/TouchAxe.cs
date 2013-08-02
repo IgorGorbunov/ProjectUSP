@@ -9,6 +9,7 @@ public sealed class TouchAxe : Constrainter
 {
     /// <summary>
     /// Создание соединения между отверстиями двух компонентов.
+    /// Грани должны быть обязательно ОККУРЕНСАМИ!!!
     /// </summary>
     /// <param name="firstComponent">Первый компонент.</param>
     /// <param name="firstFace">Грань отверстия с первого компонента.</param>

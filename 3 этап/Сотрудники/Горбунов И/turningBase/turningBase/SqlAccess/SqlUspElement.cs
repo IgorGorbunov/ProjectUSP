@@ -6,6 +6,12 @@ using System.Collections.Generic;
 /// </summary>
 static class SqlUspElement
 {
+    static readonly string _SELECT_QUERY_BASES = "select " + SqlTabUspData.CTitle + "," + SqlTabUspData.CDiametr +
+                       " from " + SqlTabUspData.Name +
+                       " where " + SqlTabUspData.CGroup + " = " + (int)SqlTabUspData.GroupUsp.Base +
+                           " and (" + SqlTabUspData.CName + " like '" + SqlTabUspData.GetName(SqlTabUspData.NameUsp.RoundPlate) + "%'" +
+                                " or " + SqlTabUspData.CName + " like '" + SqlTabUspData.GetName(SqlTabUspData.NameUsp.RoundPlates) + "%')";
+
     /// <summary>
     /// Возвращает номер каталога для детали.
     /// </summary>
@@ -66,12 +72,52 @@ static class SqlUspElement
         Dictionary<string, string> paramDict = new Dictionary<string, string>();
         Dictionary<string, string> dictionary;
 
-        string query = "select " + SqlTabUspData.CTitle + "," + SqlTabUspData.CDiametr +
-                       " from " + SqlTabUspData.Name +
-                       " where " + SqlTabUspData.CCatalog + " = " + (int)catalog.CatalogUsp +
-                           " and " + SqlTabUspData.CGroup + " = " + (int)SqlTabUspData.GroupUsp.Base +
-                           " and (" + SqlTabUspData.CName + " like '" + SqlTabUspData.GetName(SqlTabUspData.NameUsp.RoundPlate) + "%'" +
-                                " or " + SqlTabUspData.CName + " like '" + SqlTabUspData.GetName(SqlTabUspData.NameUsp.RoundPlates) + "%')";
+        string query = _SELECT_QUERY_BASES + 
+            " and " + SqlTabUspData.CCatalog + " = " + (int) catalog.CatalogUsp;
+
+        if (SqlOracle.Sel(query, paramDict, out dictionary))
+        {
+            return dictionary;
+        }
+        throw new TimeoutException();
+    }
+
+    /// <summary>
+    /// Возвращает круглые плиты c крестообразным расположением пазов по выборке 
+    /// обозначение-длина.
+    /// </summary>
+    /// <param name="catalog">Каталог для элементов.</param>
+    /// <returns></returns>
+    public static Dictionary<string, string> GetTitleLengthRoundCrossPlates(Catalog catalog)
+    {
+        Dictionary<string, string> paramDict = new Dictionary<string, string>();
+        Dictionary<string, string> dictionary;
+
+        string query = _SELECT_QUERY_BASES +
+            " and " + SqlTabUspData.CCatalog + " = " + (int)catalog.CatalogUsp + 
+            " and " + SqlTabUspData.CName + " not like '%" + SqlTabUspData.GetName(SqlTabUspData.NameUsp.RadialPlate) + "%'";
+
+        if (SqlOracle.Sel(query, paramDict, out dictionary))
+        {
+            return dictionary;
+        }
+        throw new TimeoutException();
+    }
+
+    /// <summary>
+    /// Возвращает круглые плиты c радиально-поперечным расположением пазов по выборке 
+    /// обозначение-длина.
+    /// </summary>
+    /// <param name="catalog">Каталог для элементов.</param>
+    /// <returns></returns>
+    public static Dictionary<string, string> GetTitleLengthRoundRadialPlates(Catalog catalog)
+    {
+        Dictionary<string, string> paramDict = new Dictionary<string, string>();
+        Dictionary<string, string> dictionary;
+
+        string query = _SELECT_QUERY_BASES +
+            " and " + SqlTabUspData.CCatalog + " = " + (int)catalog.CatalogUsp +
+            " and " + SqlTabUspData.CName + " like '%" + SqlTabUspData.GetName(SqlTabUspData.NameUsp.RadialPlate) + "%'";
 
         if (SqlOracle.Sel(query, paramDict, out dictionary))
         {

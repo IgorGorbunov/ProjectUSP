@@ -49,7 +49,11 @@ public static class SqlTabUspData
         /// <summary>
         /// 'Плита круглая'
         /// </summary>
-        RoundPlate = 2
+        RoundPlate = 2,
+        /// <summary>
+        /// 'радиальн'
+        /// </summary>
+        RadialPlate = 3
     }
     /// <summary>
     /// Возвращает наименование ГОСТа.
@@ -66,6 +70,8 @@ public static class SqlTabUspData
                 return "Плиты круглые";
             case 2:
                 return "Плита круглая";
+            case 3:
+                return "радиальн";
         }
         return "''";
     }
