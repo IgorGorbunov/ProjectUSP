@@ -1,12 +1,13 @@
 ﻿using NXOpen;
+using NXOpen.UF;
 
-static class NxFunctions
+internal static class NxFunctions
 {
     public static bool GetFace(TaggedObject[] to, UspElement element, out Face face)
     {
         TaggedObject t = to[0];
 
-        Part p = (Part)element.ElementComponent.OwningPart;
+        Part p = (Part) element.ElementComponent.OwningPart;
         BodyCollection bc = p.Bodies;
         foreach (Body b in bc)
         {
@@ -23,4 +24,44 @@ static class NxFunctions
         face = null;
         return false;
     }
+
+    /// <summary>
+    /// Удаление объектов NX.
+    /// </summary>
+    /// <param name="nxObjects">Объект(ы) NX.</param>
+    public static void DeleteNxObject(params NXObject[] nxObjects)
+    {
+        Config.TheSession.UpdateManager.AddToDeleteList(nxObjects);
+    }
+    /// <summary>
+    /// Обновление сессии (как правило нужно при создании связей).
+    /// </summary>
+    public static void Update()
+    {
+        Config.TheUfSession.Modl.Update();
+    }
+
+    /// <summary>
+    /// Заморозить экран.
+    /// </summary>
+    public static void FreezeDisplay()
+    {
+        Config.TheUfSession.Disp.SetDisplay(UFConstants.UF_DISP_SUPPRESS_DISPLAY);
+    }
+    /// <summary>
+    /// Разморозить экран.
+    /// </summary>
+    public static void UnFreezeDisplay()
+    {
+        int displayCode;
+        Config.TheUfSession.Disp.AskDisplay(out displayCode);
+
+        Config.TheUfSession.Disp.SetDisplay(UFConstants.UF_DISP_UNSUPPRESS_DISPLAY);
+
+        if (displayCode == UFConstants.UF_DISP_SUPPRESS_DISPLAY)
+        {
+            Config.TheUfSession.Disp.RegenerateDisplay();
+        }
+    }
+
 }

@@ -32,6 +32,10 @@ public static class SqlTabUspData
     /// Столбец с обозначением группы деталей.
     /// </summary>
     public const string CGroup = "GROUP_USP";
+    /// <summary>
+    /// Столбец с количеством элементов.
+    /// </summary>
+    public const string CCount = "NALICHI";
 
     /// <summary>
     /// Номера имён ГОСТов деталей.
@@ -103,5 +107,12 @@ public static class SqlTabUspData
         /// </summary>
         Fixture = 5
     }
+
+    public static string ThereIs
+    {
+        get { return "(" + CCount + " <> 0 and " + CCount + " <> " + _NULL_NUMBER + ")"; }
+    }
+
+    private const int _NULL_NUMBER = 999;
 }
 

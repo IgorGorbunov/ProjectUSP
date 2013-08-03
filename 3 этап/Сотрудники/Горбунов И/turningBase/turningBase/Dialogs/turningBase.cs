@@ -45,12 +45,11 @@ using NXOpen.Utilities;
 //------------------------------------------------------------------------------
 //Represents Block Styler application class
 //------------------------------------------------------------------------------
-public sealed class TurningBase
+public sealed class TurningBase : DialogProgpam
 {
     //class members
-    private static TurningBase _theturningBase;
     private readonly string _theDialogName;
-    private BlockDialog _theDialog;
+
 // ReSharper disable NotAccessedField.Local
     private UIBlock _group0;// Block type: Group
 // ReSharper restore NotAccessedField.Local
@@ -79,12 +78,14 @@ public sealed class TurningBase
     private Catalog _catalog;
     private string _slotType;
     private double _radius;
+    private KeyValuePair<string, double>[] _bases;
 
     private Face _turningFace;
     private UspElement _turningElement;
 
     private Face _baseFace;
     private UspElement _baseElement;
+    private string _newTitle;
 
     private Vector _workpeaceBaseVector;
     private Point3d _oldPointMovement;
@@ -102,15 +103,15 @@ public sealed class TurningBase
             _theDialogName = AppDomain.CurrentDomain.BaseDirectory +
                 Config.DlxFolder + Path.DirectorySeparatorChar + Config.DlxTurningBase;
 
-            _theDialog = Config.TheUi.CreateDialog(_theDialogName);
-            _theDialog.AddApplyHandler(apply_cb);
-            _theDialog.AddOkHandler(ok_cb);
-            _theDialog.AddUpdateHandler(update_cb);
-            _theDialog.AddCancelHandler(cancel_cb);
-            _theDialog.AddInitializeHandler(initialize_cb);
-            _theDialog.AddFocusNotifyHandler(focusNotify_cb);
-            _theDialog.AddKeyboardFocusNotifyHandler(keyboardFocusNotify_cb);
-            _theDialog.AddDialogShownHandler(dialogShown_cb);
+            TheDialog = Config.TheUi.CreateDialog(_theDialogName);
+            TheDialog.AddApplyHandler(apply_cb);
+            TheDialog.AddOkHandler(ok_cb);
+            TheDialog.AddUpdateHandler(update_cb);
+            TheDialog.AddCancelHandler(cancel_cb);
+            TheDialog.AddInitializeHandler(initialize_cb);
+            TheDialog.AddFocusNotifyHandler(focusNotify_cb);
+            TheDialog.AddKeyboardFocusNotifyHandler(keyboardFocusNotify_cb);
+            TheDialog.AddDialogShownHandler(dialogShown_cb);
         }
         catch (Exception ex)
         {
@@ -144,56 +145,8 @@ public sealed class TurningBase
     //        2) Invoke the Shared Library through File->Execute->NX Open menu.
     //
     //------------------------------------------------------------------------------
-// ReSharper disable UnusedMember.Global
-    public static void Main()
-// ReSharper restore UnusedMember.Global
-    {
-        try
-        {
-            _theturningBase = new TurningBase();
-            Logger.WriteLine("++++++++++++++++++++++++++++++++++++++++++++++++" + " Начало работы программы " + _theturningBase.GetType().Name);
-            
-            // The following method shows the dialog immediately
-            _theturningBase.Show();
-            Logger.WriteLine("--------------------------------------------------" + " Конец работы программы " + _theturningBase.GetType().Name);
-        }
-        catch (Exception ex)
-        {
-            //---- Enter your exception handling code here -----
-            Message.Show(ex);
-        }
-        finally
-        {
-            _theturningBase.Dispose();
-        }
-    }
-    //------------------------------------------------------------------------------
-    // This method specifies how a shared image is unloaded from memory
-    // within NX. This method gives you the capability to unload an
-    // internal NX Open application or user  exit from NX. Specify any
-    // one of the three constants as a return value to determine the type
-    // of unload to perform:
-    //
-    //
-    //    Immediately : unload the library as soon as the automation program has completed
-    //    Explicitly  : unload the library from the "Unload Shared Image" dialog
-    //    AtTermination : unload the library when the NX session terminates
-    //
-    //
-    // NOTE:  A program which associates NX Open applications with the menubar
-    // MUST NOT use this option since it will UNLOAD your NX Open application image
-    // from the menubar.
-    //------------------------------------------------------------------------------
-// ReSharper disable UnusedMember.Global
-// ReSharper disable UnusedParameter.Global
-     public static int GetUnloadOption(string arg)
-// ReSharper restore UnusedParameter.Global
-// ReSharper restore UnusedMember.Global
-    {
-        //return System.Convert.ToInt32(Session.LibraryUnloadOption.Explicitly);
-         return Convert.ToInt32(Session.LibraryUnloadOption.Immediately);
-        // return System.Convert.ToInt32(Session.LibraryUnloadOption.AtTermination);
-    }
+
+
     
     //------------------------------------------------------------------------------
     // Following method cleanup any housekeeping chores that may be needed.
@@ -217,33 +170,7 @@ public sealed class TurningBase
         return 0;
     }
     
-    //------------------------------------------------------------------------------
-    //This method shows the dialog on the screen
-    //------------------------------------------------------------------------------
-    private void Show()
-    {
-        try
-        {
-            _theDialog.Show();
-        }
-        catch (Exception ex)
-        {
-            //---- Enter your exception handling code here -----
-            Message.Show(ex);
-        }
-    }
-
-    //------------------------------------------------------------------------------
-    //Method Name: Dispose
-    //------------------------------------------------------------------------------
-    private void Dispose()
-    {
-        if(_theDialog != null)
-        {
-            _theDialog.Dispose();
-            _theDialog = null;
-        }
-    }
+    
     
     //------------------------------------------------------------------------------
     //---------------------Block UI Styler Callback Functions--------------------------
@@ -256,21 +183,20 @@ public sealed class TurningBase
     {
         try
         {
-            _group0 = _theDialog.TopBlock.FindBlock("group0");
-            _faceSelect0 = _theDialog.TopBlock.FindBlock("face_select0");
-            _enum0 = _theDialog.TopBlock.FindBlock("enum0");
-            _group1 = _theDialog.TopBlock.FindBlock("group1");
-            _direction0 = _theDialog.TopBlock.FindBlock("direction0");
-            _linearDim0 = _theDialog.TopBlock.FindBlock("linear_dim0");
-            _group = _theDialog.TopBlock.FindBlock("group");
-            _button0 = _theDialog.TopBlock.FindBlock("button0");
-            _button01 = _theDialog.TopBlock.FindBlock("button01");
-            _label0 = _theDialog.TopBlock.FindBlock("label0");
-            _selection0 = _theDialog.TopBlock.FindBlock("selection0");
-            _double0 = _theDialog.TopBlock.FindBlock("double0");
+            _group0 = TheDialog.TopBlock.FindBlock("group0");
+            _faceSelect0 = TheDialog.TopBlock.FindBlock("face_select0");
+            _enum0 = TheDialog.TopBlock.FindBlock("enum0");
+            _group1 = TheDialog.TopBlock.FindBlock("group1");
+            _direction0 = TheDialog.TopBlock.FindBlock("direction0");
+            _linearDim0 = TheDialog.TopBlock.FindBlock("linear_dim0");
+            _group = TheDialog.TopBlock.FindBlock("group");
+            _button0 = TheDialog.TopBlock.FindBlock("button0");
+            _button01 = TheDialog.TopBlock.FindBlock("button01");
+            _label0 = TheDialog.TopBlock.FindBlock("label0");
+            _selection0 = TheDialog.TopBlock.FindBlock("selection0");
+            _double0 = TheDialog.TopBlock.FindBlock("double0");
 
-            SQLOracle.BuildConnectionString("ktc", "ktc", "BASEEOI");
-            SqlOracle.BuildConnectionString("ktc", "ktc", "BASEEOI");
+            
             _catalog = new Catalog12();
         }
         catch (Exception ex)
@@ -290,6 +216,8 @@ public sealed class TurningBase
         try
         {
             //---- Enter your callback code here -----
+            PropertyList propertyList = _double0.GetProperties();
+            propertyList.SetDouble("Value", 0.0);
         }
         catch (Exception ex)
         {
@@ -328,14 +256,14 @@ public sealed class TurningBase
             {
                 //---------Enter your code here-----------
                 Logger.WriteLine("Нажат выбор типа паза.");
-                UpdateLoad();
+                UpdateLoad(_label0);
             }
             if(block == _faceSelect0)
             {
             //---------Enter your code here-----------
                 Logger.WriteLine("Нажат выбор грани.");
                 SetFirstFace(block);
-                UpdateLoad();
+                UpdateLoad(block);
             }
             else if (block == _direction0)
             {
@@ -377,13 +305,15 @@ public sealed class TurningBase
             {
                 //---------Enter your code here-----------
                 Logger.WriteLine("Нажата кнопка меньшего диаметра.");
-                UpdateLoad();
+                _newTitle = GetTitle(SetNewPartDiametr(block));
+                UpdateLoad(block);
             }
             else if (block == _button01)
             {
                 //---------Enter your code here-----------
                 Logger.WriteLine("Нажата кнопка большего диаметра.");
-                UpdateLoad();
+                
+                UpdateLoad(block);
             }
         }
         catch (Exception ex)
@@ -666,7 +596,7 @@ public sealed class TurningBase
     double[] GetThreeBases(KeyValuePair<string, double>[] bases,
                                                  out string title)
     {
-        title = "";
+        title = null;
         double prevD = 0.0, d = 0.0, nextD = 0.0;
         for (int j = 0; j < bases.Length; j++)
         {
@@ -691,15 +621,34 @@ public sealed class TurningBase
         return arr;
     }
 
-    void UpdateLoad()
+    void UpdateLoad(UIBlock block)
     {
         if (!_faceSelected) return;
 
+        SetBaseType();
+        _bases = GetAllBases();
+
+        string title;
+        double[] threeBases;
+
         if (_partIsLoaded)
         {
-            
+            _newTitle = GetTitle(SetNewPartDiametr(block));
 
-            
+            NxFunctions.FreezeDisplay();
+            ReplaceComponent(_newTitle);
+
+            _baseFace = _baseElement.GetFace(Config.BaseHoleName);
+
+            PropertyList propertyList = _double0.GetProperties();
+            double doub = propertyList.GetDouble("Value");
+            Point3d newPoint = _workpeaceBaseVector.GetPoint(doub);
+            Vector newVector = new Vector(_oldPointMovement, newPoint);
+            Movement.MoveByDirection(_baseElement.ElementComponent, newVector);
+            _oldPointMovement = newPoint;
+            NxFunctions.UnFreezeDisplay();
+
+            threeBases = GetThreeBases(_bases, out title);
         }
         else
         {
@@ -711,24 +660,24 @@ public sealed class TurningBase
             SetPoints();
             _radius = FindMaxLen();
 
-            SetBaseType();
-            KeyValuePair<string, double>[] bases = GetAllBases();
-
-            string title;
-            double[] threeBases = GetThreeBases(bases, out title);
-            SetPrevBttnText(threeBases[0]);
-            SetLabelDiametr(threeBases[1]);
-            SetNextBttnText(threeBases[2]);
+            threeBases = GetThreeBases(_bases, out title);
+            
             if (title != null)
             {
+                NxFunctions.FreezeDisplay();
                 Katalog2005.Algorithm.SpecialFunctions.LoadPart(title);
                 SetConstraints();
+                NxFunctions.UnFreezeDisplay();
             }
             else
             {
                 Message.Show("Подходящая база не найдена!");
             }
         }
+
+        SetPrevBttnText(threeBases[0]);
+        SetLabelDiametr(threeBases[1]);
+        SetNextBttnText(threeBases[2]);
 
     }
 
@@ -809,5 +758,55 @@ public sealed class TurningBase
 
         _oldPointMovement = _basePoint;
         _workpeaceBaseVector = new Vector(_centrePoint, _basePoint);
+    }
+
+    void ReplaceComponent(string newTitleComponent)
+    {
+        Component oldBase = _baseElement.ElementComponent;
+        Katalog2005.Algorithm.SpecialFunctions.LoadPart(newTitleComponent);
+        Component newBase = Katalog2005.Algorithm.SpecialFunctions.LoadedPart;
+        Logger.WriteLine("Замена компонента " + oldBase.Name + " компонентом " + newBase.Name);
+        newBase.Suppress();
+        
+        ReplaceComponentBuilder rcb = Config.WorkPart.AssemblyManager.CreateReplaceComponentBuilder();
+        rcb.ComponentNameType = ReplaceComponentBuilder.ComponentNameOption.AsSpecified;
+
+        rcb.ComponentsToReplace.Add(oldBase);
+
+        rcb.ComponentName = newBase.Name;
+        rcb.ReplacementPart = ((Part)newBase.Prototype).FullPath;
+
+        rcb.SetComponentReferenceSetType(ReplaceComponentBuilder.ComponentReferenceSet.Others, "Оставить");
+        PartLoadStatus partLoadStatus1 = rcb.RegisterReplacePartLoadStatus();
+        rcb.Commit();
+
+        _baseElement = new UspElement(oldBase);
+
+        partLoadStatus1.Dispose();
+        rcb.Destroy();
+
+        NxFunctions.DeleteNxObject(newBase);
+    }
+
+    string GetTitle(double diametr)
+    {
+        for (int i = 0; i < _bases.Length; i++)
+        {
+            if (_bases[i].Value == diametr)
+            {
+                return _bases[i].Key;
+            }
+        }
+        return "0";
+    }
+
+    double SetNewPartDiametr(UIBlock block)
+    {
+        PropertyList propertyList = block.GetProperties();
+        string label = propertyList.GetString("Label");
+        string[] split = label.Split(' ');
+        string diametr = split[split.Length - 2];
+        _radius = Double.Parse(diametr) / 2;
+        return _radius * 2;
     }
 }

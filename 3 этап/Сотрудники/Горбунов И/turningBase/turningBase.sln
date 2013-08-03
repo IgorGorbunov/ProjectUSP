@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "turningBase", "turningBase\turningBase.csproj", "{2B8C228C-5E7C-4143-A3A0-4D4081A8E341}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectUsp", "turningBase\ProjectUsp.csproj", "{2B8C228C-5E7C-4143-A3A0-4D4081A8E341}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

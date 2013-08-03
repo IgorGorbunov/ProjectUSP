@@ -13,9 +13,9 @@ namespace Katalog2005.Algorithm
 
 
         /// <summary>
-        /// Загрузка детали в NX.
+        /// Выгрузка детали.
         /// </summary>
-        /// <param name="oboznOfUsp"></param>
+        /// <param name="oboznOfUsp">Обозначение детали УСП.</param>
         public static void LoadPart(string oboznOfUsp)
         {
             string path = Path.GetTempPath() + Config.TmpFolder + Path.DirectorySeparatorChar;
@@ -38,13 +38,14 @@ namespace Katalog2005.Algorithm
                 }
                 else
                 {
-                    const string mess = "Детали нет в каталоге!";
+                    string mess = "Детали " + oboznOfUsp + "нет в каталоге!";
                     Logger.WriteError(mess);
                     Message.Show(mess);
                 }
             }
 
             LoadPartToNx(fullPath);
+
         }
 
         /// <summary>
@@ -81,26 +82,6 @@ namespace Katalog2005.Algorithm
 
 
             string openPart = SQLOracle.UnloadOsnasToTEMPFolderFile20(nmf.Trim());
-
-
-            //if (String.Compare(openPart, "0") != 0)
-            //{
-            //    if (
-            //        string.Compare(
-            //            SQLOracle.ParamQuerySelect(
-            //                "select nalichi from db_data where obozn = :obozn", "obozn",
-            //                oboznachenie), "0") != 0)
-            //    {
-            //        SpecialFunctions.loadPartToNX(oboznachenie + ".prt");
-            //    }
-            //    else
-            //    {
-            //        Message.Show("Данной детали нет в наличии на складе");
-            //        //MessageBox.Show("Данной детали нет в наличии на складе");
-            //    }
-
-            //}
-
         }
 
         /// <summary>
@@ -159,66 +140,7 @@ namespace Katalog2005.Algorithm
             LoadedPart = Config.WorkPart.ComponentAssembly.AddComponent(part1, "MODEL", nmf,
                                                                            basePoint1, orientation1,
                                                                            -1, out partLoadStatus1);
-                //}
-                //catch (Exception ex)
-                //{
 
-
-            //        if (String.Compare(ex.Message, "File already exists") == 0)
-            //        {
-
-            //            Part part1 = (Part)theSession.Parts.FindObject(NMF);
-
-            //            Point3d basePoint1 = new Point3d(Z_coor, Z_coor, Z_coor);
-
-
-
-            //            //if (MessageBox.Show("Задать координаты автоматически?", "Сообщение", MessageBoxButtons.YesNo) == DialogResult.No)
-            //            //{
-            //            //    WinFroms.LoadPartToNX.xyzPRM setNewCoord;
-            //            //    setNewCoord = new WinFroms.LoadPartToNX.xyzPRM();
-            //            //    setNewCoord.ShowDialog();
-            //            //    basePoint1.X = setNewCoord.xCoordPrm;
-            //            //    basePoint1.X = setNewCoord.xCoordPrm;
-            //            //    basePoint1.X = setNewCoord.xCoordPrm;
-
-            //            //}
-
-            //            Matrix3x3 orientation1;
-            //            orientation1.Xx = 1.0;
-            //            orientation1.Xy = 0.0;
-            //            orientation1.Xz = 0.0;
-            //            orientation1.Yx = 0.0;
-            //            orientation1.Yy = 1.0;
-            //            orientation1.Yz = 0.0;
-            //            orientation1.Zx = 0.0;
-            //            orientation1.Zy = 0.0;
-            //            orientation1.Zz = 1.0;
-
-            //            PartLoadStatus partLoadStatus2;
-
-            //            _unLoadedPart = workPart.ComponentAssembly.AddComponent(part1, "MODEL", NMF, basePoint1, orientation1, -1, out partLoadStatus2);
-
-            //            partLoadStatus2.Dispose();
-
-            //            //								PartLoadStatus partLoadStatus_disp;
-            //            //
-            //            //								theSession.Parts.SetDisplay(displayPart,false,false,out partLoadStatus_disp);
-            //            //
-            //            //								partLoadStatus_disp.Dispose();							
-
-            //        }
-            //        else
-            //        {
-            //            //MessageBox.Show(ex.Message, "Ошибка");
-            //            Message.Show(ex);
-            //        }
-                //}
-
-            //    Z_coor = Z_coor + 50;
-
-
-            //}
         }
     }
 }

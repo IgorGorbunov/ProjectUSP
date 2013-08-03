@@ -36,7 +36,6 @@ public sealed class TunnelSlotConstraint
     /// <param name="tunnel">Базовое отверстие на первом элементе УСП.</param>
     /// <param name="secondElement">Второй элемент УСП.</param>
     /// <param name="slot">Паз на втором элементе УСП.</param>
-    /// <param name="fixture">Компонент болта для крепления.</param>
     public TunnelSlotConstraint(UspElement firstElement, Tunnel tunnel,
                          UspElement secondElement, Slot slot)
     {
@@ -145,7 +144,6 @@ public sealed class TunnelSlotConstraint
 
     Point3d GetTopPoint()
     {
-        Point3d topPoint;
         Edge[] sigeEdges = _slot.SideFace1.GetEdges();
         foreach (Edge sigeEdge in sigeEdges)
         {
@@ -154,13 +152,12 @@ public sealed class TunnelSlotConstraint
             {
                 double[] dir = Geom.GetDirection(face);
 
-                if (face.Name != Config.SlotBottomName &&
-                    Geom.DirectionsAreOnStraight(dir, _slot.BottomDirection))
-                {
-                    Point3d tmpPoint;
-                    sigeEdge.GetVertices(out topPoint, out tmpPoint);
-                    return topPoint;
-                }
+                if (face.Name == Config.SlotBottomName ||
+                    !Geom.DirectionsAreOnStraight(dir, _slot.BottomDirection)) continue;
+
+                Point3d tmpPoint, topPoint;
+                sigeEdge.GetVertices(out topPoint, out tmpPoint);
+                return topPoint;
             }
         }
         return new Point3d();
@@ -350,9 +347,9 @@ public sealed class TunnelSlotConstraint
     {
         _tunnelConstsr = new TunnelConstraint(_tunnel, _slot);
 
-        Config.FreezeDisplay();
+        NxFunctions.FreezeDisplay();
         _tunnelConstsr.SetTouchFaceConstraint(false);
-        Config.UnFreezeDisplay();
+        NxFunctions.UnFreezeDisplay();
     }
 
     void Delete(bool isFixed)

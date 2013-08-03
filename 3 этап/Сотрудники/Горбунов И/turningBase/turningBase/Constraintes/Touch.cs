@@ -17,7 +17,7 @@ public class Touch : Constrainter
     public void Create(Component firstComponent, Face firstFace, 
                                       Component secondComponent, Face secondFace)
     {
-        Constr = (ComponentConstraint)ComponentPositioner.CreateConstraint();
+        Constr = (ComponentConstraint)CompPositioner.CreateConstraint();
         Constr.ConstraintAlignment = Constraint.Alignment.ContraAlign;
         Constr.ConstraintType = Constraint.Type.Touch;
 

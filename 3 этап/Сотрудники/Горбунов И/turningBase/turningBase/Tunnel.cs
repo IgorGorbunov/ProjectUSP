@@ -82,12 +82,8 @@ public class Tunnel
     {
         return _slot.OrtFaces;
     }
-
-    
-    KeyValuePair<Face, double>[] _ortFacePairs;
     
     Point3d _point;
-    int _rev;
 
     Slot _slot;
 

@@ -19,7 +19,7 @@ class Distance : Constrainter
     public void Create(Component firstComponent, NXObject firstObject,
                        Component secondComponent, NXObject secondObject, double distance)
     {
-        Constr = (ComponentConstraint)ComponentPositioner.CreateConstraint();
+        Constr = (ComponentConstraint)CompPositioner.CreateConstraint();
         Constr.ConstraintType = Constraint.Type.Distance;
 
         ConstraintReference constraintReference1 = Constr.CreateConstraintReference(firstComponent,

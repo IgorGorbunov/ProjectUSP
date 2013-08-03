@@ -11,7 +11,7 @@ public static class Config
     public static readonly Session TheSession = Session.GetSession();
     public static readonly UI TheUi = UI.GetUI();
     public static readonly UFSession TheUfSession = UFSession.GetUFSession();
-    public static readonly Part WorkPart= TheSession.Parts.Work;
+    public static readonly Part WorkPart = TheSession.Parts.Work;
 
     public const int NPointsInEdge = 2;
 
@@ -24,14 +24,15 @@ public static class Config
         Tslot
     };
 
-    public static readonly char[] FaceNameSplitter = { '_' };
+    public static readonly char[] FaceNameSplitter = {'_'};
     public const string SlotSymbol = "SLOT";
     public const string SlotBottomSymbol = "BOTTOM";
 
     /// <summary>
     /// Наименование НГП.
     /// </summary>
-    public static readonly string SlotBottomName = SlotSymbol + FaceNameSplitter[0] + SlotBottomSymbol;
+    public static readonly string SlotBottomName = SlotSymbol + FaceNameSplitter[0] +
+                                                   SlotBottomSymbol;
 
     /// <summary>
     /// Наименование главного отверстия на токарной базе.
@@ -42,7 +43,7 @@ public static class Config
     //плоскости с длинными на боковых у плит
     //снизил с 3 на 2 из-за невозможности пазирования (почему-то) длинных пазов - неточно
     //вычислялась ширина паза
-    const int Precision = 5;
+    private const int Precision = 5;
 
     /// <summary>
     /// Папка с формами для диалогов.
@@ -58,18 +59,22 @@ public static class Config
     /// Расширение файлов деталей УСП.
     /// </summary>
     public const string PartFileExtension = ".prt";
+
     /// <summary>
     /// Имя файла с формой базирования элементов по отверстиям.
     /// </summary>
     public const string DlxTunnelTunnel = @"tunnel+tunnel.dlx";
+
     /// <summary>
     /// Имя файла с формой для базирования отверстие-паз.
     /// </summary>
     public const string DlxTunnelSlot = @"tunnel+slot.dlx";
+
     /// <summary>
     /// Имя файла с формой c двумя точками.
     /// </summary>
     public const string DlxPointPoint = @"point+point.dlx";
+
     /// <summary>
     /// Возвращает имя файла с формой для выгрузки токарной базы.
     /// </summary>
@@ -83,12 +88,12 @@ public static class Config
         Component[] comps = WorkPart.ComponentAssembly.RootComponent.GetChildren();
 
         foreach (Component comp in comps)
-	    {
+        {
             if (comp.Tag == tag)
             {
                 return comp;
             }
-	    }
+        }
 
         return null;
     }
@@ -108,28 +113,4 @@ public static class Config
     {
         return Round(slotWidth) == catalog.SlotWidthB ? SlotType.Tslot : SlotType.Pslot;
     }
-
-    /// <summary>
-    /// Заморозить экран.
-    /// </summary>
-    public static void FreezeDisplay()
-    {
-        TheUfSession.Disp.SetDisplay(UFConstants.UF_DISP_SUPPRESS_DISPLAY);
-    }
-    /// <summary>
-    /// Разморозить экран.
-    /// </summary>
-    public static void UnFreezeDisplay()
-    {
-        int displayCode;
-        TheUfSession.Disp.AskDisplay(out displayCode);
-
-        TheUfSession.Disp.SetDisplay(UFConstants.UF_DISP_UNSUPPRESS_DISPLAY);
-
-        if (displayCode == UFConstants.UF_DISP_SUPPRESS_DISPLAY)
-        {
-            TheUfSession.Disp.RegenerateDisplay();
-        }
-    }
 }
-

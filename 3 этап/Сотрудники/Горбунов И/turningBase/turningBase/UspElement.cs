@@ -133,7 +133,6 @@ public sealed class UspElement
         Face[] faces = _body.GetFaces();
         foreach (Face face in faces)
         {
-            //Message.Tst(face.Name);
             if (face.Name == faceName)
             {
                 return face;
@@ -154,6 +153,7 @@ public sealed class UspElement
             if (tmpNxObject != null)
             {
                 bb = (Body)tmpNxObject;
+                break;
             }
         }
 

@@ -7,7 +7,7 @@ using NXOpen.Positioning;
 public class Constrainter
 {
     protected ComponentConstraint Constr;
-    protected ComponentPositioner ComponentPositioner;
+    protected ComponentPositioner CompPositioner;
 
     ComponentNetwork _componentNetwork;
 
@@ -26,9 +26,9 @@ public class Constrainter
 
     private void InitConstraints()
     {
-        ComponentPositioner = Config.WorkPart.ComponentAssembly.Positioner;
+        CompPositioner = Config.WorkPart.ComponentAssembly.Positioner;
 
-        _componentNetwork = (ComponentNetwork)ComponentPositioner.EstablishNetwork();
+        _componentNetwork = (ComponentNetwork)CompPositioner.EstablishNetwork();
         _componentNetwork.MoveObjectsState = true;
     }
     protected void ExecuteConstraints()
@@ -36,7 +36,7 @@ public class Constrainter
         _componentNetwork.Solve();
 
         //для того чтобы нормально работали фиксы
-        ComponentPositioner.ClearNetwork();
+        CompPositioner.ClearNetwork();
     }
 
     /// <summary>

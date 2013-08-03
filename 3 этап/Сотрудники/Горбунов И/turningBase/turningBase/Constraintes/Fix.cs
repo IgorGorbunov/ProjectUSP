@@ -12,7 +12,7 @@ class Fix : Constrainter
     /// <param name="component">Компонент.</param>
     public void Create(Component component)
     {
-        Constr = (ComponentConstraint)ComponentPositioner.CreateConstraint();
+        Constr = (ComponentConstraint)CompPositioner.CreateConstraint();
         Constr.ConstraintType = Constraint.Type.Fix;
 
         Constr.CreateConstraintReference(component,
