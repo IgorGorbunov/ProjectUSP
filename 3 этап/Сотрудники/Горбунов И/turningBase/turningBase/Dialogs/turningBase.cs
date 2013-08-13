@@ -72,6 +72,8 @@ public sealed class TurningBase : DialogProgpam
 
     private bool _faceSelected;
     private bool _partIsLoaded;
+    private bool _isFixed = true;
+    private bool _isFirstReplace = true;
 
     private Platan _projectPlatan;
     private readonly List<Point3d> _projectList = new List<Point3d>();
@@ -242,6 +244,7 @@ public sealed class TurningBase : DialogProgpam
         try
         {
             //---- Enter your callback code here -----
+            CleanUp();
         }
         catch (Exception ex)
         {
@@ -263,7 +266,7 @@ public sealed class TurningBase : DialogProgpam
             {
                 //---------Enter your code here-----------
                 Logger.WriteLine("Нажат выбор типа паза.");
-                UpdateLoad(_label0);
+                UpdateLoad(block);
             }
             if(block == _faceSelect0)
             {
@@ -273,17 +276,8 @@ public sealed class TurningBase : DialogProgpam
             {
                 //---------Enter your code here-----------
                 Logger.WriteLine("Нажат реверс.");
-                bool isFixed = _turningElement.ElementComponent.IsFixed;
-                if (!isFixed)
-                {
-                    _turningElement.Fix();
-                }
                 _touchAxe.Reverse();
                 NxFunctions.Update();
-                if (!isFixed)
-                {
-                    _turningElement.Unfix();
-                }
             }
             else if (block == _selection0)
             {
@@ -330,6 +324,7 @@ public sealed class TurningBase : DialogProgpam
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
+            Logger.WriteError(ex);
             Message.Show(ex);
         }
         return 0;
@@ -346,6 +341,7 @@ public sealed class TurningBase : DialogProgpam
         try
         {
             errorCode = apply_cb();
+            CleanUp();
             //---- Enter your callback code here -----
         }
         catch (Exception ex)
@@ -365,6 +361,7 @@ public sealed class TurningBase : DialogProgpam
         try
         {
             //---- Enter your callback code here -----
+            CleanUp();
         }
         catch (Exception ex)
         {
@@ -470,6 +467,15 @@ public sealed class TurningBase : DialogProgpam
                 if (_turningFace.IsOccurrence)
                 {
                     _turningElement = new UspElement(_turningFace.OwningComponent);
+                    _isFixed = _turningElement.ElementComponent.IsFixed;
+                    if (!_isFixed)
+                    {
+                        _turningElement.Fix();
+                    }
+                }
+                else
+                {
+                    Logger.WriteLine("Это прототип!!!!");
                 }
                  
                 return true;
@@ -598,6 +604,18 @@ public sealed class TurningBase : DialogProgpam
     {
         title = null;
         double prevD = 0.0, d = 0.0, nextD = 0.0;
+
+        //если не нашли нужную - выгрузим самую большую
+        if (bases.Length > 0)
+        {
+            d = bases[bases.Length - 1].Value;
+            title = bases[bases.Length - 1].Key;
+        }
+        if (bases.Length > 1)
+        {
+            prevD = bases[bases.Length - 2].Value;
+        }
+        
         for (int j = 0; j < bases.Length; j++)
         {
             if (bases[j].Value < _radius * 2) continue;
@@ -636,9 +654,18 @@ public sealed class TurningBase : DialogProgpam
                 _bases = GetAllBases();
             }
 
-            _newTitle = GetTitle(SetNewPartDiametr(block));
-
+            if (block.Type == "Button")
+            {
+                _newTitle = GetTitle(SetNewPartDiametr(block));
+            }
+            else
+            {
+                _newTitle = GetTitle(SetNewPartDiametr(_label0));
+            }
+            
+#if(!DEBUG)
             NxFunctions.FreezeDisplay();
+#endif
             ReplaceComponent(_newTitle);
 
             _baseFace = _baseElement.GetFace(Config.BaseHoleName);
@@ -649,14 +676,14 @@ public sealed class TurningBase : DialogProgpam
             Vector newVector = new Vector(_oldPointMovement, newPoint);
             Movement.MoveByDirection(_baseElement.ElementComponent, newVector);
             _oldPointMovement = newPoint;
+#if(!DEBUG)
             NxFunctions.UnFreezeDisplay();
+#endif
 
             threeBases = GetThreeBases(_bases, out title);
         }
         else
         {
-            _partIsLoaded = true;
-
             SetEnable(_group1, true);
             SetEnable(_group, true);
 
@@ -673,9 +700,11 @@ public sealed class TurningBase : DialogProgpam
                 Katalog2005.Algorithm.SpecialFunctions.LoadPart(title, false);
                 SetConstraints();
                 NxFunctions.UnFreezeDisplay();
+                _partIsLoaded = true;
             }
             else
             {
+                _partIsLoaded = false;
                 Message.Show("Подходящая база не найдена!");
             }
         }
@@ -799,9 +828,20 @@ public sealed class TurningBase : DialogProgpam
         rcb.Destroy();
 
         Tag newCompTag = Tag.Null;
-        Config.TheUfSession.Obj.CycleByNameAndType(Config.WorkPart.Tag, uniqueName, UFConstants.UF_component_type, true, ref newCompTag);
+        string findName;
+        if (_isFirstReplace)
+        {
+            findName = uniqueName;
+            _isFirstReplace = false;
+        }
+        else
+        {
+            findName = oldBase.Name;
+        }
+        Config.TheUfSession.Obj.CycleByNameAndType(Config.WorkPart.Tag, findName, UFConstants.UF_component_type, true, ref newCompTag);
+        Logger.WriteLine("Тэг и имя добавленного компонента - " + newCompTag + "/" + findName);
         oldBase = (Component)NXObjectManager.Get(newCompTag);
-        oldBase.SetName(uniqueName);
+        oldBase.SetName(findName);
 
         _baseElement = new UspElement(oldBase);
     }
@@ -826,5 +866,13 @@ public sealed class TurningBase : DialogProgpam
         string diametr = split[split.Length - 2];
         _radius = Double.Parse(diametr) / 2;
         return _radius * 2;
+    }
+
+    void CleanUp()
+    {
+        if (!_isFixed)
+        {
+            _turningElement.Unfix();
+        }
     }
 }
