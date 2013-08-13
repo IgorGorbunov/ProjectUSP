@@ -40,6 +40,7 @@ using System.IO;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.BlockStyler;
+using NXOpen.UF;
 using NXOpen.Utilities;
 
 //------------------------------------------------------------------------------
@@ -197,7 +198,7 @@ public sealed class TurningBase : DialogProgpam
             _double0 = TheDialog.TopBlock.FindBlock("double0");
 
             
-            _catalog = new Catalog12();
+            _catalog = new Catalog8();
         }
         catch (Exception ex)
         {
@@ -216,6 +217,12 @@ public sealed class TurningBase : DialogProgpam
         try
         {
             //---- Enter your callback code here -----
+            Selection.MaskTriple[] mask = new Selection.MaskTriple[1];
+            mask[0].Type = UFConstants.UF_solid_type;
+            mask[0].Subtype = UFConstants.UF_all_subtype;
+            mask[0].SolidBodySubtype = UFConstants.UF_UI_SEL_FEATURE_CYLINDRICAL_FACE;
+            _selection0.GetProperties().SetSelectionFilter("SelectionFilter", Selection.SelectionAction.ClearAndEnableSpecific, mask);
+
             PropertyList propertyList = _double0.GetProperties();
             propertyList.SetDouble("Value", 0.0);
         }
@@ -261,25 +268,29 @@ public sealed class TurningBase : DialogProgpam
             if(block == _faceSelect0)
             {
             //---------Enter your code here-----------
-                Logger.WriteLine("Нажат выбор грани.");
-                SetFirstFace(block);
-                UpdateLoad(block);
             }
             else if (block == _direction0)
             {
                 //---------Enter your code here-----------
                 Logger.WriteLine("Нажат реверс.");
+                bool isFixed = _turningElement.ElementComponent.IsFixed;
+                if (!isFixed)
+                {
+                    _turningElement.Fix();
+                }
                 _touchAxe.Reverse();
+                NxFunctions.Update();
+                if (!isFixed)
+                {
+                    _turningElement.Unfix();
+                }
             }
             else if (block == _selection0)
             {
                 //---------Enter your code here-----------
-                Logger.WriteLine("Нажат выбор компонента.");
-                PropertyList propertyList = _selection0.GetProperties();
-                TaggedObject[] taggedObjects = propertyList.GetTaggedObjectVector("SelectedObjects");
-                _turningElement = new UspElement((Component)NXObjectManager.Get(taggedObjects[0].Tag));
-
-                
+                Logger.WriteLine("Нажат выбор грани.");
+                SetFirstFace(block);
+                UpdateLoad(block);
             }
             else if (block == _linearDim0)
             {
@@ -312,7 +323,7 @@ public sealed class TurningBase : DialogProgpam
             {
                 //---------Enter your code here-----------
                 Logger.WriteLine("Нажата кнопка большего диаметра.");
-                
+                _newTitle = GetTitle(SetNewPartDiametr(block));
                 UpdateLoad(block);
             }
         }
@@ -454,23 +465,12 @@ public sealed class TurningBase : DialogProgpam
                 direction = dir;
 
                 Logger.WriteLine("Точка обр. грани - " + point3D);
-                _turningFace = (Face)NXObjectManager.Get(face.Tag);
-                //Face face1 = (Face)NXObjectManager.Get((Tag)38733);
+                _turningFace = (Face)face;
 
-                //Message.Tst(_turningFace + " " +_turningFace.IsOccurrence);
-                //face1.Highlight();
-                //Message.Tst(face1 + " " + face1.IsOccurrence);
-                //face1.Unhighlight();
-                //Message.Tst(_turningElement.ElementComponent.IsOccurrence);
-
-                //Tag t = Config.TheUfSession.Assem.AskPrototypeOfOcc(face1.Tag);
-                //Tag tttt = Config.TheUfSession.Assem.AskPartOccurrence(face1.Tag);
-                //Message.Tst(t + " " + tttt + " " + _turningElement.ElementComponent.Tag);
-
-                //Body b = _turningFace.GetBody();
-                //b.Highlight();
-                //Message.Tst(_turningFace.GetBody().Tag);
-                //b.Unhighlight();
+                if (_turningFace.IsOccurrence)
+                {
+                    _turningElement = new UspElement(_turningFace.OwningComponent);
+                }
                  
                 return true;
             }
@@ -625,14 +625,17 @@ public sealed class TurningBase : DialogProgpam
     {
         if (!_faceSelected) return;
 
-        SetBaseType();
-        _bases = GetAllBases();
-
         string title;
         double[] threeBases;
 
         if (_partIsLoaded)
         {
+            if (block == _enum0)
+            {
+                SetBaseType();
+                _bases = GetAllBases();
+            }
+
             _newTitle = GetTitle(SetNewPartDiametr(block));
 
             NxFunctions.FreezeDisplay();
@@ -660,12 +663,14 @@ public sealed class TurningBase : DialogProgpam
             SetPoints();
             _radius = FindMaxLen();
 
+            SetBaseType();
+            _bases = GetAllBases();
             threeBases = GetThreeBases(_bases, out title);
             
             if (title != null)
             {
                 NxFunctions.FreezeDisplay();
-                Katalog2005.Algorithm.SpecialFunctions.LoadPart(title);
+                Katalog2005.Algorithm.SpecialFunctions.LoadPart(title, false);
                 SetConstraints();
                 NxFunctions.UnFreezeDisplay();
             }
@@ -763,29 +768,42 @@ public sealed class TurningBase : DialogProgpam
     void ReplaceComponent(string newTitleComponent)
     {
         Component oldBase = _baseElement.ElementComponent;
-        Katalog2005.Algorithm.SpecialFunctions.LoadPart(newTitleComponent);
-        Component newBase = Katalog2005.Algorithm.SpecialFunctions.LoadedPart;
-        Logger.WriteLine("Замена компонента " + oldBase.Name + " компонентом " + newBase.Name);
-        newBase.Suppress();
+        Katalog2005.Algorithm.SpecialFunctions.LoadPart(newTitleComponent, true);
+        string uniqueName = newTitleComponent + "__" + DateTime.Now.GetHashCode();
+
+        Logger.WriteLine("Замена компонента " + oldBase.Name + " компонентом " + uniqueName);
         
         ReplaceComponentBuilder rcb = Config.WorkPart.AssemblyManager.CreateReplaceComponentBuilder();
         rcb.ComponentNameType = ReplaceComponentBuilder.ComponentNameOption.AsSpecified;
 
         rcb.ComponentsToReplace.Add(oldBase);
-
-        rcb.ComponentName = newBase.Name;
-        rcb.ReplacementPart = ((Part)newBase.Prototype).FullPath;
+        rcb.ComponentName = uniqueName;
+        rcb.ReplacementPart = Path.GetTempPath() + Config.TmpFolder + Path.DirectorySeparatorChar +
+                    newTitleComponent + Config.PartFileExtension;
+        
 
         rcb.SetComponentReferenceSetType(ReplaceComponentBuilder.ComponentReferenceSet.Others, "Оставить");
         PartLoadStatus partLoadStatus1 = rcb.RegisterReplacePartLoadStatus();
         rcb.Commit();
 
-        _baseElement = new UspElement(oldBase);
+        if (partLoadStatus1.NumberUnloadedParts > 0)
+        {
+            for (int i = 0; i < partLoadStatus1.NumberUnloadedParts; i++)
+            {
+                Logger.WriteLine(partLoadStatus1.GetPartName(i), partLoadStatus1.GetStatus(i),
+                                 partLoadStatus1.GetStatusDescription(i));
+            }
+        }
 
         partLoadStatus1.Dispose();
         rcb.Destroy();
 
-        NxFunctions.DeleteNxObject(newBase);
+        Tag newCompTag = Tag.Null;
+        Config.TheUfSession.Obj.CycleByNameAndType(Config.WorkPart.Tag, uniqueName, UFConstants.UF_component_type, true, ref newCompTag);
+        oldBase = (Component)NXObjectManager.Get(newCompTag);
+        oldBase.SetName(uniqueName);
+
+        _baseElement = new UspElement(oldBase);
     }
 
     string GetTitle(double diametr)

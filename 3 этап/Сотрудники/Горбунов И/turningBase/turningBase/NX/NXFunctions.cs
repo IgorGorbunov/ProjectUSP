@@ -26,14 +26,6 @@ internal static class NxFunctions
     }
 
     /// <summary>
-    /// Удаление объектов NX.
-    /// </summary>
-    /// <param name="nxObjects">Объект(ы) NX.</param>
-    public static void DeleteNxObject(params NXObject[] nxObjects)
-    {
-        Config.TheSession.UpdateManager.AddToDeleteList(nxObjects);
-    }
-    /// <summary>
     /// Обновление сессии (как правило нужно при создании связей).
     /// </summary>
     public static void Update()

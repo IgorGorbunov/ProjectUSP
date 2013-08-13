@@ -16,8 +16,11 @@ namespace Katalog2005.Algorithm
         /// Выгрузка детали.
         /// </summary>
         /// <param name="oboznOfUsp">Обозначение детали УСП.</param>
-        public static void LoadPart(string oboznOfUsp)
+        /// <param name="onlyToDisk">Да, если требуется выгрузить только на диск.</param>
+        public static void LoadPart(string oboznOfUsp, bool onlyToDisk)
         {
+            LoadedPart = null;
+
             string path = Path.GetTempPath() + Config.TmpFolder + Path.DirectorySeparatorChar;
             string fileName = oboznOfUsp + Config.PartFileExtension;
 
@@ -44,7 +47,10 @@ namespace Katalog2005.Algorithm
                 }
             }
 
-            LoadPartToNx(fullPath);
+            if (!onlyToDisk)
+            {
+                LoadPartToNx(fullPath);
+            }
 
         }
 

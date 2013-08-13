@@ -62,6 +62,7 @@ public sealed class UspElement
     }
 
     private readonly Component _component;
+    private Fix _fixter;
     private Body _body;
     private Catalog _catalog;
 
@@ -139,6 +140,24 @@ public sealed class UspElement
             }
         }
         return null;
+    }
+    /// <summary>
+    /// Зафиксировать элемент.
+    /// </summary>
+    public void Fix()
+    {
+        _fixter = new Fix();
+        _fixter.Create(ElementComponent);
+    }
+    /// <summary>
+    /// Разфиксировать элемент.
+    /// </summary>
+    public void Unfix()
+    {
+        if (_fixter != null)
+        {
+            _fixter.Delete();
+        }
     }
 
     void SetBody()

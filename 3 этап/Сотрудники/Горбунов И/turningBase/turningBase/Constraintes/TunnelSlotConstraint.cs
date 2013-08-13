@@ -179,7 +179,7 @@ public sealed class TunnelSlotConstraint
             minLen = len;
         }
 
-        Katalog2005.Algorithm.SpecialFunctions.LoadPart(title);
+        Katalog2005.Algorithm.SpecialFunctions.LoadPart(title, false);
         _fixture = new UspElement(Katalog2005.Algorithm.SpecialFunctions.LoadedPart);
     }
 

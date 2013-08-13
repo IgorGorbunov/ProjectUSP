@@ -28,6 +28,20 @@ public static class Logger
 
         _sW.Close();
     }
+
+    /// <summary>
+    /// Записывает новую строку в лог.
+    /// </summary>
+    /// <param name="lines">Переменные для строки.</param>
+    public static void WriteLine(params object[] lines)
+    {
+        string line = "";
+        foreach (object o in lines)
+        {
+            line += o + Environment.NewLine;
+        }
+        WriteLine(line);
+    }
     /// <summary>
     /// Записывает новую строку с сообщением о предупреждении или ошибки пользователю.
     /// </summary>

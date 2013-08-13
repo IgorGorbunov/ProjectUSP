@@ -14,22 +14,27 @@ public static class Movement
     /// <param name="vec">Вектор перемещения.</param>
     public static void MoveByDirection(Component comp, Vector vec)
     {
-        ComponentPositioner componentPositioner1 =
+        ComponentPositioner compPositioner =
                 Config.WorkPart.ComponentAssembly.Positioner;
-        componentPositioner1.BeginMoveComponent();
+        compPositioner.BeginMoveComponent();
 
-        Network network2 = componentPositioner1.EstablishNetwork();
-        ComponentNetwork componentNetwork2 = (ComponentNetwork)network2;
+        Network network = compPositioner.EstablishNetwork();
+        ComponentNetwork compNetwork = (ComponentNetwork)network;
 
-        NXObject[] movableObjects2 = new NXObject[1];
-        movableObjects2[0] = comp;
-        componentNetwork2.SetMovingGroup(movableObjects2);
+        NXObject[] moveObjects = new NXObject[1];
+        moveObjects[0] = comp;
+        compNetwork.SetMovingGroup(moveObjects);
 
-        componentNetwork2.BeginDrag();
+        compNetwork.BeginDrag();
         Vector3d translation1 = vec.GetCoordsVector3D();
-        componentNetwork2.DragByTranslation(translation1);
-        componentNetwork2.EndDrag();
+        compNetwork.DragByTranslation(translation1);
+        compNetwork.EndDrag();
 
-        componentNetwork2.Solve();
+        compNetwork.Solve();
+        compNetwork.ResetDisplay();
+        compNetwork.ApplyToModel();
+        compPositioner.ClearNetwork();
+        compPositioner.EndMoveComponent();
+    
     }
 }
