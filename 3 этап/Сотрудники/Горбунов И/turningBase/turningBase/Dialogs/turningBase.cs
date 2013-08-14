@@ -54,13 +54,11 @@ public sealed class TurningBase : DialogProgpam
 // ReSharper disable NotAccessedField.Local
     private UIBlock _group0;// Block type: Group
 // ReSharper restore NotAccessedField.Local
-    private UIBlock _faceSelect0;// Block type: Face Collector
     private UIBlock _enum0;// Block type: Enumeration
     private UIBlock _group1;// Block type: Group
     private UIBlock _direction0;
     private UIBlock _selection0;
     private UIBlock _double0;
-    private UIBlock _linearDim0;// Block type: Linear Dim
     private UIBlock _group;// Block type: Group
     private UIBlock _button0;// Block type: Button
     private UIBlock _button01;// Block type: Button
@@ -80,7 +78,7 @@ public sealed class TurningBase : DialogProgpam
 
     private Catalog _catalog;
     private string _slotType;
-    private double _radius;
+    private double _diametr;
     private KeyValuePair<string, double>[] _bases;
 
     private Face _turningFace;
@@ -89,6 +87,7 @@ public sealed class TurningBase : DialogProgpam
     private Face _baseFace;
     private UspElement _baseElement;
     private string _newTitle;
+    private double _newDiametr;
 
     private Vector _workpeaceBaseVector;
     private Point3d _oldPointMovement;
@@ -187,11 +186,9 @@ public sealed class TurningBase : DialogProgpam
         try
         {
             _group0 = TheDialog.TopBlock.FindBlock("group0");
-            _faceSelect0 = TheDialog.TopBlock.FindBlock("face_select0");
             _enum0 = TheDialog.TopBlock.FindBlock("enum0");
             _group1 = TheDialog.TopBlock.FindBlock("group1");
             _direction0 = TheDialog.TopBlock.FindBlock("direction0");
-            _linearDim0 = TheDialog.TopBlock.FindBlock("linear_dim0");
             _group = TheDialog.TopBlock.FindBlock("group");
             _button0 = TheDialog.TopBlock.FindBlock("button0");
             _button01 = TheDialog.TopBlock.FindBlock("button01");
@@ -245,6 +242,7 @@ public sealed class TurningBase : DialogProgpam
         {
             //---- Enter your callback code here -----
             CleanUp();
+            Logger.WriteLine("Нажата кнопка Применить.");
         }
         catch (Exception ex)
         {
@@ -268,10 +266,6 @@ public sealed class TurningBase : DialogProgpam
                 Logger.WriteLine("Нажат выбор типа паза.");
                 UpdateLoad(block);
             }
-            if(block == _faceSelect0)
-            {
-            //---------Enter your code here-----------
-            }
             else if (block == _direction0)
             {
                 //---------Enter your code here-----------
@@ -285,16 +279,6 @@ public sealed class TurningBase : DialogProgpam
                 Logger.WriteLine("Нажат выбор грани.");
                 SetFirstFace(block);
                 UpdateLoad(block);
-            }
-            else if (block == _linearDim0)
-            {
-                //---------Enter your code here-----------
-                PropertyList propertyList = _linearDim0.GetProperties();
-                double doub = propertyList.GetDouble("Value");
-                Point3d newPoint = _workpeaceBaseVector.GetPoint(doub);
-                Vector newVector = new Vector(_oldPointMovement, newPoint);
-                Movement.MoveByDirection(_baseElement.ElementComponent, newVector);
-                _oldPointMovement = newPoint;
             }
             else if (block == _double0)
             {
@@ -310,14 +294,16 @@ public sealed class TurningBase : DialogProgpam
             {
                 //---------Enter your code here-----------
                 Logger.WriteLine("Нажата кнопка меньшего диаметра.");
-                _newTitle = GetTitle(SetNewPartDiametr(block));
+                _newDiametr = SetNewPartDiametr(block);
+                _newTitle = GetTitle(_newDiametr);
                 UpdateLoad(block);
             }
             else if (block == _button01)
             {
                 //---------Enter your code here-----------
                 Logger.WriteLine("Нажата кнопка большего диаметра.");
-                _newTitle = GetTitle(SetNewPartDiametr(block));
+                _newDiametr = SetNewPartDiametr(block);
+                _newTitle = GetTitle(_newDiametr);
                 UpdateLoad(block);
             }
         }
@@ -341,8 +327,9 @@ public sealed class TurningBase : DialogProgpam
         try
         {
             errorCode = apply_cb();
-            CleanUp();
             //---- Enter your callback code here -----
+            Logger.WriteLine("Нажата кнопка ОК.");
+            CleanUp();
         }
         catch (Exception ex)
         {
@@ -361,6 +348,7 @@ public sealed class TurningBase : DialogProgpam
         try
         {
             //---- Enter your callback code here -----
+            Logger.WriteLine("Нажата кнопка Отмена.");
             CleanUp();
         }
         catch (Exception ex)
@@ -599,8 +587,8 @@ public sealed class TurningBase : DialogProgpam
         return correctNumBases;
     }
 
-    double[] GetThreeBases(KeyValuePair<string, double>[] bases,
-                                                 out string title)
+    double[] GetThreeBases(KeyValuePair<string, double>[] bases, double currentDiametr,
+                           out string title)
     {
         title = null;
         double prevD = 0.0, d = 0.0, nextD = 0.0;
@@ -611,19 +599,15 @@ public sealed class TurningBase : DialogProgpam
             d = bases[bases.Length - 1].Value;
             title = bases[bases.Length - 1].Key;
         }
-        if (bases.Length > 1)
-        {
-            prevD = bases[bases.Length - 2].Value;
-        }
         
         for (int j = 0; j < bases.Length; j++)
         {
-            if (bases[j].Value < _radius * 2) continue;
-
             if (j > 0)
             {
                 prevD = bases[j-1].Value;
             }
+
+            if (bases[j].Value < currentDiametr) continue;
 
             title = bases[j].Key;
             d = bases[j].Value;
@@ -654,13 +638,10 @@ public sealed class TurningBase : DialogProgpam
                 _bases = GetAllBases();
             }
 
-            if (block.Type == "Button")
+            if (block.Type != "Button")
             {
-                _newTitle = GetTitle(SetNewPartDiametr(block));
-            }
-            else
-            {
-                _newTitle = GetTitle(SetNewPartDiametr(_label0));
+                _newDiametr = SetNewPartDiametr(_label0);
+                _newTitle = GetTitle(_newDiametr);
             }
             
 #if(!DEBUG)
@@ -680,7 +661,7 @@ public sealed class TurningBase : DialogProgpam
             NxFunctions.UnFreezeDisplay();
 #endif
 
-            threeBases = GetThreeBases(_bases, out title);
+            threeBases = GetThreeBases(_bases, _newDiametr, out title);
         }
         else
         {
@@ -688,11 +669,11 @@ public sealed class TurningBase : DialogProgpam
             SetEnable(_group, true);
 
             SetPoints();
-            _radius = FindMaxLen();
+            _diametr = FindMaxLen() * 2;
 
             SetBaseType();
             _bases = GetAllBases();
-            threeBases = GetThreeBases(_bases, out title);
+            threeBases = GetThreeBases(_bases, _diametr, out title);
             
             if (title != null)
             {
@@ -839,9 +820,10 @@ public sealed class TurningBase : DialogProgpam
             findName = oldBase.Name;
         }
         Config.TheUfSession.Obj.CycleByNameAndType(Config.WorkPart.Tag, findName, UFConstants.UF_component_type, true, ref newCompTag);
-        Logger.WriteLine("Тэг и имя добавленного компонента - " + newCompTag + "/" + findName);
+        //Logger.WriteLine("Тэг и имя добавленного компонента - " + newCompTag + "/" + findName);
         oldBase = (Component)NXObjectManager.Get(newCompTag);
-        oldBase.SetName(findName);
+        //Message.Tst(oldBase.Name);
+        oldBase.SetName(uniqueName);
 
         _baseElement = new UspElement(oldBase);
     }
@@ -864,8 +846,8 @@ public sealed class TurningBase : DialogProgpam
         string label = propertyList.GetString("Label");
         string[] split = label.Split(' ');
         string diametr = split[split.Length - 2];
-        _radius = Double.Parse(diametr) / 2;
-        return _radius * 2;
+        _diametr = Double.Parse(diametr);
+        return _diametr;
     }
 
     void CleanUp()
