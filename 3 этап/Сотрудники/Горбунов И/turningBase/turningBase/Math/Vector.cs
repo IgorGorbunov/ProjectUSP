@@ -42,11 +42,7 @@ public class Vector
     {
         get
         {
-            if (Geom.IsEqual(_direction, new Point3d(0.0, 0.0, 0.0)))
-            {
-                SetDirection();
-            }
-
+            SetDirection();
             return _direction;
         }
     }
@@ -90,6 +86,15 @@ public class Vector
         st += "Direction: " + Direction + "\t}";
         return st;
     }
+    /// <summary>
+    /// Изменяет направление вектора.
+    /// </summary>
+    public void Reverse()
+    {
+        Point3d tmpPoint = _start;
+        _start = _end;
+        _end = tmpPoint;
+    }
 
     
 
@@ -125,12 +130,17 @@ public class Vector
         return new Point3d(xD, yD, zD);
     }
 
+    //public bool IsCoDirectional()
+    //{
+        
+    //}
+
     /// <summary>
     /// Возвращает угол между текущим вектором и заданным (вторым).
     /// </summary>
     /// <param name="vec">Второй вектор.</param>
     /// <returns></returns>
-    private double GetAngle(Vector vec)
+    public double GetAngle(Vector vec)
     {
         UFSession theUfSession = UFSession.GetUFSession();
 

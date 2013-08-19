@@ -15,7 +15,12 @@ public sealed class Program
             SQLOracle.BuildConnectionString("ktc", "ktc", "BASEEOI");
             SqlOracle.BuildConnectionString("ktc", "ktc", "BASEEOI");
 
-            _startProgram = new TurningBase();
+#if(DEBUG)
+            Message.Show("Дебаггг", Message.MessageIcon.Warning, "DEBUG!");
+#endif
+
+            //_startProgram = new TurningBase();
+            _startProgram = new MilingBase();
             Logger.WriteLine("++++++++++++++++++++++++++++++++++++++++++++++++" + " Начало работы программы " + _startProgram.GetType().Name);
 
             // The following method shows the dialog immediately

@@ -30,10 +30,15 @@ public static class Movement
         compNetwork.DragByTranslation(translation1);
         compNetwork.EndDrag();
 
+        //нужно для нормального выхода из меню
+        Session.UndoMarkId markId = 
+            Config.TheSession.SetUndoMark(Session.MarkVisibility.Invisible, "Move Component Update");
+
         compNetwork.Solve();
         compNetwork.ResetDisplay();
         compNetwork.ApplyToModel();
         compPositioner.ClearNetwork();
+        Config.TheSession.UpdateManager.DoUpdate(markId);
         compPositioner.EndMoveComponent();
     
     }

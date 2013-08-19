@@ -89,7 +89,7 @@ public sealed class TurningBase : DialogProgpam
     private string _newTitle;
     private double _newDiametr;
 
-    private Vector _workpeaceBaseVector;
+    private Vector _moveDirection, _globeDirection;
     private Point3d _oldPointMovement;
 
     private TouchAxe _touchAxe;
@@ -197,7 +197,7 @@ public sealed class TurningBase : DialogProgpam
             _double0 = TheDialog.TopBlock.FindBlock("double0");
 
             
-            _catalog = new Catalog8();
+            _catalog = new Catalog12();
         }
         catch (Exception ex)
         {
@@ -271,6 +271,7 @@ public sealed class TurningBase : DialogProgpam
                 //---------Enter your code here-----------
                 Logger.WriteLine("Нажат реверс.");
                 _touchAxe.Reverse();
+                _globeDirection.Reverse();
                 NxFunctions.Update();
             }
             else if (block == _selection0)
@@ -285,7 +286,7 @@ public sealed class TurningBase : DialogProgpam
                 //---------Enter your code here-----------
                 PropertyList propertyList = _double0.GetProperties();
                 double doub = propertyList.GetDouble("Value");
-                Point3d newPoint = _workpeaceBaseVector.GetPoint(doub);
+                Point3d newPoint = _moveDirection.GetPoint(doub);
                 Vector newVector = new Vector(_oldPointMovement, newPoint);
                 Movement.MoveByDirection(_baseElement.ElementComponent, newVector);
                 _oldPointMovement = newPoint;
@@ -402,6 +403,12 @@ public sealed class TurningBase : DialogProgpam
 
     void SetFirstFace(UIBlock block)
     {
+        if (_faceSelected)
+        {
+            _touchAxe.Delete();
+            NxFunctions.Delete(_baseElement.ElementComponent);
+            _partIsLoaded = false;
+        }
         if (SetFace(block, out _centrePoint, out _direct))
         {
             _faceSelected = true;
@@ -643,17 +650,24 @@ public sealed class TurningBase : DialogProgpam
                 _newDiametr = SetNewPartDiametr(_label0);
                 _newTitle = GetTitle(_newDiametr);
             }
-            
+
 #if(!DEBUG)
             NxFunctions.FreezeDisplay();
 #endif
+
+            if (Config.Round(_globeDirection.GetAngle(_moveDirection)) != 0)
+            {
+                _touchAxe.Reverse();
+                NxFunctions.Update();
+            }
+
             ReplaceComponent(_newTitle);
 
             _baseFace = _baseElement.GetFace(Config.BaseHoleName);
 
             PropertyList propertyList = _double0.GetProperties();
             double doub = propertyList.GetDouble("Value");
-            Point3d newPoint = _workpeaceBaseVector.GetPoint(doub);
+            Point3d newPoint = _moveDirection.GetPoint(doub);
             Vector newVector = new Vector(_oldPointMovement, newPoint);
             Movement.MoveByDirection(_baseElement.ElementComponent, newVector);
             _oldPointMovement = newPoint;
@@ -772,7 +786,12 @@ public sealed class TurningBase : DialogProgpam
         _basePoint.Z = point[2];
 
         _oldPointMovement = _basePoint;
-        _workpeaceBaseVector = new Vector(_centrePoint, _basePoint);
+        _moveDirection = new Vector(_centrePoint, _basePoint);
+
+        if (_globeDirection == null)
+        {
+            _globeDirection = new Vector(_centrePoint, _basePoint);
+        }
     }
 
     void ReplaceComponent(string newTitleComponent)
@@ -817,12 +836,12 @@ public sealed class TurningBase : DialogProgpam
         }
         else
         {
-            findName = oldBase.Name;
+            //то работает, то нет
+            //findName = oldBase.Name;
+            findName = uniqueName;
         }
         Config.TheUfSession.Obj.CycleByNameAndType(Config.WorkPart.Tag, findName, UFConstants.UF_component_type, true, ref newCompTag);
-        //Logger.WriteLine("Тэг и имя добавленного компонента - " + newCompTag + "/" + findName);
         oldBase = (Component)NXObjectManager.Get(newCompTag);
-        //Message.Tst(oldBase.Name);
         oldBase.SetName(uniqueName);
 
         _baseElement = new UspElement(oldBase);

@@ -80,6 +80,11 @@ public static class Config
     /// </summary>
     public const string DlxTurningBase = @"turningBase.dlx";
 
+    /// <summary>
+    /// Возвращает имя файла с формой для выгрузки общей базы.
+    /// </summary>
+    public const string DlxMilingBase = @"milingBase.dlx";
+
 
     //------------------------ Methods ------------------------------------------------------------
 

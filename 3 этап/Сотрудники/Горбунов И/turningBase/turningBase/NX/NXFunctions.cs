@@ -56,4 +56,13 @@ internal static class NxFunctions
         }
     }
 
+    public static void Delete(NXObject objectNx)
+    {
+        Session.UndoMarkId markId =
+            Config.TheSession.SetUndoMark(Session.MarkVisibility.Invisible, "Delete");
+
+        Config.TheSession.UpdateManager.AddToDeleteList(objectNx);
+        Config.TheSession.UpdateManager.DoUpdate(markId);
+    }
+
 }
