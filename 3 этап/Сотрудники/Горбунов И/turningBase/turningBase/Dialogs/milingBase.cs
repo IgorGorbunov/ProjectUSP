@@ -51,8 +51,8 @@ public sealed class MilingBase : DialogProgpam
     private readonly string _theDialogName;
 
     private UIBlock _group0;// Block type: Group
-    private UIBlock _toggle0;// Block type: Toggle
-    private UIBlock _enum0;// Block type: Enumeration
+    private UIBlock _toggleRoundBase;// Block type: Toggle
+    private UIBlock _enumSlotType;// Block type: Enumeration
     private UIBlock _group01;// Block type: Group
     private UIBlock _toggle01;// Block type: Toggle
     private UIBlock _toggle02;// Block type: Toggle
@@ -157,8 +157,8 @@ public sealed class MilingBase : DialogProgpam
         try
         {
             _group0 = TheDialog.TopBlock.FindBlock("group0");
-            _toggle0 = TheDialog.TopBlock.FindBlock("toggle0");
-            _enum0 = TheDialog.TopBlock.FindBlock("enum0");
+            _toggleRoundBase = TheDialog.TopBlock.FindBlock("toggle0");
+            _enumSlotType = TheDialog.TopBlock.FindBlock("enum0");
             _group01 = TheDialog.TopBlock.FindBlock("group01");
             _toggle01 = TheDialog.TopBlock.FindBlock("toggle01");
             _toggle02 = TheDialog.TopBlock.FindBlock("toggle02");
@@ -225,11 +225,15 @@ public sealed class MilingBase : DialogProgpam
     {
         try
         {
-            if(block == _toggle0)
+            if(block == _toggleRoundBase)
             {
             //---------Enter your code here-----------
+                Logger.WriteLine("Нажат переключатель выбора круглых баз.");
+                PropertyList trbProp = _toggleRoundBase.GetProperties();
+                bool value = trbProp.GetLogical("Value");
+                SetEnum(!value);
             }
-            else if(block == _enum0)
+            else if(block == _enumSlotType)
             {
             //---------Enter your code here-----------
             }
@@ -344,6 +348,18 @@ public sealed class MilingBase : DialogProgpam
             //---- Enter your exception handling code here -----
             Logger.WriteError(ex.ToString());
             Message.Show("Block Styler", Message.MessageIcon.Error, ex);
+        }
+    }
+
+    //-------------------------------------
+
+    void SetEnum(bool enable)
+    {
+        PropertyList propertyList = _enumSlotType.GetProperties();
+        SetEnable(propertyList, enable);
+        if (!enable)
+        {
+            propertyList.SetEnum("Value", 0);
         }
     }
     

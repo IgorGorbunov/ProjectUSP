@@ -61,5 +61,24 @@ public abstract class DialogProgpam
         return Convert.ToInt32(Session.LibraryUnloadOption.Immediately);
         // return System.Convert.ToInt32(Session.LibraryUnloadOption.AtTermination);
     }
+
+    //---------------------------------------
+
+    protected static void UnSelectObjects(UIBlock block)
+    {
+        PropertyList propList = block.GetProperties();
+        propList.SetTaggedObjectVector("SelectedObjects", new TaggedObject[0]);
+    }
+
+    protected static void SetEnable(UIBlock block, bool enable)
+    {
+        PropertyList propList = block.GetProperties();
+        SetEnable(propList, enable);
+    }
+
+    protected static void SetEnable(PropertyList propList, bool enable)
+    {
+        propList.SetLogical("Enable", enable);
+    }
 }
 

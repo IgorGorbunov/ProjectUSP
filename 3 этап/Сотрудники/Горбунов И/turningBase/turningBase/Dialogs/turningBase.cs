@@ -485,17 +485,7 @@ public sealed class TurningBase : DialogProgpam
         return false;
     }
 
-    static void UnSelectObjects(UIBlock block)
-    {
-        PropertyList propList = block.GetProperties();
-        propList.SetTaggedObjectVector("SelectedObjects", new TaggedObject[0]);
-    }
-
-    static void SetEnable(UIBlock block, bool enable)
-    {
-        PropertyList propList = block.GetProperties();
-        propList.SetLogical("Enable", enable);
-    }
+    
 
     void SetPoints()
     {
