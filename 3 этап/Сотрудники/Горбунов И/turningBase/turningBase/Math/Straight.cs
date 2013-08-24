@@ -83,7 +83,7 @@ public sealed class Straight
     /// <summary>
     /// Возвращает 2 математические плоскости для образования текущей прямой.
     /// </summary>
-    public Platan[] Platanes
+    public Surface[] Platanes
     {
         get
         {
@@ -91,7 +91,7 @@ public sealed class Straight
             {
                 SetPlatanes();
             }
-            return new Platan[] { _firstPlatane, _secondPlatane };
+            return new Surface[] { _firstPlatane, _secondPlatane };
         }
     }
     /// <summary>
@@ -117,7 +117,7 @@ public sealed class Straight
     private const int EquationRank = 2;
 
     double[,] _equation;
-    Platan _firstPlatane, _secondPlatane;
+    Surface _firstPlatane, _secondPlatane;
 
     private bool _hasPointOn;
     private Point3d _pointOnStraight;
@@ -160,7 +160,7 @@ public sealed class Straight
     /// </summary>
     /// <param name="p">Точка, через которую проходит прямая.</param>
     /// <param name="pl">Плоскость, перпендикулярно которой проходит прямая.</param>
-    public Straight(Point3d p, Platan pl)
+    public Straight(Point3d p, Surface pl)
     {
         _equation = new double[EquationRank, Geom.Dimensions];
 
@@ -309,7 +309,7 @@ public sealed class Straight
             SetYz(matrix, k);
         }
 
-        Platan[] platans = new Platan[nPlatanes];
+        Surface[] surfaces = new Surface[nPlatanes];
         for (int i = 0; i < nPlatanes; i++)
         {
             double[] row = new double[nCoefficients];
@@ -317,11 +317,11 @@ public sealed class Straight
             {
                 row[j] = matrix[i, j];
             }
-            platans[i] = new Platan(row);
+            surfaces[i] = new Surface(row);
         }
 
-        _firstPlatane = platans[0];
-        _secondPlatane = platans[1];
+        _firstPlatane = surfaces[0];
+        _secondPlatane = surfaces[1];
     }
     void SetXy(double[,] matrix, int k)
     {

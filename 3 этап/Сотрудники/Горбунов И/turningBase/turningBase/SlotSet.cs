@@ -217,8 +217,8 @@ public sealed class SlotSet
         {
             int n = nProjections[0] > nProjections[1] ? 0 : 1;
 
-            Platan pl1 = new Platan(faces[0]);
-            Platan pl2 = new Platan(faces[1]);
+            Surface pl1 = new Surface(faces[0]);
+            Surface pl2 = new Surface(faces[1]);
             double d1 = pl1.GetDistanceToPoint(_selectPoint);
             double d2 = pl2.GetDistanceToPoint(_selectPoint);
             if (Config.Round(d1) == 0.0)

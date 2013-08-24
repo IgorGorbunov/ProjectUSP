@@ -73,7 +73,7 @@ public sealed class TurningBase : DialogProgpam
     private bool _isFixed = true;
     private bool _isFirstReplace = true;
 
-    private Platan _projectPlatan;
+    private Surface _projectSurface;
     private readonly List<Point3d> _projectList = new List<Point3d>();
 
     private Catalog _catalog;
@@ -419,7 +419,7 @@ public sealed class TurningBase : DialogProgpam
             point2.Z = _centrePoint.Z + _direct[2];
 
             Straight straight = new Straight(_centrePoint, point2);
-            _projectPlatan = new Platan(_centrePoint, straight);
+            _projectSurface = new Surface(_centrePoint, straight);
         }
         else
         {
@@ -524,7 +524,7 @@ public sealed class TurningBase : DialogProgpam
 
     void AddToProjectList(Point3d point)
     {
-        Point3d projectPoint = _projectPlatan.GetProection(point);
+        Point3d projectPoint = _projectSurface.GetProection(point);
         bool alreadyHave = false;
         foreach (Point3d point3D in _projectList)
         {
@@ -542,7 +542,7 @@ public sealed class TurningBase : DialogProgpam
     double FindMaxLen()
     {
         double maxLen = double.MinValue;
-        Point3d centreProj = _projectPlatan.GetProection(_centrePoint);
+        Point3d centreProj = _projectSurface.GetProection(_centrePoint);
         foreach (Point3d point in _projectList)
         {
             double len = (new Vector(centreProj, point)).Length;

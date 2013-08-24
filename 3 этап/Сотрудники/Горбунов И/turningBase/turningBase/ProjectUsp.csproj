@@ -116,7 +116,7 @@
     <Compile Include="Math\Vertex.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="Movement.cs" />
-    <Compile Include="Math\Platan.cs" />
+    <Compile Include="Math\Surface.cs" />
     <Compile Include="NX\NXFunctionKatalog.cs" />
     <Compile Include="NX\NXFunctions.cs" />
     <Compile Include="_Program.cs" />

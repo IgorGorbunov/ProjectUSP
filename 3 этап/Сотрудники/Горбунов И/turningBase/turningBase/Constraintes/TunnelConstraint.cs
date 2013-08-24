@@ -83,8 +83,8 @@ public sealed class TunnelConstraint
         Point3d p1 = _firstTunnel.CentralPoint;
         Point3d p2 = _slot.SlotPoint;
 
-        Platan pl1 = new Platan(face1);
-        Platan pl2 = new Platan(face2);
+        Surface pl1 = new Surface(face1);
+        Surface pl2 = new Surface(face2);
 
         Point3d projection1 = pl1.GetProection(p1);
         Point3d projection2 = pl2.GetProection(p2);

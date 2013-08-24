@@ -23,14 +23,14 @@ static class Geom
     /// Возвращает true, если точка находится между заданными прямыми.
     /// </summary>
     /// <param name="point">Заданная точка.</param>
-    /// <param name="platan">Плоскость, в которых находится прямая.</param>
+    /// <param name="surface">Плоскость, в которых находится прямая.</param>
     /// <param name="straight1">Первая заданная прямая.</param>
     /// <param name="straight2">Вторая заданная прямая.</param>
     /// <returns></returns>
-    public static bool PointIsBetweenStraights(Point3d point, Platan platan,
+    public static bool PointIsBetweenStraights(Point3d point, Surface surface,
                                                 Straight straight1, Straight straight2)
     {
-        Point3d projectionPoint = platan.GetProection(point);
+        Point3d projectionPoint = surface.GetProection(point);
 
         double len1 = straight1.GetDistance(projectionPoint);
         double len2 = straight2.GetDistance(projectionPoint);
@@ -91,7 +91,7 @@ static class Geom
     /// <returns></returns>
     public static Point3d GetIntersectionPointStraight(Point3d p, Straight straight)
     {
-        Platan plain = new Platan(p, straight);
+        Surface plain = new Surface(p, straight);
 
         return SolveSlae(straight, plain);
     }
@@ -168,32 +168,32 @@ static class Geom
 
     //    return matrix;
     //}
-    static double[,] GetMatrixIntersection(Straight straight, Platan platan, out double[] freeArg)
+    static double[,] GetMatrixIntersection(Straight straight, Surface surface, out double[] freeArg)
     {
         double[,] matrix = new double[Dimensions, Dimensions]; //REFACTOR
         freeArg = new double[Dimensions];
 
-        Platan[] straightPlatans = straight.Platanes;
+        Surface[] straightSurfaces = straight.Platanes;
 
         int i = 0;
         while (i < Dimensions - 1)
         {
-            matrix[i, 0] = straightPlatans[i].X;
-            matrix[i, 1] = straightPlatans[i].Y;
-            matrix[i, 2] = straightPlatans[i].Z;
-            freeArg[i] = -straightPlatans[i].FreeArg;
+            matrix[i, 0] = straightSurfaces[i].X;
+            matrix[i, 1] = straightSurfaces[i].Y;
+            matrix[i, 2] = straightSurfaces[i].Z;
+            freeArg[i] = -straightSurfaces[i].FreeArg;
             i++;
         }
 
-        matrix[i, 0] = platan.X;
-        matrix[i, 1] = platan.Y;
-        matrix[i, 2] = platan.Z;
-        freeArg[i] = -platan.FreeArg;
+        matrix[i, 0] = surface.X;
+        matrix[i, 1] = surface.Y;
+        matrix[i, 2] = surface.Z;
+        freeArg[i] = -surface.FreeArg;
 
         return matrix;
     }
     
-    public static Point3d SolveSlae(Straight straight, Platan plain)
+    public static Point3d SolveSlae(Straight straight, Surface plain)
     {
         double[] freeArg;
         double[,] matrix = GetMatrixIntersection(straight, plain, out freeArg);

@@ -129,8 +129,8 @@ public sealed class TunnelSlotConstraint
         double maxLen = double.MinValue;
         foreach (KeyValuePair<Face, double> pair in faces)
         {
-            Platan platan = new Platan(pair.Key);
-            Point3d projection = platan.GetProection(topPoint);
+            Surface surface = new Surface(pair.Key);
+            Point3d projection = surface.GetProection(topPoint);
             Vector vector = new Vector(topPoint, projection);
 
             double length = vector.Length;

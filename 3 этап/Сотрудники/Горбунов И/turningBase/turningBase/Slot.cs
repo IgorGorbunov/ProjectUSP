@@ -236,7 +236,7 @@ public class Slot
             if (f.SolidFaceType != Face.FaceType.Planar ||
                 !dirsAreGood) continue;
 
-            Platan pl = new Platan(f);
+            Surface pl = new Surface(f);
 
             //округление для проверки нуля - added
             double distance = - Config.Round(pl.GetDistanceToPoint(point));

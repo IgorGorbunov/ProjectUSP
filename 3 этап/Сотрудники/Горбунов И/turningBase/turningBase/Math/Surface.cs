@@ -4,7 +4,7 @@ using NXOpen;
 /// <summary>
 /// Класс математических плоскостей.
 /// </summary>
-public class Platan
+public class Surface
 {
     /// <summary>
     /// Возвращает массив коэффициентов A, B, C, D для общего уравнения плоскости -
@@ -16,6 +16,7 @@ public class Platan
         {
             return _equation;
         }
+        
     }
     /// <summary>
     /// Возвращает коэффициент при аргументе X из общего уравнения плоскости.
@@ -68,7 +69,7 @@ public class Platan
     /// <param name="point">Точка, через которую должна проходить плоскость.</param>
     /// <param name="normalStraight">Прямая, перпендикулярно которой должна проходить
     /// плоскость</param>
-    public Platan(Point3d point, Straight normalStraight)
+    public Surface(Point3d point, Straight normalStraight)
     {
         double xArg = normalStraight.DenX;
         double yArg = normalStraight.DenY;
@@ -90,7 +91,7 @@ public class Platan
     /// <param name="yArg">Коэффициент при аргументе Y.</param>
     /// <param name="zArg">Коэффициент при аргументе Z.</param>
     /// <param name="freeArg">Cвободный аргумент.</param>
-    public Platan(double xArg, double yArg, double zArg, double freeArg)
+    public Surface(double xArg, double yArg, double zArg, double freeArg)
     {
         _equation = new double[] { xArg, yArg, zArg, freeArg };
     }
@@ -99,7 +100,7 @@ public class Platan
     /// (Ax + By + Cz + D = 0).
     /// </summary>
     /// <param name="equation">Массив c коэффициентами А, B, C, D</param>
-    public Platan(double[] equation)
+    public Surface(double[] equation)
     {
         _equation = equation;
     }
@@ -107,7 +108,7 @@ public class Platan
     /// Инициализирует новый экземпляр класса для плоскости, заданной гранью элемента.
     /// </summary>
     /// <param name="face">Грань элемента.</param>
-    public Platan(Face face)
+    public Surface(Face face)
     {
         int tmpInt;
         double tmpDouble;
