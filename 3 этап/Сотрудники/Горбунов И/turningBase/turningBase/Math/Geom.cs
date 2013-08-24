@@ -190,22 +190,6 @@ static class Geom
         matrix[i, 2] = platan.Z;
         freeArg[i] = -platan.FreeArg;
 
-        //matrix[0, 0] = straights[0, 0];
-        //matrix[0, 1] = straights[0, 1];
-        //matrix[0, 2] = straights[0, 2];
-
-        //matrix[1, 0] = straights[1, 0];
-        //matrix[1, 1] = straights[1, 1];
-        //matrix[1, 2] = straights[1, 2];
-
-        //matrix[2, 0] = plane[0];
-        //matrix[2, 1] = plane[1];
-        //matrix[2, 2] = plane[2];
-
-        //freeArg[0] = -straights[0, 3];
-        //freeArg[1] = -straights[1, 3];
-        //freeArg[2] = -plane[3];
-
         return matrix;
     }
     

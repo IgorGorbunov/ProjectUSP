@@ -38,7 +38,7 @@ using System;
 using System.IO;
 using NXOpen;
 using NXOpen.BlockStyler;
-
+using NXOpen.UF;
 
 
 //------------------------------------------------------------------------------
@@ -54,16 +54,22 @@ public sealed class MilingBase : DialogProgpam
     private UIBlock _toggleRoundBase;// Block type: Toggle
     private UIBlock _enumSlotType;// Block type: Enumeration
     private UIBlock _group01;// Block type: Group
-    private UIBlock _toggle01;// Block type: Toggle
-    private UIBlock _toggle02;// Block type: Toggle
+    private UIBlock _toggleRectatgularBase;// Block type: Toggle
+    private UIBlock _toggleSquareBase;// Block type: Toggle
     private UIBlock _group02;// Block type: Group
     private UIBlock _selection0;// Block type: Selection
-    private UIBlock _group;// Block type: Group
+    private UIBlock _distanceGroup;// Block type: Group
     private UIBlock _direction0;// Block type: Reverse Direction
     private UIBlock _double0;// Block type: Double
-    private UIBlock _group1;// Block type: Group
+    private UIBlock _parallelGroup;// Block type: Group
     private UIBlock _selection01;// Block type: Selection
     private UIBlock _selection02;// Block type: Selection
+
+    //------------------------------------------
+
+    private bool _isRectangularBase = true;
+    private bool _isSquareBase = true;
+
     
     //------------------------------------------------------------------------------
     //Constructor for NX Styler class
@@ -160,14 +166,14 @@ public sealed class MilingBase : DialogProgpam
             _toggleRoundBase = TheDialog.TopBlock.FindBlock("toggle0");
             _enumSlotType = TheDialog.TopBlock.FindBlock("enum0");
             _group01 = TheDialog.TopBlock.FindBlock("group01");
-            _toggle01 = TheDialog.TopBlock.FindBlock("toggle01");
-            _toggle02 = TheDialog.TopBlock.FindBlock("toggle02");
+            _toggleRectatgularBase = TheDialog.TopBlock.FindBlock("toggle01");
+            _toggleSquareBase = TheDialog.TopBlock.FindBlock("toggle02");
             _group02 = TheDialog.TopBlock.FindBlock("group02");
             _selection0 = TheDialog.TopBlock.FindBlock("selection0");
-            _group = TheDialog.TopBlock.FindBlock("group");
+            _distanceGroup = TheDialog.TopBlock.FindBlock("group");
             _direction0 = TheDialog.TopBlock.FindBlock("direction0");
             _double0 = TheDialog.TopBlock.FindBlock("double0");
-            _group1 = TheDialog.TopBlock.FindBlock("group1");
+            _parallelGroup = TheDialog.TopBlock.FindBlock("group1");
             _selection01 = TheDialog.TopBlock.FindBlock("selection01");
             _selection02 = TheDialog.TopBlock.FindBlock("selection02");
         }
@@ -189,6 +195,11 @@ public sealed class MilingBase : DialogProgpam
         try
         {
             //---- Enter your callback code here -----
+            Selection.MaskTriple[] mask = new Selection.MaskTriple[1];
+            mask[0].Type = UFConstants.UF_solid_type;
+            mask[0].Subtype = UFConstants.UF_all_subtype;
+            mask[0].SolidBodySubtype = UFConstants.UF_UI_SEL_FEATURE_PLANAR_FACE;
+            _selection0.GetProperties().SetSelectionFilter("SelectionFilter", Selection.SelectionAction.ClearAndEnableSpecific, mask);
         }
         catch (Exception ex)
         {
@@ -237,17 +248,30 @@ public sealed class MilingBase : DialogProgpam
             {
             //---------Enter your code here-----------
             }
-            else if(block == _toggle01)
+            else if(block == _toggleRectatgularBase)
             {
             //---------Enter your code here-----------
+                Logger.WriteLine("Нажат выбор прямоугольных баз.");
+                SetToggle(block, out _isRectangularBase);
+                SetEnableToggles();
             }
-            else if(block == _toggle02)
+            else if(block == _toggleSquareBase)
             {
             //---------Enter your code here-----------
+                Logger.WriteLine("Нажат выбор квадратных баз.");
+                SetToggle(block, out _isSquareBase);
+                SetEnableToggles();
             }
             else if(block == _selection0)
             {
             //---------Enter your code here-----------
+                Logger.WriteLine("Нажат выбор грани, параллельной базе.");
+                PropertyList propertyList = block.GetProperties();
+                TaggedObject[] taggedObjects = 
+                    propertyList.GetTaggedObjectVector("SelectedObjects");
+                SetEnable(_distanceGroup, taggedObjects.Length > 0);
+
+                SetPoints();
             }
             else if(block == _direction0)
             {
@@ -363,4 +387,35 @@ public sealed class MilingBase : DialogProgpam
         }
     }
     
+    void SetToggle(UIBlock uiBlock, out bool isSet)
+    {
+        PropertyList propertyList = uiBlock.GetProperties();
+        isSet = propertyList.GetLogical("Value");
+    }
+
+    void SetEnableToggles()
+    {
+        SetEnable(_toggleSquareBase, _isRectangularBase);
+        SetEnable(_toggleRectatgularBase, _isSquareBase);
+    }
+
+    //------------------------------------
+
+    void SetPoints()
+    {
+        PartCollection partCollection = Config.TheSession.Parts;
+        foreach (Part part in partCollection)
+        {
+            BodyCollection bodyCollection = part.Bodies;
+            foreach (Body body in bodyCollection)
+            {
+                body.Highlight();
+                Message.Tst();
+                body.Unhighlight();
+            }
+        }
+            Message.Tst(Config.WorkPart);
+        
+
+    }
 }

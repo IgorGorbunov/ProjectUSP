@@ -104,11 +104,16 @@
     <Compile Include="Dialogs\milingBase.cs" />
     <Compile Include="ElementIntersection.cs" />
     <Compile Include="Log\Log.cs" />
+    <Compile Include="Math\Axes\CoordinateAxe.cs" />
+    <Compile Include="Math\Axes\xAxe.cs" />
+    <Compile Include="Math\Axes\YAxe.cs" />
+    <Compile Include="Math\Axes\ZAxe.cs" />
     <Compile Include="Math\Geom.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Instr.cs" />
     <Compile Include="Log\Logger.cs" />
+    <Compile Include="Math\Vertex.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="Movement.cs" />
     <Compile Include="Math\Platan.cs" />
