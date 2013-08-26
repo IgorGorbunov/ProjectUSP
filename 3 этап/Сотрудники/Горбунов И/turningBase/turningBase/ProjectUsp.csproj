@@ -89,7 +89,8 @@
     <Compile Include="CatalogData\Catalog.cs" />
     <Compile Include="CatalogData\Catalog_12.cs" />
     <Compile Include="CatalogData\Catalog_8.cs" />
-    <Compile Include="Config.cs" />
+    <Compile Include="Config\Config.cs" />
+    <Compile Include="Config\CoordinateConfig.cs" />
     <Compile Include="Constraintes\Center.cs" />
     <Compile Include="Constraintes\Constrainter.cs" />
     <Compile Include="Constraintes\Distance.cs" />

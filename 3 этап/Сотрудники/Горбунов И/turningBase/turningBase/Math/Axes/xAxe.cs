@@ -1,13 +1,17 @@
 ﻿/// <summary>
 /// Класс математических координат оси X.
 /// </summary>
-public sealed class PointXAxe : PointCoordinateAxe
+public sealed class XAxe : CoordinateAxe
 {
+    public override CoordinateConfig.Type Type
+    {
+        get { return CoordinateConfig.Type.X; }
+    }
     /// <summary>
     /// Инициализирует новый экземпляр класса математических координат оси X 
     /// по координатам (0, 0, 0).
     /// </summary>
-    public PointXAxe() 
+    public XAxe() 
         : this(0.0)
     {
         
@@ -17,7 +21,7 @@ public sealed class PointXAxe : PointCoordinateAxe
     /// по заданным координатам.
     /// </summary>
     /// <param name="value">Координаты оси X.</param>
-    public PointXAxe(double value)
+    public XAxe(double value)
     {
         Value = value;
     }

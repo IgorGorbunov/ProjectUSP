@@ -1,13 +1,17 @@
 ﻿/// <summary>
 /// Класс математических координат оси Y.
 /// </summary>
-public sealed class PointYAxe : PointCoordinateAxe
+public sealed class YAxe : CoordinateAxe
 {
+    public override CoordinateConfig.Type Type
+    {
+        get { return CoordinateConfig.Type.Y; }
+    }
     /// <summary>
     /// Инициализирует новый экземпляр класса математических координат оси X 
     /// по координатам (0, 0, 0).
     /// </summary>
-    public PointYAxe()
+    public YAxe()
         : this(0.0)
     {
         
@@ -17,7 +21,7 @@ public sealed class PointYAxe : PointCoordinateAxe
     /// по заданным координатам.
     /// </summary>
     /// <param name="value">Координаты оси Y.</param>
-    public PointYAxe(double value)
+    public YAxe(double value)
     {
         Value = value;
     }

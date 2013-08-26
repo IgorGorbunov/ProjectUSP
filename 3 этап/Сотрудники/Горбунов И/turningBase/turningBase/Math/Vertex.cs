@@ -5,7 +5,7 @@
 /// </summary>
 public class Vertex
 {
-    private readonly PointCoordinateAxe[] _coordinateAxes = new PointCoordinateAxe[3];
+    private readonly Point3d _point;
 
     /// <summary>
     /// Инициализирует новый экземпляр класса математической точки в координатах (0, 0, 0).
@@ -20,10 +20,25 @@ public class Vertex
     /// <param name="point">Точка Point3d.</param>
     public Vertex(Point3d point)
     {
-        _coordinateAxes[0] = new PointXAxe(point.X);
-        _coordinateAxes[1] = new PointYAxe(point.Y);
-        _coordinateAxes[2] = new PointZAxe(point.Z);
+        _point = point;
     }
-
+    /// <summary>
+    /// Возвращает координаты точки для необходимой оси.
+    /// </summary>
+    /// <param name="axe">Ось.</param>
+    /// <returns></returns>
+    public double GetCoordinate(CoordinateAxe axe)
+    {
+        switch (axe.Type)
+        {
+                case CoordinateConfig.Type.X:
+                return _point.X;
+                case CoordinateConfig.Type.Y:
+                return _point.Y;
+                case CoordinateConfig.Type.Z:
+                return _point.Z;
+        }
+        return 0.0;
+    }
 }
 

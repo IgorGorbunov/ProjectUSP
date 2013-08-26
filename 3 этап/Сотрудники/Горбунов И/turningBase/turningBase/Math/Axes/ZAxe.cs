@@ -1,13 +1,17 @@
 ﻿/// <summary>
 /// Класс математических координат оси Z.
 /// </summary>
-public sealed class PointZAxe : PointCoordinateAxe
+public sealed class ZAxe : CoordinateAxe
 {
+    public override CoordinateConfig.Type Type
+    {
+        get { return CoordinateConfig.Type.Z; }
+    }
     /// <summary>
     /// Инициализирует новый экземпляр класса математических координат оси X 
     /// по координатам (0, 0, 0).
     /// </summary>
-    public PointZAxe()
+    public ZAxe()
         : this(0.0)
     {
         
@@ -17,7 +21,7 @@ public sealed class PointZAxe : PointCoordinateAxe
     /// по заданным координатам.
     /// </summary>
     /// <param name="value">Координаты оси Z.</param>
-    public PointZAxe(double value)
+    public ZAxe(double value)
     {
         Value = value;
     }

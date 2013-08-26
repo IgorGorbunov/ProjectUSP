@@ -1,20 +1,12 @@
 ﻿/// <summary>
 /// Абстрактный класс математических координат по оси.
 /// </summary>
-public abstract class PointCoordinateAxe
+public abstract class CoordinateAxe
 {
     protected double Value;
-    
 
-    public static PointCoordinateAxe[] GetSurfaceAxes(PointCoordinateAxe axe)
+    public virtual CoordinateConfig.Type Type
     {
-        PointXAxe x = new PointXAxe();
-        PointYAxe y = new PointYAxe();
-        PointZAxe z = new PointZAxe();
-        switch (axe.GetType().ToString())
-        {
-                case x.GetType().ToString():
-
-        }
+        get { return CoordinateConfig.Type.Null; }
     }
 }

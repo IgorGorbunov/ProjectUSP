@@ -24,6 +24,8 @@ public static class Config
         Tslot
     };
 
+    
+
     public static readonly char[] FaceNameSplitter = {'_'};
     public const string SlotSymbol = "SLOT";
     public const string SlotBottomSymbol = "BOTTOM";
