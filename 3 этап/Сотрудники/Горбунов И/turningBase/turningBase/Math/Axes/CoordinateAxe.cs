@@ -9,4 +9,10 @@ public abstract class CoordinateAxe
     {
         get { return CoordinateConfig.Type.Null; }
     }
+
+
+    public override string ToString()
+    {
+        return Type.ToString("F");
+    }
 }

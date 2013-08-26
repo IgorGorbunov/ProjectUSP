@@ -165,11 +165,28 @@ public class Surface
 
         return numerator / denominator;
     }
-
+    /// <summary>
+    /// Возвращает проекцию заданной точки на текущую плоскость.
+    /// </summary>
+    /// <param name="point">Точка.</param>
+    /// <returns></returns>
     public Point3d GetProection(Point3d point)
     {
         Straight straight = new Straight(point, this);
 
         return Geom.SolveSlae(straight, this);
+    }
+    /// <summary>
+    /// Возвращает проекцию заданной точки на текущую плоскость.
+    /// </summary>
+    /// <param name="vertex">Точка.</param>
+    /// <returns></returns>
+    public Vertex GetProection(Vertex vertex)
+    {
+        Point3d point = vertex.Point;
+        Straight straight = new Straight(point, this);
+
+        Vertex projectVertex = new Vertex(Geom.SolveSlae(straight, this));
+        return projectVertex;
     }
 }

@@ -5,6 +5,13 @@
 /// </summary>
 public class Vertex
 {
+    /// <summary>
+    /// Возвращает точку в формате Point3D.
+    /// </summary>
+    public Point3d Point
+    {
+        get { return _point; }
+    }
     private readonly Point3d _point;
 
     /// <summary>
@@ -21,6 +28,17 @@ public class Vertex
     public Vertex(Point3d point)
     {
         _point = point;
+    }
+
+    /// <summary>
+    /// Инициализирует новый экземпляр класса математической точки по заданным координатам.
+    /// </summary>
+    /// <param name="xCoord">Координаты по оси X.</param>
+    /// <param name="yCoord">Координаты по оси Y.</param>
+    /// <param name="zCoord">Координаты по оси Z.</param>
+    public Vertex(double xCoord, double yCoord, double zCoord)
+    {
+        _point = new Point3d(xCoord, yCoord, zCoord);
     }
     /// <summary>
     /// Возвращает координаты точки для необходимой оси.

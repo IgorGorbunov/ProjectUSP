@@ -35,10 +35,13 @@
 //These imports are needed for the following template code
 //------------------------------------------------------------------------------
 using System;
+using System.Collections.Generic;
 using System.IO;
 using NXOpen;
+using NXOpen.Assemblies;
 using NXOpen.BlockStyler;
 using NXOpen.UF;
+using NXOpen.Utilities;
 
 
 //------------------------------------------------------------------------------
@@ -50,27 +53,34 @@ public sealed class MilingBase : DialogProgpam
 
     private readonly string _theDialogName;
 
-    private UIBlock _group0;// Block type: Group
-    private UIBlock _toggleRoundBase;// Block type: Toggle
-    private UIBlock _enumSlotType;// Block type: Enumeration
-    private UIBlock _group01;// Block type: Group
-    private UIBlock _toggleRectatgularBase;// Block type: Toggle
-    private UIBlock _toggleSquareBase;// Block type: Toggle
-    private UIBlock _group02;// Block type: Group
-    private UIBlock _selection0;// Block type: Selection
-    private UIBlock _distanceGroup;// Block type: Group
-    private UIBlock _direction0;// Block type: Reverse Direction
-    private UIBlock _double0;// Block type: Double
-    private UIBlock _parallelGroup;// Block type: Group
-    private UIBlock _selection01;// Block type: Selection
-    private UIBlock _selection02;// Block type: Selection
+    private UIBlock _group0; // Block type: Group
+    private UIBlock _toggleRoundBase; // Block type: Toggle
+    private UIBlock _enumSlotType; // Block type: Enumeration
+    private UIBlock _group01; // Block type: Group
+    private UIBlock _toggleRectatgularBase; // Block type: Toggle
+    private UIBlock _toggleSquareBase; // Block type: Toggle
+    private UIBlock _group02; // Block type: Group
+    private UIBlock _selection0; // Block type: Selection
+    private UIBlock _distanceGroup; // Block type: Group
+    private UIBlock _direction0; // Block type: Reverse Direction
+    private UIBlock _double0; // Block type: Double
+    private UIBlock _parallelGroup; // Block type: Group
+    private UIBlock _selection01; // Block type: Selection
+    private UIBlock _selection02; // Block type: Selection
 
     //------------------------------------------
+
+    private Face _selectedFace;
 
     private bool _isRectangularBase = true;
     private bool _isSquareBase = true;
 
-    
+    private readonly double[] _maxDistances = new double[3];
+
+    private readonly List<Vertex> _absolutePoints = new List<Vertex>();
+    private readonly List<Vertex> _projectPoints = new List<Vertex>(); 
+
+
     //------------------------------------------------------------------------------
     //Constructor for NX Styler class
     //------------------------------------------------------------------------------
@@ -79,7 +89,7 @@ public sealed class MilingBase : DialogProgpam
         try
         {
             _theDialogName = AppDomain.CurrentDomain.BaseDirectory +
-                Config.DlxFolder + Path.DirectorySeparatorChar + Config.DlxMilingBase;
+                             Config.DlxFolder + Path.DirectorySeparatorChar + Config.DlxMilingBase;
             Logger.WriteLine(_theDialogName);
 
             TheDialog = Config.TheUi.CreateDialog(_theDialogName);
@@ -100,6 +110,7 @@ public sealed class MilingBase : DialogProgpam
             throw;
         }
     }
+
     //------------------------------- DIALOG LAUNCHING ---------------------------------
     //
     //    Before invoking this application one needs to open any part/empty part in NX
@@ -126,16 +137,16 @@ public sealed class MilingBase : DialogProgpam
     //
     //------------------------------------------------------------------------------
 
-    
+
     //------------------------------------------------------------------------------
     // Following method cleanup any housekeeping chores that may be needed.
     // This method is automatically called by NX.
     //------------------------------------------------------------------------------
-// ReSharper disable UnusedMember.Global
-// ReSharper disable UnusedParameter.Global
+    // ReSharper disable UnusedMember.Global
+    // ReSharper disable UnusedParameter.Global
     public static int UnloadLibrary(string arg)
-// ReSharper restore UnusedParameter.Global
-// ReSharper restore UnusedMember.Global
+        // ReSharper restore UnusedParameter.Global
+        // ReSharper restore UnusedMember.Global
     {
         try
         {
@@ -144,17 +155,18 @@ public sealed class MilingBase : DialogProgpam
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            Config.TheUi.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            Config.TheUi.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error,
+                                           ex.ToString());
         }
         return 0;
     }
 
-   
-    
+
+
     //------------------------------------------------------------------------------
     //---------------------Block UI Styler Callback Functions--------------------------
     //------------------------------------------------------------------------------
-    
+
     //------------------------------------------------------------------------------
     //Callback Name: initialize_cb
     //------------------------------------------------------------------------------
@@ -184,7 +196,7 @@ public sealed class MilingBase : DialogProgpam
             Message.Show("Block Styler", Message.MessageIcon.Error, ex);
         }
     }
-    
+
     //------------------------------------------------------------------------------
     //Callback Name: dialogShown_cb
     //This callback is executed just before the dialog launch. Thus any value set 
@@ -199,7 +211,9 @@ public sealed class MilingBase : DialogProgpam
             mask[0].Type = UFConstants.UF_solid_type;
             mask[0].Subtype = UFConstants.UF_all_subtype;
             mask[0].SolidBodySubtype = UFConstants.UF_UI_SEL_FEATURE_PLANAR_FACE;
-            _selection0.GetProperties().SetSelectionFilter("SelectionFilter", Selection.SelectionAction.ClearAndEnableSpecific, mask);
+            _selection0.GetProperties()
+                       .SetSelectionFilter("SelectionFilter",
+                                           Selection.SelectionAction.ClearAndEnableSpecific, mask);
         }
         catch (Exception ex)
         {
@@ -208,7 +222,7 @@ public sealed class MilingBase : DialogProgpam
             Message.Show("Block Styler", Message.MessageIcon.Error, ex);
         }
     }
-    
+
     //------------------------------------------------------------------------------
     //Callback Name: apply_cb
     //------------------------------------------------------------------------------
@@ -228,66 +242,68 @@ public sealed class MilingBase : DialogProgpam
         }
         return errorCode;
     }
-    
+
     //------------------------------------------------------------------------------
     //Callback Name: update_cb
     //------------------------------------------------------------------------------
-    private int update_cb( UIBlock block)
+    private int update_cb(UIBlock block)
     {
         try
         {
-            if(block == _toggleRoundBase)
+            if (block == _toggleRoundBase)
             {
-            //---------Enter your code here-----------
+                //---------Enter your code here-----------
                 Logger.WriteLine("Нажат переключатель выбора круглых баз.");
                 PropertyList trbProp = _toggleRoundBase.GetProperties();
                 bool value = trbProp.GetLogical("Value");
                 SetEnum(!value);
             }
-            else if(block == _enumSlotType)
+            else if (block == _enumSlotType)
             {
-            //---------Enter your code here-----------
+                //---------Enter your code here-----------
             }
-            else if(block == _toggleRectatgularBase)
+            else if (block == _toggleRectatgularBase)
             {
-            //---------Enter your code here-----------
+                //---------Enter your code here-----------
                 Logger.WriteLine("Нажат выбор прямоугольных баз.");
                 SetToggle(block, out _isRectangularBase);
                 SetEnableToggles();
             }
-            else if(block == _toggleSquareBase)
+            else if (block == _toggleSquareBase)
             {
-            //---------Enter your code here-----------
+                //---------Enter your code here-----------
                 Logger.WriteLine("Нажат выбор квадратных баз.");
                 SetToggle(block, out _isSquareBase);
                 SetEnableToggles();
             }
-            else if(block == _selection0)
+            else if (block == _selection0)
             {
-            //---------Enter your code here-----------
+                //---------Enter your code here-----------
                 Logger.WriteLine("Нажат выбор грани, параллельной базе.");
                 PropertyList propertyList = block.GetProperties();
-                TaggedObject[] taggedObjects = 
+                TaggedObject[] taggedObjects =
                     propertyList.GetTaggedObjectVector("SelectedObjects");
                 SetEnable(_distanceGroup, taggedObjects.Length > 0);
 
+                _selectedFace = (Face)taggedObjects[0];
+                Logger.WriteLine("Выбрана грань " + _selectedFace);
                 SetPoints();
             }
-            else if(block == _direction0)
+            else if (block == _direction0)
             {
-            //---------Enter your code here-----------
+                //---------Enter your code here-----------
             }
-            else if(block == _double0)
+            else if (block == _double0)
             {
-            //---------Enter your code here-----------
+                //---------Enter your code here-----------
             }
-            else if(block == _selection01)
+            else if (block == _selection01)
             {
-            //---------Enter your code here-----------
+                //---------Enter your code here-----------
             }
-            else if(block == _selection02)
+            else if (block == _selection02)
             {
-            //---------Enter your code here-----------
+                //---------Enter your code here-----------
             }
         }
         catch (Exception ex)
@@ -298,7 +314,7 @@ public sealed class MilingBase : DialogProgpam
         }
         return 0;
     }
-    
+
     //------------------------------------------------------------------------------
     //Callback Name: ok_cb
     //------------------------------------------------------------------------------
@@ -337,8 +353,8 @@ public sealed class MilingBase : DialogProgpam
         }
         return 0;
     }
-    
-    
+
+
     //------------------------------------------------------------------------------
     //Callback Name: focusNotify_cb
     //This callback is executed when any block (except the ones which receive keyboard entry such as Integer block) receives focus.
@@ -356,7 +372,7 @@ public sealed class MilingBase : DialogProgpam
             Message.Show("Block Styler", Message.MessageIcon.Error, ex);
         }
     }
-    
+
     //------------------------------------------------------------------------------
     //Callback Name: keyboardFocusNotify_cb
     //This callback is executed when block which can receive keyboard entry, receives the focus.
@@ -377,7 +393,7 @@ public sealed class MilingBase : DialogProgpam
 
     //-------------------------------------
 
-    void SetEnum(bool enable)
+    private void SetEnum(bool enable)
     {
         PropertyList propertyList = _enumSlotType.GetProperties();
         SetEnable(propertyList, enable);
@@ -386,14 +402,14 @@ public sealed class MilingBase : DialogProgpam
             propertyList.SetEnum("Value", 0);
         }
     }
-    
-    void SetToggle(UIBlock uiBlock, out bool isSet)
+
+    private void SetToggle(UIBlock uiBlock, out bool isSet)
     {
         PropertyList propertyList = uiBlock.GetProperties();
         isSet = propertyList.GetLogical("Value");
     }
 
-    void SetEnableToggles()
+    private void SetEnableToggles()
     {
         SetEnable(_toggleSquareBase, _isRectangularBase);
         SetEnable(_toggleRectatgularBase, _isSquareBase);
@@ -401,21 +417,128 @@ public sealed class MilingBase : DialogProgpam
 
     //------------------------------------
 
-    void SetPoints()
+    private void SetPoints()
     {
+        SetAbsolutePoints();
+        SetMaxDistances();
+        SetProjectPoints();
+        GetSurfaceAxes();
+    }
+
+    private void SetAbsolutePoints()
+    {
+        _absolutePoints.Clear();
         PartCollection partCollection = Config.TheSession.Parts;
+
+        Logger.WriteLine("Пишем точки");
         foreach (Part part in partCollection)
         {
-            BodyCollection bodyCollection = part.Bodies;
-            foreach (Body body in bodyCollection)
+            Tag[] occurences;
+            Config.TheUfSession.Assem.AskOccsOfPart(Config.WorkPart.Tag, part.Tag, out occurences);
+
+            foreach (Tag tag in occurences)
             {
-                body.Highlight();
-                Message.Tst();
-                body.Unhighlight();
+                Component component = (Component) NXObjectManager.Get(tag);
+                if (component.IsBlanked) continue;
+
+                UspElement element = new UspElement(component);
+
+                double[] minCorner = new double[3];
+                double[] distances = new double[3];
+                double[,] directions = new double[3,3];
+                Config.TheUfSession.Modl.AskBoundingBoxExact(element.Body.Tag, Tag.Null, minCorner,
+                                                             directions, distances);
+
+                _absolutePoints.Add(new Vertex(minCorner[0], minCorner[1], minCorner[2]));
+                _absolutePoints.Add(new Vertex(minCorner[0] + distances[0], minCorner[1],
+                                               minCorner[2]));
+                _absolutePoints.Add(new Vertex(minCorner[0], minCorner[1] + distances[1],
+                                               minCorner[2]));
+                _absolutePoints.Add(new Vertex(minCorner[0], minCorner[1],
+                                               minCorner[2] + distances[2]));
+
+                _absolutePoints.Add(new Vertex(minCorner[0] + distances[0],
+                                               minCorner[1] + distances[1], minCorner[2]));
+                _absolutePoints.Add(new Vertex(minCorner[0] + distances[0], minCorner[1],
+                                               minCorner[2] + distances[2]));
+                _absolutePoints.Add(new Vertex(minCorner[0], minCorner[1] + distances[1],
+                                               minCorner[2] + distances[2]));
+                _absolutePoints.Add(new Vertex(minCorner[0] + distances[0],
+                                               minCorner[1] + distances[1],
+                                               minCorner[2] + distances[2]));
             }
         }
-            Message.Tst(Config.WorkPart);
-        
+    }
 
+    private void SetMaxDistances()
+    {
+        CoordinateAxe[] axes = new CoordinateAxe[3];
+        axes[0] = new XAxe();
+        axes[1] = new YAxe();
+        axes[2] = new ZAxe();
+        for (int i = 0; i < _maxDistances.Length; i++)
+        {
+            _maxDistances[i] = GetMaxDistance(axes[i]);
+            Logger.WriteLine("Максимальная дистанция по оси " + axes[i] + 
+                " - " + _maxDistances[i]);
+        }
+    }
+
+    private double GetMaxDistance(CoordinateAxe axe)
+    {
+        double min = double.MaxValue, max = double.MinValue;
+        foreach (Vertex vertex in _absolutePoints)
+        {
+            if (vertex.GetCoordinate(axe) < min)
+            {
+                min = vertex.GetCoordinate(axe);
+            }
+            if (vertex.GetCoordinate(axe) > max)
+            {
+                max = vertex.GetCoordinate(axe);
+            }
+        }
+
+        return max - min;
+    }
+
+    private void SetProjectPoints()
+    {
+        _projectPoints.Clear();
+        Surface surface = new Surface(_selectedFace);
+        foreach (Vertex absoluteVertex in _absolutePoints)
+        {
+            Vertex projectVertex = surface.GetProection(absoluteVertex);
+
+            bool alreadyHave = false;
+            foreach (Vertex vertex in _projectPoints)
+            {
+                if (!Geom.IsEqual(projectVertex, vertex)) continue;
+
+                alreadyHave = true;
+                break;
+            }
+            if (!alreadyHave)
+            {
+                _projectPoints.Add(projectVertex); 
+            }
+        }
+    }
+
+    private CoordinateAxe[] GetSurfaceAxes()
+    {
+        int axeType = 0;
+        double min = double.MaxValue;
+        for (int i = 0; i < _maxDistances.Length; i++)
+        {
+            if (_maxDistances[i] > min) continue;
+
+            min = _maxDistances[i];
+            axeType = i+1;
+        }
+        Logger.WriteLine("Минимальное расстояние в сборке - " + min + " по оси " + (CoordinateConfig.Type)axeType);
+        CoordinateAxe[] axes = CoordinateConfig.GetSurfaceAxes((CoordinateConfig.Type) axeType);
+        Logger.WriteLine("База будет расположена в плоскости " + axes[0].Type + axes[1].Type);
+        return axes;
     }
 }

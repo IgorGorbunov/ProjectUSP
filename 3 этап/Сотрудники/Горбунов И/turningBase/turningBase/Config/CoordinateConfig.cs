@@ -8,13 +8,13 @@ public static class CoordinateConfig
         Null = 0,
         X = 1,
         Y = 2,
-        Z = 23
+        Z = 3
     }
 
-    public static CoordinateAxe[] GetSurfaceAxes(CoordinateAxe axe)
+    public static CoordinateAxe[] GetSurfaceAxes(Type type)
     {
         CoordinateAxe[] axes = new CoordinateAxe[2];
-        switch (axe.Type)
+        switch (type)
         {
             case Type.X:
                 axes[0] = new YAxe();

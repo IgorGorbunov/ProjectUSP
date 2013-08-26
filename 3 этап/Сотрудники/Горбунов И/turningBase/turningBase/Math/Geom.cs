@@ -304,6 +304,25 @@ static class Geom
         return Config.Round(point1.Z) == Config.Round(point2.Z);
     }
     /// <summary>
+    /// Возвращает значение, определяющее являются ли две точки эквивалентными с учетом
+    /// рабочего округления.
+    /// </summary>
+    /// <param name="vertex1">Первая точка.</param>
+    /// <param name="vertex2">Вторая точка.</param>
+    /// <returns></returns>
+    public static bool IsEqual(Vertex vertex1, Vertex vertex2)
+    {
+        if (Config.Round(vertex1.Point.X) != Config.Round(vertex2.Point.X))
+        {
+            return false;
+        }
+        if (Config.Round(vertex1.Point.Y) != Config.Round(vertex2.Point.Y))
+        {
+            return false;
+        }
+        return Config.Round(vertex1.Point.Z) == Config.Round(vertex2.Point.Z);
+    }
+    /// <summary>
     /// Возвращает значение, определяющее являются ли два массива эквивалентными с учетом
     /// рабочего округления.
     /// </summary>
