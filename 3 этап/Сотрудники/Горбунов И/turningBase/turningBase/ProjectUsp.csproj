@@ -101,6 +101,7 @@
     <Compile Include="Constraintes\TouchAxe.cs" />
     <Compile Include="Constraintes\TunnelConstraint.cs" />
     <Compile Include="Constraintes\TunnelSlotConstraint.cs" />
+    <Compile Include="Data\NoRoundBaseData.cs" />
     <Compile Include="Dialogs\DialogProgpam.cs" />
     <Compile Include="Dialogs\milingBase.cs" />
     <Compile Include="ElementIntersection.cs" />
@@ -120,6 +121,7 @@
     <Compile Include="Math\Surface.cs" />
     <Compile Include="NX\NXFunctionKatalog.cs" />
     <Compile Include="NX\NXFunctions.cs" />
+    <Compile Include="Sql - мой\SqlFunctions.cs" />
     <Compile Include="_Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Slot.cs" />

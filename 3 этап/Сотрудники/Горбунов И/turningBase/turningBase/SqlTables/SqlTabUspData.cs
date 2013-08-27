@@ -25,6 +25,10 @@ public static class SqlTabUspData
     /// </summary>
     public const string CLength = "L";
     /// <summary>
+    /// Столбец с обозначением ширины елемента.
+    /// </summary>
+    public const string CWidth = "B";
+    /// <summary>
     /// Столбец с номером каталога для детали (0 - 8ой паз, 1 - 12ый паз).
     /// </summary>
     public const string CCatalog = "KATALOG_USP";
@@ -57,7 +61,11 @@ public static class SqlTabUspData
         /// <summary>
         /// 'радиальн'
         /// </summary>
-        RadialPlate = 3
+        RadialPlate = 3,
+        /// <summary>
+        /// 'Плит'
+        /// </summary>
+        Plates = 4
     }
     /// <summary>
     /// Возвращает наименование ГОСТа.
@@ -76,6 +84,8 @@ public static class SqlTabUspData
                 return "Плита круглая";
             case 3:
                 return "радиальн";
+            case 4:
+                return "Плит";
         }
         return "''";
     }
@@ -108,6 +118,9 @@ public static class SqlTabUspData
         Fixture = 5
     }
 
+    /// <summary>
+    /// Возвращает условие существования элементов.
+    /// </summary>
     public static string ThereIs
     {
         get { return "(" + CCount + " > 0 and " + CCount + " <> " + _NULL_NUMBER + ")"; }

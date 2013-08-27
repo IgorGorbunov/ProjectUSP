@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.OracleClient;
 
 /// <summary>
@@ -10,9 +11,9 @@ partial class SqlOracle
     /// <summary>
     /// Метод, реализующий параметризированный select-запрос
     /// </summary>
-    /// <param name="cmdQuery">SQL-текст запроса</param>
-    /// <param name="paramsDict">Dictionary c параметризаторами запроса</param>
-    /// <param name="value"></param>
+    /// <param name="cmdQuery">SQL-текст запроса.</param>
+    /// <param name="paramsDict">Dictionary c параметризаторами запроса.</param>
+    /// <param name="value">Результирующее значение.</param>
     /// <returns></returns>
     public static bool Sel<T>(string cmdQuery, Dictionary<string, string> paramsDict, out T value)
     {
@@ -112,6 +113,49 @@ partial class SqlOracle
             cmd.Dispose();
 
             ProcessSuccess(cmdQuery, paramsDict, values);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            ProcessUnSuccess(cmdQuery, paramsDict, ex);
+            return false;
+        }
+        finally
+        {
+            _close();
+        }
+    }
+
+    /// <summary>
+    /// Метод, реализующий параметризированный select-запрос
+    /// </summary>
+    /// <param name="cmdQuery">SQL-текст запроса</param>
+    /// <param name="paramsDict">Dictionary c параметризаторами запроса</param>
+    /// <param name="value">Результирующая таблица данных.</param>
+    /// <returns></returns>
+    public static bool SelData(string cmdQuery, Dictionary<string, string> paramsDict, out DataTable value)
+    {
+        value = null;
+        DataSet ds = new DataSet();
+        try
+        {
+            _open();
+
+            OracleCommand cmd = new OracleCommand(cmdQuery, _conn);
+            OracleDataAdapter da = new OracleDataAdapter(cmd);
+            foreach (KeyValuePair<string, string> pair in paramsDict)
+            {
+                da.SelectCommand.Parameters.AddWithValue(":" + pair.Key, pair.Value);
+            }
+
+            da.Fill(ds);
+
+            da.Dispose();
+            cmd.Dispose();
+
+            value = ds.Tables.Count == 0 ? null : ds.Tables[0];
+
+            ProcessSuccess(cmdQuery, paramsDict, value);
             return true;
         }
         catch (Exception ex)

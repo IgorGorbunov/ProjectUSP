@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 
 /// <summary>
 /// Класс запросов информации для детали.
@@ -123,6 +124,35 @@ static class SqlUspElement
         if (SqlOracle.Sel(query, paramDict, out dictionary))
         {
             return dictionary;
+        }
+        throw new TimeoutException();
+    }
+
+    public static NoRoundBaseData GetNoRoundBase(double minLen, double minWid, string colums,
+                                                 string conditions, Catalog catalog)
+    {
+        Dictionary<string, string> paramDict = new Dictionary<string, string>();
+        paramDict.Add("minLen", minLen.ToString());
+        paramDict.Add("minWid", minWid.ToString());
+
+        string qS = "select " + SqlTabUspData.CTitle + "," + SqlTabUspData.CName + "," + colums +
+                    " from " + SqlTabUspData.Name + " where " +
+                    SqlTabUspData.ThereIs +
+                    " and " + SqlTabUspData.CGroup + " = " + (int)SqlTabUspData.GroupUsp.Base + 
+                    " and " + SqlTabUspData.CName + " like '" +
+                    SqlTabUspData.GetName(SqlTabUspData.NameUsp.Plates) + "%'" +
+                    " and rownum = 1" +
+                    " and (" + SqlTabUspData.CLength + " > :minLen or " + SqlTabUspData.CDiametr +
+                        " > :minLen)" +
+                    " and (" + SqlTabUspData.CWidth + " > :minWid or " + SqlTabUspData.CDiametr +
+                        " > :minWid)" +
+                    conditions + " order by Len,Wid";
+
+        DataTable dataTable;
+        if (SqlOracle.SelData(qS, paramDict, out dataTable))
+        {
+            List<NoRoundBaseData> list = SqlFunctions.ToNoRoundBaseDataList(dataTable);
+            return list[0];
         }
         throw new TimeoutException();
     }

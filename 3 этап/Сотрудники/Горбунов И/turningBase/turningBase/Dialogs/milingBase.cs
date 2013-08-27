@@ -72,10 +72,14 @@ public sealed class MilingBase : DialogProgpam
 
     private Face _selectedFace;
 
+    private bool _isRoundBase;
     private bool _isRectangularBase = true;
     private bool _isSquareBase = true;
 
+    private double _width, _length;
+
     private readonly double[] _maxDistances = new double[3];
+    private CoordinateAxe[] _baseAxes = new CoordinateAxe[2];
 
     private readonly List<Vertex> _absolutePoints = new List<Vertex>();
     private readonly List<Vertex> _projectPoints = new List<Vertex>(); 
@@ -90,7 +94,6 @@ public sealed class MilingBase : DialogProgpam
         {
             _theDialogName = AppDomain.CurrentDomain.BaseDirectory +
                              Config.DlxFolder + Path.DirectorySeparatorChar + Config.DlxMilingBase;
-            Logger.WriteLine(_theDialogName);
 
             TheDialog = Config.TheUi.CreateDialog(_theDialogName);
             TheDialog.AddApplyHandler(apply_cb);
@@ -423,6 +426,8 @@ public sealed class MilingBase : DialogProgpam
         SetMaxDistances();
         SetProjectPoints();
         GetSurfaceAxes();
+        SetSize();
+        GetBase();
     }
 
     private void SetAbsolutePoints()
@@ -525,7 +530,7 @@ public sealed class MilingBase : DialogProgpam
         }
     }
 
-    private CoordinateAxe[] GetSurfaceAxes()
+    private void GetSurfaceAxes()
     {
         int axeType = 0;
         double min = double.MaxValue;
@@ -537,8 +542,123 @@ public sealed class MilingBase : DialogProgpam
             axeType = i+1;
         }
         Logger.WriteLine("Минимальное расстояние в сборке - " + min + " по оси " + (CoordinateConfig.Type)axeType);
-        CoordinateAxe[] axes = CoordinateConfig.GetSurfaceAxes((CoordinateConfig.Type) axeType);
-        Logger.WriteLine("База будет расположена в плоскости " + axes[0].Type + axes[1].Type);
-        return axes;
+        _baseAxes = CoordinateConfig.GetSurfaceAxes((CoordinateConfig.Type) axeType);
+        Logger.WriteLine("База будет расположена в плоскости " + _baseAxes[0].Type + _baseAxes[1].Type);
     }
+
+    private void SetSize()
+    {
+        if (_maxDistances[((int)_baseAxes[0].Type) - 1] > _maxDistances[((int)_baseAxes[1].Type) - 1])
+        {
+            _length = _maxDistances[((int) _baseAxes[0].Type) - 1];
+            _width = _maxDistances[((int)_baseAxes[1].Type) - 1];
+        }
+        else
+        {
+            _length = _maxDistances[((int)_baseAxes[1].Type) - 1];
+            _width = _maxDistances[((int)_baseAxes[0].Type) - 1];
+        }
+        Logger.WriteLine("Размеры базовой плиты должны быть не меньше " + _length + " x " + _width);
+    }
+
+    NoRoundBaseData GetBase()
+    {
+        List<NoRoundBaseData> bases = new List<NoRoundBaseData>();
+        string selectColumns = GetColumns_Round();
+        string coditions = GetCondition_Round() + GetCondition_Slot() + GetCondition_NoRound();
+        
+
+        //KeyValuePair<string, double>[] correctNumBases = new KeyValuePair<string, double>[bases.Count];
+        //int i = 0;
+        //foreach (KeyValuePair<string, string> keyValuePair in bases)
+        //{
+        //    double value = Int32.Parse(keyValuePair.Value);
+        //    correctNumBases[i] = new KeyValuePair<string, double>(keyValuePair.Key, value);
+        //    i++;
+        //}
+        //if (correctNumBases.Length > 1)
+        //{
+        //    Instr.QSortPairs(correctNumBases, 0, correctNumBases.Length - 1);
+        //}
+
+        return SqlUspElement.GetNoRoundBase(200, 200, selectColumns, coditions, new Catalog12());
+    }
+
+    private string GetColumns_Round()
+    {
+        //case when L = 0 then D else L end as Len,
+        //case when L = 0 then D else B end as Wid 
+        PropertyList propertyList = _toggleRoundBase.GetProperties();
+        bool value = propertyList.GetLogical("Value");
+        //без круглых плит
+        if (value)
+        {
+            return SqlTabUspData.CLength + " as Len," + SqlTabUspData.CWidth + " as Wid ";
+        }
+        return "case when " + SqlTabUspData.CLength + " = 0 then " +
+               SqlTabUspData.CDiametr + " else " + SqlTabUspData.CLength + " end as Len," +
+               "case when " + SqlTabUspData.CLength + " = 0 then " +
+               SqlTabUspData.CDiametr + " else " + SqlTabUspData.CWidth + " end as Wid ";
+    }
+
+    private string GetCondition_Round()
+    {
+        //--and TO_NUMBER(L) > 0 --некруглые плиты
+        //--and (NAME like 'Плита круглая%' or NAME like 'Плиты круглые%') --круглые плиты
+        PropertyList propertyList = _toggleRoundBase.GetProperties();
+        bool value = propertyList.GetLogical("Value");
+        //без круглых плит
+        if (value)
+        {
+            _isRoundBase = false;
+            return " and TO_NUMBER(" + SqlTabUspData.CLength + ") > 0";
+        }
+        _isRoundBase = true;
+        return " and (" + SqlTabUspData.CName + " like '" + SqlTabUspData.GetName(SqlTabUspData.NameUsp.RoundPlate) + "%' or " +
+            SqlTabUspData.CName + " like '" + SqlTabUspData.GetName(SqlTabUspData.NameUsp.RoundPlates) + "%')";
+    }
+
+    private string GetCondition_Slot()
+    {
+        //--and NAME like '%радиальн%' --радиально-поперечное расположение пазов
+        //--and NAME not like '%радиальн%' --крестообразное расположение пазов
+        PropertyList propertyList = _enumSlotType.GetProperties();
+        bool enable = propertyList.GetLogical("Enable");
+        if (!enable)
+        {
+            return "";
+        }
+
+        string slotType = propertyList.GetEnumAsString("Value");
+        if (slotType == "Крестообразное")
+        {
+            return " and " + SqlTabUspData.CName + " not like '%" + 
+                SqlTabUspData.GetName(SqlTabUspData.NameUsp.RadialPlate) + "%'";
+        }
+        return " and " + SqlTabUspData.CName + " like '%" +
+                SqlTabUspData.GetName(SqlTabUspData.NameUsp.RadialPlate) + "%'";
+
+    }
+
+    private string GetCondition_NoRound()
+    {
+        //--and L = B --квадратные
+        //--and L <> B --прямоугольные
+        PropertyList rectPropList = _toggleRectatgularBase.GetProperties();
+        bool rectValue = rectPropList.GetLogical("Value");
+        PropertyList sqrPropList = _toggleSquareBase.GetProperties();
+        bool sqrValue = sqrPropList.GetLogical("Value");
+        if (sqrValue && rectValue)
+        {
+            return "";
+        }
+        if (sqrValue)
+        {
+            return " and " + SqlTabUspData.CLength + " = " + SqlTabUspData.CWidth;
+        }
+        //if (rectValue)
+        return " and " + SqlTabUspData.CLength + " <> " + SqlTabUspData.CWidth;
+    }
+
+
 }
