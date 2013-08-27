@@ -2,7 +2,6 @@
 using System.Data;
 using System.Data.OracleClient;
 
-
 /// <summary>
 /// Класс c инициаизацией переменных и проверкой соединения с БД
 /// </summary>

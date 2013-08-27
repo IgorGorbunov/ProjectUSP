@@ -1,8 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 
+/// <summary>
+/// Функции для работы с sql запросами.
+/// </summary>
 public static class SqlFunctions
 {
+    /// <summary>
+    /// Возвращает список баз, используя заданную таблицу.
+    /// </summary>
+    /// <param name="dataTable">Таблица из БД в формате Обозначение-string|Наименование-string|Длина-double|Ширина-double.</param>
+    /// <returns></returns>
     public static List<NoRoundBaseData> ToNoRoundBaseDataList(DataTable dataTable)
     {
         List<NoRoundBaseData> baseData = new List<NoRoundBaseData>();

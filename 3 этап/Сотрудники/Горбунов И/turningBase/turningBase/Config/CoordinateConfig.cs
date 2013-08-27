@@ -3,6 +3,9 @@
 /// </summary>
 public static class CoordinateConfig
 {
+    /// <summary>
+    /// Тип координатной оси.
+    /// </summary>
     public enum Type
     {
         Null = 0,
@@ -11,6 +14,11 @@ public static class CoordinateConfig
         Z = 3
     }
 
+    /// <summary>
+    /// Возвращает типы осей, взаимно-перпендикулярных данной оси.
+    /// </summary>
+    /// <param name="type">Тип заданной оси.</param>
+    /// <returns></returns>
     public static CoordinateAxe[] GetSurfaceAxes(Type type)
     {
         CoordinateAxe[] axes = new CoordinateAxe[2];

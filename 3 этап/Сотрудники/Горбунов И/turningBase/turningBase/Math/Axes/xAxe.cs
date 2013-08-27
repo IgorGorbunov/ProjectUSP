@@ -3,6 +3,9 @@
 /// </summary>
 public sealed class XAxe : CoordinateAxe
 {
+    /// <summary>
+    /// Возвращает тип оси.
+    /// </summary>
     public override CoordinateConfig.Type Type
     {
         get { return CoordinateConfig.Type.X; }

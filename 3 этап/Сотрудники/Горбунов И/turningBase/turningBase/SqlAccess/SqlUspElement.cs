@@ -128,6 +128,15 @@ static class SqlUspElement
         throw new TimeoutException();
     }
 
+    /// <summary>
+    /// Возвращает экземпляр базы, минимальный по подходящим параметрам.
+    /// </summary>
+    /// <param name="minLen">Минимальная длина.</param>
+    /// <param name="minWid">Минимальная ширина.</param>
+    /// <param name="colums">Дополнительные даннные.</param>
+    /// <param name="conditions">Дополнительные условия.</param>
+    /// <param name="catalog">Каталог.</param>
+    /// <returns></returns>
     public static NoRoundBaseData GetNoRoundBase(double minLen, double minWid, string colums,
                                                  string conditions, Catalog catalog)
     {

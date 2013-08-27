@@ -3,6 +3,9 @@
 /// </summary>
 public sealed class YAxe : CoordinateAxe
 {
+    /// <summary>
+    /// Возвращает тип координатной оси.
+    /// </summary>
     public override CoordinateConfig.Type Type
     {
         get { return CoordinateConfig.Type.Y; }
