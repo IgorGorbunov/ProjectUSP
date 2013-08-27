@@ -217,6 +217,11 @@ public sealed class MilingBase : DialogProgpam
             _selection0.GetProperties()
                        .SetSelectionFilter("SelectionFilter",
                                            Selection.SelectionAction.ClearAndEnableSpecific, mask);
+
+            //Config.TheUfSession.Fltr.AskBoxOfAssy();
+            //ufs.Fltr.AskBoxOfAssy(s.Parts.Work.ComponentAssembly.RootComponent.Tag, centroid, corner, orientation)
+
+            NxFunctions.SetAsterix(new Point3d(0, 0, 0));
         }
         catch (Exception ex)
         {
@@ -580,6 +585,7 @@ public sealed class MilingBase : DialogProgpam
         //{
         //    Instr.QSortPairs(correctNumBases, 0, correctNumBases.Length - 1);
         //}
+        
 
         return SqlUspElement.GetNoRoundBase(200, 200, selectColumns, coditions, new Catalog12());
     }

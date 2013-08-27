@@ -65,4 +65,22 @@ internal static class NxFunctions
         Config.TheSession.UpdateManager.DoUpdate(markId);
     }
 
+    public static void SetAsterix(Point3d point)
+    {
+        UFObj.DispProps props = new UFObj.DispProps();
+        props.blank_status = UFConstants.UF_OBJ_NOT_BLANKED;
+        props.color = 186;//RED
+        props.font = UFConstants.UF_OBJ_FONT_SOLID;
+        props.highlight_status = true;
+        props.layer = 1;
+        props.line_width = UFConstants.UF_OBJ_WIDTH_NORMAL;
+
+        double[] position = new double[3];
+        position[0] = point.X;
+        position[1] = point.Y;
+        position[2] = point.Z;
+
+        Config.TheUfSession.Disp.DisplayTemporaryPoint(Tag.Null, UFDisp.ViewType.UseActiveMinus, position, ref props, UFDisp.PolyMarker.FilledCircle);
+    }
+
 }
