@@ -77,6 +77,7 @@ public sealed class MilingBase : DialogProgpam
     private bool _isSquareBase = true;
 
     private double _width, _length;
+    private NoRoundBaseData _base;
 
     private readonly double[] _maxDistances = new double[3];
     private CoordinateAxe[] _baseAxes = new CoordinateAxe[2];
@@ -218,10 +219,27 @@ public sealed class MilingBase : DialogProgpam
                        .SetSelectionFilter("SelectionFilter",
                                            Selection.SelectionAction.ClearAndEnableSpecific, mask);
 
-            //Config.TheUfSession.Fltr.AskBoxOfAssy();
-            //ufs.Fltr.AskBoxOfAssy(s.Parts.Work.ComponentAssembly.RootComponent.Tag, centroid, corner, orientation)
+            //double[] centroid = new double[3];
+            //double[] corner = new double[3];
+            //double[] orientation = new double[9];
 
-            NxFunctions.SetAsterix(new Point3d(0, 0, 0));
+            //Config.TheUfSession.Fltr.AskBoxOfAssy(Config.TheSession.Parts.Work.ComponentAssembly.RootComponent.Tag, centroid, corner, orientation);
+
+            //double[] lowCorner = new double[3];
+            //double[] upCorner = new double[3];
+
+            //Config.TheUfSession.Vec3.Sub(centroid, corner, lowCorner);
+            //Config.TheUfSession.Vec3.Add(centroid, corner, upCorner);
+
+
+            //NxFunctions.SetAsterix(lowCorner);
+            //NxFunctions.SetAsterix(upCorner);
+            //NxFunctions.SetAsterix(upCorner[0], lowCorner[1], lowCorner[2]);
+            //NxFunctions.SetAsterix(upCorner[0], upCorner[1], lowCorner[2]);
+            //NxFunctions.SetAsterix(lowCorner[0], upCorner[1], lowCorner[2]);
+            //NxFunctions.SetAsterix(lowCorner[0], upCorner[1], upCorner[2]);
+            //NxFunctions.SetAsterix(lowCorner[0], lowCorner[1], upCorner[2]);
+            //NxFunctions.SetAsterix(upCorner[0], lowCorner[1], upCorner[2]);
         }
         catch (Exception ex)
         {
@@ -432,7 +450,8 @@ public sealed class MilingBase : DialogProgpam
         SetProjectPoints();
         GetSurfaceAxes();
         SetSize();
-        GetBase();
+        _base = GetBase();
+        LoadBase();
     }
 
     private void SetAbsolutePoints()
@@ -566,28 +585,19 @@ public sealed class MilingBase : DialogProgpam
         Logger.WriteLine("Размеры базовой плиты должны быть не меньше " + _length + " x " + _width);
     }
 
-    NoRoundBaseData GetBase()
+    private NoRoundBaseData GetBase()
     {
         List<NoRoundBaseData> bases = new List<NoRoundBaseData>();
         string selectColumns = GetColumns_Round();
         string coditions = GetCondition_Round() + GetCondition_Slot() + GetCondition_NoRound();
         
 
-        //KeyValuePair<string, double>[] correctNumBases = new KeyValuePair<string, double>[bases.Count];
-        //int i = 0;
-        //foreach (KeyValuePair<string, string> keyValuePair in bases)
-        //{
-        //    double value = Int32.Parse(keyValuePair.Value);
-        //    correctNumBases[i] = new KeyValuePair<string, double>(keyValuePair.Key, value);
-        //    i++;
-        //}
-        //if (correctNumBases.Length > 1)
-        //{
-        //    Instr.QSortPairs(correctNumBases, 0, correctNumBases.Length - 1);
-        //}
-        
+        return SqlUspElement.GetNoRoundBase(_length, _width, selectColumns, coditions, new Catalog8());
+    }
 
-        return SqlUspElement.GetNoRoundBase(200, 200, selectColumns, coditions, new Catalog12());
+    private void LoadBase()
+    {
+        Katalog2005.Algorithm.SpecialFunctions.LoadPart(_base.Title, false);
     }
 
     private string GetColumns_Round()

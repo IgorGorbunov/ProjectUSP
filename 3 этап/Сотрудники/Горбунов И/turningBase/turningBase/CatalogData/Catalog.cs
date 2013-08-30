@@ -11,7 +11,7 @@ public abstract class Catalog
         get { return 0; }
     }
     /// <summary>
-    /// Возвращает индекс каталога в SQL-таблице.
+    /// Возвращает тип каталога.
     /// </summary>
     public virtual SqlTabUspData.CatalogUsp CatalogUsp
     {

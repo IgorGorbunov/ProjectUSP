@@ -83,4 +83,13 @@ internal static class NxFunctions
         Config.TheUfSession.Disp.DisplayTemporaryPoint(Tag.Null, UFDisp.ViewType.UseActiveMinus, position, ref props, UFDisp.PolyMarker.FilledCircle);
     }
 
+    public static void SetAsterix(double[] point)
+    {
+        SetAsterix(new Point3d(point[0], point[1], point[2]));
+    }
+
+    public static void SetAsterix(double coord1, double coord2, double coord3)
+    {
+        SetAsterix(new double[]{coord1, coord2, coord3});
+    }
 }

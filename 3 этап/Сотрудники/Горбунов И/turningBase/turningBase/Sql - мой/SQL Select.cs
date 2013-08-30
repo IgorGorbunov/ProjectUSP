@@ -155,7 +155,7 @@ partial class SqlOracle
 
             value = ds.Tables.Count == 0 ? null : ds.Tables[0];
 
-            ProcessSuccess(cmdQuery, paramsDict, value);
+            ProcessSuccessData(cmdQuery, paramsDict, value);
             return true;
         }
         catch (Exception ex)
@@ -221,6 +221,23 @@ partial class SqlOracle
         foreach (KeyValuePair<T1, T2> keyValuePair in values)
         {
             mess += Environment.NewLine + keyValuePair.ToString();
+        }
+        Logger.WriteLine(mess);
+    }
+
+    static void ProcessSuccessData(string cmdQuery, Dictionary<string, string> paramsDict, DataTable value)
+    {
+        string mess = "Запрос прошёл!";
+        mess = RecordQuery(mess, cmdQuery, paramsDict);
+        mess += Environment.NewLine + "-";
+        mess += Environment.NewLine + "Data:" + Environment.NewLine;
+        foreach (DataRow row in value.Rows)
+        {
+            for (int i = 0; i < value.Columns.Count; i++)
+            {
+                mess += row[i] + " | ";
+            }
+            mess += Environment.NewLine;
         }
         Logger.WriteLine(mess);
     }

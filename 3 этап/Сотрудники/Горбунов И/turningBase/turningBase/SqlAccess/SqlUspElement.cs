@@ -147,6 +147,7 @@ static class SqlUspElement
         string qS = "select " + SqlTabUspData.CTitle + "," + SqlTabUspData.CName + "," + colums +
                     " from " + SqlTabUspData.Name + " where " +
                     SqlTabUspData.ThereIs +
+                    " and " + SqlTabUspData.CCatalog + " = " + (int)catalog.CatalogUsp +                     
                     " and " + SqlTabUspData.CGroup + " = " + (int)SqlTabUspData.GroupUsp.Base + 
                     " and " + SqlTabUspData.CName + " like '" +
                     SqlTabUspData.GetName(SqlTabUspData.NameUsp.Plates) + "%'" +
