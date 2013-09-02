@@ -144,19 +144,20 @@ static class SqlUspElement
         paramDict.Add("minLen", minLen.ToString());
         paramDict.Add("minWid", minWid.ToString());
 
-        string qS = "select " + SqlTabUspData.CTitle + "," + SqlTabUspData.CName + "," + colums +
-                    " from " + SqlTabUspData.Name + " where " +
-                    SqlTabUspData.ThereIs +
-                    " and " + SqlTabUspData.CCatalog + " = " + (int)catalog.CatalogUsp +                     
-                    " and " + SqlTabUspData.CGroup + " = " + (int)SqlTabUspData.GroupUsp.Base + 
-                    " and " + SqlTabUspData.CName + " like '" +
-                    SqlTabUspData.GetName(SqlTabUspData.NameUsp.Plates) + "%'" +
-                    " and rownum = 1" +
-                    " and (" + SqlTabUspData.CLength + " > :minLen or " + SqlTabUspData.CDiametr +
-                        " > :minLen)" +
-                    " and (" + SqlTabUspData.CWidth + " > :minWid or " + SqlTabUspData.CDiametr +
-                        " > :minWid)" +
-                    conditions + " order by Len,Wid";
+        string qS = "select * from (";
+        qS += "select " + SqlTabUspData.CTitle + "," + SqlTabUspData.CName + "," + colums +
+                " from " + SqlTabUspData.Name + " where " +
+                SqlTabUspData.ThereIs +
+                " and " + SqlTabUspData.CCatalog + " = " + (int)catalog.CatalogUsp +                     
+                " and " + SqlTabUspData.CGroup + " = " + (int)SqlTabUspData.GroupUsp.Base + 
+                " and " + SqlTabUspData.CName + " like '" +
+                SqlTabUspData.GetName(SqlTabUspData.NameUsp.Plates) + "%'" +
+                " and (" + SqlTabUspData.CLength + " > :minLen or " + SqlTabUspData.CDiametr +
+                    " > :minLen)" +
+                " and (" + SqlTabUspData.CWidth + " > :minWid or " + SqlTabUspData.CDiametr +
+                    " > :minWid)" +
+                conditions + " order by Len,Wid";
+        qS += ") where rownum = 1";
 
         DataTable dataTable;
         if (SqlOracle.SelData(qS, paramDict, out dataTable))
