@@ -451,6 +451,7 @@ public sealed class MilingBase : DialogProgpam
         SetSize();
         _baseData = GetBase();
         LoadBase();
+        SetTopParallel();
     }
 
     private void SetAbsolutePoints()
@@ -690,9 +691,17 @@ public sealed class MilingBase : DialogProgpam
 
     private void SetTopParallel()
     {
-
+        bool isFixed = _base.ElementComponent.IsFixed;
+        if (!isFixed)
+        {
+            _base.Fix();
+        }
         _topParallel = new Parallel();
         _topParallel.Create(_selectedFace.OwningComponent, _selectedFace,
                             Katalog2005.Algorithm.SpecialFunctions.LoadedPart, _topSlotFace);
+        if (!isFixed)
+        {
+            _base.Unfix();
+        }
     }
 }
