@@ -6,7 +6,7 @@ using NXOpen.Assemblies;
 /// <summary>
 /// Класс содержащий элемент УСП.
 /// </summary>
-public sealed class UspElement
+public class UspElement
 {
     /// <summary>
     /// Возвращает компонент элемента.

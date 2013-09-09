@@ -105,6 +105,7 @@
     <Compile Include="Dialogs\DialogProgpam.cs" />
     <Compile Include="Dialogs\milingBase.cs" />
     <Compile Include="ElementIntersection.cs" />
+    <Compile Include="Elements\BaseElement.cs" />
     <Compile Include="Log\Log.cs" />
     <Compile Include="Math\Axes\CoordinateAxe.cs" />
     <Compile Include="Math\Axes\xAxe.cs" />
@@ -140,7 +141,7 @@
     <Compile Include="SQL\SQL Update.cs" />
     <Compile Include="Tunnel.cs" />
     <Compile Include="Dialogs\turningBase.cs" />
-    <Compile Include="UspElement.cs" />
+    <Compile Include="Elements\UspElement.cs" />
     <Compile Include="Math\Vector.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

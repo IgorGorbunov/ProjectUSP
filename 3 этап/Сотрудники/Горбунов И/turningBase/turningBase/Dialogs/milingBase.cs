@@ -72,12 +72,17 @@ public sealed class MilingBase : DialogProgpam
 
     private Face _selectedFace;
 
+    private Face _topSlotFace;
+    private BaseElement _base;
+
     private bool _isRoundBase;
     private bool _isRectangularBase = true;
     private bool _isSquareBase = true;
 
+    private Parallel _topParallel;
+
     private double _width, _length;
-    private NoRoundBaseData _base;
+    private NoRoundBaseData _baseData;
 
     private readonly double[] _maxDistances = new double[3];
     private CoordinateAxe[] _baseAxes = new CoordinateAxe[2];
@@ -306,13 +311,7 @@ public sealed class MilingBase : DialogProgpam
             {
                 //---------Enter your code here-----------
                 Logger.WriteLine("Нажат выбор грани, параллельной базе.");
-                PropertyList propertyList = block.GetProperties();
-                TaggedObject[] taggedObjects =
-                    propertyList.GetTaggedObjectVector("SelectedObjects");
-                SetEnable(_distanceGroup, taggedObjects.Length > 0);
-
-                _selectedFace = (Face)taggedObjects[0];
-                Logger.WriteLine("Выбрана грань " + _selectedFace);
+                SetFace(block);
                 SetPoints();
             }
             else if (block == _direction0)
@@ -450,7 +449,7 @@ public sealed class MilingBase : DialogProgpam
         SetProjectPoints();
         GetSurfaceAxes();
         SetSize();
-        _base = GetBase();
+        _baseData = GetBase();
         LoadBase();
     }
 
@@ -597,7 +596,9 @@ public sealed class MilingBase : DialogProgpam
 
     private void LoadBase()
     {
-        Katalog2005.Algorithm.SpecialFunctions.LoadPart(_base.Title, false);
+        Katalog2005.Algorithm.SpecialFunctions.LoadPart(_baseData.Title, false);
+        _base = new BaseElement(Katalog2005.Algorithm.SpecialFunctions.LoadedPart);
+        _topSlotFace = _base.TopSlotFace;
     }
 
     private string GetColumns_Round()
@@ -676,5 +677,22 @@ public sealed class MilingBase : DialogProgpam
         return " and " + SqlTabUspData.CLength + " <> " + SqlTabUspData.CWidth;
     }
 
+    private void SetFace(UIBlock block)
+    {
+        PropertyList propertyList = block.GetProperties();
+        TaggedObject[] taggedObjects =
+            propertyList.GetTaggedObjectVector("SelectedObjects");
+        SetEnable(_distanceGroup, taggedObjects.Length > 0);
 
+        _selectedFace = (Face)taggedObjects[0];
+        Logger.WriteLine("Выбрана грань " + _selectedFace);
+    }
+
+    private void SetTopParallel()
+    {
+
+        _topParallel = new Parallel();
+        _topParallel.Create(_selectedFace.OwningComponent, _selectedFace,
+                            Katalog2005.Algorithm.SpecialFunctions.LoadedPart, _topSlotFace);
+    }
 }
