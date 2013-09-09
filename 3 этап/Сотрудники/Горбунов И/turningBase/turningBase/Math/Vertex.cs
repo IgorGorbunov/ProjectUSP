@@ -12,7 +12,7 @@ public class Vertex
     {
         get { return _point; }
     }
-    private readonly Point3d _point;
+    private Point3d _point;
 
     /// <summary>
     /// Инициализирует новый экземпляр класса математической точки в координатах (0, 0, 0).
@@ -57,6 +57,27 @@ public class Vertex
                 return _point.Z;
         }
         return 0.0;
+    }
+    /// <summary>
+    /// Задаёт координаты точки для необходимой оси.
+    /// </summary>
+    /// <param name="axe">Ось.</param>
+    /// <param name="value">Координаты.</param>
+    /// <returns></returns>
+    public void SetCoordinate(CoordinateAxe axe, double value)
+    {
+        switch (axe.Type)
+        {
+            case CoordinateConfig.Type.X:
+                _point = new Point3d(value, _point.Y, _point.Z);
+                break;
+            case CoordinateConfig.Type.Y:
+                _point = new Point3d(_point.X, value, _point.Z);
+                break;
+            case CoordinateConfig.Type.Z:
+                _point = new Point3d(_point.X, _point.Y, value);
+                break;
+        }
     }
 }
 

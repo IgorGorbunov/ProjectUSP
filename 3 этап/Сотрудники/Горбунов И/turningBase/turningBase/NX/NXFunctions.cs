@@ -65,7 +65,7 @@ internal static class NxFunctions
         Config.TheSession.UpdateManager.DoUpdate(markId);
     }
 
-    public static void SetAsterix(Point3d point)
+    private static void SetAsterix(Point3d point)
     {
         UFObj.DispProps props = new UFObj.DispProps();
         props.blank_status = UFConstants.UF_OBJ_NOT_BLANKED;
@@ -83,7 +83,7 @@ internal static class NxFunctions
         Config.TheUfSession.Disp.DisplayTemporaryPoint(Tag.Null, UFDisp.ViewType.UseActiveMinus, position, ref props, UFDisp.PolyMarker.FilledCircle);
     }
 
-    public static void SetAsterix(double[] point)
+    private static void SetAsterix(double[] point)
     {
         SetAsterix(new Point3d(point[0], point[1], point[2]));
     }
@@ -91,5 +91,10 @@ internal static class NxFunctions
     public static void SetAsterix(double coord1, double coord2, double coord3)
     {
         SetAsterix(new double[]{coord1, coord2, coord3});
+    }
+
+    public static void SetAsterix(Vertex vertex)
+    {
+        SetAsterix(vertex.Point);
     }
 }

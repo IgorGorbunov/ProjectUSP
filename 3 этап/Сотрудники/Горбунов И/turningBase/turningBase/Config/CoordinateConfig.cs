@@ -43,4 +43,23 @@ public static class CoordinateConfig
         }
         return axes;
     }
+
+    /// <summary>
+    /// Возвращает экземпляр класса оси, по его типу.
+    /// </summary>
+    /// <param name="type">Тип оси.</param>
+    /// <returns></returns>
+    public static CoordinateAxe GetAxe(Type type)
+    {
+        switch (type)
+        {
+            case Type.X:
+                return new XAxe();
+            case Type.Y:
+                return new YAxe();
+            case Type.Z:
+                return new ZAxe();
+        }
+        return null;
+    }
 }

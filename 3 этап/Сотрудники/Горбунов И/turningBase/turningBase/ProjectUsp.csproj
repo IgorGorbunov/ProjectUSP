@@ -122,6 +122,7 @@
     <Compile Include="Math\Surface.cs" />
     <Compile Include="NX\NXFunctionKatalog.cs" />
     <Compile Include="NX\NXFunctions.cs" />
+    <Compile Include="Replacement.cs" />
     <Compile Include="Sql - мой\SqlFunctions.cs" />
     <Compile Include="_Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

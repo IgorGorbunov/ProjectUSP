@@ -86,6 +86,8 @@ public sealed class MilingBase : DialogProgpam
 
     private readonly double[] _maxDistances = new double[3];
     private CoordinateAxe[] _baseAxes = new CoordinateAxe[2];
+    private CoordinateAxe _ortAxe;
+    private Vertex _centerAssVertex;
 
     private readonly List<Vertex> _absolutePoints = new List<Vertex>();
     private readonly List<Vertex> _projectPoints = new List<Vertex>(); 
@@ -452,6 +454,7 @@ public sealed class MilingBase : DialogProgpam
         _baseData = GetBase();
         LoadBase();
         SetTopParallel();
+        MoveBase();
     }
 
     private void SetAbsolutePoints()
@@ -567,6 +570,7 @@ public sealed class MilingBase : DialogProgpam
         }
         Logger.WriteLine("Минимальное расстояние в сборке - " + min + " по оси " + (CoordinateConfig.Type)axeType);
         _baseAxes = CoordinateConfig.GetSurfaceAxes((CoordinateConfig.Type) axeType);
+        _ortAxe = CoordinateConfig.GetAxe((CoordinateConfig.Type) axeType);
         Logger.WriteLine("База будет расположена в плоскости " + _baseAxes[0].Type + _baseAxes[1].Type);
     }
 
@@ -704,4 +708,64 @@ public sealed class MilingBase : DialogProgpam
             _base.Unfix();
         }
     }
+
+    private void MoveBase()
+    {
+        Vertex assVertex = GetAssCenterVertex();
+        NxFunctions.SetAsterix(assVertex);
+    }
+
+    private Vertex GetAssCenterVertex()
+    {
+        double[] min = {double.MaxValue, double.MaxValue};
+        double[] max = {double.MinValue, double.MinValue};
+        Vertex someVertex = null;
+        foreach (Vertex vertex in _projectPoints)
+        {
+            if (someVertex == null)
+            {
+                someVertex = vertex;
+            }
+            for (int i = 0; i < _baseAxes.Length; i++)
+            {
+                double coord = vertex.GetCoordinate(_baseAxes[i]);
+                if (coord < min[i])
+                {
+                    min[i] = coord;
+                }
+                if (coord > max[i])
+                {
+                    max[i] = coord;
+                }
+            }
+        }
+        double xCoord = 0.0;
+        double yCoord = 0.0;
+        double zCoord = 0.0;
+        for (int i = 0; i < _baseAxes.Length; i++)
+        {
+            switch (_baseAxes[i].Type)
+            {
+                case CoordinateConfig.Type.X:
+                    xCoord = (max[i] + min[i])/2;
+                    break;
+                case CoordinateConfig.Type.Y:
+                    yCoord = (max[i] + min[i]) / 2;
+                    break;
+                case CoordinateConfig.Type.Z:
+                    zCoord = (max[i] + min[i]) / 2;
+                    break;
+            }
+        }
+        Vertex centerVertex = new Vertex(xCoord, yCoord, zCoord);
+        centerVertex.SetCoordinate(_ortAxe, someVertex.GetCoordinate(_ortAxe));
+        return centerVertex;
+    }
+
+    private void GetBaseCenterPoint()
+    {
+        
+    }
+
+
 }
