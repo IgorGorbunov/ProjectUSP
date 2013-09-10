@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using NXOpen;
 
 /// <summary>
 /// Статический класс со стандартным инструментарием.
@@ -57,5 +58,25 @@ public static class Instr
         if (i < high) QSortPairs(a, i, high);
     }
 
+    /// <summary>
+    /// Добавляет точку в уникальный список.
+    /// </summary>
+    /// <param name="list">Список.</param>
+    /// <param name="point">Точка.</param>
+    public static void AddUnicToList(List<Vertex> list, Point3d point)
+    {
+        bool alreadyHave = false;
+        foreach (Vertex vertex in list)
+        {
+            if (!Geom.IsEqual(point, vertex.Point)) continue;
+
+            alreadyHave = true;
+            break;
+        }
+        if (alreadyHave) return;
+
+        list.Add(new Vertex(point));
+        //NxFunctions.SetAsterix(point);
+    }
 }
 

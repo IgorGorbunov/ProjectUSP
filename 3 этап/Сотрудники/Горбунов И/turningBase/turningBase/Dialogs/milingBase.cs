@@ -87,7 +87,6 @@ public sealed class MilingBase : DialogProgpam
     private readonly double[] _maxDistances = new double[3];
     private CoordinateAxe[] _baseAxes = new CoordinateAxe[2];
     private CoordinateAxe _ortAxe;
-    private Vertex _centerAssVertex;
 
     private readonly List<Vertex> _absolutePoints = new List<Vertex>();
     private readonly List<Vertex> _projectPoints = new List<Vertex>(); 
@@ -712,7 +711,9 @@ public sealed class MilingBase : DialogProgpam
     private void MoveBase()
     {
         Vertex assVertex = GetAssCenterVertex();
-        NxFunctions.SetAsterix(assVertex);
+        Vertex baseVertex = GetBaseCenterVertex();
+        Vector direction = new Vector(baseVertex.Point, assVertex.Point);
+        Movement.MoveByDirection(_base.ElementComponent, direction);
     }
 
     private Vertex GetAssCenterVertex()
@@ -762,10 +763,73 @@ public sealed class MilingBase : DialogProgpam
         return centerVertex;
     }
 
-    private void GetBaseCenterPoint()
+    private Vertex GetBaseCenterVertex()
     {
-        
+        double[] minCorner = new double[3];
+        double[] distances = new double[3];
+        double[,] directions = new double[3, 3];
+        Config.TheUfSession.Modl.AskBoundingBoxExact(_base.Body.Tag, Tag.Null, minCorner, directions, distances);
+
+        List<Vertex> vertices = new List<Vertex>();
+        Instr.AddUnicToList(vertices, new Point3d(minCorner[0], minCorner[1], minCorner[2]));
+        Instr.AddUnicToList(vertices, new Point3d(minCorner[0] + distances[0], minCorner[1], minCorner[2]));
+        Instr.AddUnicToList(vertices, new Point3d(minCorner[0], minCorner[1] + distances[1], minCorner[2]));
+        Instr.AddUnicToList(vertices, new Point3d(minCorner[0], minCorner[1], minCorner[2] + distances[2]));
+
+        Instr.AddUnicToList(vertices, new Point3d(minCorner[0] + distances[0], minCorner[1] + distances[1], minCorner[2]));
+        Instr.AddUnicToList(vertices, new Point3d(minCorner[0] + distances[0], minCorner[1], minCorner[2] + distances[2]));
+        Instr.AddUnicToList(vertices, new Point3d(minCorner[0], minCorner[1] + distances[1], minCorner[2] + distances[2]));
+        Instr.AddUnicToList(vertices, new Point3d(minCorner[0] + distances[0], minCorner[1] + distances[1], minCorner[2] + distances[2]));
+
+        double[] min = { double.MaxValue, double.MaxValue };
+        double[] max = { double.MinValue, double.MinValue };
+        Vertex someVertex = null;
+        foreach (Vertex vertex in vertices)
+        {
+            Surface surface = new Surface(_base.TopSlotFace);
+            Vertex pVertex = surface.GetProection(vertex);
+            if (someVertex == null)
+            {
+                someVertex = pVertex;
+            }
+            for (int i = 0; i < _baseAxes.Length; i++)
+            {
+                double coord = pVertex.GetCoordinate(_baseAxes[i]);
+                if (coord < min[i])
+                {
+                    min[i] = coord;
+                }
+                if (coord > max[i])
+                {
+                    max[i] = coord;
+                }
+            }
+        }
+
+        double xCoord = 0.0;
+        double yCoord = 0.0;
+        double zCoord = 0.0;
+        for (int i = 0; i < _baseAxes.Length; i++)
+        {
+            switch (_baseAxes[i].Type)
+            {
+                case CoordinateConfig.Type.X:
+                    xCoord = (max[i] + min[i]) / 2;
+                    break;
+                case CoordinateConfig.Type.Y:
+                    yCoord = (max[i] + min[i]) / 2;
+                    break;
+                case CoordinateConfig.Type.Z:
+                    zCoord = (max[i] + min[i]) / 2;
+                    break;
+            }
+        }
+        Vertex centerVertex = new Vertex(xCoord, yCoord, zCoord);
+        centerVertex.SetCoordinate(_ortAxe, someVertex.GetCoordinate(_ortAxe));
+        return centerVertex;
     }
+
+    
 
 
 }
