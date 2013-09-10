@@ -75,12 +75,16 @@ public sealed class MilingBase : DialogProgpam
     private Face _topSlotFace;
     private BaseElement _base;
 
+    private Face _alignFace1, _alignFace2;
+
     private bool _isRoundBase;
     private bool _isRectangularBase = true;
     private bool _isSquareBase = true;
 
-    private UspElement _someElement;
+    private UspElement _someAlignElement;
+    private UspElement _someParalElement;
     private Parallel _topParallel;
+    private Parallel _sideParallel;
 
     private double _width, _length;
     private NoRoundBaseData _baseData;
@@ -228,6 +232,12 @@ public sealed class MilingBase : DialogProgpam
             _selection0.GetProperties()
                        .SetSelectionFilter("SelectionFilter",
                                            Selection.SelectionAction.ClearAndEnableSpecific, mask);
+            _selection01.GetProperties()
+                       .SetSelectionFilter("SelectionFilter",
+                                           Selection.SelectionAction.ClearAndEnableSpecific, mask);
+            _selection02.GetProperties()
+                       .SetSelectionFilter("SelectionFilter",
+                                           Selection.SelectionAction.ClearAndEnableSpecific, mask);
 
             PropertyList propertyList = _distance.GetProperties();
             propertyList.SetDouble("Value", 0.0);
@@ -297,12 +307,13 @@ public sealed class MilingBase : DialogProgpam
             {
                 //---------Enter your code here-----------
                 Logger.WriteLine("Нажат выбор грани, параллельной базе.");
-                SetFace(block);
+                SetTopFace(block);
                 SetPoints();
             }
             else if (block == _direction0)
             {
                 //---------Enter your code here-----------
+                Logger.WriteLine("Нажата кнопка реверса.");
                 ReverseBase();
             }
             else if (block == _distance)
@@ -313,10 +324,14 @@ public sealed class MilingBase : DialogProgpam
             else if (block == _selection01)
             {
                 //---------Enter your code here-----------
+                Logger.WriteLine("Нажат выбор грани на сборке.");
+                SetAlignFace1(block);
             }
             else if (block == _selection02)
             {
                 //---------Enter your code here-----------
+                Logger.WriteLine("Нажат выбор грани на базе.");
+                SetAlignFace2(block);
             }
         }
         catch (Exception ex)
@@ -429,6 +444,105 @@ public sealed class MilingBase : DialogProgpam
     }
 
     //------------------------------------
+
+    private Face GetFace(UIBlock block)
+    {
+        PropertyList propertyList = block.GetProperties();
+        TaggedObject[] taggedObjects =
+            propertyList.GetTaggedObjectVector("SelectedObjects");
+
+        if (taggedObjects.Length <= 0)
+        {
+            return null;
+        }
+
+        Face face = (Face)taggedObjects[0];
+        Logger.WriteLine("Выбрана грань " + face);
+        return face;
+    }
+
+    private void SetTopFace(UIBlock block)
+    {
+        _selectedFace = GetFace(block);
+        if (_selectedFace == null)
+            return;
+        SetEnable(_distanceGroup, true);
+        SetEnable(_parallelGroup, true);
+        _selection01.Focus();
+    }
+
+    private void SetAlignFace1(UIBlock block)
+    {
+        _alignFace1 = GetFace(block);
+        BaseElement element = new BaseElement(_alignFace1.OwningComponent);
+        if (element.ElementComponent != _base.ElementComponent)
+        {
+            SetAlign();
+            _selection02.Focus();
+            return;
+        }
+        string mess = "Выбрана грань базы!" + Environment.NewLine + 
+                      "Выберите грань на одном (любом) элементе сборки.";
+        Logger.WriteWarning(mess);
+        Message.Show("Ошибка!", Message.MessageIcon.Error, mess);
+        _alignFace1 = null;
+        UnSelectObjects(block);
+        block.Focus();
+    }
+
+    private void SetAlignFace2(UIBlock block)
+    {
+        _alignFace2 = GetFace(block);
+        BaseElement element = new BaseElement(_alignFace2.OwningComponent);
+        if (element.ElementComponent == _base.ElementComponent)
+        {
+            SetAlign();
+            return;
+        }
+            
+        string mess = "Выбрана грань элемента сборки!" + Environment.NewLine +
+                      "Выберите грань базы.";
+        Logger.WriteWarning(mess);
+        Message.Show("Ошибка!", Message.MessageIcon.Error, mess);
+        _alignFace1 = null;
+        UnSelectObjects(block);
+        block.Focus();
+    }
+
+    void SetAlign()
+    {
+        if ((_alignFace1 == null) || (_alignFace2 == null))
+            return;
+
+        _someAlignElement = new UspElement(_alignFace1.OwningComponent);
+        bool isFixed = _someAlignElement.ElementComponent.IsFixed;
+        bool isSomeFixed = _someParalElement.ElementComponent.IsFixed;
+
+        if (!isFixed)
+        {
+            _someAlignElement.Fix();
+        }
+        if (!isSomeFixed)
+        {
+            _someParalElement.Fix();
+        }
+        NxFunctions.Update();
+
+        _sideParallel = new Parallel();
+        _sideParallel.Create(_someAlignElement.ElementComponent, _alignFace1, _base.ElementComponent, _alignFace2);
+        NxFunctions.Update();
+
+        if (!isFixed)
+        {
+            _someAlignElement.Unfix();
+        }
+        if (!isSomeFixed)
+        {
+            _someParalElement.Unfix();
+        }
+        NxFunctions.Update();
+    }
+
 
     private void SetPoints()
     {
@@ -669,33 +783,29 @@ public sealed class MilingBase : DialogProgpam
         return " and " + SqlTabUspData.CLength + " <> " + SqlTabUspData.CWidth;
     }
 
-    private void SetFace(UIBlock block)
-    {
-        PropertyList propertyList = block.GetProperties();
-        TaggedObject[] taggedObjects =
-            propertyList.GetTaggedObjectVector("SelectedObjects");
-        SetEnable(_distanceGroup, taggedObjects.Length > 0);
-        SetEnable(_parallelGroup, taggedObjects.Length > 0);
-
-        _selectedFace = (Face)taggedObjects[0];
-        Logger.WriteLine("Выбрана грань " + _selectedFace);
-    }
+    
 
     private void SetTopParallel()
     {
-        _someElement = new UspElement(_selectedFace.OwningComponent);
-        bool isFixed = _someElement.ElementComponent.IsFixed;
+        _someParalElement = new UspElement(_selectedFace.OwningComponent);
+        bool isFixed = _someParalElement.ElementComponent.IsFixed;
+
         if (!isFixed)
         {
-            _someElement.Fix();
+            _someParalElement.Fix();
         }
+        NxFunctions.Update();
+
         _topParallel = new Parallel();
         _topParallel.Create(_selectedFace.OwningComponent, _selectedFace,
                             Katalog2005.Algorithm.SpecialFunctions.LoadedPart, _topSlotFace);
+        NxFunctions.Update();
+
         if (!isFixed)
         {
-            _someElement.Unfix();
+            _someParalElement.Unfix();
         }
+        NxFunctions.Update();
     }
 
     private void MoveBase()
@@ -833,18 +943,33 @@ public sealed class MilingBase : DialogProgpam
 
     private void ReverseBase()
     {
-        bool isFixed = _someElement.ElementComponent.IsFixed;
+        bool isAlignFixed = true;
+        if (_someAlignElement != null)
+        {
+            isAlignFixed = _someAlignElement.ElementComponent.IsFixed;
+        }
+
+        bool isFixed = _someParalElement.ElementComponent.IsFixed;
         if (!isFixed)
         {
-            _someElement.Fix();
+            _someParalElement.Fix();
+        }
+        if (!isAlignFixed)
+        {
+            _someAlignElement.Fix();
         }
         NxFunctions.Update();
-        //Message.Tst();
+
         _topParallel.Reverse();
         NxFunctions.Update();
+
         if (!isFixed)
         {
-            _someElement.Unfix();
+            _someParalElement.Unfix();
+        }
+        if (!isAlignFixed)
+        {
+            _someAlignElement.Unfix();
         }
         NxFunctions.Update();
     }
