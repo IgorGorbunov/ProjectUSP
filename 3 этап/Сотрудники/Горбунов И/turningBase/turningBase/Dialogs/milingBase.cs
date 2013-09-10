@@ -63,7 +63,7 @@ public sealed class MilingBase : DialogProgpam
     private UIBlock _selection0; // Block type: Selection
     private UIBlock _distanceGroup; // Block type: Group
     private UIBlock _direction0; // Block type: Reverse Direction
-    private UIBlock _double0; // Block type: Double
+    private UIBlock _distance; // Block type: Double
     private UIBlock _parallelGroup; // Block type: Group
     private UIBlock _selection01; // Block type: Selection
     private UIBlock _selection02; // Block type: Selection
@@ -86,7 +86,10 @@ public sealed class MilingBase : DialogProgpam
 
     private readonly double[] _maxDistances = new double[3];
     private CoordinateAxe[] _baseAxes = new CoordinateAxe[2];
+
     private CoordinateAxe _ortAxe;
+    private Vector _moveDirection;
+    private Point3d _oldPointMovement, _startMovementPoint;
 
     private readonly List<Vertex> _absolutePoints = new List<Vertex>();
     private readonly List<Vertex> _projectPoints = new List<Vertex>(); 
@@ -194,7 +197,7 @@ public sealed class MilingBase : DialogProgpam
             _selection0 = TheDialog.TopBlock.FindBlock("selection0");
             _distanceGroup = TheDialog.TopBlock.FindBlock("group");
             _direction0 = TheDialog.TopBlock.FindBlock("direction0");
-            _double0 = TheDialog.TopBlock.FindBlock("double0");
+            _distance = TheDialog.TopBlock.FindBlock("double0");
             _parallelGroup = TheDialog.TopBlock.FindBlock("group1");
             _selection01 = TheDialog.TopBlock.FindBlock("selection01");
             _selection02 = TheDialog.TopBlock.FindBlock("selection02");
@@ -225,27 +228,8 @@ public sealed class MilingBase : DialogProgpam
                        .SetSelectionFilter("SelectionFilter",
                                            Selection.SelectionAction.ClearAndEnableSpecific, mask);
 
-            //double[] centroid = new double[3];
-            //double[] corner = new double[3];
-            //double[] orientation = new double[9];
-
-            //Config.TheUfSession.Fltr.AskBoxOfAssy(Config.TheSession.Parts.Work.ComponentAssembly.RootComponent.Tag, centroid, corner, orientation);
-
-            //double[] lowCorner = new double[3];
-            //double[] upCorner = new double[3];
-
-            //Config.TheUfSession.Vec3.Sub(centroid, corner, lowCorner);
-            //Config.TheUfSession.Vec3.Add(centroid, corner, upCorner);
-
-
-            //NxFunctions.SetAsterix(lowCorner);
-            //NxFunctions.SetAsterix(upCorner);
-            //NxFunctions.SetAsterix(upCorner[0], lowCorner[1], lowCorner[2]);
-            //NxFunctions.SetAsterix(upCorner[0], upCorner[1], lowCorner[2]);
-            //NxFunctions.SetAsterix(lowCorner[0], upCorner[1], lowCorner[2]);
-            //NxFunctions.SetAsterix(lowCorner[0], upCorner[1], upCorner[2]);
-            //NxFunctions.SetAsterix(lowCorner[0], lowCorner[1], upCorner[2]);
-            //NxFunctions.SetAsterix(upCorner[0], lowCorner[1], upCorner[2]);
+            PropertyList propertyList = _distance.GetProperties();
+            propertyList.SetDouble("Value", 0.0);
         }
         catch (Exception ex)
         {
@@ -319,9 +303,10 @@ public sealed class MilingBase : DialogProgpam
             {
                 //---------Enter your code here-----------
             }
-            else if (block == _double0)
+            else if (block == _distance)
             {
                 //---------Enter your code here-----------
+                PanBase(block);
             }
             else if (block == _selection01)
             {
@@ -570,6 +555,7 @@ public sealed class MilingBase : DialogProgpam
         Logger.WriteLine("Минимальное расстояние в сборке - " + min + " по оси " + (CoordinateConfig.Type)axeType);
         _baseAxes = CoordinateConfig.GetSurfaceAxes((CoordinateConfig.Type) axeType);
         _ortAxe = CoordinateConfig.GetAxe((CoordinateConfig.Type) axeType);
+        _moveDirection = new Vector(_ortAxe);
         Logger.WriteLine("База будет расположена в плоскости " + _baseAxes[0].Type + _baseAxes[1].Type);
     }
 
@@ -714,6 +700,8 @@ public sealed class MilingBase : DialogProgpam
         Vertex baseVertex = GetBaseCenterVertex();
         Vector direction = new Vector(baseVertex.Point, assVertex.Point);
         Movement.MoveByDirection(_base.ElementComponent, direction);
+        _oldPointMovement = GetBaseCenterVertex().Point;
+        _startMovementPoint = _oldPointMovement;
     }
 
     private Vertex GetAssCenterVertex()
@@ -829,7 +817,15 @@ public sealed class MilingBase : DialogProgpam
         return centerVertex;
     }
 
-    
+    private void PanBase(UIBlock block)
+    {
+        PropertyList propertyList = block.GetProperties();
+        double doub = propertyList.GetDouble("Value");
+        Point3d newPoint = _moveDirection.GetPoint(_startMovementPoint, doub);
+        Vector newVector = new Vector(_oldPointMovement, newPoint);
+        Movement.MoveByDirection(_base.ElementComponent, newVector);
+        _oldPointMovement = newPoint;
+    }
 
 
 }

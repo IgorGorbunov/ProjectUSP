@@ -71,6 +71,27 @@ public class Vector
 
         InitPoints(start, end);
     }
+    /// <summary>
+    /// Инициализирует новый экземпляр класса вектора для заданной координатной оси.
+    /// </summary>
+    /// <param name="axe">Координатная ось.</param>
+    public Vector(CoordinateAxe axe)
+    {
+        Point3d point = new Point3d();
+        switch (axe.Type)
+        {
+            case CoordinateConfig.Type.X:
+                point = new Point3d(1.0, 0.0, 0.0);
+                break;
+            case CoordinateConfig.Type.Y:
+                point = new Point3d(0.0, 1.0, 0.0);
+                break;
+            case CoordinateConfig.Type.Z:
+                point = new Point3d(0.0, 0.0, 1.0);
+                break;
+        }
+        InitPoints(new Point3d(), point);
+    }
 
     /// <summary>
     /// Возвращает строку, которая представляет текущий объект.
@@ -123,9 +144,21 @@ public class Vector
     /// <returns></returns>
     public Point3d GetPoint(double length)
     {
-        double xD = _end.X + Direction.X * length;
-        double yD = _end.Y + Direction.Y * length;
-        double zD = _end.Z + Direction.Z * length;
+        return GetPoint(_end, length);
+    }
+
+    /// <summary>
+    /// Возвращает точку лежащей на прямой, проходящей через заданную точку по направлению вектора 
+    /// и лежащей на заданном расстоянии от заданной точки.
+    /// </summary>
+    /// <param name="point">За</param>
+    /// <param name="length">Расстояние от конца вектора.</param>
+    /// <returns></returns>
+    public Point3d GetPoint(Point3d point, double length)
+    {
+        double xD = point.X + Direction.X * length;
+        double yD = point.Y + Direction.Y * length;
+        double zD = point.Z + Direction.Z * length;
 
         return new Point3d(xD, yD, zD);
     }
