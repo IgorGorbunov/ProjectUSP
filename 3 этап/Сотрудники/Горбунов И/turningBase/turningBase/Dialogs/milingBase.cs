@@ -79,6 +79,7 @@ public sealed class MilingBase : DialogProgpam
     private bool _isRectangularBase = true;
     private bool _isSquareBase = true;
 
+    private UspElement _someElement;
     private Parallel _topParallel;
 
     private double _width, _length;
@@ -302,6 +303,7 @@ public sealed class MilingBase : DialogProgpam
             else if (block == _direction0)
             {
                 //---------Enter your code here-----------
+                ReverseBase();
             }
             else if (block == _distance)
             {
@@ -673,6 +675,7 @@ public sealed class MilingBase : DialogProgpam
         TaggedObject[] taggedObjects =
             propertyList.GetTaggedObjectVector("SelectedObjects");
         SetEnable(_distanceGroup, taggedObjects.Length > 0);
+        SetEnable(_parallelGroup, taggedObjects.Length > 0);
 
         _selectedFace = (Face)taggedObjects[0];
         Logger.WriteLine("Выбрана грань " + _selectedFace);
@@ -680,17 +683,18 @@ public sealed class MilingBase : DialogProgpam
 
     private void SetTopParallel()
     {
-        bool isFixed = _base.ElementComponent.IsFixed;
+        _someElement = new UspElement(_selectedFace.OwningComponent);
+        bool isFixed = _someElement.ElementComponent.IsFixed;
         if (!isFixed)
         {
-            _base.Fix();
+            _someElement.Fix();
         }
         _topParallel = new Parallel();
         _topParallel.Create(_selectedFace.OwningComponent, _selectedFace,
                             Katalog2005.Algorithm.SpecialFunctions.LoadedPart, _topSlotFace);
         if (!isFixed)
         {
-            _base.Unfix();
+            _someElement.Unfix();
         }
     }
 
@@ -827,5 +831,22 @@ public sealed class MilingBase : DialogProgpam
         _oldPointMovement = newPoint;
     }
 
+    private void ReverseBase()
+    {
+        bool isFixed = _someElement.ElementComponent.IsFixed;
+        if (!isFixed)
+        {
+            _someElement.Fix();
+        }
+        NxFunctions.Update();
+        //Message.Tst();
+        _topParallel.Reverse();
+        NxFunctions.Update();
+        if (!isFixed)
+        {
+            _someElement.Unfix();
+        }
+        NxFunctions.Update();
+    }
 
 }
