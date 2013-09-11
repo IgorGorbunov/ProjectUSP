@@ -31,7 +31,10 @@ public class BaseElement : UspElement
         
     }
 
-    private void SetTopSlotFace()
+    /// <summary>
+    /// Устанавливает НГП, использовать после Replacement.
+    /// </summary>
+    public void SetTopSlotFace()
     {
         Face[] faces = Body.GetFaces();
 

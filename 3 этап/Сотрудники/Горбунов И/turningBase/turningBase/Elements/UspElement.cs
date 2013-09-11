@@ -160,7 +160,10 @@ public class UspElement
         }
     }
 
-    void SetBody()
+    /// <summary>
+    /// Устанавливает тело элемента, использовать после Replacement.
+    /// </summary>
+    public void SetBody()
     {
         Body bb = null;
         BodyCollection bc = ((Part)_component.Prototype).Bodies;

@@ -52,8 +52,8 @@ public static class Replacement
         //else
         //{
         //    //то работает, то нет
-        //    //findName = oldBase.Name;
-            string findName = uniqueName;
+            string findName = oldComponent.Name;
+            //string findName = uniqueName;
         //}
         Config.TheUfSession.Obj.CycleByNameAndType(Config.WorkPart.Tag, findName, UFConstants.UF_component_type, true, ref newCompTag);
         oldComponent = (Component)NXObjectManager.Get(newCompTag);

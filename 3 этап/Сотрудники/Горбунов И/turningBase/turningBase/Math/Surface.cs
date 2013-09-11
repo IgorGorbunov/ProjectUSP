@@ -126,6 +126,28 @@ public class Surface
         
         _equation = new double[] { a, b, c, d };
     }
+    /// <summary>
+    /// Инициализирует новый экземпляр класса для ортогональной плоскости, заданной осью.
+    /// </summary>
+    /// <param name="axe"></param>
+    public Surface(CoordinateAxe axe)
+    {
+        double a = 0, b = 0, c = 0;
+        const double d = 0;
+        switch (axe.Type)
+        {
+            case CoordinateConfig.Type.X:
+                a = 1;
+                break;
+            case CoordinateConfig.Type.Y:
+                b = 1;
+                break;
+            case CoordinateConfig.Type.Z:
+                c = 1;
+                break;
+        }
+        _equation = new double[] {a, b, c, d};
+    }
 
     /// <summary>
     /// Возвращает строку, которая представляет текущий объект.
@@ -188,5 +210,26 @@ public class Surface
 
         Vertex projectVertex = new Vertex(Geom.SolveSlae(straight, this));
         return projectVertex;
+    }
+    /// <summary>
+    /// Возвращает true, если данный экзмепляр плоскости параллелен заданной.
+    /// </summary>
+    /// <param name="surface">Плоскость.</param>
+    /// <returns></returns>
+    public bool IsParallel(Surface surface)
+    {
+        if (Config.Round(X) != Config.Round(surface.X))
+        {
+            return false;
+        }
+        if (Config.Round(Y) != Config.Round(surface.Y))
+        {
+            return false;
+        }
+        if (Config.Round(Z) != Config.Round(surface.Z))
+        {
+            return false;
+        }
+        return true;
     }
 }

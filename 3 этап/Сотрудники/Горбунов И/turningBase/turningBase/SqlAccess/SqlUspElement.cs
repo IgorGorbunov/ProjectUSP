@@ -152,16 +152,20 @@ static class SqlUspElement
                 " and " + SqlTabUspData.CGroup + " = " + (int)SqlTabUspData.GroupUsp.Base + 
                 " and " + SqlTabUspData.CName + " like '" +
                 SqlTabUspData.GetName(SqlTabUspData.NameUsp.Plates) + "%'" +
-                " and (" + SqlTabUspData.CLength + " > :minLen or " + SqlTabUspData.CDiametr +
-                    " > :minLen)" +
-                " and (" + SqlTabUspData.CWidth + " > :minWid or " + SqlTabUspData.CDiametr +
-                    " > :minWid)" +
+                " and (TO_NUMBER(" + SqlTabUspData.CLength + ") > :minLen or TO_NUMBER(" + SqlTabUspData.CDiametr +
+                    ") > :minLen)" +
+                " and (TO_NUMBER(" + SqlTabUspData.CWidth + ") > :minWid or TO_NUMBER(" + SqlTabUspData.CDiametr +
+                    ") > :minWid)" +
                 conditions + " order by Len,Wid";
         qS += ") where rownum = 1";
 
         DataTable dataTable;
         if (SqlOracle.SelData(qS, paramDict, out dataTable))
         {
+            if (dataTable == null)
+            {
+                return null;
+            }
             List<NoRoundBaseData> list = SqlFunctions.ToNoRoundBaseDataList(dataTable);
             return list[0];
         }

@@ -61,6 +61,7 @@ public sealed class MilingBase : DialogProgpam
     private UIBlock _toggleSquareBase; // Block type: Toggle
     private UIBlock _group02; // Block type: Group
     private UIBlock _selection0; // Block type: Selection
+    private UIBlock _button0; // Block type: Selection
     private UIBlock _distanceGroup; // Block type: Group
     private UIBlock _direction0; // Block type: Reverse Direction
     private UIBlock _distance; // Block type: Double
@@ -80,6 +81,7 @@ public sealed class MilingBase : DialogProgpam
     private bool _isRoundBase;
     private bool _isRectangularBase = true;
     private bool _isSquareBase = true;
+    private bool _baseIsLoaded;
 
     private UspElement _someAlignElement;
     private UspElement _someParalElement;
@@ -93,8 +95,12 @@ public sealed class MilingBase : DialogProgpam
     private CoordinateAxe[] _baseAxes = new CoordinateAxe[2];
 
     private CoordinateAxe _ortAxe;
+    private Surface _projectSurface;
     private Vector _moveDirection;
     private Point3d _oldPointMovement, _startMovementPoint;
+
+    private Vertex _assVertex;
+    private bool _firstMove = true;
 
     private readonly List<Vertex> _absolutePoints = new List<Vertex>();
     private readonly List<Vertex> _projectPoints = new List<Vertex>(); 
@@ -200,6 +206,7 @@ public sealed class MilingBase : DialogProgpam
             _toggleSquareBase = TheDialog.TopBlock.FindBlock("toggle02");
             _group02 = TheDialog.TopBlock.FindBlock("group02");
             _selection0 = TheDialog.TopBlock.FindBlock("selection0");
+            _button0 = TheDialog.TopBlock.FindBlock("button0");
             _distanceGroup = TheDialog.TopBlock.FindBlock("group");
             _direction0 = TheDialog.TopBlock.FindBlock("direction0");
             _distance = TheDialog.TopBlock.FindBlock("double0");
@@ -239,8 +246,7 @@ public sealed class MilingBase : DialogProgpam
                        .SetSelectionFilter("SelectionFilter",
                                            Selection.SelectionAction.ClearAndEnableSpecific, mask);
 
-            PropertyList propertyList = _distance.GetProperties();
-            propertyList.SetDouble("Value", 0.0);
+            InitBlocks();
         }
         catch (Exception ex)
         {
@@ -308,7 +314,30 @@ public sealed class MilingBase : DialogProgpam
                 //---------Enter your code here-----------
                 Logger.WriteLine("Нажат выбор грани, параллельной базе.");
                 SetTopFace(block);
-                SetPoints();
+                if (_baseIsLoaded)
+                {
+                    UpdateLoad();
+                }
+                else
+                {
+                    SetPoints();
+                }
+            }
+            else if (block == _button0)
+            {
+                //---------Enter your code here-----------
+                Logger.WriteLine("Нажата кнопка выгрузки базы.");
+                SetEnable(_distanceGroup, true);
+                SetEnable(_parallelGroup, true);
+                _selection01.Focus();
+                if (_baseIsLoaded)
+                {
+                    UpdateLoad();
+                }
+                else
+                {
+                    SetPoints();
+                }
             }
             else if (block == _direction0)
             {
@@ -548,13 +577,26 @@ public sealed class MilingBase : DialogProgpam
     {
         SetAbsolutePoints();
         SetMaxDistances();
-        SetProjectPoints();
         GetSurfaceAxes();
+        SetProjectPoints();
         SetSize();
         _baseData = GetBase();
-        LoadBase();
-        SetTopParallel();
-        MoveBase();
+        if (_baseData != null)
+        {
+            LoadBase();
+            SetTopParallel();
+            MoveBase();
+        }
+        else
+        {
+            UnSelectObjects(_selection0);
+            _selection0.Focus();
+            SetEnable(_parallelGroup, false);
+            SetEnable(_distanceGroup, false);
+            const string mess = "Базовая плита по заданным параметрам не найдена!";
+            Message.Show("Ошибка!", Message.MessageIcon.Error, mess);
+            Logger.WriteWarning(mess);
+        }
     }
 
     private void SetAbsolutePoints()
@@ -637,10 +679,12 @@ public sealed class MilingBase : DialogProgpam
     private void SetProjectPoints()
     {
         _projectPoints.Clear();
-        Surface surface = new Surface(_selectedFace);
+        //для выбора плоскости
+        //Surface surface = new Surface(_selectedFace);
+        _projectSurface = new Surface(_ortAxe);
         foreach (Vertex absoluteVertex in _absolutePoints)
         {
-            Vertex projectVertex = surface.GetProection(absoluteVertex);
+            Vertex projectVertex = _projectSurface.GetProection(absoluteVertex);
 
             bool alreadyHave = false;
             foreach (Vertex vertex in _projectPoints)
@@ -692,7 +736,6 @@ public sealed class MilingBase : DialogProgpam
 
     private NoRoundBaseData GetBase()
     {
-        List<NoRoundBaseData> bases = new List<NoRoundBaseData>();
         string selectColumns = GetColumns_Round();
         string coditions = GetCondition_Round() + GetCondition_Slot() + GetCondition_NoRound();
         
@@ -705,6 +748,7 @@ public sealed class MilingBase : DialogProgpam
         Katalog2005.Algorithm.SpecialFunctions.LoadPart(_baseData.Title, false);
         _base = new BaseElement(Katalog2005.Algorithm.SpecialFunctions.LoadedPart);
         _topSlotFace = _base.TopSlotFace;
+        _baseIsLoaded = true;
     }
 
     private string GetColumns_Round()
@@ -787,6 +831,36 @@ public sealed class MilingBase : DialogProgpam
 
     private void SetTopParallel()
     {
+        if (_selectedFace == null)
+        {
+            foreach (Part part in Config.TheSession.Parts)
+            {
+                Tag[] occurences;
+                Config.TheUfSession.Assem.AskOccsOfPart(Config.WorkPart.Tag, part.Tag,
+                                                        out occurences);
+
+                foreach (Tag tag in occurences)
+                {
+                    Component component = (Component) NXObjectManager.Get(tag);
+                    if (component.IsBlanked) continue;
+                    if (component == _base.ElementComponent) continue;
+
+                    UspElement element = new UspElement(component);
+                    Face[] faces = element.Body.GetFaces();
+                    foreach (Face face in faces)
+                    {
+                        Surface surface = new Surface(face);
+                        if (surface.IsParallel(_projectSurface))
+                        {
+                            _selectedFace = face;
+                            goto Exit;
+                        }
+                    }
+                }
+            }
+        }
+        Exit:
+
         _someParalElement = new UspElement(_selectedFace.OwningComponent);
         bool isFixed = _someParalElement.ElementComponent.IsFixed;
 
@@ -810,12 +884,16 @@ public sealed class MilingBase : DialogProgpam
 
     private void MoveBase()
     {
-        Vertex assVertex = GetAssCenterVertex();
+        if (_firstMove)
+        {
+            _assVertex = GetAssCenterVertex();
+        }
         Vertex baseVertex = GetBaseCenterVertex();
-        Vector direction = new Vector(baseVertex.Point, assVertex.Point);
+        Vector direction = new Vector(baseVertex.Point, _assVertex.Point);
         Movement.MoveByDirection(_base.ElementComponent, direction);
         _oldPointMovement = GetBaseCenterVertex().Point;
         _startMovementPoint = _oldPointMovement;
+        _firstMove = false;
     }
 
     private Vertex GetAssCenterVertex()
@@ -972,6 +1050,49 @@ public sealed class MilingBase : DialogProgpam
             _someAlignElement.Unfix();
         }
         NxFunctions.Update();
+    }
+
+    private void UpdateLoad()
+    {
+        if (!_baseIsLoaded)
+            return;
+
+        _baseData = GetBase();
+        if (_baseData != null)
+        {
+            SetBlocksToZero();
+            Replacement.ReplaceByTitle(_base.ElementComponent, _baseData.Title);
+            _base.SetBody();
+            _base.SetTopSlotFace();
+            MoveBase();
+        }
+        else
+        {
+            const string mess = "Базовая плита по заданным параметрам не найдена!";
+            Message.Show("Ошибка!", Message.MessageIcon.Error, mess);
+            Logger.WriteWarning(mess);
+        }
+    }
+
+    private void SetBlocksToZero()
+    {
+        UnSelectObjects(_selection01);
+        UnSelectObjects(_selection02);
+
+        PropertyList propertyList = _distance.GetProperties();
+        propertyList.SetDouble("Value", 0.0);
+    }
+
+    private void InitBlocks()
+    {
+        PropertyList propertyList = _toggleRoundBase.GetProperties();
+        propertyList.SetLogical("Value", true);
+        propertyList = _toggleRectatgularBase.GetProperties();
+        propertyList.SetLogical("Value", true);
+        propertyList = _toggleSquareBase.GetProperties();
+        propertyList.SetLogical("Value", true);
+        propertyList = _distance.GetProperties();
+        propertyList.SetDouble("Value", 0.0);
     }
 
 }

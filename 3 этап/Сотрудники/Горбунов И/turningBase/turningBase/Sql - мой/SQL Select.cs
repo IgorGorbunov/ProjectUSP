@@ -153,7 +153,7 @@ partial class SqlOracle
             da.Dispose();
             cmd.Dispose();
 
-            value = ds.Tables.Count == 0 ? null : ds.Tables[0];
+            value = ds.Tables[0].Rows.Count == 0 ? null : ds.Tables[0];
 
             ProcessSuccessData(cmdQuery, paramsDict, value);
             return true;
@@ -231,13 +231,16 @@ partial class SqlOracle
         mess = RecordQuery(mess, cmdQuery, paramsDict);
         mess += Environment.NewLine + "-";
         mess += Environment.NewLine + "Data:" + Environment.NewLine;
-        foreach (DataRow row in value.Rows)
+        if (value != null && value.Rows.Count > 0)
         {
-            for (int i = 0; i < value.Columns.Count; i++)
+            foreach (DataRow row in value.Rows)
             {
-                mess += row[i] + " | ";
+                for (int i = 0; i < value.Columns.Count; i++)
+                {
+                    mess += row[i] + " | ";
+                }
+                mess += Environment.NewLine;
             }
-            mess += Environment.NewLine;
         }
         Logger.WriteLine(mess);
     }
