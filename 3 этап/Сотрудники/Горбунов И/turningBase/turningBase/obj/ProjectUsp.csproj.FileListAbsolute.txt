@@ -15,3 +15,12 @@ G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningB
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\x86\Debug\ResolveAssemblyReference.cache
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\x86\Debug\ProjectUsp.dll
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\x86\Debug\ProjectUsp.pdb
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\bin\x86\Release\ProjectUsp.dll
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\bin\x86\Release\ProjectUsp.pdb
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\bin\x86\Release\NXOpen.dll
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\bin\x86\Release\NXOpen.UF.dll
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\bin\x86\Release\NXOpen.Utilities.dll
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\bin\x86\Release\NXOpenUI.dll
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\x86\Release\ResolveAssemblyReference.cache
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\x86\Release\ProjectUsp.dll
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\x86\Release\ProjectUsp.pdb
