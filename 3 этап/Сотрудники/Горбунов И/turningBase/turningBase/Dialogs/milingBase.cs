@@ -78,7 +78,6 @@ public sealed class MilingBase : DialogProgpam
 
     private Face _alignFace1, _alignFace2;
 
-    private bool _isRoundBase;
     private bool _isRectangularBase = true;
     private bool _isSquareBase = true;
     private bool _baseIsLoaded;
@@ -265,6 +264,7 @@ public sealed class MilingBase : DialogProgpam
         try
         {
             //---- Enter your callback code here -----
+            Logger.WriteLine("Нажата кнопка 'Применить'.");
         }
         catch (Exception ex)
         {
@@ -382,6 +382,7 @@ public sealed class MilingBase : DialogProgpam
         {
             errorCode = apply_cb();
             //---- Enter your callback code here -----
+            Logger.WriteLine("Нажата кнопка 'Ok'.");
         }
         catch (Exception ex)
         {
@@ -777,10 +778,8 @@ public sealed class MilingBase : DialogProgpam
         //без круглых плит
         if (value)
         {
-            _isRoundBase = false;
             return " and TO_NUMBER(" + SqlTabUspData.CLength + ") > 0";
         }
-        _isRoundBase = true;
         return " and (" + SqlTabUspData.CName + " like '" + SqlTabUspData.GetName(SqlTabUspData.NameUsp.RoundPlate) + "%' or " +
             SqlTabUspData.CName + " like '" + SqlTabUspData.GetName(SqlTabUspData.NameUsp.RoundPlates) + "%')";
     }
@@ -894,6 +893,7 @@ public sealed class MilingBase : DialogProgpam
         _oldPointMovement = GetBaseCenterVertex().Point;
         _startMovementPoint = _oldPointMovement;
         _firstMove = false;
+        
     }
 
     private Vertex GetAssCenterVertex()

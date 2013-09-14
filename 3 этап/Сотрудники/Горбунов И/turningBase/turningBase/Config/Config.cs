@@ -86,6 +86,10 @@ public static class Config
     /// Возвращает имя файла с формой для выгрузки общей базы.
     /// </summary>
     public const string DlxMilingBase = @"milingBase.dlx";
+    /// <summary>
+    /// Возвращает имя файла с формой для установки кондуктора.
+    /// </summary>
+    public const string DlxJig = @"jig.dlx";
 
 
     //------------------------ Methods ------------------------------------------------------------

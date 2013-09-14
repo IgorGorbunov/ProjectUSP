@@ -103,6 +103,7 @@
     <Compile Include="Constraintes\TunnelSlotConstraint.cs" />
     <Compile Include="Data\NoRoundBaseData.cs" />
     <Compile Include="Dialogs\DialogProgpam.cs" />
+    <Compile Include="Dialogs\jig.cs" />
     <Compile Include="Dialogs\milingBase.cs" />
     <Compile Include="ElementIntersection.cs" />
     <Compile Include="Elements\BaseElement.cs" />

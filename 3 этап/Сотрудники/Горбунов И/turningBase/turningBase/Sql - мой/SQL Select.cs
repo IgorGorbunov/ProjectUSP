@@ -68,7 +68,6 @@ partial class SqlOracle
             while (reader.Read())
             {
                 values.Add((T)reader.GetValue(0));
-                Message.Show((T)reader.GetValue(0));
             }
 
             reader.Close();

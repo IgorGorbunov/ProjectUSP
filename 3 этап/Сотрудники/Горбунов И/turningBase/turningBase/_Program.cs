@@ -20,7 +20,8 @@ public sealed class Program
 #endif
 
             //_startProgram = new TurningBase();
-            _startProgram = new MilingBase();
+            //_startProgram = new MilingBase();
+            _startProgram = new Jig();
             Logger.WriteLine("++++++++++++++++++++++++++++++++++++++++++++++++" + " Начало работы программы " + _startProgram.GetType().Name);
 
             // The following method shows the dialog immediately
