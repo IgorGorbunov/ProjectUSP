@@ -25,5 +25,25 @@ public static class SqlFunctions
         }
         return baseData;
     }
+    /// <summary>
+    /// Возвращает строку для начала запроса.
+    /// </summary>
+    /// <param name="columns">Столбцы.</param>
+    /// <returns></returns>
+    public static string GetBegin(params string[] columns)
+    {
+        string query = "select ";
+        for (int i = 0; i < columns.Length; i++)
+        {
+            query += columns[i];
+            if (i == columns.Length - 1)
+            {
+                query += " ";
+                break;
+            }
+            query += ",";
+        }
+        return query;
+    }
 }
 

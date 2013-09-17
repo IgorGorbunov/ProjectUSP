@@ -171,4 +171,31 @@ static class SqlUspElement
         }
         throw new TimeoutException();
     }
+
+    public static DataTable GetSleeves(Catalog catalog, string conditionType, string plankGost)
+    {
+        Dictionary<string, string> parametrs = new Dictionary<string, string>();
+        parametrs.Add("CAT", ((int)catalog.CatalogUsp).ToString());
+        parametrs.Add("GOST", plankGost);
+
+        string query = SqlFunctions.GetBegin(SqlTabUspData.CTitle, 
+                                             SqlTabUspData.CInnerDiametr,
+                                             SqlTabUspData.CDiametr,
+                                             SqlTabUspData.CHeight);
+        query += "from " + SqlTabUspData.Name + " where " +
+                 SqlTabUspData.CCatalog + " = :CAT" +
+                 " and " + SqlTabUspData.ThereIs +
+                 conditionType +
+                 " and " + SqlTabUspData.CDiametr + " = any (select " +
+                 SqlTabUspData.CInnerDiametr +
+                 " from " + SqlTabUspData.Name +
+                 " where " + SqlTabUspData.CGost + " = :GOST)";
+
+        DataTable dataTable;
+        if (SqlOracle.SelData(query, parametrs, out dataTable))
+        {
+            return dataTable;
+        }
+        throw new TimeoutException();
+    }
 }

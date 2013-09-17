@@ -1,4 +1,4 @@
-//==============================================================================
+Ôªø//==============================================================================
 //  WARNING!!  This file is overwritten by the Block UI Styler while generating
 //  the automation code. Any modifications to this file will be lost after
 //  generating the code again.
@@ -35,6 +35,7 @@
 //These imports are needed for the following template code
 //------------------------------------------------------------------------------
 using System;
+using System.Data;
 using System.IO;
 using NXOpen;
 using NXOpen.Assemblies;
@@ -53,7 +54,7 @@ public sealed class Jig : DialogProgpam
     private UIBlock _selection0;// Block type: Selection
     private UIBlock _instrDiametrBlock;// Block type: Double
     private UIBlock _sleeveTypeBlock;// Block type: Enumeration
-    private UIBlock _importJigPlankButton;// Block type: Button
+    private UIBlock _importPlankButton;// Block type: Button
     private UIBlock group01;// Block type: Group
     private UIBlock _label0;// Block type: Label
     private UIBlock _double01;// Block type: Double
@@ -62,8 +63,11 @@ public sealed class Jig : DialogProgpam
     private UIBlock _toggle01;// Block type: Toggle
     private UIBlock _integer0;// Block type: Integer
 
-    private bool _faceSelected;
     private Surface _selectedFace;
+
+    private string _gost;
+
+    private Catalog _catalog;
 
     //private 
     
@@ -90,7 +94,7 @@ public sealed class Jig : DialogProgpam
         {
             //---- Enter your exception handling code here -----
             Logger.WriteError(ex.ToString());
-            Message.Show("Œ¯Ë·Í‡!", Message.MessageIcon.Error, ex.ToString());
+            Message.Show("–û—à–∏–±–∫–∞!", Message.MessageIcon.Error, ex.ToString());
             throw;
         }
     }
@@ -135,7 +139,7 @@ public sealed class Jig : DialogProgpam
             _selection0 = TheDialog.TopBlock.FindBlock("selection0");
             _instrDiametrBlock = TheDialog.TopBlock.FindBlock("double0");
             _sleeveTypeBlock = TheDialog.TopBlock.FindBlock("enum0");
-            _importJigPlankButton = TheDialog.TopBlock.FindBlock("button0");
+            _importPlankButton = TheDialog.TopBlock.FindBlock("button0");
             group01 = TheDialog.TopBlock.FindBlock("group01");
             _label0 = TheDialog.TopBlock.FindBlock("label0");
             _double01 = TheDialog.TopBlock.FindBlock("double01");
@@ -143,6 +147,8 @@ public sealed class Jig : DialogProgpam
             _button01 = TheDialog.TopBlock.FindBlock("button01");
             _toggle01 = TheDialog.TopBlock.FindBlock("toggle01");
             _integer0 = TheDialog.TopBlock.FindBlock("integer0");
+
+            _catalog = new Catalog12();
         }
         catch (Exception ex)
         {
@@ -206,7 +212,7 @@ public sealed class Jig : DialogProgpam
             if(block == _selection0)
             {
             //---------Enter your code here-----------
-                Logger.WriteLine("Õ‡Ê‡Ú‡ ÍÌÓÔÍ‡ '¬˚·Ó‡ Ó·˙ÂÍÚ‡'.");
+                Logger.WriteLine("–ù–∞–∂–∞—Ç–∞ –∫–Ω–æ–ø–∫–∞ '–í—ã–±–æ—Ä–∞ –æ–±—ä–µ–∫—Ç–∞'.");
                 SetFace(block);
             }
             else if(block == _instrDiametrBlock)
@@ -217,9 +223,12 @@ public sealed class Jig : DialogProgpam
             {
             //---------Enter your code here-----------
             }
-            else if(block == _importJigPlankButton)
+            else if(block == _importPlankButton)
             {
             //---------Enter your code here-----------
+                //–∑–∞–ø—É—Å–∫ –≥–∞–ª–µ—Ä–µ–∏
+                _gost = "15321-70";
+                ImportPlank();
             }
             else if(block == _label0)
             {
@@ -319,14 +328,40 @@ public sealed class Jig : DialogProgpam
         TaggedObject[] taggedObjects = block.GetProperties().GetTaggedObjectVector("SelectedObjects");
         _selectedFace = new Surface((Face) taggedObjects[0]);
 
-        _faceSelected = true;
-        Logger.WriteLine("¬˚·‡Ì Ó·˙ÂÍÚ " + _selectedFace);
+        Logger.WriteLine("–í—ã–±—Ä–∞–Ω –æ–±—ä–µ–∫—Ç " + _selectedFace.Face);
 
         SetEnable(_instrDiametrBlock, true);
         SetEnable(_sleeveTypeBlock, true);
-        SetEnable(_importJigPlankButton, true);
+        SetEnable(_importPlankButton, true);
 
         _instrDiametrBlock.GetProperties().SetDouble("MaximumValue", _selectedFace.Radius * 2);
         _instrDiametrBlock.GetProperties().SetDouble("Value", _selectedFace.Radius * 2);
     }
+
+    private void ImportPlank()
+    {
+        DataTable sleeves = SqlUspElement.GetSleeves(_catalog, GetSleeveTypeConditions(), _gost);
+    }
+
+    private string GetSleeveTypeConditions()
+    {
+        string gost;
+        switch (_sleeveTypeBlock.GetProperties().GetEnumAsString("Value"))
+        {
+            case "–ë—ã—Å—Ç—Ä–æ—Å–º–µ–Ω–Ω—ã–µ":
+                gost = SqlTabUspData.GetGost(SqlTabUspData.GostUsp.QuickSleeves, _catalog);
+                return " and " + SqlTabUspData.CGost + " = '" + gost + "'";
+            case "–û–±—ã—á–Ω—ã–µ":
+                gost = SqlTabUspData.GetGost(SqlTabUspData.GostUsp.Sleeves, _catalog);
+                return " and " + SqlTabUspData.CGost + " = " + gost + "'";
+        }
+        return "";
+    }
+
+    private double GetDiametr()
+    {
+        return _instrDiametrBlock.GetProperties().GetDouble("Value");
+    }
+
+    
 }

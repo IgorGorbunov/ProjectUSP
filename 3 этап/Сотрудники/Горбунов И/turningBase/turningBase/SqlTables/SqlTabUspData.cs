@@ -13,6 +13,10 @@ public static class SqlTabUspData
     /// </summary>
     public const string CTitle = "OBOZN";
     /// <summary>
+    /// Возвращает столбец с обозначением ГОСТа элемента.
+    /// </summary>
+    public const string CGost = "GOST";
+    /// <summary>
     /// Возвращает столбец с наименованием элемента.
     /// </summary>
     public const string CName = "NAME";
@@ -29,6 +33,14 @@ public static class SqlTabUspData
     /// </summary>
     public const string CWidth = "B";
     /// <summary>
+    /// Возвращает столбец с внутренним диаметром элемента.
+    /// </summary>
+    public const string CInnerDiametr = "D_SM_DB";
+    /// <summary>
+    /// Возвращает название столбца с высотой элемента.
+    /// </summary>
+    public const string CHeight = "H";
+    /// <summary>
     /// Столбец с номером каталога для детали (0 - 8ой паз, 1 - 12ый паз).
     /// </summary>
     public const string CCatalog = "KATALOG_USP";
@@ -39,7 +51,7 @@ public static class SqlTabUspData
     /// <summary>
     /// Столбец с количеством элементов.
     /// </summary>
-    public const string CCount = "NALICHI";
+    private const string CCount = "NALICHI";
 
     /// <summary>
     /// Номера имён ГОСТов деталей.
@@ -68,7 +80,7 @@ public static class SqlTabUspData
         Plates = 4
     }
     /// <summary>
-    /// Возвращает наименование ГОСТа.
+    /// Возвращает наименование ГОСТов.
     /// </summary>
     /// <param name="name">ГОСТ</param>
     /// <returns></returns>
@@ -89,6 +101,39 @@ public static class SqlTabUspData
         }
         return "''";
     }
+
+    /// <summary>
+    /// Номера ГОСТов деталей.
+    /// </summary>
+    public enum GostUsp
+    {
+        /// <summary>
+        /// Быстросменные кондукторные втулки.
+        /// </summary>
+        QuickSleeves = 0,
+        /// <summary>
+        /// Обычные кондукторные втулки.
+        /// </summary>
+        Sleeves = 1
+    }
+
+    public static string GetGost(GostUsp gost, Catalog catalog)
+    {
+        switch (catalog.Slot)
+        {
+            case 12:
+                switch ((int)gost)
+                {
+                    case 0:
+                        return "15363-70";
+                    case 1:
+                        return "15362-70";
+                }
+                return "''";
+        }
+        return "";
+    }
+
     /// <summary>
     /// Значение каталогов УСП.
     /// </summary>

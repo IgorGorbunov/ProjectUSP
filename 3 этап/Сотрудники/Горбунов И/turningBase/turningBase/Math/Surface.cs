@@ -61,7 +61,7 @@ public class Surface
     /// <summary>
     /// Возвращает грань элемента.
     /// </summary>
-    public Face GetFace
+    public Face Face
     {
         get { return _face; }
     }
