@@ -21,7 +21,8 @@ public sealed class Program
 
             //_startProgram = new TurningBase();
             //_startProgram = new MilingBase();
-            _startProgram = new Jig();
+            //_startProgram = new Jig();
+            _startProgram = new Buttons();
             Logger.WriteLine("++++++++++++++++++++++++++++++++++++++++++++++++" + " Начало работы программы " + _startProgram.GetType().Name);
 
             // The following method shows the dialog immediately
@@ -31,6 +32,7 @@ public sealed class Program
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
+            Logger.WriteError(ex);
             Message.Show(ex);
         }
         finally

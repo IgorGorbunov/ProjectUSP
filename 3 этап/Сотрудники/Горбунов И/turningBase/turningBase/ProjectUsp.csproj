@@ -102,6 +102,7 @@
     <Compile Include="Constraintes\TunnelConstraint.cs" />
     <Compile Include="Constraintes\TunnelSlotConstraint.cs" />
     <Compile Include="Data\NoRoundBaseData.cs" />
+    <Compile Include="Dialogs\buttons.cs" />
     <Compile Include="Dialogs\DialogProgpam.cs" />
     <Compile Include="Dialogs\jig.cs" />
     <Compile Include="Dialogs\milingBase.cs" />

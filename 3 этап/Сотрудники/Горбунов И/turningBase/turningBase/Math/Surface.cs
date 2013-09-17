@@ -58,9 +58,34 @@ public class Surface
             return _equation[3];
         }
     }
+    /// <summary>
+    /// Возвращает грань элемента.
+    /// </summary>
+    public Face GetFace
+    {
+        get { return _face; }
+    }
+    /// <summary>
+    /// Возвращает радиус грани, заданной данной поверхностью.
+    /// </summary>
+    /// <returns></returns>
+    public double Radius
+    {
+        get
+        {
+            return _faceRadius;
+        }
+    }
 
 
     readonly double[] _equation;
+
+    private Face _face;
+    private int _faceType, _faceNormDir;
+    private double[] _faceCenterPoint = new double[3];
+    private double[] _faceDirection = new double[3];
+    private double[] _faceBox = new double[6];
+    private double _faceRadius, _faceRadData;
 
     /// <summary>
     /// Инициализирует новый экземпляр класса для плоскости, проходящей через заданную точку и
@@ -110,19 +135,14 @@ public class Surface
     /// <param name="face">Грань элемента.</param>
     public Surface(Face face)
     {
-        int tmpInt;
-        double tmpDouble;
-        double[] box = new double[6];
+        _face = face;
+        Config.TheUfSession.Modl.AskFaceData(face.Tag, out _faceType, _faceCenterPoint, _faceDirection, _faceBox,
+                                             out _faceRadius, out _faceRadData, out _faceNormDir);
 
-        double[] point = new double[3];
-        double[] dir = new double[3];
-        Config.TheUfSession.Modl.AskFaceData(face.Tag, out tmpInt, point, dir, box,
-                                             out tmpDouble, out tmpDouble, out tmpInt);
-
-        double a = dir[0];
-        double b = dir[1];
-        double c = dir[2];
-        double d = a * -point[0] + b * -point[1] + c * -point[2];
+        double a = _faceDirection[0];
+        double b = _faceDirection[1];
+        double c = _faceDirection[2];
+        double d = a * -_faceCenterPoint[0] + b * -_faceCenterPoint[1] + c * -_faceCenterPoint[2];
         
         _equation = new double[] { a, b, c, d };
     }

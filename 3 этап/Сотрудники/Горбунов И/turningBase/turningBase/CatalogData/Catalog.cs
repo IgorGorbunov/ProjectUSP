@@ -11,6 +11,13 @@ public abstract class Catalog
         get { return 0; }
     }
     /// <summary>
+    /// Возвращает размер паза в каталоге.
+    /// </summary>
+    public virtual int Slot
+    {
+        get { return 0; }
+    }
+    /// <summary>
     /// Возвращает тип каталога.
     /// </summary>
     public virtual SqlTabUspData.CatalogUsp CatalogUsp

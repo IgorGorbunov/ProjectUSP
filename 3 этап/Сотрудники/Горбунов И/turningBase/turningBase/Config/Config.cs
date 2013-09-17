@@ -90,6 +90,10 @@ public static class Config
     /// Возвращает имя файла с формой для установки кондуктора.
     /// </summary>
     public const string DlxJig = @"jig.dlx";
+    /// <summary>
+    /// Возвращает имя файла с общей формой.
+    /// </summary>
+    public const string Dlx = @"buttons.dlx";
 
 
     //------------------------ Methods ------------------------------------------------------------

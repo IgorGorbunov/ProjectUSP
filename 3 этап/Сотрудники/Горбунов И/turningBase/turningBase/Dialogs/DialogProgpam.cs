@@ -2,7 +2,9 @@ using System;
 using NXOpen;
 using NXOpen.BlockStyler;
 
-
+/// <summary>
+/// Класс диалогов UI Styler.
+/// </summary>
 public abstract class DialogProgpam
 {
     protected BlockDialog TheDialog;

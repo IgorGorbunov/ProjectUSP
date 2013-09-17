@@ -7,6 +7,13 @@ sealed class Catalog8 : Catalog
     {
         get { return _SERIES; }
     }
+    public override int Slot
+    {
+        get
+        {
+            return 8;
+        }
+    }
     public override SqlTabUspData.CatalogUsp CatalogUsp
     {
         get { return SqlTabUspData.CatalogUsp.Slot8; }
