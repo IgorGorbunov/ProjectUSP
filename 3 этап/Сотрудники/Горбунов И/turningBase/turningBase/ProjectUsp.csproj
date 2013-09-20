@@ -91,6 +91,7 @@
     <Compile Include="CatalogData\Catalog_8.cs" />
     <Compile Include="Config\Config.cs" />
     <Compile Include="Config\CoordinateConfig.cs" />
+    <Compile Include="Config\ParamsConfig.cs" />
     <Compile Include="Constraintes\Center.cs" />
     <Compile Include="Constraintes\Constrainter.cs" />
     <Compile Include="Constraintes\Distance.cs" />
@@ -109,6 +110,9 @@
     <Compile Include="Dialogs\tunnelslot.cs" />
     <Compile Include="ElementIntersection.cs" />
     <Compile Include="Elements\BaseElement.cs" />
+    <Compile Include="Elements\JigPlank.cs" />
+    <Compile Include="Elements\JigSleeve.cs" />
+    <Compile Include="Elements\QuickJigSleeve.cs" />
     <Compile Include="Log\Log.cs" />
     <Compile Include="Math\Axes\CoordinateAxe.cs" />
     <Compile Include="Math\Axes\xAxe.cs" />

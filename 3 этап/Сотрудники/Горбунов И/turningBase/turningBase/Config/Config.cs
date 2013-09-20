@@ -6,7 +6,7 @@ using NXOpen.UF;
 /// <summary>
 /// Класс настроек системы.
 /// </summary>
-public static class Config
+public static partial class Config
 {
     public static readonly Session TheSession = Session.GetSession();
     public static readonly UI TheUi = UI.GetUI();
@@ -24,22 +24,6 @@ public static class Config
         Tslot
     };
 
-    
-
-    public static readonly char[] FaceNameSplitter = {'_'};
-    public const string SlotSymbol = "SLOT";
-    public const string SlotBottomSymbol = "BOTTOM";
-
-    /// <summary>
-    /// Наименование НГП.
-    /// </summary>
-    public static readonly string SlotBottomName = SlotSymbol + FaceNameSplitter[0] +
-                                                   SlotBottomSymbol;
-
-    /// <summary>
-    /// Наименование главного отверстия на токарной базе.
-    /// </summary>
-    public const string BaseHoleName = "BASE_HOLE";
 
     //снизил с 4 на 3 из-за невозможности пазирования (почему-то) коротких пазов на главной
     //плоскости с длинными на боковых у плит

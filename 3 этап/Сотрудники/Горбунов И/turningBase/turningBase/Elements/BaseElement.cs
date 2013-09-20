@@ -6,7 +6,9 @@ using NXOpen.Assemblies;
 /// </summary>
 public class BaseElement : UspElement
 {
-
+    /// <summary>
+    /// Возвращает основную НГП базовой плиты.
+    /// </summary>
     public Face TopSlotFace
     {
         get
