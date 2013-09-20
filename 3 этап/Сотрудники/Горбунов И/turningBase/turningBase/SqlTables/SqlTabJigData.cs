@@ -10,6 +10,6 @@ public static class SqlTabJigData
     /// <summary>
     /// √Œ—“.
     /// </summary>
-    public const string CGost = "GOST";
+    public const string CGost = Name + "." + "GOST";
 }
 

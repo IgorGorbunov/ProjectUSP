@@ -219,6 +219,7 @@ public sealed class TunnelSlotConstraint
 
             if (tunnelIsSet && bottomIsSet)
             {
+                Config.TheUi.NXMessageBox.Show("", NXMessageBox.DialogType.Error, "111111111");
                 break;
             }
         }

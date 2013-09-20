@@ -15,7 +15,7 @@ public static class SqlTabUspData
     /// <summary>
     /// Возвращает столбец с обозначением ГОСТа элемента.
     /// </summary>
-    public const string CGost = "GOST";
+    public const string CGost = Name + "." + "GOST";
     /// <summary>
     /// Возвращает столбец с наименованием элемента.
     /// </summary>
@@ -48,6 +48,10 @@ public static class SqlTabUspData
     /// Столбец с обозначением группы деталей.
     /// </summary>
     public const string CGroup = "GROUP_USP";
+    /// <summary>
+    /// Возвращает наименование столбца с массой элемента.
+    /// </summary>
+    public const string CWeight = "MASSA";
     /// <summary>
     /// Столбец с количеством элементов.
     /// </summary>

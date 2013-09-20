@@ -106,6 +106,7 @@
     <Compile Include="Dialogs\DialogProgpam.cs" />
     <Compile Include="Dialogs\jig.cs" />
     <Compile Include="Dialogs\milingBase.cs" />
+    <Compile Include="Dialogs\tunnelslot.cs" />
     <Compile Include="ElementIntersection.cs" />
     <Compile Include="Elements\BaseElement.cs" />
     <Compile Include="Log\Log.cs" />
@@ -125,7 +126,8 @@
     <Compile Include="NX\NXFunctionKatalog.cs" />
     <Compile Include="NX\NXFunctions.cs" />
     <Compile Include="Replacement.cs" />
-    <Compile Include="Sql - мой\SqlFunctions.cs" />
+    <Compile Include="Sql - мой\Sql.cs" />
+    <Compile Include="SqlAccess\SqlUspJigs.cs" />
     <Compile Include="SqlTables\SqlTabJigData.cs" />
     <Compile Include="_Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -571,4 +571,22 @@ static class Geom
         }
         return d1 / d2;
     }
+
+    /// <summary>
+    /// Возвращает радиус заданной грани.
+    /// </summary>
+    /// <param name="face">Грань.</param>
+    /// <returns></returns>
+    public static double GetRadius(Face face)
+    {
+        int voidInt;
+        double voidDouble;
+        double rad;
+        double[] dir = new double[3];
+        double[] box = new double[6];
+        double[] point = new double[3];
+
+        Config.TheUfSession.Modl.AskFaceData(face.Tag, out voidInt, point, dir, box, out rad, out voidDouble, out voidInt);
+        return rad;
+    }
 }

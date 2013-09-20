@@ -35,10 +35,10 @@
 //These imports are needed for the following template code
 //------------------------------------------------------------------------------
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using NXOpen;
-using NXOpen.Assemblies;
 using NXOpen.BlockStyler;
 using NXOpen.UF;
 
@@ -68,6 +68,9 @@ public sealed class Jig : DialogProgpam
     private string _gost;
 
     private Catalog _catalog;
+
+    private readonly List<string[]> _goodSleeves = new List<string[]>();
+    private int _nSleeveColumns;
 
     //private 
     
@@ -228,7 +231,7 @@ public sealed class Jig : DialogProgpam
             //---------Enter your code here-----------
                 //запуск галереи
                 _gost = "15321-70";
-                ImportPlank();
+                ImportJig();
             }
             else if(block == _label0)
             {
@@ -338,9 +341,24 @@ public sealed class Jig : DialogProgpam
         _instrDiametrBlock.GetProperties().SetDouble("Value", _selectedFace.Radius * 2);
     }
 
-    private void ImportPlank()
+    private void ImportJig()
     {
         DataTable sleeves = SqlUspElement.GetSleeves(_catalog, GetSleeveTypeConditions(), _gost);
+        KeyValuePair<string, double> bestSleeve = FilterSleeves(sleeves);
+        if (_goodSleeves.Count > 0)
+        {
+            double outDiametr = SqlUspElement.GetDiametr(_catalog, bestSleeve.Key);
+            string jigTitle = SqlUspJigs.GetByDiametr(_catalog, outDiametr);
+            Katalog2005.Algorithm.SpecialFunctions.LoadPart(jigTitle, false);
+            Katalog2005.Algorithm.SpecialFunctions.LoadPart(bestSleeve.Key, false);
+        }
+        else
+        {
+            string mess = "Подходящих втулок не было найдено!" + Environment.NewLine +
+                          "Измените параметры.";
+            Logger.WriteWarning(mess);
+            Message.ShowError(mess);
+        }
     }
 
     private string GetSleeveTypeConditions()
@@ -363,5 +381,49 @@ public sealed class Jig : DialogProgpam
         return _instrDiametrBlock.GetProperties().GetDouble("Value");
     }
 
-    
+    private KeyValuePair<string, double> FilterSleeves(DataTable sleeves)
+    {
+        double diametr = GetDiametr();
+        _goodSleeves.Clear();
+        _nSleeveColumns = sleeves.Columns.Count;
+
+        foreach (DataRow row in sleeves.Rows)
+        {
+            string[] split = row[1].ToString().Split(' ');
+            double minD = Double.Parse(split[1]);
+            double maxD = Double.Parse(split[3]);
+            if (minD >= diametr || maxD < diametr) 
+                continue;
+
+            string[] newRow = new string[_nSleeveColumns];
+            for (int i = 0; i < sleeves.Columns.Count; i++)
+            {
+                newRow[i] = row[i].ToString();
+            }
+            _goodSleeves.Add(newRow);
+        }
+
+        KeyValuePair<string, double> bestSleeve = SortSleeves();
+        return bestSleeve;
+    }
+
+    private KeyValuePair<string, double> SortSleeves()
+    {
+        KeyValuePair<string, double>[] sleeveDict = new KeyValuePair<string, double>[_goodSleeves.Count];
+        int i = 0;
+        foreach (string[] goodSleeve in _goodSleeves)
+        {
+            sleeveDict[i] = new KeyValuePair<string, double>(goodSleeve[0], Double.Parse(goodSleeve[3]));
+            i++;
+        }
+        if (_goodSleeves.Count > 1)
+        {
+            Instr.QSortPairs(sleeveDict, 0, _goodSleeves.Count);
+        }
+        if (_goodSleeves.Count > 0)
+        {
+            return sleeveDict[sleeveDict.Length - 1];
+        }
+        return new KeyValuePair<string, double>();
+    }
 }

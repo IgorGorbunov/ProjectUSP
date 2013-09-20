@@ -158,7 +158,8 @@ public class Buttons : DialogProgpam
             if(block == _button0)
             {
             //---------Enter your code here-----------
-                
+                DialogProgpam dialogProgpam = new Tunnelslot();
+                dialogProgpam.Show();
             }
             else if(block == _button01)
             {

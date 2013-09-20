@@ -7,12 +7,15 @@ using System.Data;
 /// </summary>
 static class SqlUspElement
 {
-    static readonly string _SELECT_QUERY_BASES = "select " + SqlTabUspData.CTitle + "," + SqlTabUspData.CDiametr +
+    private static readonly string _SELECT_QUERY_BASES = "select " + SqlTabUspData.CTitle + "," + SqlTabUspData.CDiametr +
                        " from " + SqlTabUspData.Name +
                        " where " + SqlTabUspData.CGroup + " = " + (int)SqlTabUspData.GroupUsp.Base +
                            " and " + SqlTabUspData.ThereIs +
                            " and (" + SqlTabUspData.CName + " like '" + SqlTabUspData.GetName(SqlTabUspData.NameUsp.RoundPlate) + "%'" +
                                 " or " + SqlTabUspData.CName + " like '" + SqlTabUspData.GetName(SqlTabUspData.NameUsp.RoundPlates) + "%')";
+
+    public const string From = "from " + SqlTabUspData.Name + "";
+
 
     /// <summary>
     /// Возвращает номер каталога для детали.
@@ -166,7 +169,7 @@ static class SqlUspElement
             {
                 return null;
             }
-            List<NoRoundBaseData> list = SqlFunctions.ToNoRoundBaseDataList(dataTable);
+            List<NoRoundBaseData> list = Sql.ToNoRoundBaseDataList(dataTable);
             return list[0];
         }
         throw new TimeoutException();
@@ -178,7 +181,7 @@ static class SqlUspElement
         parametrs.Add("CAT", ((int)catalog.CatalogUsp).ToString());
         parametrs.Add("GOST", plankGost);
 
-        string query = SqlFunctions.GetBegin(SqlTabUspData.CTitle, 
+        string query = Sql.GetBegin(SqlTabUspData.CTitle, 
                                              SqlTabUspData.CInnerDiametr,
                                              SqlTabUspData.CDiametr,
                                              SqlTabUspData.CHeight);
@@ -198,4 +201,26 @@ static class SqlUspElement
         }
         throw new TimeoutException();
     }
+
+    public static double GetDiametr(Catalog catalog, string title)
+    {
+        Dictionary<string, string> parametrs = new Dictionary<string, string>();
+        const string par1 = "CAT", par2 = "TITLE";
+        parametrs.Add(par1, ((int)catalog.CatalogUsp).ToString());
+        parametrs.Add(par2, title);
+
+        string query = Sql.GetBegin(SqlTabUspData.CDiametr);
+        query += From + Sql.Where;
+        query += SqlTabUspData.CTitle + Sql.Eq + Sql.GetPar(par2);
+        query += Sql.GetNewCond(SqlTabUspData.CCatalog + Sql.Eq + Sql.GetPar(par1));
+
+        string str;
+        if (SqlOracle.Sel(query, parametrs, out str))
+        {
+            return Double.Parse(str);
+        }
+        throw new TimeoutException();
+    }
+
+    
 }

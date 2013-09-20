@@ -48,6 +48,7 @@ public class UspElement
             if (_catalog == null)
             {
                 string catalogNum = SqlUspElement.GetCatalogNum(ElementComponent.Name);
+                Message.Tst(catalogNum);
                 if (catalogNum == "0")
                 {
                     _catalog = new Catalog8();

@@ -39,6 +39,10 @@ public static class Message
     {
         Show("Error", MessageIcon.Error, message);
     }
+    public static void ShowError(object message)
+    {
+        Show("Ошибка!", MessageIcon.Error, message);
+    }
     public static void Show(string title, MessageIcon icon, object mess)
     {
         NXMessageBox.DialogType dialog = NXMessageBox.DialogType.Error;
