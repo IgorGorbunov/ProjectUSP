@@ -64,6 +64,7 @@ public sealed class Jig : DialogProgpam
     private UIBlock _integer0;// Block type: Integer
 
     private Surface _selectedFace;
+    private UspElement _workpeice;
 
     private string _gost;
 
@@ -71,6 +72,12 @@ public sealed class Jig : DialogProgpam
 
     private readonly List<string[]> _goodSleeves = new List<string[]>();
     private int _nSleeveColumns;
+
+    private JigPlank _jigPlank;
+    private QuickJigSleeve _quickJigSleeve;
+
+    private TouchAxe _touchAxeJigElement, _touchAxeSleeveJig;
+    private Touch _sleeveJigTouch;
 
     //private 
     
@@ -330,6 +337,7 @@ public sealed class Jig : DialogProgpam
     {
         TaggedObject[] taggedObjects = block.GetProperties().GetTaggedObjectVector("SelectedObjects");
         _selectedFace = new Surface((Face) taggedObjects[0]);
+        _workpeice = new UspElement(_selectedFace.Face.OwningComponent);
 
         Logger.WriteLine("Выбран объект " + _selectedFace.Face);
 
@@ -350,7 +358,10 @@ public sealed class Jig : DialogProgpam
             double outDiametr = SqlUspElement.GetDiametr(_catalog, bestSleeve.Key);
             string jigTitle = SqlUspJigs.GetByDiametr(_catalog, outDiametr);
             Katalog2005.Algorithm.SpecialFunctions.LoadPart(jigTitle, false);
+            _jigPlank = new JigPlank(Katalog2005.Algorithm.SpecialFunctions.LoadedPart);
             Katalog2005.Algorithm.SpecialFunctions.LoadPart(bestSleeve.Key, false);
+            _quickJigSleeve = new QuickJigSleeve(Katalog2005.Algorithm.SpecialFunctions.LoadedPart);
+            SetConstraints();
         }
         else
         {
@@ -359,6 +370,24 @@ public sealed class Jig : DialogProgpam
             Logger.WriteWarning(mess);
             Message.ShowError(mess);
         }
+    }
+
+    private void SetConstraints()
+    {
+        bool isFixed = _workpeice.ElementComponent.IsFixed;
+        if (!isFixed)
+        {
+            _workpeice.Fix();
+        }
+        _touchAxeJigElement = _jigPlank.SetOn(_workpeice.ElementComponent, _selectedFace.Face);
+        _sleeveJigTouch = _quickJigSleeve.SetOnJig(_jigPlank);
+        _touchAxeSleeveJig = _quickJigSleeve.SetToJig(_jigPlank);
+        NxFunctions.Update();
+        if (!isFixed)
+        {
+            _workpeice.Unfix();
+        }
+        NxFunctions.Update();
     }
 
     private string GetSleeveTypeConditions()

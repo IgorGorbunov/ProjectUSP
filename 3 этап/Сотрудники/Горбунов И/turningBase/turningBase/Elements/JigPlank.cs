@@ -20,7 +20,6 @@ public class JigPlank : UspElement
             return _topSlotFace;
         }
     }
-
     /// <summary>
     /// Возвращает грань для касания втулки и кондукторной планки.
     /// </summary>
@@ -35,7 +34,6 @@ public class JigPlank : UspElement
             return _topJigFace;
         }
     }
-
     /// <summary>
     /// Возвращает грань для центрирования втулки в кондукторной планке.
     /// </summary>
@@ -94,5 +92,18 @@ public class JigPlank : UspElement
     public void SetSleeveFace()
     {
         _sleeveFace = GetFace(Config.JigSleeveName);
+    }
+
+    /// <summary>
+    /// Создаёт констрэйнт TouchAxe кондукторной планки и обрабатываемой детали.
+    /// </summary>
+    /// <param name="component">Компонент обрабатываемой детали.</param>
+    /// <param name="face">Обрабатываемая грань.</param>
+    /// <returns></returns>
+    public TouchAxe SetOn(Component component, Face face)
+    {
+        TouchAxe touchAxe = new TouchAxe();
+        touchAxe.Create(ElementComponent, SleeveFace, component, face);
+        return touchAxe;
     }
 }

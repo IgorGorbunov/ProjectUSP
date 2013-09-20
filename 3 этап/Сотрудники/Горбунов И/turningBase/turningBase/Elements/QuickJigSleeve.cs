@@ -1,13 +1,13 @@
-using NXOpen;
+п»їusing NXOpen;
 using NXOpen.Assemblies;
 
 /// <summary>
-/// Класс быстросменных кондукторных втулок.
+/// РљР»Р°СЃСЃ Р±С‹СЃС‚СЂРѕСЃРјРµРЅРЅС‹С… РєРѕРЅРґСѓРєС‚РѕСЂРЅС‹С… РІС‚СѓР»РѕРє.
 /// </summary>
 public class QuickJigSleeve : JigSleeve
 {
     /// <summary>
-    /// Возвращает грань для касания втулки и кондукторной планки.
+    /// Р’РѕР·РІСЂР°С‰Р°РµС‚ РіСЂР°РЅСЊ РґР»СЏ РєР°СЃР°РЅРёСЏ РІС‚СѓР»РєРё Рё РєРѕРЅРґСѓРєС‚РѕСЂРЅРѕР№ РїР»Р°РЅРєРё.
     /// </summary>
     public Face TopSleeveFace
     {
@@ -24,20 +24,42 @@ public class QuickJigSleeve : JigSleeve
     private Face _topFace;
 
     /// <summary>
-    /// Инициализирует новый экземпляр класса быстросменной кондуктрорной втулки УСП 
-    /// для заданного компонента.
+    /// РРЅРёС†РёР°Р»РёР·РёСЂСѓРµС‚ РЅРѕРІС‹Р№ СЌРєР·РµРјРїР»СЏСЂ РєР»Р°СЃСЃР° Р±С‹СЃС‚СЂРѕСЃРјРµРЅРЅРѕР№ РєРѕРЅРґСѓРєС‚СЂРѕСЂРЅРѕР№ РІС‚СѓР»РєРё РЈРЎРџ 
+    /// РґР»СЏ Р·Р°РґР°РЅРЅРѕРіРѕ РєРѕРјРїРѕРЅРµРЅС‚Р°.
     /// </summary>
-    /// <param name="component">Компонент детали УСП.</param>
+    /// <param name="component">РљРѕРјРїРѕРЅРµРЅС‚ РґРµС‚Р°Р»Рё РЈРЎРџ.</param>
     public QuickJigSleeve(Component component) : base(component)
     {
         
     }
-
+    
     /// <summary>
-    /// Устанавливает верхнюю грань касания с кондукторной планкой, использовать после Replacement.
+    /// РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РІРµСЂС…РЅСЋСЋ РіСЂР°РЅСЊ РєР°СЃР°РЅРёСЏ СЃ РєРѕРЅРґСѓРєС‚РѕСЂРЅРѕР№ РїР»Р°РЅРєРѕР№, РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РїРѕСЃР»Рµ Replacement.
     /// </summary>
     public void SetTopSleeveFace()
     {
         _topFace = GetFace(Config.SleeveTopName);
+    }
+
+    /// <summary>
+    /// РЎРѕР·РґР°С‘С‚ РєРѕРЅСЃС‚СЂСЌР№РЅС‚ TouchAxe РєРѕРЅРґСѓРєС‚РѕСЂРЅРѕР№ РїР»Р°РЅРєРё Рё РІС‚СѓР»РєРё.
+    /// </summary>
+    /// <param name="jigPlank">РљРѕРЅРґСѓРєС‚РѕСЂРЅР°СЏ РїР»Р°РЅРєР°.</param>
+    public TouchAxe SetToJig(JigPlank jigPlank)
+    {
+        TouchAxe touchAxe = new TouchAxe();
+        touchAxe.Create(ElementComponent, SleeveFace, jigPlank.ElementComponent, jigPlank.SleeveFace);
+        return touchAxe;
+    }
+
+    /// <summary>
+    /// РЎРѕР·РґР°С‘С‚ РєРѕРЅСЃС‚СЂСЌР№РЅС‚ Touch РєРѕРЅРґСѓРєС‚РѕСЂРЅРѕР№ РїР»Р°РЅРєРё Рё РІС‚СѓР»РєРё.
+    /// </summary>
+    /// <param name="jigPlank">РљРѕРЅРґСѓРєС‚РѕСЂРЅР°СЏ РїР»Р°РЅРєР°.</param>
+    public Touch SetOnJig(JigPlank jigPlank)
+    {
+        Touch touch = new Touch();
+        touch.Create(ElementComponent, TopSleeveFace, jigPlank.ElementComponent, jigPlank.TopJigFace);
+        return touch;
     }
 }
