@@ -194,7 +194,7 @@ public class Surface
     /// </summary>
     /// <param name="point">Точка.</param>
     /// <returns></returns>
-    public double GetDistanceToPoint(Point3d point)
+    public double GetDistance(Point3d point)
     {
         double numerator = X * point.X +
                            Y * point.Y +
@@ -206,6 +206,21 @@ public class Surface
                                        Z * Z);
 
         return numerator / denominator;
+    }
+    /// <summary>
+    /// Возвращает минимальное по модулю расстояние (перпендикуляр) между текущей и заданной плоскостью.
+    /// Ахтунг!!1 Возвращает положительное значение, если нормаль текущей плоскости и вектор к
+    /// заданной плоскости сонаправлены, отрицательное значение - если противонаправлены.
+    /// </summary>
+    /// <param name="surface">Задаваемая поверхность.</param>
+    /// <returns></returns>
+    public double GetDistance(Surface surface)
+    {
+        Edge[] edges = surface.Face.GetEdges();
+        Point3d point1, point2;
+        edges[0].GetVertices(out point1, out point2);
+
+        return GetDistance(point1);
     }
     /// <summary>
     /// Возвращает проекцию заданной точки на текущую плоскость.

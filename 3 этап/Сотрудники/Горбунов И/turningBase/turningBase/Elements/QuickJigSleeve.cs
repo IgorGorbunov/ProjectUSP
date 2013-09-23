@@ -20,6 +20,20 @@ public class QuickJigSleeve : JigSleeve
             return _topFace;
         }
     }
+    /// <summary>
+    /// Возвращает внутренний диаметр втулки.
+    /// </summary>
+    public double InnerDiametr
+    {
+        get
+        {
+            if (_innerDiametr == default(double))
+            {
+                SetInnerDiametr();
+            }
+            return _innerDiametr;
+        }
+    }
 
     /// <summary>
     /// Возвращает нижнюю грань втулки.
@@ -37,6 +51,7 @@ public class QuickJigSleeve : JigSleeve
     }
 
     private Face _topFace, _bottomFace;
+    private double _innerDiametr;
 
     /// <summary>
     /// Инициализирует новый экземпляр класса быстросменной кондуктрорной втулки УСП 
@@ -84,5 +99,19 @@ public class QuickJigSleeve : JigSleeve
         Touch touch = new Touch();
         touch.Create(ElementComponent, TopFace, jigPlank.ElementComponent, jigPlank.TopJigFace);
         return touch;
+    }
+
+    /// <summary>
+    /// Устанавливает внутренний диаметр втулки, использовать после Replacement.
+    /// </summary>
+    public void SetInnerDiametr()
+    {
+        string[] split = ElementComponent.Name.Split('_');
+        string titlePrt = split[split.Length - 1];
+        split = titlePrt.Split('.');
+        string title = split[0];
+        string range = SqlUspElement.GetInnerDiametr(title);
+        split = range.Split(' ');
+        _innerDiametr = double.Parse(split[split.Length - 1]);
     }
 }

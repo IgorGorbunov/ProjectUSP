@@ -14,7 +14,7 @@ public static class Replacement
     {
         //Component oldBase = _baseElement.ElementComponent;
         Katalog2005.Algorithm.SpecialFunctions.LoadPart(newComponentTitle, true);
-        string uniqueName = newComponentTitle + "__" + DateTime.Now.GetHashCode();
+        string uniqueName = DateTime.Now.GetHashCode() + "_" + newComponentTitle;
 
         Logger.WriteLine("Замена компонента " + oldComponent.Name + " компонентом " + uniqueName);
 

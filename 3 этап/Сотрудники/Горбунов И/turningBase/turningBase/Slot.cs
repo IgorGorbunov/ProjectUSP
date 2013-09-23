@@ -239,7 +239,7 @@ public class Slot
             Surface pl = new Surface(f);
 
             //округление для проверки нуля - added
-            double distance = - Config.Round(pl.GetDistanceToPoint(point));
+            double distance = - Config.Round(pl.GetDistance(point));
             
             if (distance >= 0 && !dictFaces.ContainsValue(distance))
             {

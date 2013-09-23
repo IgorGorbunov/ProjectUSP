@@ -222,5 +222,23 @@ static class SqlUspElement
         throw new TimeoutException();
     }
 
+    public static string GetInnerDiametr(string title)
+    {
+        Dictionary<string, string> parametrs = new Dictionary<string, string>();
+        const string par1 = "TITLE";
+        parametrs.Add(par1, title);
+
+        string query = Sql.GetBegin(SqlTabUspData.CInnerDiametr);
+        query += From + Sql.Where;
+        query += SqlTabUspData.CTitle + Sql.Eq + Sql.GetPar(par1);
+
+        string str;
+        if (SqlOracle.Sel(query, parametrs, out str))
+        {
+            return str;
+        }
+        throw new TimeoutException();
+    }
+
     
 }

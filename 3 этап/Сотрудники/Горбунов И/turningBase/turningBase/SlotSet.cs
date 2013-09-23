@@ -219,8 +219,8 @@ public sealed class SlotSet
 
             Surface pl1 = new Surface(faces[0]);
             Surface pl2 = new Surface(faces[1]);
-            double d1 = pl1.GetDistanceToPoint(_selectPoint);
-            double d2 = pl2.GetDistanceToPoint(_selectPoint);
+            double d1 = pl1.GetDistance(_selectPoint);
+            double d2 = pl2.GetDistance(_selectPoint);
             if (Config.Round(d1) == 0.0)
             {
                 n = 0;
