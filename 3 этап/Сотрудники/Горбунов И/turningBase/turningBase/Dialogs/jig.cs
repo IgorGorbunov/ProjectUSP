@@ -78,6 +78,7 @@ public sealed class Jig : DialogProgpam
 
     private TouchAxe _touchAxeJigElement, _touchAxeSleeveJig;
     private Touch _sleeveJigTouch;
+    private Distance _distance;
 
     //private 
     
@@ -382,12 +383,53 @@ public sealed class Jig : DialogProgpam
         _touchAxeJigElement = _jigPlank.SetOn(_workpeice.ElementComponent, _selectedFace.Face);
         _sleeveJigTouch = _quickJigSleeve.SetOnJig(_jigPlank);
         _touchAxeSleeveJig = _quickJigSleeve.SetToJig(_jigPlank);
+        SetDistance();
         NxFunctions.Update();
         if (!isFixed)
         {
             _workpeice.Unfix();
         }
         NxFunctions.Update();
+    }
+
+    private Edge[] GetEgdes()
+    {
+        Edge[] edges = _selectedFace.Face.GetEdges();
+        Edge[] twoEgdes = new Edge[2];
+        int i = 0;
+        foreach (Edge edge in edges)
+        {
+            if (i == 2)
+                break;
+
+            if (edge.SolidEdgeType != Edge.EdgeType.Circular ||
+                Config.Round(_selectedFace.Radius) != Config.Round(Geom.GetRadius(edge))) 
+                continue;
+           
+            twoEgdes[i] = edge;
+            i++;
+        }
+        return twoEgdes;
+    }
+
+    private void SetDistance()
+    {
+        Edge[] edges = GetEgdes();
+        if (edges[1] == null)
+        {
+            _distance = new Distance();
+            _distance.Create(_workpeice.ElementComponent, edges[0], _jigPlank.ElementComponent, _jigPlank.SlotFace, 20.0);
+
+            ElementIntersection intersection = new ElementIntersection(_workpeice.Body,
+                                                                       _jigPlank.Body);
+            if (intersection.InterferenseExists)
+            {
+                _distance.Delete();
+                _distance.Create(_workpeice.ElementComponent, edges[0], _jigPlank.ElementComponent, _jigPlank.SlotFace, -20.0);
+                _touchAxeSleeveJig.Reverse();
+                _distance.Reverse();
+            }
+        }
     }
 
     private string GetSleeveTypeConditions()

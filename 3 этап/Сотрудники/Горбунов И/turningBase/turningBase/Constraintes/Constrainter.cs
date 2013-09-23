@@ -24,21 +24,6 @@ public class Constrainter
         Constr.FlipAlignment();
     }
 
-    private void InitConstraints()
-    {
-        CompPositioner = Config.WorkPart.ComponentAssembly.Positioner;
-
-        _componentNetwork = (ComponentNetwork)CompPositioner.EstablishNetwork();
-        _componentNetwork.MoveObjectsState = true;
-    }
-    protected void ExecuteConstraints()
-    {
-        _componentNetwork.Solve();
-
-        //для того чтобы нормально работали фиксы
-        CompPositioner.ClearNetwork();
-    }
-
     /// <summary>
     /// Удаляет соединение.
     /// </summary>
@@ -47,6 +32,33 @@ public class Constrainter
         NXObject objectToDelete = Constr;
         Config.TheSession.UpdateManager.AddToDeleteList(objectToDelete);
     }
+    /// <summary>
+    /// Возвращает true, если сопряжение переограничено.
+    /// </summary>
+    /// <returns></returns>
+    public bool IsOverConstrained()
+    {
+        return Constr.GetConstraintStatus() == Constraint.SolverStatus.OverConstrained;
+    }
+
+    protected void ExecuteConstraints()
+    {
+        _componentNetwork.Solve();
+
+        //для того чтобы нормально работали фиксы
+        CompPositioner.ClearNetwork();
+    }
+
+    private void InitConstraints()
+    {
+        CompPositioner = Config.WorkPart.ComponentAssembly.Positioner;
+
+        _componentNetwork = (ComponentNetwork)CompPositioner.EstablishNetwork();
+        _componentNetwork.MoveObjectsState = true;
+    }
+    
+
+
 
 }
 

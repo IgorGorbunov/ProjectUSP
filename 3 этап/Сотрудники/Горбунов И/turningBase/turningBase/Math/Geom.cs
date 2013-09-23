@@ -589,4 +589,14 @@ static class Geom
         Config.TheUfSession.Modl.AskFaceData(face.Tag, out voidInt, point, dir, box, out rad, out voidDouble, out voidInt);
         return rad;
     }
+    /// <summary>
+    /// Возвращает радиус заданного ребра.
+    /// </summary>
+    /// <param name="edge">Ребро.</param>
+    /// <returns></returns>
+    public static double GetRadius(Edge edge)
+    {
+        double len = edge.GetLength();
+        return len/(2*Math.PI);
+    }
 }
