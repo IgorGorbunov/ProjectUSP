@@ -71,6 +71,27 @@ public class Vector
 
         InitPoints(start, end);
     }
+
+    /// <summary>
+    /// Инициализирует новый экземпляр класса вектора для заданных цилиндрических рёбер.
+    /// </summary>
+    /// <param name="edge1">Первое цилиндрическое ребро.</param>
+    /// <param name="edge2">Второе цилиндрическое ребро.</param>
+    public Vector(Edge edge1, Edge edge2)
+    {
+        double[] firstCenter = Geom.GetCenter(edge1);
+        double[] secondCenter = Geom.GetCenter(edge2);
+        Point3d start, end;
+        start.X = firstCenter[0];
+        start.Y = firstCenter[1];
+        start.Z = firstCenter[2];
+
+        end.X = secondCenter[0];
+        end.Y = secondCenter[1];
+        end.Z = secondCenter[2];
+
+        InitPoints(start, end);
+    }
     /// <summary>
     /// Инициализирует новый экземпляр класса вектора для заданной координатной оси.
     /// </summary>
@@ -163,16 +184,6 @@ public class Vector
         return new Point3d(xD, yD, zD);
     }
 
-    //public bool IsCoDirectional()
-    //{
-        
-    //}
-
-    /// <summary>
-    /// Возвращает угол между текущим вектором и заданным (вторым).
-    /// </summary>
-    /// <param name="vec">Второй вектор.</param>
-    /// <returns></returns>
     public double GetAngle(Vector vec)
     {
         UFSession theUfSession = UFSession.GetUFSession();
@@ -209,7 +220,6 @@ public class Vector
 
         return Math.Round(Math.Abs(angle)) == 90.0 || Math.Round(Math.Abs(angle)) == 270.0;
     }
-
     /// <summary>
     /// Возвращает значение, определяющее является ли второй (заданный) вектор параллельным
     /// текущему.
@@ -221,6 +231,16 @@ public class Vector
         double angle = GetAngle(vec);
 
         return Math.Round((Math.Abs(angle))) == 0.0 || Math.Round(Math.Abs(angle)) == 180.0;
+    }
+    /// <summary>
+    /// Возвращает true, если заданный вектор сонаправлен текущему.
+    /// </summary>
+    /// <param name="vector">Вектор.</param>
+    /// <returns></returns>
+    internal bool IsCoDirectional(Vector vector)
+    {
+        double angle = GetAngle(vector);
+        return Config.Round(angle) == 0.0;
     }
 
 

@@ -64,7 +64,7 @@ public sealed class Jig : DialogProgpam
     private UIBlock _integer0;// Block type: Integer
 
     private Surface _selectedFace;
-    private UspElement _workpeice;
+    private UspElement _workpiece;
 
     private string _gost;
 
@@ -338,7 +338,7 @@ public sealed class Jig : DialogProgpam
     {
         TaggedObject[] taggedObjects = block.GetProperties().GetTaggedObjectVector("SelectedObjects");
         _selectedFace = new Surface((Face) taggedObjects[0]);
-        _workpeice = new UspElement(_selectedFace.Face.OwningComponent);
+        _workpiece = new UspElement(_selectedFace.Face.OwningComponent);
 
         Logger.WriteLine("Выбран объект " + _selectedFace.Face);
 
@@ -375,19 +375,19 @@ public sealed class Jig : DialogProgpam
 
     private void SetConstraints()
     {
-        bool isFixed = _workpeice.ElementComponent.IsFixed;
+        bool isFixed = _workpiece.ElementComponent.IsFixed;
         if (!isFixed)
         {
-            _workpeice.Fix();
+            _workpiece.Fix();
         }
-        _touchAxeJigElement = _jigPlank.SetOn(_workpeice.ElementComponent, _selectedFace.Face);
+        _touchAxeJigElement = _jigPlank.SetOn(_workpiece.ElementComponent, _selectedFace.Face);
         _sleeveJigTouch = _quickJigSleeve.SetOnJig(_jigPlank);
         _touchAxeSleeveJig = _quickJigSleeve.SetToJig(_jigPlank);
-        SetDistance();
+        SetDistanceConstraint();
         NxFunctions.Update();
         if (!isFixed)
         {
-            _workpeice.Unfix();
+            _workpiece.Unfix();
         }
         NxFunctions.Update();
     }
@@ -412,24 +412,44 @@ public sealed class Jig : DialogProgpam
         return twoEgdes;
     }
 
-    private void SetDistance()
+    private void SetDistanceConstraint()
     {
         Edge[] edges = GetEgdes();
         if (edges[1] == null)
         {
-            _distance = new Distance();
-            _distance.Create(_workpeice.ElementComponent, edges[0], _jigPlank.ElementComponent, _jigPlank.SlotFace, 20.0);
-
-            ElementIntersection intersection = new ElementIntersection(_workpeice.Body,
-                                                                       _jigPlank.Body);
-            if (intersection.InterferenseExists)
+            SetDistance(edges[0]);
+        }
+        else
+        {
+            Vector workPieceVector = new Vector(edges[0], edges[1]);
+            Edge someSleeveEdge1 = Geom.GetCyllindricalEdge(_quickJigSleeve.TopFace);
+            Edge someSleeveEdge2 = Geom.GetCyllindricalEdge(_quickJigSleeve.BottomFace);
+            Vector jigVector = new Vector(someSleeveEdge1, someSleeveEdge2);
+            if (workPieceVector.IsCoDirectional(jigVector))
             {
-                _distance.Delete();
-                _distance.Create(_workpeice.ElementComponent, edges[0], _jigPlank.ElementComponent, _jigPlank.SlotFace, -20.0);
-                _touchAxeSleeveJig.Reverse();
-                _distance.Reverse();
+                SetDistance(edges[0]);
+            }
+            else
+            {
+                SetDistance(edges[1]);
             }
         }
+    }
+
+    private void SetDistance(Edge edge)
+    {
+        _distance = new Distance();
+        _distance.Create(_workpiece.ElementComponent, edge, _jigPlank.ElementComponent, _jigPlank.SlotFace, 20.0);
+
+        ElementIntersection intersection = new ElementIntersection(_workpiece.Body,
+                                                                   _jigPlank.Body);
+        if (!intersection.InterferenseExists) 
+            return;
+
+        _distance.Delete();
+        _distance.Create(_workpiece.ElementComponent, edge, _jigPlank.ElementComponent, _jigPlank.SlotFace, -20.0);
+        _touchAxeSleeveJig.Reverse();
+        _distance.Reverse();
     }
 
     private string GetSleeveTypeConditions()

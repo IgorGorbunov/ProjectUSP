@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using NXOpen;
+using NXOpen.UF;
 
 /// <summary>
 /// Класс с реализацией геометрических функций.
@@ -598,5 +599,39 @@ static class Geom
     {
         double len = edge.GetLength();
         return len/(2*Math.PI);
+    }
+
+    /// <summary>
+    /// Возвращает центр цилиндрического ребра.
+    /// </summary>
+    /// <param name="edge">Цилиндрическое ребро.</param>
+    /// <returns></returns>
+    public static double[] GetCenter(Edge edge)
+    {
+        IntPtr arcEvaluator;
+        Config.TheUfSession.Eval.Initialize(edge.Tag, out arcEvaluator);
+        UFEval.Arc arcData;
+        Config.TheUfSession.Eval.AskArc(arcEvaluator, out arcData);
+        double[] center = arcData.center;
+        Config.TheUfSession.Eval.Free(arcEvaluator);
+        return center;
+    }
+
+    /// <summary>
+    /// Возвращает цилиндрическое ребро заданной грани.
+    /// </summary>
+    /// <param name="face">Грань.</param>
+    /// <returns></returns>
+    public static Edge GetCyllindricalEdge(Face face)
+    {
+        Edge[] edges = face.GetEdges();
+        foreach (Edge edge in edges)
+        {
+            if (edge.SolidEdgeType == Edge.EdgeType.Circular)
+            {
+                return edge;
+            }
+        }
+        return null;
     }
 }

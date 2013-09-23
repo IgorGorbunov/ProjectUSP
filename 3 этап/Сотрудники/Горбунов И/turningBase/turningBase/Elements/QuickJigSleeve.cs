@@ -9,19 +9,34 @@ public class QuickJigSleeve : JigSleeve
     /// <summary>
     /// Возвращает грань для касания втулки и кондукторной планки.
     /// </summary>
-    public Face TopSleeveFace
+    public Face TopFace
     {
         get
         {
             if (_topFace == null)
             {
-                SetTopSleeveFace();
+                SetTopFace();
             }
             return _topFace;
         }
     }
 
-    private Face _topFace;
+    /// <summary>
+    /// Возвращает нижнюю грань втулки.
+    /// </summary>
+    public Face BottomFace
+    {
+        get
+        {
+            if (_bottomFace == null)
+            {
+                SetBottomFace();
+            }
+            return _bottomFace;
+        }
+    }
+
+    private Face _topFace, _bottomFace;
 
     /// <summary>
     /// Инициализирует новый экземпляр класса быстросменной кондуктрорной втулки УСП 
@@ -36,9 +51,17 @@ public class QuickJigSleeve : JigSleeve
     /// <summary>
     /// Устанавливает верхнюю грань касания с кондукторной планкой, использовать после Replacement.
     /// </summary>
-    public void SetTopSleeveFace()
+    public void SetTopFace()
     {
         _topFace = GetFace(Config.SleeveTopName);
+    }
+
+    /// <summary>
+    /// Устанавливает нижнюю грань касания с кондукторной планкой, использовать после Replacement.
+    /// </summary>
+    public void SetBottomFace()
+    {
+        _bottomFace = GetFace(Config.SleeveBottomName);
     }
 
     /// <summary>
@@ -59,7 +82,7 @@ public class QuickJigSleeve : JigSleeve
     public Touch SetOnJig(JigPlank jigPlank)
     {
         Touch touch = new Touch();
-        touch.Create(ElementComponent, TopSleeveFace, jigPlank.ElementComponent, jigPlank.TopJigFace);
+        touch.Create(ElementComponent, TopFace, jigPlank.ElementComponent, jigPlank.TopJigFace);
         return touch;
     }
 }
