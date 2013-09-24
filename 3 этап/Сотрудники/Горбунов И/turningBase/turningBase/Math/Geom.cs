@@ -234,8 +234,8 @@ static class Geom
         Vector vecAb = new Vector(vecPoint1, vecPoint2);
         Vector vecAx = new Vector(vecPoint1, p);
 
-        Point3d aBcoords = vecAb.GetCoords();
-        Point3d aXcoords = vecAx.GetCoords();
+        Point3d aBcoords = vecAb.GetCoords1();
+        Point3d aXcoords = vecAx.GetCoords1();
         double[] ratio = new double[Dimensions];
 
         ratio[0] = GetRatio(aXcoords.X, aBcoords.X);
@@ -633,5 +633,15 @@ static class Geom
             }
         }
         return null;
+    }
+
+    /// <summary>
+    /// Возвращает значение угла в радианах.
+    /// </summary>
+    /// <param name="degrees">Значение угла в градусах.</param>
+    /// <returns></returns>
+    public static double Rad(double degrees)
+    {
+        return degrees*Math.PI/180;
     }
 }

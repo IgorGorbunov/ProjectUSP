@@ -311,7 +311,7 @@ public sealed class TunnelSlotConstraint
         componentNetwork2.SetMovingGroup(movableObjects2);
 
         componentNetwork2.BeginDrag();
-        Vector3d translation1 = vec.GetCoordsVector3D();
+        Vector3d translation1 = vec.GetCoords2();
         componentNetwork2.DragByTranslation(translation1);
         componentNetwork2.EndDrag();
 

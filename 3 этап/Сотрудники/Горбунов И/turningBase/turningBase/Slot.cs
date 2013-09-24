@@ -164,7 +164,7 @@ public class Slot
             {
                 if (face == _slotSet.BottomFace) continue;
 
-                if (!Geom.IsEqual(Geom.GetDirection(face), edgeVector.Direction)) continue;
+                if (!Geom.IsEqual(Geom.GetDirection(face), edgeVector.Direction1)) continue;
 
                 return face;
             }

@@ -38,12 +38,36 @@ public class Vector
     /// <summary>
     /// Возвращает направляющие косинусы вектора.
     /// </summary>
-    public Point3d Direction
+    public Point3d Direction1
     {
         get
         {
             SetDirection();
             return _direction;
+        }
+    }
+    /// <summary>
+    /// Возвращает направляющие косинусы вектора.
+    /// </summary>
+    public double[] Direction2
+    {
+        get
+        {
+            SetDirection();
+            double[] direction = {_direction.X, _direction.Y, _direction.Z};
+            return direction;
+        }
+    }
+    /// <summary>
+    /// Возвращает направляющие косинусы вектора.
+    /// </summary>
+    public Vector3d Direction3
+    {
+        get
+        {
+            SetDirection();
+            Vector3d direction = new Vector3d(_direction.X, _direction.Y, _direction.Z);
+            return direction;
         }
     }
 
@@ -71,7 +95,6 @@ public class Vector
 
         InitPoints(start, end);
     }
-
     /// <summary>
     /// Инициализирует новый экземпляр класса вектора для заданных цилиндрических рёбер.
     /// </summary>
@@ -114,6 +137,40 @@ public class Vector
         InitPoints(new Point3d(), point);
     }
 
+    public Vector(Face face)
+    {
+        int voidInt;
+        double voidDouble;
+        double rad;
+        double[] dir = new double[3];
+        double[] box = new double[6];
+        double[] point = new double[3];
+
+        Config.TheUfSession.Modl.AskFaceData(face.Tag, out voidInt, point, dir, box, out rad, out voidDouble, out voidInt);
+        Point3d start, end;
+        start.X = point[0];
+        start.Y = point[1];
+        start.Z = point[2];
+
+        end.X = start.X + dir[0];
+        end.Y = start.Y + dir[1];
+        end.Z = start.Z + dir[2];
+        InitPoints(start, end);
+    }
+
+    public Vector(double[] point, double[] direction)
+    {
+        Point3d start, end;
+        start.X = point[0];
+        start.Y = point[1];
+        start.Z = point[2];
+
+        end.X = start.X + direction[0];
+        end.Y = start.Y + direction[1];
+        end.Z = start.Z + direction[2];
+        InitPoints(start, end);
+    }
+
     /// <summary>
     /// Возвращает строку, которая представляет текущий объект.
     /// </summary>
@@ -124,8 +181,8 @@ public class Vector
         st += "{" + Environment.NewLine;
         st += "Start: " + _start + Environment.NewLine;
         st += "End: " + _end + Environment.NewLine;
-        st += "Coordinates: " + GetCoords() + Environment.NewLine;
-        st += "Direction: " + Direction + "\t}";
+        st += "Coordinates: " + GetCoords1() + Environment.NewLine;
+        st += "Direction: " + Direction1 + "\t}";
         return st;
     }
     /// <summary>
@@ -144,7 +201,7 @@ public class Vector
     /// Возвращает координаты вектора.
     /// </summary>
     /// <returns></returns>
-    public Point3d GetCoords()
+    public Point3d GetCoords1()
     {
         return new Point3d(_end.X - _start.X, _end.Y - _start.Y, _end.Z - _start.Z);
     }
@@ -152,7 +209,7 @@ public class Vector
     /// Возвращает вектор.
     /// </summary>
     /// <returns></returns>
-    public Vector3d GetCoordsVector3D()
+    public Vector3d GetCoords2()
     {
         return new Vector3d(_end.X - _start.X, _end.Y - _start.Y, _end.Z - _start.Z);
     }
@@ -177,9 +234,9 @@ public class Vector
     /// <returns></returns>
     public Point3d GetPoint(Point3d point, double length)
     {
-        double xD = point.X + Direction.X * length;
-        double yD = point.Y + Direction.Y * length;
-        double zD = point.Z + Direction.Z * length;
+        double xD = point.X + Direction1.X * length;
+        double yD = point.Y + Direction1.Y * length;
+        double zD = point.Z + Direction1.Z * length;
 
         return new Point3d(xD, yD, zD);
     }
@@ -193,12 +250,12 @@ public class Vector
         double angle;
         double[] vecCcw = new double[3];
 
-        Point3d cord1 = GetCoords();
+        Point3d cord1 = GetCoords1();
         lineVec1[0] = cord1.X;
         lineVec1[1] = cord1.Y;
         lineVec1[2] = cord1.Z;
 
-        Point3d cord2 = vec.GetCoords();
+        Point3d cord2 = vec.GetCoords1();
         lineVec2[0] = cord2.X;
         lineVec2[1] = cord2.Y;
         lineVec2[2] = cord2.Z;
@@ -259,7 +316,7 @@ public class Vector
 
     double GetLength()
     {
-        Point3d coords = GetCoords();
+        Point3d coords = GetCoords1();
 
         return Math.Sqrt(Math.Pow(coords.X, 2) +
                          Math.Pow(coords.Y, 2) +

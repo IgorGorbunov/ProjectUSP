@@ -124,7 +124,7 @@ public class Tunnel
         edges[1].GetVertices(out point2, out tempPoint);
 
         Vector vec1 = new Vector(point1, point2);
-        return Geom.IsEqual(Direction, vec1.Direction) ? point2 : point1;
+        return Geom.IsEqual(Direction, vec1.Direction1) ? point2 : point1;
     }
     /// <summary>
     /// Возвращает центр окружности, находящейся противоположно направлению предполагаемой
@@ -140,7 +140,7 @@ public class Tunnel
         edges[1].GetVertices(out point2, out tempPoint);
 
         Vector vec1 = new Vector(point1, point2);
-        return Geom.IsEqual(Direction, vec1.Direction) ? point1 : point2;
+        return Geom.IsEqual(Direction, vec1.Direction1) ? point1 : point2;
     }
     /// <summary>
     /// Прявязка базового отверстия к пазу.

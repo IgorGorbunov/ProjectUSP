@@ -82,6 +82,8 @@ public sealed class Jig : DialogProgpam
 
     private const double _DISTANCE_COEF = 0.4;
 
+    private double _startAngle = 0.0;
+
     //private 
     
     //------------------------------------------------------------------------------
@@ -186,6 +188,8 @@ public sealed class Jig : DialogProgpam
             mask[0].Subtype = UFConstants.UF_all_subtype;
             mask[0].SolidBodySubtype = UFConstants.UF_UI_SEL_FEATURE_CYLINDRICAL_FACE;
             _selection0.GetProperties().SetSelectionFilter("SelectionFilter", Selection.SelectionAction.ClearAndEnableSpecific, mask);
+
+            _double01.GetProperties().SetDouble("Value", 0.0);
         }
         catch (Exception ex)
         {
@@ -242,6 +246,7 @@ public sealed class Jig : DialogProgpam
                 //запуск галереи
                 _gost = "15321-70";
                 ImportJig();
+                SetEnable(group01, true);
             }
             else if(block == _label0)
             {
@@ -250,6 +255,20 @@ public sealed class Jig : DialogProgpam
             else if(block == _double01)
             {
             //---------Enter your code here-----------
+                bool isFixed = _workpiece.ElementComponent.IsFixed;
+                if (!isFixed)
+                {
+                    _workpiece.Fix();
+                }
+                double angle = _double01.GetProperties().GetDouble("Value");
+                Vector jigVector = new Vector(_jigPlank.SleeveFace);
+                Movement.MoveByRotation(_jigPlank.ElementComponent, jigVector, angle - _startAngle);
+                _startAngle = angle;
+                NxFunctions.Update();
+                if (!isFixed)
+                {
+                    _workpiece.Unfix();
+                }
             }
             else if(block == _toggle0)
             {
@@ -382,6 +401,7 @@ public sealed class Jig : DialogProgpam
         {
             _workpiece.Fix();
         }
+        NxFunctions.Update();
         _touchAxeJigElement = _jigPlank.SetOn(_workpiece.ElementComponent, _selectedFace.Face);
         _sleeveJigTouch = _quickJigSleeve.SetOnJig(_jigPlank);
         _touchAxeSleeveJig = _quickJigSleeve.SetToJig(_jigPlank);
@@ -455,6 +475,9 @@ public sealed class Jig : DialogProgpam
 
         _distance.Delete();
         _distance.Create(_workpiece.ElementComponent, edge, _jigPlank.ElementComponent, _jigPlank.SlotFace, -distance);
+        NxFunctions.Update();
+        _distance.Reverse();
+        NxFunctions.Update();
         _touchAxeJigElement.Reverse();
     }
 
