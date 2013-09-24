@@ -40,6 +40,7 @@ using System.IO;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.BlockStyler;
+using NXOpen.UF;
 
 //------------------------------------------------------------------------------
 //Represents Block Styler application class
@@ -138,11 +139,16 @@ public class Tunnelslot : DialogProgpam
     //This callback is executed just before the dialog launch. Thus any value set 
     //here will take precedence and dialog will be launched showing that value. 
     //------------------------------------------------------------------------------
-    private static void dialogShown_cb()
+    private void dialogShown_cb()
     {
         try
         {
             //---- Enter your callback code here -----
+            Selection.MaskTriple[] mask = new Selection.MaskTriple[1];
+            mask[0].Type = UFConstants.UF_solid_type;
+            mask[0].Subtype = UFConstants.UF_all_subtype;
+            mask[0].SolidBodySubtype = UFConstants.UF_UI_SEL_FEATURE_CYLINDRICAL_FACE;
+            _selection0.GetProperties().SetSelectionFilter("SelectionFilter", Selection.SelectionAction.ClearAndEnableSpecific, mask);
         }
         catch (Exception ex)
         {
@@ -184,13 +190,14 @@ public class Tunnelslot : DialogProgpam
             {
             //---------Enter your code here-----------
                 Logger.WriteLine("Нажат выбор объекта по первому select.");
-                SetFirstComponent(block);
+                //SetFirstComponent(block);
+                SetFirstFace(block);
             }
             else if(block == _faceSelect0)
             {
             //---------Enter your code here-----------
                 Logger.WriteLine("Нажат выбор первой грани.");
-                SetFirstFace(block);
+                //SetFirstFace(block);
             }
             else if (block == _slotTunPoint)
             {
@@ -277,7 +284,7 @@ public class Tunnelslot : DialogProgpam
     //------------------------------------------------------------------------------
     private static int filter_cb(UIBlock block, TaggedObject selectedObject)
     {
-        return(NXOpen.UF.UFConstants.UF_UI_SEL_ACCEPT);
+        return(UFConstants.UF_UI_SEL_ACCEPT);
     }
     
     //------------------------------------------------------------------------------
@@ -415,7 +422,7 @@ public class Tunnelslot : DialogProgpam
 
     void SetFirstFace(UIBlock block)
     {
-        if (SetFace(block, ref _tunnel1, _element1))
+        if (SetFace(block, ref _tunnel1, ref _element1))
         {
             SetEnable(_slotTunPoint, true);
         }
@@ -431,7 +438,7 @@ public class Tunnelslot : DialogProgpam
         UnSelectObjects(_slotTunPoint);
         SetEnable(_direction0, false);
     }
-    static bool SetFace(UIBlock block, ref Tunnel tunnel, UspElement element)
+    bool SetFace(UIBlock block, ref Tunnel tunnel, ref UspElement element)
     {
         PropertyList propertyList = block.GetProperties();
         TaggedObject[] to = propertyList.GetTaggedObjectVector("SelectedObjects");
@@ -439,41 +446,23 @@ public class Tunnelslot : DialogProgpam
         //если не деселект
         if (to.Length > 0)
         {
-            Face face;
-            if (FindFace(to, element, out face))
-	        {
-                if (face.SolidFaceType == Face.FaceType.Cylindrical)
-                {
-                    if (2 * Geom.GetRadius(face) >= element.UspCatalog.Diametr)
-                    {
-                        Logger.WriteLine("Грань выбрана - " + face);
-                        tunnel = new Tunnel(face, element);
-                        return true;
-                    }
-                    const string message1 = "Отверстие слишком маленькое! Выберите другую грань!";
-                    Logger.WriteWarning(message1 + Environment.NewLine + "Выбрана грань - " + face);
-                    UnSelectObjects(block);
-                    Config.TheUi.NXMessageBox.Show("Error!",
-                                                   NXMessageBox.DialogType.Error,
-                                                   message1);
-                    block.Focus();
-                    return false;
-                }
-	            const string message = "Грань не цилиндрическая! Выберите другую грань!";
-	            Logger.WriteWarning(message + Environment.NewLine + "Выбрана грань - " + face);
-	            UnSelectObjects(block);
-	            Config.TheUi.NXMessageBox.Show("Error!",
-	                                           NXMessageBox.DialogType.Error,
-	                                           message);
-	            block.Focus();
-	            return false;
-	        }
-
-            const string mess = "Грань не найдена! Выберите другую грань!";
-            Logger.WriteWarning(mess);
+            Face face = (Face) to[0];
+            element = new UspElement(face.OwningComponent);
+            if (2 * Geom.GetRadius(face) >= element.UspCatalog.Diametr)
+            {
+                Logger.WriteLine("Грань выбрана - " + face);
+                tunnel = new Tunnel(face, element);
+                _firstElementCatalog = _element1.UspCatalog;
+                _slotSet1 = new SlotSet(_element1);
+                _element1.SetBottomFaces();
+                return true;
+            }
+            const string message1 = "Отверстие слишком маленькое! Выберите другую грань!";
+            Logger.WriteWarning(message1 + Environment.NewLine + "Выбрана грань - " + face);
+            UnSelectObjects(block);
             Config.TheUi.NXMessageBox.Show("Error!",
                                            NXMessageBox.DialogType.Error,
-                                           mess);
+                                           message1);
             block.Focus();
             return false;
         }

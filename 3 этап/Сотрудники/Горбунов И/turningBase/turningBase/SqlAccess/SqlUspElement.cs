@@ -56,6 +56,7 @@ static class SqlUspElement
                        " from " + SqlTabUspData.Name +
                        " where " + SqlTabUspData.CCatalog + " = " + (int) catalog.CatalogUsp +
                            " and " + SqlTabUspData.CGroup + " = " + (int) SqlTabUspData.GroupUsp.Fixture +
+                           //Sql.GetNewCond(SqlTabUspData.ThereIs) + 
                            " and " + SqlTabUspData.CDiametr + " like :diametr" +
                            " and " + SqlTabUspData.CLength + " >= :length" +
                            " and " + SqlTabUspData.CName + " = " + SqlTabUspData.GetName(SqlTabUspData.NameUsp.SlotBolt);

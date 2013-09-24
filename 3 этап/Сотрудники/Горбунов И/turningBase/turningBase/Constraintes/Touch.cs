@@ -26,7 +26,6 @@ public class Touch : Constrainter
 
         Constr.CreateConstraintReference(secondComponent,
                                          secondFace, false, false, false);
-
         ExecuteConstraints();
 
         string logMess = "Соединение касанием " + firstFace + " и " + secondFace;

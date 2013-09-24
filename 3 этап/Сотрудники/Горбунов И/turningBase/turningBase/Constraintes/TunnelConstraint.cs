@@ -12,7 +12,7 @@ public sealed class TunnelConstraint
     readonly Slot _slot;
     private readonly UspElement _fixture = null;
 
-    readonly Touch _touchConstr;
+     Touch _touchConstr;
 
     /// <summary>
     /// Инициализирует новый экземпляр класса связей для touch-соединения с проверкой на
@@ -52,7 +52,7 @@ public sealed class TunnelConstraint
                                                                 "SetTouch");
 
                 MoveToEachOther(pairs1[j].Key, pairs2[i].Key);
-
+                _touchConstr = new Touch();
                 _touchConstr.Create(_firstTunnel.ParentComponent, pairs1[j].Key,
                                     _slot.ParentComponent, pairs2[i].Key);
 

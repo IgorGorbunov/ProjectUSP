@@ -80,7 +80,7 @@ public sealed class Jig : DialogProgpam
     private Touch _sleeveJigTouch;
     private Distance _distance;
 
-    private double _distanceCoef = 0.4;
+    private const double _DISTANCE_COEF = 0.4;
 
     //private 
     
@@ -440,7 +440,7 @@ public sealed class Jig : DialogProgpam
 
     private void SetDistance(Edge edge)
     {
-        double sleeveWorkpieceLength = _distanceCoef*_quickJigSleeve.InnerDiametr;
+        double sleeveWorkpieceLength = _DISTANCE_COEF*_quickJigSleeve.InnerDiametr;
         Surface surface1 = new Surface(_jigPlank.SlotFace);
         Surface surface2 = new Surface(_quickJigSleeve.BottomFace);
         double distance = sleeveWorkpieceLength + Math.Abs(surface1.GetDistance(surface2));
@@ -456,8 +456,6 @@ public sealed class Jig : DialogProgpam
         _distance.Delete();
         _distance.Create(_workpiece.ElementComponent, edge, _jigPlank.ElementComponent, _jigPlank.SlotFace, -distance);
         _touchAxeJigElement.Reverse();
-        //_touchAxeSleeveJig.Reverse();
-        //_distance.Reverse();
     }
 
     private string GetSleeveTypeConditions()

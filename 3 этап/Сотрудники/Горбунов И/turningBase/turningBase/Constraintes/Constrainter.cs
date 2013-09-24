@@ -52,9 +52,10 @@ public class Constrainter
     private void InitConstraints()
     {
         CompPositioner = Config.WorkPart.ComponentAssembly.Positioner;
-
+        
         _componentNetwork = (ComponentNetwork)CompPositioner.EstablishNetwork();
         _componentNetwork.MoveObjectsState = true;
+        
     }
     
 
