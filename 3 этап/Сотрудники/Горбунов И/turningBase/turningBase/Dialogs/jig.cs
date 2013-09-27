@@ -57,11 +57,13 @@ public sealed class Jig : DialogProgpam
     private UIBlock _importPlankButton;// Block type: Button
     private UIBlock group01;// Block type: Group
     private UIBlock _label0;// Block type: Label
+    private UIBlock _label02;// Block type: Label
     private UIBlock _double01;// Block type: Double
     private UIBlock _toggle0;// Block type: Toggle
     private UIBlock _button01;// Block type: Button
     private UIBlock _toggle01;// Block type: Toggle
     private UIBlock _integer0;// Block type: Integer
+    private UIBlock _direction0;
 
     private Surface _selectedFace;
     private UspElement _workpiece;
@@ -75,14 +77,18 @@ public sealed class Jig : DialogProgpam
 
     private JigPlank _jigPlank;
     private QuickJigSleeve _quickJigSleeve;
+    private Edge _thisEdge, _otherEdge;
+    private bool _oneEdge;
 
     private TouchAxe _touchAxeJigElement, _touchAxeSleeveJig;
     private Touch _sleeveJigTouch;
-    private Distance _distance;
+    private Distance _distanceConstr = new Distance();
+    private double _distance;
+    private bool _distanceNegative;
 
     private const double _DISTANCE_COEF = 0.4;
 
-    private double _startAngle = 0.0;
+    private double _startAngle;
 
     //private 
     
@@ -157,11 +163,13 @@ public sealed class Jig : DialogProgpam
             _importPlankButton = TheDialog.TopBlock.FindBlock("button0");
             group01 = TheDialog.TopBlock.FindBlock("group01");
             _label0 = TheDialog.TopBlock.FindBlock("label0");
+            _label02 = TheDialog.TopBlock.FindBlock("label02");
             _double01 = TheDialog.TopBlock.FindBlock("double01");
             _toggle0 = TheDialog.TopBlock.FindBlock("toggle0");
             _button01 = TheDialog.TopBlock.FindBlock("button01");
             _toggle01 = TheDialog.TopBlock.FindBlock("toggle01");
             _integer0 = TheDialog.TopBlock.FindBlock("integer0");
+            _direction0 = TheDialog.TopBlock.FindBlock("direction0");
 
             _catalog = new Catalog12();
         }
@@ -246,11 +254,14 @@ public sealed class Jig : DialogProgpam
                 //запуск галереи
                 _gost = "15321-70";
                 ImportJig();
-                SetEnable(group01, true);
             }
             else if(block == _label0)
             {
             //---------Enter your code here-----------
+            }
+            else if (block == _direction0)
+            {
+                SelectOtherDistanceConstraint();
             }
             else if(block == _double01)
             {
@@ -384,6 +395,9 @@ public sealed class Jig : DialogProgpam
             Katalog2005.Algorithm.SpecialFunctions.LoadPart(bestSleeve.Key, false);
             _quickJigSleeve = new QuickJigSleeve(Katalog2005.Algorithm.SpecialFunctions.LoadedPart);
             SetConstraints();
+            SetRecommendDistance();
+            SetEnable(group01, true);
+            SetEnable(_direction0, !_oneEdge);
         }
         else
         {
@@ -391,6 +405,7 @@ public sealed class Jig : DialogProgpam
                           "Измените параметры.";
             Logger.WriteWarning(mess);
             Message.ShowError(mess);
+            SetEnable(group01, false);
         }
     }
 
@@ -402,11 +417,19 @@ public sealed class Jig : DialogProgpam
             _workpiece.Fix();
         }
         NxFunctions.Update();
+#if (!DEBUG)
+        NxFunctions.FreezeDisplay();
+#endif
         _touchAxeJigElement = _jigPlank.SetOn(_workpiece.ElementComponent, _selectedFace.Face);
         _sleeveJigTouch = _quickJigSleeve.SetOnJig(_jigPlank);
         _touchAxeSleeveJig = _quickJigSleeve.SetToJig(_jigPlank);
-        SetDistanceConstraint();
         NxFunctions.Update();
+        SelectDistanceConstraint();
+        NxFunctions.Update();
+#if (!DEBUG)
+        NxFunctions.UnFreezeDisplay();
+#endif
+
         if (!isFixed)
         {
             _workpiece.Unfix();
@@ -434,51 +457,95 @@ public sealed class Jig : DialogProgpam
         return twoEgdes;
     }
 
-    private void SetDistanceConstraint()
+    private void SelectDistanceConstraint()
     {
         Edge[] edges = GetEgdes();
+        double distance = _jigPlank.UspCatalog.PSlotHeight + 0.1;
         if (edges[1] == null)
         {
-            SetDistance(edges[0]);
+            SetDistanceConstraint(edges[0], distance);
+            _oneEdge = true;
         }
         else
         {
-            Vector workPieceVector = new Vector(edges[0], edges[1]);
-            Edge someSleeveEdge1 = Geom.GetCyllindricalEdge(_quickJigSleeve.TopFace);
-            Edge someSleeveEdge2 = Geom.GetCyllindricalEdge(_quickJigSleeve.BottomFace);
-            Vector jigVector = new Vector(someSleeveEdge1, someSleeveEdge2);
-            if (workPieceVector.IsCoDirectional(jigVector))
+            _oneEdge = false;
+            SetDistanceConstraint(edges[0], distance);
+            _thisEdge = edges[0];
+            _otherEdge = edges[1];
+            ElementIntersection intersection = new ElementIntersection(_workpiece.Body,
+                                                                       _jigPlank.Body);
+            if (intersection.AnyIntersectionExists || _distanceConstr.IsOverConstrained())
             {
-                SetDistance(edges[0]);
-            }
-            else
-            {
-                SetDistance(edges[1]);
+                SetDistanceConstraint(edges[1], distance);
+                _thisEdge = edges[1];
+                _otherEdge = edges[0];
             }
         }
     }
 
-    private void SetDistance(Edge edge)
+    private void SelectOtherDistanceConstraint()
     {
-        double sleeveWorkpieceLength = _DISTANCE_COEF*_quickJigSleeve.InnerDiametr;
-        Surface surface1 = new Surface(_jigPlank.SlotFace);
-        Surface surface2 = new Surface(_quickJigSleeve.BottomFace);
-        double distance = sleeveWorkpieceLength + Math.Abs(surface1.GetDistance(surface2));
+        double distance = _jigPlank.UspCatalog.PSlotHeight + 0.1;
+        SetDistanceConstraint(_otherEdge, distance);
+        Edge tmpEdge = _thisEdge;
+        _thisEdge = _otherEdge;
+        _otherEdge = tmpEdge;
+    }
 
-        _distance = new Distance();
-        _distance.Create(_workpiece.ElementComponent, edge, _jigPlank.ElementComponent, _jigPlank.SlotFace, distance);
+    private void SetDistanceConstraint(Edge edge, double distance)
+    {
+        bool intersecst = SetDistance(edge, distance);
+        if (!intersecst) 
+            return;
+        _touchAxeJigElement.Reverse();
+        SetDistance(edge, distance);
+    }
+
+    private bool SetDistance(Edge edge, double distance)
+    {
+
+        _distanceConstr.Delete();
+        _distanceConstr = new Distance();
+        _distanceConstr.Create(_workpiece.ElementComponent, edge, _jigPlank.ElementComponent, _jigPlank.SlotFace, distance);
+        NxFunctions.Update();
 
         ElementIntersection intersection = new ElementIntersection(_workpiece.Body,
                                                                    _jigPlank.Body);
-        if (!intersection.InterferenseExists)
-            return;
 
-        _distance.Delete();
-        _distance.Create(_workpiece.ElementComponent, edge, _jigPlank.ElementComponent, _jigPlank.SlotFace, -distance);
+        if (!intersection.AnyIntersectionExists && !_distanceConstr.IsOverConstrained())
+            return false;
+
+        _distanceConstr.Reverse();
         NxFunctions.Update();
-        _distance.Reverse();
+
+        if (!intersection.AnyIntersectionExists && !_distanceConstr.IsOverConstrained())
+            return false;
+
+        _distanceConstr.Delete();
+        _distanceConstr = new Distance();
+        _distanceConstr.Create(_workpiece.ElementComponent, edge, _jigPlank.ElementComponent, _jigPlank.SlotFace, -distance);
         NxFunctions.Update();
-        _touchAxeJigElement.Reverse();
+
+        if (!intersection.AnyIntersectionExists && !_distanceConstr.IsOverConstrained())
+            return false;
+
+        _distanceConstr.Reverse();
+        NxFunctions.Update();
+
+        if (!intersection.AnyIntersectionExists && !_distanceConstr.IsOverConstrained())
+            return false;
+
+        return true;
+    }
+
+    private void SetRecommendDistance()
+    {
+        double sleeveWorkpieceLength = _DISTANCE_COEF * _quickJigSleeve.InnerDiametr;
+        Surface surface1 = new Surface(_jigPlank.SlotFace);
+        Surface surface2 = new Surface(_quickJigSleeve.BottomFace);
+        _distance = sleeveWorkpieceLength + Math.Abs(surface1.GetDistance(surface2));
+
+        _label02.GetProperties().SetString("Label", "Рекомендуемое расстояние - " + Config.Round(_distance));
     }
 
     private string GetSleeveTypeConditions()

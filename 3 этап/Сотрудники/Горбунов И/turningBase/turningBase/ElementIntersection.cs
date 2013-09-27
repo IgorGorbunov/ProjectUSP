@@ -9,13 +9,13 @@ public class ElementIntersection
 {
 
     /// <summary>
-    /// Возвращает true, если пересечение существует.
+    /// Возвращает true, если пересечение или касание существует.
     /// </summary>
-    public bool InterferenseExists
+    public bool AnyIntersectionExists
     {
         get
         {
-            CheckIntersection(false);
+            CheckIntersection(true);
             if (_result == SimpleInterference.Result.NoInterference)
             {
                 _si.Reset();
@@ -27,13 +27,31 @@ public class ElementIntersection
     }
 
     /// <summary>
+    /// Возвращает true, если пересечение тел существует.
+    /// </summary>
+    public bool BodyIntersectionExists
+    {
+        get
+        {
+            CheckIntersection(false);
+            if (_result == SimpleInterference.Result.InterferenceExists)
+            {
+                _si.Reset();
+                return true;
+            }
+            _si.Reset();
+            return false;
+        }
+    }
+
+    /// <summary>
     /// Возвращает true, если существует касание.
     /// </summary>
     public bool TouchExists
     {
         get
         {
-            CheckIntersection(true);
+            CheckIntersection(false);
             if (_result == SimpleInterference.Result.OnlyEdgesOrFacesInterfere)
             {
                 _si.Reset();
@@ -62,15 +80,15 @@ public class ElementIntersection
         _element2 = body2;
     }
 
-    void CheckIntersection(bool touch)
+    void CheckIntersection(bool anyIntersection)
     {
-        if (touch)
+        if (anyIntersection)
         {
-            _si.InterferenceType = SimpleInterference.InterferenceMethod.InterferenceSolid;
+            _si.InterferenceType = SimpleInterference.InterferenceMethod.InterferingFaces;
         }
         else
         {
-            _si.InterferenceType = SimpleInterference.InterferenceMethod.InterferingFaces;
+            _si.InterferenceType = SimpleInterference.InterferenceMethod.InterferenceSolid;
             _si.FaceInterferenceType = SimpleInterference.FaceInterferenceMethod.FirstPairOnly;
         }
 

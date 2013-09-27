@@ -34,7 +34,7 @@ sealed class Catalog8 : Catalog
     {
         get { return _P_SLOT_WIDTH; }
     }
-    protected override double PSlotHeight
+    public override double PSlotHeight
     {
         get { return _P_SLOT_HEIGHT; }
     }

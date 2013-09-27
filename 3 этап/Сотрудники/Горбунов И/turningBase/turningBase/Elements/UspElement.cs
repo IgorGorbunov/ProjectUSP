@@ -47,7 +47,7 @@ public class UspElement
         {
             if (_catalog == null)
             {
-                string catalogNum = SqlUspElement.GetCatalogNum(ElementComponent.Name);
+                string catalogNum = SqlUspElement.GetCatalogNum(Title);
                 if (catalogNum == "0")
                 {
                     _catalog = new Catalog8();
@@ -59,6 +59,13 @@ public class UspElement
             }
             return _catalog;
         }
+    }
+    /// <summary>
+    /// Возвращает обозначение элемента УСП.
+    /// </summary>
+    private string Title
+    {
+        get { return GetTitle(); }
     }
 
     private readonly Component _component;
@@ -167,7 +174,7 @@ public class UspElement
     {
         Body bb = null;
         BodyCollection bc = ((Part)_component.Prototype).Bodies;
-        Logger.WriteLine("У объекта \"" + ElementComponent.Name + " " + ElementComponent.ToString() +
+        Logger.WriteLine("У объекта \"" + ElementComponent.Name + " " + ElementComponent +
                          "\" " + bc.ToArray().Length + " тел(о).");
         foreach (Body body in bc)
         {
@@ -180,6 +187,15 @@ public class UspElement
         }
 
         _body = bb;
+    }
+
+    private string GetTitle()
+    {
+        string componentName = ElementComponent.Name;
+        string[] split = componentName.Split('_');
+        string nameWithEx = split[split.Length - 1];
+        split = nameWithEx.Split('.');
+        return split[0];
     }
 
     

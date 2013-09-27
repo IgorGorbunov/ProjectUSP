@@ -59,7 +59,7 @@ public abstract class Catalog
     /// <summary>
     /// Возвращает высоту П-образного паза.
     /// </summary>
-    protected virtual double PSlotHeight
+    public virtual double PSlotHeight
     {
         get { return 0; }
     }

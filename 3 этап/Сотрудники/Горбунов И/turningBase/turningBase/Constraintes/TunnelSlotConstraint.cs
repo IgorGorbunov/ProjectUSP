@@ -347,9 +347,13 @@ public sealed class TunnelSlotConstraint
     {
         _tunnelConstsr = new TunnelConstraint(_tunnel, _slot);
 
+#if(!DEBUG)
         NxFunctions.FreezeDisplay();
+#endif
         _tunnelConstsr.SetTouchFaceConstraint(false);
+#if(!DEBUG)
         NxFunctions.UnFreezeDisplay();
+#endif
     }
 
     void Delete(bool isFixed)

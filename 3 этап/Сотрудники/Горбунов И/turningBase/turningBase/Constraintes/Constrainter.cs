@@ -29,6 +29,8 @@ public class Constrainter
     /// </summary>
     public void Delete()
     {
+        if (Constr == null)
+            return;
         NXObject objectToDelete = Constr;
         Config.TheSession.UpdateManager.AddToDeleteList(objectToDelete);
     }
@@ -38,7 +40,12 @@ public class Constrainter
     /// <returns></returns>
     public bool IsOverConstrained()
     {
-        return Constr.GetConstraintStatus() == Constraint.SolverStatus.OverConstrained;
+        if (Constr.GetConstraintStatus() == Constraint.SolverStatus.OverConstrained ||
+            Constr.GetConstraintStatus() == Constraint.SolverStatus.NotConsistentUnknown)
+        {
+            return true;
+        }
+        return false;
     }
 
     protected void ExecuteConstraints()
