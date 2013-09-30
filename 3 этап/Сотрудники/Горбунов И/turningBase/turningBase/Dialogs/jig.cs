@@ -257,6 +257,7 @@ public sealed class Jig : DialogProgpam
                 //запуск галереи
                 _gost = "15321-70";
                 ImportJig();
+
             }
             else if(block == _label0)
             {
@@ -264,11 +265,14 @@ public sealed class Jig : DialogProgpam
             }
             else if (block == _double02)
             {
-                SetUserDistance(block);
+                double distance = block.GetProperties().GetDouble("Value");
+                SetUserDistance(distance);
             }
             else if (block == _direction0)
             {
                 SelectOtherDistanceConstraint();
+                double distance = _double02.GetProperties().GetDouble("Value");
+                SetUserDistance(distance);
             }
             else if (block == _double01)
             {
@@ -558,12 +562,21 @@ public sealed class Jig : DialogProgpam
         _recommendDistance = sleeveWorkpieceLength + Math.Abs(surface1.GetDistance(surface2));
 
         _label02.GetProperties().SetString("Label", "Рекомендуемое расстояние - " + Config.Round(_recommendDistance));
+        _double02.GetProperties().SetDouble("Value", Config.Round(_recommendDistance));
+        SetUserDistance(Config.Round(_recommendDistance));
     }
 
-    private void SetUserDistance(UIBlock block)
+    private void SetUserDistance(double distance)
     {
-        double distance = block.GetProperties().GetDouble("Value");
         bool negative = _realDistance < 0;
+        if (negative)
+        {
+            distance = _realDistance - distance;
+        }
+        else
+        {
+            distance = _realDistance + distance;
+        }
         _distanceConstr.EditValue(distance);
     }
 
