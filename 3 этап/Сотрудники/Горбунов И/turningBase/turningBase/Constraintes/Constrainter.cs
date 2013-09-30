@@ -1,4 +1,5 @@
-﻿using NXOpen;
+﻿using System.Globalization;
+using NXOpen;
 using NXOpen.Positioning;
 
 /// <summary>
@@ -47,12 +48,31 @@ public class Constrainter
         }
         return false;
     }
+    /// <summary>
+    /// Устанавливает необходимое значение в contsraint.
+    /// </summary>
+    /// <param name="value">Значение.</param>
+    public void EditValue(double value)
+    {
+        InitConstraints();
+        Session.UndoMarkId markId2 = Config.TheSession.SetUndoMark(Session.MarkVisibility.Invisible, "Assembly Constraints Update");
+
+        NumberFormatInfo numberFormatInfo = new NumberFormatInfo();
+        numberFormatInfo.NumberGroupSeparator = ".";
+
+        Constr.Expression.RightHandSide = value.ToString(numberFormatInfo);
+        ExecuteConstraints();
+
+        //важно!
+        Config.TheSession.UpdateManager.DoUpdate(markId2);
+    }
 
     protected void ExecuteConstraints()
     {
         _componentNetwork.Solve();
 
         //для того чтобы нормально работали фиксы
+        //показывает обновления при изменения constraint
         CompPositioner.ClearNetwork();
     }
 

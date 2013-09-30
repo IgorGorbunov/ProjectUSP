@@ -59,6 +59,7 @@ public sealed class Jig : DialogProgpam
     private UIBlock _label0;// Block type: Label
     private UIBlock _label02;// Block type: Label
     private UIBlock _double01;// Block type: Double
+    private UIBlock _double02;// Block type: Double
     private UIBlock _toggle0;// Block type: Toggle
     private UIBlock _button01;// Block type: Button
     private UIBlock _toggle01;// Block type: Toggle
@@ -83,8 +84,9 @@ public sealed class Jig : DialogProgpam
     private TouchAxe _touchAxeJigElement, _touchAxeSleeveJig;
     private Touch _sleeveJigTouch;
     private Distance _distanceConstr = new Distance();
-    private double _distance;
+    private double _recommendDistance, _realDistance;
     private bool _distanceNegative;
+    private bool _distanceReverse;
 
     private const double _DISTANCE_COEF = 0.4;
 
@@ -165,6 +167,7 @@ public sealed class Jig : DialogProgpam
             _label0 = TheDialog.TopBlock.FindBlock("label0");
             _label02 = TheDialog.TopBlock.FindBlock("label02");
             _double01 = TheDialog.TopBlock.FindBlock("double01");
+            _double02 = TheDialog.TopBlock.FindBlock("double02");
             _toggle0 = TheDialog.TopBlock.FindBlock("toggle0");
             _button01 = TheDialog.TopBlock.FindBlock("button01");
             _toggle01 = TheDialog.TopBlock.FindBlock("toggle01");
@@ -259,13 +262,17 @@ public sealed class Jig : DialogProgpam
             {
             //---------Enter your code here-----------
             }
+            else if (block == _double02)
+            {
+                SetUserDistance(block);
+            }
             else if (block == _direction0)
             {
                 SelectOtherDistanceConstraint();
             }
-            else if(block == _double01)
+            else if (block == _double01)
             {
-            //---------Enter your code here-----------
+                //---------Enter your code here-----------
                 bool isFixed = _workpiece.ElementComponent.IsFixed;
                 if (!isFixed)
                 {
@@ -281,21 +288,21 @@ public sealed class Jig : DialogProgpam
                     _workpiece.Unfix();
                 }
             }
-            else if(block == _toggle0)
+            else if (block == _toggle0)
             {
-            //---------Enter your code here-----------
+                //---------Enter your code here-----------
             }
-            else if(block == _button01)
+            else if (block == _button01)
             {
-            //---------Enter your code here-----------
+                //---------Enter your code here-----------
             }
-            else if(block == _toggle01)
+            else if (block == _toggle01)
             {
-            //---------Enter your code here-----------
+                //---------Enter your code here-----------
             }
-            else if(block == _integer0)
+            else if (block == _integer0)
             {
-            //---------Enter your code here-----------
+                //---------Enter your code here-----------
             }
         }
         catch (Exception ex)
@@ -460,23 +467,24 @@ public sealed class Jig : DialogProgpam
     private void SelectDistanceConstraint()
     {
         Edge[] edges = GetEgdes();
-        double distance = _jigPlank.UspCatalog.PSlotHeight + 0.1;
+        //0.1 - чтобы легче определить пересечение кондуктора с заготовкой
+        _realDistance = _jigPlank.UspCatalog.PSlotHeight + 0.1;
         if (edges[1] == null)
         {
-            SetDistanceConstraint(edges[0], distance);
+            SetDistanceConstraint(edges[0]);
             _oneEdge = true;
         }
         else
         {
             _oneEdge = false;
-            SetDistanceConstraint(edges[0], distance);
+            SetDistanceConstraint(edges[0]);
             _thisEdge = edges[0];
             _otherEdge = edges[1];
             ElementIntersection intersection = new ElementIntersection(_workpiece.Body,
                                                                        _jigPlank.Body);
             if (intersection.AnyIntersectionExists || _distanceConstr.IsOverConstrained())
             {
-                SetDistanceConstraint(edges[1], distance);
+                SetDistanceConstraint(edges[1]);
                 _thisEdge = edges[1];
                 _otherEdge = edges[0];
             }
@@ -485,28 +493,28 @@ public sealed class Jig : DialogProgpam
 
     private void SelectOtherDistanceConstraint()
     {
-        double distance = _jigPlank.UspCatalog.PSlotHeight + 0.1;
-        SetDistanceConstraint(_otherEdge, distance);
+        SetDistanceConstraint(_otherEdge);
         Edge tmpEdge = _thisEdge;
         _thisEdge = _otherEdge;
         _otherEdge = tmpEdge;
     }
 
-    private void SetDistanceConstraint(Edge edge, double distance)
+    private void SetDistanceConstraint(Edge edge)
     {
-        bool intersecst = SetDistance(edge, distance);
+        bool intersecst = SetDistance(edge);
         if (!intersecst) 
             return;
         _touchAxeJigElement.Reverse();
-        SetDistance(edge, distance);
+        SetDistance(edge);
     }
 
-    private bool SetDistance(Edge edge, double distance)
+    private bool SetDistance(Edge edge)
     {
 
         _distanceConstr.Delete();
         _distanceConstr = new Distance();
-        _distanceConstr.Create(_workpiece.ElementComponent, edge, _jigPlank.ElementComponent, _jigPlank.SlotFace, distance);
+        _distanceConstr.Create(_workpiece.ElementComponent, edge, _jigPlank.ElementComponent, _jigPlank.SlotFace, _realDistance);
+        _distanceReverse = false;
         NxFunctions.Update();
 
         ElementIntersection intersection = new ElementIntersection(_workpiece.Body,
@@ -516,6 +524,7 @@ public sealed class Jig : DialogProgpam
             return false;
 
         _distanceConstr.Reverse();
+        _distanceReverse = true;
         NxFunctions.Update();
 
         if (!intersection.AnyIntersectionExists && !_distanceConstr.IsOverConstrained())
@@ -523,13 +532,16 @@ public sealed class Jig : DialogProgpam
 
         _distanceConstr.Delete();
         _distanceConstr = new Distance();
-        _distanceConstr.Create(_workpiece.ElementComponent, edge, _jigPlank.ElementComponent, _jigPlank.SlotFace, -distance);
+        _realDistance = -_realDistance;
+        _distanceConstr.Create(_workpiece.ElementComponent, edge, _jigPlank.ElementComponent, _jigPlank.SlotFace, _realDistance);
+        _distanceReverse = false;
         NxFunctions.Update();
 
         if (!intersection.AnyIntersectionExists && !_distanceConstr.IsOverConstrained())
             return false;
 
         _distanceConstr.Reverse();
+        _distanceReverse = true;
         NxFunctions.Update();
 
         if (!intersection.AnyIntersectionExists && !_distanceConstr.IsOverConstrained())
@@ -543,9 +555,16 @@ public sealed class Jig : DialogProgpam
         double sleeveWorkpieceLength = _DISTANCE_COEF * _quickJigSleeve.InnerDiametr;
         Surface surface1 = new Surface(_jigPlank.SlotFace);
         Surface surface2 = new Surface(_quickJigSleeve.BottomFace);
-        _distance = sleeveWorkpieceLength + Math.Abs(surface1.GetDistance(surface2));
+        _recommendDistance = sleeveWorkpieceLength + Math.Abs(surface1.GetDistance(surface2));
 
-        _label02.GetProperties().SetString("Label", "Рекомендуемое расстояние - " + Config.Round(_distance));
+        _label02.GetProperties().SetString("Label", "Рекомендуемое расстояние - " + Config.Round(_recommendDistance));
+    }
+
+    private void SetUserDistance(UIBlock block)
+    {
+        double distance = block.GetProperties().GetDouble("Value");
+        bool negative = _realDistance < 0;
+        _distanceConstr.EditValue(distance);
     }
 
     private string GetSleeveTypeConditions()
