@@ -55,7 +55,7 @@ public sealed class Jig : DialogProgpam
     private UIBlock _instrDiametrBlock;// Block type: Double
     private UIBlock _sleeveTypeBlock;// Block type: Enumeration
     private UIBlock _importPlankButton;// Block type: Button
-    private UIBlock group01;// Block type: Group
+    private UIBlock _group01;// Block type: Group
     private UIBlock _label0;// Block type: Label
     private UIBlock _label02;// Block type: Label
     private UIBlock _double01;// Block type: Double
@@ -85,8 +85,6 @@ public sealed class Jig : DialogProgpam
     private Touch _sleeveJigTouch;
     private Distance _distanceConstr = new Distance();
     private double _recommendDistance, _realDistance;
-    private bool _distanceNegative;
-    private bool _distanceReverse;
 
     private const double _DISTANCE_COEF = 0.4;
 
@@ -163,7 +161,7 @@ public sealed class Jig : DialogProgpam
             _instrDiametrBlock = TheDialog.TopBlock.FindBlock("double0");
             _sleeveTypeBlock = TheDialog.TopBlock.FindBlock("enum0");
             _importPlankButton = TheDialog.TopBlock.FindBlock("button0");
-            group01 = TheDialog.TopBlock.FindBlock("group01");
+            _group01 = TheDialog.TopBlock.FindBlock("group01");
             _label0 = TheDialog.TopBlock.FindBlock("label0");
             _label02 = TheDialog.TopBlock.FindBlock("label02");
             _double01 = TheDialog.TopBlock.FindBlock("double01");
@@ -256,8 +254,8 @@ public sealed class Jig : DialogProgpam
             //---------Enter your code here-----------
                 //запуск галереи
                 _gost = "15321-70";
+                ShowJigPlanks();
                 ImportJig();
-
             }
             else if(block == _label0)
             {
@@ -407,7 +405,7 @@ public sealed class Jig : DialogProgpam
             _quickJigSleeve = new QuickJigSleeve(Katalog2005.Algorithm.SpecialFunctions.LoadedPart);
             SetConstraints();
             SetRecommendDistance();
-            SetEnable(group01, true);
+            SetEnable(_group01, true);
             SetEnable(_direction0, !_oneEdge);
         }
         else
@@ -416,7 +414,7 @@ public sealed class Jig : DialogProgpam
                           "Измените параметры.";
             Logger.WriteWarning(mess);
             Message.ShowError(mess);
-            SetEnable(group01, false);
+            SetEnable(_group01, false);
         }
     }
 
@@ -518,7 +516,6 @@ public sealed class Jig : DialogProgpam
         _distanceConstr.Delete();
         _distanceConstr = new Distance();
         _distanceConstr.Create(_workpiece.ElementComponent, edge, _jigPlank.ElementComponent, _jigPlank.SlotFace, _realDistance);
-        _distanceReverse = false;
         NxFunctions.Update();
 
         ElementIntersection intersection = new ElementIntersection(_workpiece.Body,
@@ -528,7 +525,6 @@ public sealed class Jig : DialogProgpam
             return false;
 
         _distanceConstr.Reverse();
-        _distanceReverse = true;
         NxFunctions.Update();
 
         if (!intersection.AnyIntersectionExists && !_distanceConstr.IsOverConstrained())
@@ -538,14 +534,12 @@ public sealed class Jig : DialogProgpam
         _distanceConstr = new Distance();
         _realDistance = -_realDistance;
         _distanceConstr.Create(_workpiece.ElementComponent, edge, _jigPlank.ElementComponent, _jigPlank.SlotFace, _realDistance);
-        _distanceReverse = false;
         NxFunctions.Update();
 
         if (!intersection.AnyIntersectionExists && !_distanceConstr.IsOverConstrained())
             return false;
 
         _distanceConstr.Reverse();
-        _distanceReverse = true;
         NxFunctions.Update();
 
         if (!intersection.AnyIntersectionExists && !_distanceConstr.IsOverConstrained())
@@ -644,5 +638,13 @@ public sealed class Jig : DialogProgpam
             return sleeveDict[sleeveDict.Length - 1];
         }
         return new KeyValuePair<string, double>();
+    }
+
+    private void ShowJigPlanks()
+    {
+        Dictionary<string, string> param;
+        string query = SqlUspJigs.GetQueryJigTypes(_catalog, out param);
+        ImageSqlForm imageSqlForm = new ImageSqlForm(query, param);
+        imageSqlForm.ShowDialog();
     }
 }

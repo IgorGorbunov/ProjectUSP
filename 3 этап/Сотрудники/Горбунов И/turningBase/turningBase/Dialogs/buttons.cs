@@ -52,6 +52,7 @@ public class Buttons : DialogProgpam
     private UIBlock _button01;// Block type: Button
     private UIBlock _button02;// Block type: Button
     private UIBlock _button03;// Block type: Button
+    private UIBlock _button04;// Block type: Button
     
     //------------------------------------------------------------------------------
     //Constructor for NX Styler class
@@ -97,6 +98,7 @@ public class Buttons : DialogProgpam
             _button01 = TheDialog.TopBlock.FindBlock("button01");
             _button02 = TheDialog.TopBlock.FindBlock("button02");
             _button03 = TheDialog.TopBlock.FindBlock("button03");
+            _button04 = TheDialog.TopBlock.FindBlock("button04");
         }
         catch (Exception ex)
         {
@@ -155,30 +157,33 @@ public class Buttons : DialogProgpam
     {
         try
         {
+            DialogProgpam dialogProgpam = null;
             if(block == _button0)
             {
             //---------Enter your code here-----------
-                DialogProgpam dialogProgpam = new Tunnelslot();
-                dialogProgpam.Show();
+                dialogProgpam = new Tunnelslot();
             }
             else if(block == _button01)
             {
             //---------Enter your code here-----------
-                DialogProgpam dialogProgpam = new TurningBase();
-                dialogProgpam.Show();
+                dialogProgpam = new TurningBase();
             }
             else if(block == _button02)
             {
             //---------Enter your code here-----------
-                DialogProgpam dialogProgpam = new MilingBase();
-                dialogProgpam.Show();
+                dialogProgpam = new MilingBase();
             }
             else if(block == _button03)
             {
             //---------Enter your code here-----------
-                DialogProgpam dialogProgpam = new Jig();
-                dialogProgpam.Show();
+                dialogProgpam = new Jig();
             }
+            else if (block == _button04)
+            {
+                //---------Enter your code here-----------
+                dialogProgpam = new heightSet();
+            }
+            dialogProgpam.Show();
         }
         catch (Exception ex)
         {

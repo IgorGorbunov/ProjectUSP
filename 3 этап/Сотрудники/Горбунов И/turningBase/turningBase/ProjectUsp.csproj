@@ -83,6 +83,8 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.OracleClient" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -109,10 +111,30 @@
     <Compile Include="Dialogs\milingBase.cs" />
     <Compile Include="Dialogs\tunnelslot.cs" />
     <Compile Include="ElementIntersection.cs" />
+    <Compile Include="Elements\HeightElement.cs" />
     <Compile Include="Elements\BaseElement.cs" />
     <Compile Include="Elements\JigPlank.cs" />
     <Compile Include="Elements\JigSleeve.cs" />
     <Compile Include="Elements\QuickJigSleeve.cs" />
+    <Compile Include="Gallary\ImageBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Gallary\ImageBox.designer.cs">
+      <DependentUpon>ImageBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Gallary\ImageForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Gallary\ImageForm.designer.cs">
+      <DependentUpon>ImageForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Gallary\ImageSqlForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Gallary\ImageSqlForm.Designer.cs">
+      <DependentUpon>ImageSqlForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\heightSet.cs" />
     <Compile Include="Log\Log.cs" />
     <Compile Include="Math\Axes\CoordinateAxe.cs" />
     <Compile Include="Math\Axes\xAxe.cs" />
@@ -153,6 +175,20 @@
     <Compile Include="Dialogs\turningBase.cs" />
     <Compile Include="Elements\UspElement.cs" />
     <Compile Include="Math\Vector.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Gallary\ImageBox.resx">
+      <DependentUpon>ImageBox.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Gallary\ImageForm.resx">
+      <DependentUpon>ImageForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Gallary\ImageSqlForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ImageSqlForm.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -66,9 +66,6 @@ public sealed class TunnelConstraint
                 {
                     bugChecked = true;
                 }
-                //Message.Tst("TouchExists -" + intersect.TouchExists);
-                //Message.Tst("AnyIntersectionExists -" + intersect.AnyIntersectionExists);
-                //Message.Tst("BodyInterferenseExists -" + intersect.BodyIntersectionExists);
 
                 if (intersect.TouchExists && bugChecked)
                 {

@@ -56,6 +56,10 @@ public static class SqlTabUspData
     /// Столбец с количеством элементов.
     /// </summary>
     private const string CCount = "NALICHI";
+    /// <summary>
+    /// Название столбца с картинками элементов.
+    /// </summary>
+    public const string CPicture = "DET";
 
     /// <summary>
     /// Номера имён ГОСТов деталей.

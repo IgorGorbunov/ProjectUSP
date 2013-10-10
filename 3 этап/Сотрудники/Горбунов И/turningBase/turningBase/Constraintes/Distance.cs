@@ -22,10 +22,10 @@ class Distance : Constrainter
         Constr = (ComponentConstraint)CompPositioner.CreateConstraint();
         Constr.ConstraintType = Constraint.Type.Distance;
 
-        ConstraintReference constraintReference1 = Constr.CreateConstraintReference(firstComponent,
+        Constr.CreateConstraintReference(firstComponent,
                                          firstObject, false, false, false);
 
-        ConstraintReference constraintReference2 = Constr.CreateConstraintReference(secondComponent,
+        Constr.CreateConstraintReference(secondComponent,
                                          secondObject, false, false, false);
 
 

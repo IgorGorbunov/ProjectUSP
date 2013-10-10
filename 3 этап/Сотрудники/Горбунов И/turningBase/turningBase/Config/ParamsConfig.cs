@@ -39,4 +39,16 @@ public static partial class Config
     /// Наименование нижней грани касания кондукторной втулки.
     /// </summary>
     public const string SleeveBottomName = "SLEEVE_BOTTOM";
+    /// <summary>
+    /// Наименование грани отверстия в корпусных элементах для набора высоты.
+    /// </summary>
+    public const string HeightHole = "HOLE";
+    /// <summary>
+    /// Наименование нижней грани корпусных элементов для набора высоты.
+    /// </summary>
+    public const string HeightBottom = "BOTTOM";
+    /// <summary>
+    /// Наименование верхней грани корпусных элементов для набора высоты.
+    /// </summary>
+    public const string HeightTop = "TOP";
 }

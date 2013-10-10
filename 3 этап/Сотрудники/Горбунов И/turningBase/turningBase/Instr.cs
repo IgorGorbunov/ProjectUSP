@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using NXOpen;
 
 /// <summary>
@@ -77,6 +79,16 @@ public static class Instr
 
         list.Add(new Vertex(point));
         //NxFunctions.SetAsterix(point);
+    }
+
+    /// <summary>
+    /// Возвращает экземпляр класса Image из массива байт.
+    /// </summary>
+    /// <param name="bytes">Массив байт.</param>
+    /// <returns></returns>
+    public static Image GetImage(byte[] bytes)
+    {
+        return Image.FromStream(new MemoryStream(bytes));
     }
 }
 

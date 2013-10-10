@@ -1,0 +1,15 @@
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\CheckPartBody\CheckPartBody\bin\Debug\CheckPartBody.exe
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\CheckPartBody\CheckPartBody\bin\Debug\CheckPartBody.pdb
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\CheckPartBody\CheckPartBody\bin\Debug\NXOpen.dll
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\CheckPartBody\CheckPartBody\bin\Debug\NXOpen.UF.dll
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\CheckPartBody\CheckPartBody\bin\Debug\NXOpen.Utilities.dll
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\CheckPartBody\CheckPartBody\bin\Debug\NXOpenUI.dll
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\CheckPartBody\CheckPartBody\bin\Debug\System.Data.OracleClient.dll
+C:\ug_customization\application\CheckPartBody.pdb
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\CheckPartBody\CheckPartBody\obj\Debug\ResolveAssemblyReference.cache
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\CheckPartBody\CheckPartBody\obj\Debug\CheckPartBody.Form1.resources
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\CheckPartBody\CheckPartBody\obj\Debug\CheckPartBody.Properties.Resources.resources
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\CheckPartBody\CheckPartBody\obj\Debug\CheckPartBody.csproj.GenerateResource.Cache
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\CheckPartBody\CheckPartBody\obj\Debug\CheckPartBody.pdb
+C:\ug_customization\application\CheckPartBody.dll
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\CheckPartBody\CheckPartBody\obj\Debug\CheckPartBody.dll

@@ -8,6 +8,7 @@ public static class Sql
 {
     public const string Where = " where ";
     public const string Eq = " = ";
+    public const string From = "from ";
 
     /// <summary>
     /// Возвращает список баз, используя заданную таблицу.

@@ -78,6 +78,10 @@ public static partial class Config
     /// Возвращает имя файла с общей формой.
     /// </summary>
     public const string Dlx = @"buttons.dlx";
+    /// <summary>
+    /// Возвращает имя файла с формой для набора высоты.
+    /// </summary>
+    public const string DlxHeight = @"heightSet.dlx";
 
 
     //------------------------ Methods ------------------------------------------------------------
