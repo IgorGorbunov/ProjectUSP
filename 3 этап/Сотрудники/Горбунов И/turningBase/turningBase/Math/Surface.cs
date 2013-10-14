@@ -80,12 +80,14 @@ public class Surface
 
     readonly double[] _equation;
 
-    private Face _face;
-    private int _faceType, _faceNormDir;
-    private double[] _faceCenterPoint = new double[3];
-    private double[] _faceDirection = new double[3];
-    private double[] _faceBox = new double[6];
-    private double _faceRadius, _faceRadData;
+    private readonly Face _face;
+    private readonly int _faceType;
+    private readonly int _faceNormDir;
+    private readonly double[] _faceCenterPoint = new double[3];
+    public readonly double[] FaceDirection = new double[3];
+    private readonly double[] _faceBox = new double[6];
+    private readonly double _faceRadius;
+    private readonly double _faceRadData;
 
     /// <summary>
     /// Инициализирует новый экземпляр класса для плоскости, проходящей через заданную точку и
@@ -136,12 +138,12 @@ public class Surface
     public Surface(Face face)
     {
         _face = face;
-        Config.TheUfSession.Modl.AskFaceData(face.Tag, out _faceType, _faceCenterPoint, _faceDirection, _faceBox,
+        Config.TheUfSession.Modl.AskFaceData(face.Tag, out _faceType, _faceCenterPoint, FaceDirection, _faceBox,
                                              out _faceRadius, out _faceRadData, out _faceNormDir);
 
-        double a = _faceDirection[0];
-        double b = _faceDirection[1];
-        double c = _faceDirection[2];
+        double a = FaceDirection[0];
+        double b = FaceDirection[1];
+        double c = FaceDirection[2];
         double d = a * -_faceCenterPoint[0] + b * -_faceCenterPoint[1] + c * -_faceCenterPoint[2];
         
         _equation = new double[] { a, b, c, d };

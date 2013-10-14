@@ -41,6 +41,7 @@ using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.BlockStyler;
 using NXOpen.UF;
+using img_gallery;
 
 //------------------------------------------------------------------------------
 //Represents Block Styler application class
@@ -284,6 +285,22 @@ public class heightSet : DialogProgpam
         {
             double height = GetHeight();
             Message.Tst(height);
+            Solution solution = new SelectionAlgorihtm(
+                DatabaseUtils.loadFromDb(ElementType.HeightBySquare, false),//учитываем колво на складе
+                1000).solve(height, false); //учитываем колво на складе
+
+            Dictionary<Element, byte> eDictionary;
+            eDictionary = solution.getMainSolution(0);
+
+            List<string> list = new List<string>();
+            foreach (KeyValuePair<Element, byte> keyValuePair in eDictionary)
+            {
+                for (int i = 0; i < keyValuePair.Value; i++)
+                {
+                    list.Add(keyValuePair.Key.Obozn);
+                }
+            }
+            LoadParts(list);
         }
     }
 
@@ -296,10 +313,31 @@ public class heightSet : DialogProgpam
 
     private void LoadParts(List<string> partList)
     {
+        int i = 0;
+        HeightElement[] elements = new HeightElement[partList.Count];
         foreach (string s in partList)
         {
             Katalog2005.Algorithm.SpecialFunctions.LoadPart(s, false);
             Component component = Katalog2005.Algorithm.SpecialFunctions.LoadedPart;
+            elements[i] = new HeightElement(component);
+            if (i > 0)
+            {
+                elements[i].SetOn(elements[i - 1]);
+            }
+            else
+            {
+                Touch touch = new Touch();
+                touch.Create(_face1.OwningComponent, _face1, component, elements[i].BottomFace);
+                NxFunctions.Update();
+            }
+
+            if (i == elements.Length - 1)
+            {
+                Touch touch = new Touch();
+                touch.Create(_face2.OwningComponent, _face2, component, elements[i].TopFace);
+                NxFunctions.Update();
+            }
+            i++;
         }
     }
 }

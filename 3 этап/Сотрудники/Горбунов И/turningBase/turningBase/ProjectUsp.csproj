@@ -135,6 +135,8 @@
       <DependentUpon>ImageSqlForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\heightSet.cs" />
+    <Compile Include="Korneev\AlgoForm.cs">
+    </Compile>
     <Compile Include="Log\Log.cs" />
     <Compile Include="Math\Axes\CoordinateAxe.cs" />
     <Compile Include="Math\Axes\xAxe.cs" />

@@ -84,6 +84,7 @@ public class UspElement
         _component = component;
 
         SetBody();
+        SetBottomFaces();
     }
 
     /// <summary>
