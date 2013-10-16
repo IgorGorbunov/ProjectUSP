@@ -76,6 +76,26 @@ public class Surface
             return _faceRadius;
         }
     }
+    /// <summary>
+    /// Возвращает направление поверхности.
+    /// </summary>
+    public double[] Direction1
+    {
+        get
+        {
+            return _faceDirection;
+        }
+    }
+    /// <summary>
+    /// Возвращает направление поверхности.
+    /// </summary>
+    public Vector Direction2
+    {
+        get
+        {
+            return new Vector(_faceDirection);
+        }
+    }
 
 
     readonly double[] _equation;
@@ -84,7 +104,7 @@ public class Surface
     private readonly int _faceType;
     private readonly int _faceNormDir;
     private readonly double[] _faceCenterPoint = new double[3];
-    public readonly double[] FaceDirection = new double[3];
+    private readonly double[] _faceDirection = new double[3];
     private readonly double[] _faceBox = new double[6];
     private readonly double _faceRadius;
     private readonly double _faceRadData;
@@ -138,12 +158,12 @@ public class Surface
     public Surface(Face face)
     {
         _face = face;
-        Config.TheUfSession.Modl.AskFaceData(face.Tag, out _faceType, _faceCenterPoint, FaceDirection, _faceBox,
+        Config.TheUfSession.Modl.AskFaceData(face.Tag, out _faceType, _faceCenterPoint, _faceDirection, _faceBox,
                                              out _faceRadius, out _faceRadData, out _faceNormDir);
 
-        double a = FaceDirection[0];
-        double b = FaceDirection[1];
-        double c = FaceDirection[2];
+        double a = _faceDirection[0];
+        double b = _faceDirection[1];
+        double c = _faceDirection[2];
         double d = a * -_faceCenterPoint[0] + b * -_faceCenterPoint[1] + c * -_faceCenterPoint[2];
         
         _equation = new double[] { a, b, c, d };
@@ -255,17 +275,56 @@ public class Surface
     /// <returns></returns>
     public bool IsParallel(Surface surface)
     {
-        if (Config.Round(X) != Config.Round(surface.X))
+        //if (Config.Round(X) != Config.Round(surface.X))
+        //{
+        //    return false;
+        //}
+        //if (Config.Round(Y) != Config.Round(surface.Y))
+        //{
+        //    return false;
+        //}
+        //if (Config.Round(Z) != Config.Round(surface.Z))
+        //{
+        //    return false;
+        //}
+        ////return true;
+        bool[] nulls = new bool[Equation.Length - 1];
+        for (int i = 0; i < Equation.Length - 1; i++)
         {
-            return false;
+            if ((Config.Round(Equation[i]) == 0 && Config.Round(surface.Equation[i]) == 0))
+            {
+                nulls[i] = true;
+            }
+            else
+            {
+                if (Config.Round(surface.Equation[i]) == 0)
+                {
+                    return false;
+                }
+                nulls[i] = false;
+            }
         }
-        if (Config.Round(Y) != Config.Round(surface.Y))
+
+        bool firstWas = false;
+        double coef = 0.0;
+        for (int i = 0; i < nulls.Length - 1; i++)
         {
-            return false;
-        }
-        if (Config.Round(Z) != Config.Round(surface.Z))
-        {
-            return false;
+            if (nulls[i]) 
+                continue;
+            if (firstWas)
+            {
+                double permanentCoef =
+                    Config.Round(Config.Round(Equation[i])/Config.Round(surface.Equation[i]));
+                if (coef != permanentCoef)
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                coef = Config.Round(Config.Round(Equation[i]) / Config.Round(surface.Equation[i]));
+                firstWas = true;
+            }
         }
         return true;
     }

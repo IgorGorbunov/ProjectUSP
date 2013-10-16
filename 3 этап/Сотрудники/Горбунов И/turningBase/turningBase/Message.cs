@@ -14,14 +14,19 @@ public static class Message
 
     public static void Tst()
     {
+#if(DEBUG)
         Show("test", MessageIcon.Error, "");
+#endif
     }
     public static void Tst(object mess)
     {
+#if(DEBUG)
         Show("test", MessageIcon.Error, mess);
+#endif
     }
     public static void Tst(params object[] vars)
     {
+#if(DEBUG)
         string mess = "";
         for (int i = 0; i < vars.Length; i++)
         {
@@ -32,6 +37,7 @@ public static class Message
             mess += vars[i] + Environment.NewLine;
         }
         Show("test", MessageIcon.Error, mess);
+#endif
     }
     
 

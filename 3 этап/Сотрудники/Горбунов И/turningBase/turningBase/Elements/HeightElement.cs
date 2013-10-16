@@ -156,7 +156,7 @@ public class HeightElement : UspElement
         
         _touchConstraint = new Touch();
         _touchConstraint.Create(ElementComponent, BottomFace, element.ElementComponent, element.TopFace);
-        Message.Tst(ElementComponent.Name + " - " + HasOutBottomSlotSet, element.ElementComponent.Name + " - " + element.HasOutBottomSlotSet);
+
         if (HasOutBottomSlotSet && element.HasOutTopSlotSet)
         {
             _slotConstraint = new SlotConstraint(BottomSlot, element.TopSlot);
@@ -183,17 +183,18 @@ public class HeightElement : UspElement
     //    SetSlot(TopFace, ref _topSlot);
     //}
 
-    private void SetSlot(Point3d point, ref Slot slot)
+    private void SetSlot(Point3d point, ref Slot slot, Surface surface)
     {
         //Edge[] edges = face.GetEdges();
         //Point3d point1, point2;
         //edges[0].GetVertices(out point1, out point2);
-        SlotSet slotSet = new SlotSet(this);
+        SlotSet slotSet = new SlotSet(this, surface.Face);
         slotSet.SetPoint(point);
         if (!slotSet.HaveNearestBottomFace()) 
             return;
-        slotSet.SetNearestEdges();
-        slotSet.HasNearestSlot(out slot);
+        //slotSet.SetNearestEdges();
+        slot = slotSet.GetNearestSlot();
+        //slotSet.HasNearestSlot(out slot);
     }
 
 
@@ -206,7 +207,7 @@ public class HeightElement : UspElement
         foreach (Face slotFace in SlotFaces)
         {
             Surface slotSurface = new Surface(slotFace);
-            if (!Geom.IsEqual(mainSurface.FaceDirection, slotSurface.FaceDirection)) 
+            if (!Geom.IsEqual(mainSurface.Direction1, slotSurface.Direction1)) 
                 continue;
             hasSlotSet = true;
             double distance = Math.Abs(mainSurface.GetDistance(slotSurface));
@@ -221,71 +222,56 @@ public class HeightElement : UspElement
     private void SetBottomSlotSet(bool sideSlot)
     {
         Surface projectSurface;
-        Point3d pointToProject;
         if (SetSlotSet(_bottomFace, out _bottomSlotSetSurface))
         {
             if (sideSlot)
             {
                 _hasOutBottomSlotSet = false;
-                Surface bottomSurface = _bottomSlotSetSurface;
-                pointToProject = bottomSurface.GetProection(GetPointOnHoleEdge());
-                projectSurface = new Surface(GetNearestSlotFace(bottomSurface, pointToProject));
-                projectSurface.Face.Highlight();
-                Message.Tst("bottom - " + ElementComponent.Name);
-                projectSurface.Face.Unhighlight();
+                _bottomSlot = GetSideSlot(_bottomSlotSetSurface, GetPointOnHoleEdge());
             }
             else
             {
                 _hasOutBottomSlotSet = true;
                 projectSurface = _bottomSlotSetSurface;
-                pointToProject = GetPointOnHoleEdge();
+                Point3d pointToProject = GetPointOnHoleEdge();
+                Point3d point = projectSurface.GetProection(pointToProject);
+                SetSlot(point, ref _bottomSlot, _bottomSlotSetSurface);
             }
         }
         else
         {
             _hasOutBottomSlotSet = false;
             projectSurface = new Surface(_bottomFace);
-            pointToProject = GetPointOnHoleEdge();
+
+            _bottomSlot = GetSideSlot(projectSurface, GetPointOnHoleEdge());
         }
-        Point3d point = projectSurface.GetProection(pointToProject);
-        NxFunctions.SetAsterix(point);
-        Message.Tst();
-        SetSlot(point, ref _bottomSlot);
     }
 
     private void SetTopSlotSet(bool sideSlot)
     {
         Surface projectSurface;
-        Point3d pointToProject;
         if (SetSlotSet(_topFace, out _topSlotSetSurface))
         {
             if (sideSlot)
             {
                 _hasOutTopSlotSet = false;
-                Surface topSurface = _topSlotSetSurface;
-                pointToProject = topSurface.GetProection(GetPointOnHoleEdge());
-                projectSurface = new Surface(GetNearestSlotFace(topSurface, pointToProject));
-                projectSurface.Face.Highlight();
-                Message.Tst("top - " + ElementComponent.Name);
-                projectSurface.Face.Unhighlight();
+                _topSlot = GetSideSlot(_topSlotSetSurface, GetPointOnHoleEdge());
             }
             else
             {
                 _hasOutTopSlotSet = true;
                 projectSurface = _topSlotSetSurface;
-                pointToProject = GetPointOnHoleEdge();
+                Point3d pointToProject = GetPointOnHoleEdge();
+                Point3d point = projectSurface.GetProection(pointToProject);
+                SetSlot(point, ref _topSlot, _topSlotSetSurface);
             }
         }
         else
         {
             _hasOutTopSlotSet = false;
             projectSurface = new Surface(_topFace);
-            pointToProject = GetPointOnHoleEdge();
+            _topSlot = GetSideSlot(projectSurface, GetPointOnHoleEdge());
         }
-        Point3d point = projectSurface.GetProection(pointToProject);
-        NxFunctions.SetAsterix(point);
-        Message.Tst();
-        SetSlot(point, ref _topSlot);
     }
 
     private Face GetNearestSlotFace(Surface outSurface, Point3d point)
@@ -304,6 +290,34 @@ public class HeightElement : UspElement
             face = slotFace;
         }
         return face;
+    }
+
+    private Slot GetSideSlot(Surface outSurface, Point3d point)
+    {
+        double minDistance = Double.MaxValue;
+        Slot goodSlot = null;
+        foreach (Face slotFace in SlotFaces)
+        {
+            Surface surface = new Surface(slotFace);
+            if (surface.IsParallel(outSurface))
+                continue;
+
+            SlotSet slotSet = new SlotSet(this, surface.Face);
+            slotSet.SetPoint(point);
+            Slot slot = slotSet.GetNearestSlot();
+
+            Vector vector1 = outSurface.Direction2;
+            Vector vector2 = slot.Direction2;
+            if (!vector1.IsParallel(vector2))
+                continue;
+
+            double distance = surface.GetDistance(point);
+            if (distance > minDistance)
+                continue;
+            minDistance = distance;
+            goodSlot = slot;
+        }
+        return goodSlot;
     }
 
     private Point3d GetPointOnHoleEdge()

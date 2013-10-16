@@ -1,4 +1,4 @@
-//==============================================================================
+п»ї//==============================================================================
 //  WARNING!!  This file is overwritten by the Block UI Styler while generating
 //  the automation code. Any modifications to this file will be lost after
 //  generating the code again.
@@ -283,13 +283,13 @@ public class heightSet : DialogProgpam
     {
         if (_face1Selected && _face2Selected)
         {
-            double height = GetHeight();
-            Message.Tst(height);
-            Solution solution = new SelectionAlgorihtm(
-                DatabaseUtils.loadFromDb(ElementType.HeightBySquare, false),//учитываем колво на складе
-                1000).solve(height, false); //учитываем колво на складе
+            double height = Math.Abs(GetHeight());
 
-            Dictionary<Element, byte> eDictionary;
+            Solution solution = new SelectionAlgorihtm(
+                DatabaseUtils.loadFromDb(ElementType.HeightBySquare, false),//СѓС‡РёС‚С‹РІР°РµРј РєРѕР»РІРѕ РЅР° СЃРєР»Р°РґРµ
+                1000).solve(height, false); //СѓС‡РёС‚С‹РІР°РµРј РєРѕР»РІРѕ РЅР° СЃРєР»Р°РґРµ
+
+            Dictionary<Element, byte> eDictionary = new Dictionary<Element, byte>();
             eDictionary = solution.getMainSolution(0);
 
             List<string> list = new List<string>();

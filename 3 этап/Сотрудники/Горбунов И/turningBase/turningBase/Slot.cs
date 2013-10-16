@@ -115,6 +115,28 @@ public class Slot
     /// Второе рёберо на НГП.
     /// </summary>
     public readonly Edge EdgeLong2;
+    /// <summary>
+    /// Возвращает направление паза.
+    /// </summary>
+    public double[] Direction1
+    {
+        get
+        {
+            Vector vector = new Vector(EdgeLong1);
+            return vector.Direction2;
+        }
+    }
+    /// <summary>
+    /// Возвращает направление паза.
+    /// </summary>
+    public Vector Direction2
+    {
+        get
+        {
+            Vector vector = new Vector(EdgeLong1);
+            return vector;
+        }
+    }
 
     readonly Config.SlotType _type;
 
@@ -208,6 +230,8 @@ public class Slot
         }
         _touchEdge = otherEdge;
     }
+
+    
 
 
     //refactor

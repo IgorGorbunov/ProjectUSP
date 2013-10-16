@@ -15,7 +15,7 @@ public static partial class Config
 
     public const int NPointsInEdge = 2;
 
-    public const int NumberOfNearestEdges = 6;
+    public const int NumberOfNearestEdges = 12;
 
 
     public enum SlotType

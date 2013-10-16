@@ -74,6 +74,16 @@ public sealed class SlotSet
     }
 
     /// <summary>
+    /// Инициализирует новый экземпляр класса для заданного элемента УСП, с заданной гранью.
+    /// </summary>
+    /// <param name="element">Элемент УСП, на котором существует набор пазов.</param>
+    public SlotSet(UspElement element, Face face)
+    {
+        _element = element;
+        _bottomFace = face;
+    }
+
+    /// <summary>
     /// Метод записывает координаты точки.
     /// </summary>
     /// <param name="point">Точка.</param>
@@ -260,7 +270,12 @@ public sealed class SlotSet
                 Vector vec2 = new Vector(edges[j]);
 
                 double slotWidth;
-                if (!IsSlot(vec1, vec2, out slotWidth, edges[i], edges[j])) continue;
+                if (!IsSlot(vec1, vec2, out slotWidth, edges[i], edges[j])) 
+                    continue;
+
+                if (!HasCenterPointOnFace(edges[i], edges[j]))
+                    continue;
+
 
                 Edge edgeLong1 = edges[i];
                 Point3d start, end;
@@ -334,8 +349,43 @@ public sealed class SlotSet
         }
         return false;
     }
+    /// <summary>
+    /// Возвращает ближайший паз для данной базовой плоскости.
+    /// </summary>
+    /// <returns></returns>
+    public Slot GetNearestSlot()
+    {
+        Edge[] edges = BottomFace.GetEdges();
+        _nearestEdges = new Dictionary<Edge, double>();
+        foreach (Edge edge in edges)
+        {
+            if (edge.SolidEdgeType != Edge.EdgeType.Linear) continue;
 
+            Point3d firstPoint, secondPoint;
+            edge.GetVertices(out firstPoint, out  secondPoint);
+            Straight straight = new Straight(edge);
 
+            Point3d projection = Geom.GetIntersectionPointStraight(_selectPoint, straight);
+            double length;
+            if (Geom.IsOnSegment(projection, edge))
+            {
+                length = (new Vector(projection, _selectPoint)).Length;
+            }
+            else
+            {
+                Vector vec1 = new Vector(_selectPoint, firstPoint);
+                Vector vec2 = new Vector(_selectPoint, secondPoint);
+
+                length = vec1.Length < vec2.Length ? vec1.Length : vec2.Length;
+            }
+
+            AddInDictMinValue(_nearestEdges, edge, length);
+        }
+
+        Slot slot;
+        HasNearestSlot(out slot);
+        return slot;
+    }
 /*
     int checkBottom(Face f, int max, out Edge[] edges, out List<Edge> slot_edges)
     {
@@ -508,6 +558,47 @@ public sealed class SlotSet
         }
 
         return alignment > 2;
+    }
+
+    private bool HasCenterPointOnFace(Edge edge1, Edge edge2)
+    {
+        Point3d centerPoint = GetCenterPoint(edge1, edge2);
+
+        double[] centerCoords = new double[3];
+        centerCoords[0] = centerPoint.X;
+        centerCoords[1] = centerPoint.Y;
+        centerCoords[2] = centerPoint.Z;
+
+        int status;
+        Config.TheUfSession.Modl.AskPointContainment(centerCoords, BottomFace.Tag, out status);
+        return status == 1;
+    }
+
+    private Point3d GetCenterPoint(Edge edge1, Edge edge2)
+    {
+        //метод определения средней точки паза основан на нахождении максимальной по длине
+        //диагонали в пазовом параллепипиде и его середины
+        Point3d point1, point2, point3, point4;
+        edge1.GetVertices(out point1, out point2);
+        edge2.GetVertices(out point3, out point4);
+
+        Vector[] diagonals = new Vector[4];
+        diagonals[0] = new Vector(point1, point3);
+        diagonals[1] = new Vector(point1, point4);
+        diagonals[2] = new Vector(point2, point3);
+        diagonals[3] = new Vector(point2, point4);
+
+        double maxLength = double.MinValue;
+        Vector maxDiagonal = null;
+        foreach (Vector diagonal in diagonals)
+        {
+            if (diagonal.Length <= maxLength)
+                continue;
+            maxDiagonal = diagonal;
+            maxLength = diagonal.Length;
+        }
+
+        return maxDiagonal.Center;
     }
 
     //не используется

@@ -22,6 +22,19 @@ public class Vector
         get { return _end; }
     }
     /// <summary>
+    /// Возвращает середину вектора.
+    /// </summary>
+    public Point3d Center
+    {
+        get
+        {
+            double x = (Start.X + End.X) / 2;
+            double y = (Start.Y + End.Y) / 2;
+            double z = (Start.Z + End.Z) / 2;
+            return new Point3d(x, y, z);
+        }
+    }
+    /// <summary>
     /// Возвращает длину вектора.
     /// </summary>
     public double Length
@@ -157,13 +170,33 @@ public class Vector
         end.Z = start.Z + dir[2];
         InitPoints(start, end);
     }
-
+    /// <summary>
+    /// Инициализирует новый экземпляр класса вектора для заданного направления и начальной точки.
+    /// </summary>
+    /// <param name="point">Начальная точка.</param>
+    /// <param name="direction">Направление.</param>
     public Vector(double[] point, double[] direction)
     {
         Point3d start, end;
         start.X = point[0];
         start.Y = point[1];
         start.Z = point[2];
+
+        end.X = start.X + direction[0];
+        end.Y = start.Y + direction[1];
+        end.Z = start.Z + direction[2];
+        InitPoints(start, end);
+    }
+    /// <summary>
+    /// Инициализирует новый экземпляр класса вектора для заданного направления.
+    /// </summary>
+    /// <param name="direction">Направление</param>
+    public Vector(double[] direction)
+    {
+        Point3d start, end;
+        start.X = 0;
+        start.Y = 0;
+        start.Z = 0;
 
         end.X = start.X + direction[0];
         end.Y = start.Y + direction[1];
