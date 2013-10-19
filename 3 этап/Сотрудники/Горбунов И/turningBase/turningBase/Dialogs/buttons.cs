@@ -36,7 +36,6 @@
 //------------------------------------------------------------------------------
 using System;
 using System.IO;
-using NXOpen;
 using NXOpen.BlockStyler;
 
 //------------------------------------------------------------------------------
@@ -47,12 +46,13 @@ public class Buttons : DialogProgpam
     //class members
     private readonly string _theDialogName;
 
-    private UIBlock group0;// Block type: Group
+    private UIBlock _group0;// Block type: Group
     private UIBlock _button0;// Block type: Button
     private UIBlock _button01;// Block type: Button
     private UIBlock _button02;// Block type: Button
     private UIBlock _button03;// Block type: Button
     private UIBlock _button04;// Block type: Button
+    private UIBlock _button05;// Block type: Button
     
     //------------------------------------------------------------------------------
     //Constructor for NX Styler class
@@ -62,7 +62,7 @@ public class Buttons : DialogProgpam
         try
         {
             _theDialogName = AppDomain.CurrentDomain.BaseDirectory +
-                             Config.DlxFolder + Path.DirectorySeparatorChar + Config.Dlx;
+                             ConfigDlx.DlxFolder + Path.DirectorySeparatorChar + ConfigDlx.Dlx;
 
             TheDialog = Config.TheUi.CreateDialog(_theDialogName);
             TheDialog.AddApplyHandler(apply_cb);
@@ -93,12 +93,13 @@ public class Buttons : DialogProgpam
     {
         try
         {
-            group0 = TheDialog.TopBlock.FindBlock("group0");
+            _group0 = TheDialog.TopBlock.FindBlock("group0");
             _button0 = TheDialog.TopBlock.FindBlock("button0");
             _button01 = TheDialog.TopBlock.FindBlock("button01");
             _button02 = TheDialog.TopBlock.FindBlock("button02");
             _button03 = TheDialog.TopBlock.FindBlock("button03");
             _button04 = TheDialog.TopBlock.FindBlock("button04");
+            _button05 = TheDialog.TopBlock.FindBlock("button05");
         }
         catch (Exception ex)
         {
@@ -181,7 +182,12 @@ public class Buttons : DialogProgpam
             else if (block == _button04)
             {
                 //---------Enter your code here-----------
-                dialogProgpam = new heightSet();
+                dialogProgpam = new HeightSet();
+            }
+            else if (block == _button05)
+            {
+                //---------Enter your code here-----------
+                dialogProgpam = new AngleSet();
             }
             dialogProgpam.Show();
         }

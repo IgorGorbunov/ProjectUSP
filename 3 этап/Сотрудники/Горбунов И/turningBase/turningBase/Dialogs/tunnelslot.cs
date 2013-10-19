@@ -85,7 +85,7 @@ public class Tunnelslot : DialogProgpam
         try
         {
             _theDialogName = AppDomain.CurrentDomain.BaseDirectory +
-                Config.DlxFolder + Path.DirectorySeparatorChar + Config.DlxTunnelSlot;
+                ConfigDlx.DlxFolder + Path.DirectorySeparatorChar + ConfigDlx.DlxTunnelSlot;
 
             TheDialog = Config.TheUi.CreateDialog(_theDialogName);
             TheDialog.AddApplyHandler(apply_cb);

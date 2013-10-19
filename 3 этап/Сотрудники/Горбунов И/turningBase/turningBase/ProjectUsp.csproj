@@ -93,6 +93,7 @@
     <Compile Include="CatalogData\Catalog_8.cs" />
     <Compile Include="Config\Config.cs" />
     <Compile Include="Config\CoordinateConfig.cs" />
+    <Compile Include="Config\ConfigDlx.cs" />
     <Compile Include="Config\ParamsConfig.cs" />
     <Compile Include="Constraintes\Center.cs" />
     <Compile Include="Constraintes\Constrainter.cs" />
@@ -105,6 +106,7 @@
     <Compile Include="Constraintes\TunnelConstraint.cs" />
     <Compile Include="Constraintes\TunnelSlotConstraint.cs" />
     <Compile Include="Data\NoRoundBaseData.cs" />
+    <Compile Include="Dialogs\angleSet.cs" />
     <Compile Include="Dialogs\buttons.cs" />
     <Compile Include="Dialogs\DialogProgpam.cs" />
     <Compile Include="Dialogs\jig.cs" />

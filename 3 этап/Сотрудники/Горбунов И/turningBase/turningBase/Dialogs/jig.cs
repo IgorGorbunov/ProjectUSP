@@ -100,7 +100,7 @@ public sealed class Jig : DialogProgpam
         try
         {
             _theDialogName = AppDomain.CurrentDomain.BaseDirectory +
-                             Config.DlxFolder + Path.DirectorySeparatorChar + Config.DlxJig;
+                             ConfigDlx.DlxFolder + Path.DirectorySeparatorChar + ConfigDlx.DlxJig;
 
             TheDialog = Config.TheUi.CreateDialog(_theDialogName);
             TheDialog.AddApplyHandler(apply_cb);

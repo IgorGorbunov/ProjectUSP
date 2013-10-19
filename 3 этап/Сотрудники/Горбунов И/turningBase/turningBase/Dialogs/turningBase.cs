@@ -103,7 +103,7 @@ public sealed class TurningBase : DialogProgpam
         try
         {
             _theDialogName = AppDomain.CurrentDomain.BaseDirectory +
-                Config.DlxFolder + Path.DirectorySeparatorChar + Config.DlxTurningBase;
+                ConfigDlx.DlxFolder + Path.DirectorySeparatorChar + ConfigDlx.DlxTurningBase;
 
             TheDialog = Config.TheUi.CreateDialog(_theDialogName);
             TheDialog.AddApplyHandler(apply_cb);
