@@ -135,7 +135,7 @@ public class UspElement
     /// <summary>
     /// Возвращает грань объекта по её имени.
     /// </summary>
-    /// <param name="faceName"></param>
+    /// <param name="faceName">Обозначение грани.</param>
     /// <returns></returns>
     public Face GetFace(string faceName)
     {
@@ -149,6 +149,26 @@ public class UspElement
         }
         return null;
     }
+
+    /// <summary>
+    /// Возвращает ребро элемента по его имени.
+    /// </summary>
+    /// <param name="edgeName">Обозначение ребра.</param>
+    /// <returns></returns>
+    public Edge GetEdge(string edgeName)
+    {
+        Edge[] edges = _body.GetEdges();
+        foreach (Edge edge in edges)
+        {
+            if (edge.Name == edgeName)
+            {
+                return edge;
+            }
+        }
+        return null;
+    }
+
+
     /// <summary>
     /// Зафиксировать элемент.
     /// </summary>

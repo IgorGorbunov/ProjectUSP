@@ -39,16 +39,49 @@ public static partial class Config
     /// Наименование нижней грани касания кондукторной втулки.
     /// </summary>
     public const string SleeveBottomName = "SLEEVE_BOTTOM";
+
     /// <summary>
     /// Наименование грани отверстия в корпусных элементах для набора высоты.
     /// </summary>
     public const string HeightHole = "HOLE";
     /// <summary>
-    /// Наименование нижней грани корпусных элементов для набора высоты.
+    /// Наименование нижней грани элементов.
     /// </summary>
-    public const string HeightBottom = "BOTTOM";
+    public const string BottomFace = "BOTTOM";
     /// <summary>
-    /// Наименование верхней грани корпусных элементов для набора высоты.
+    /// Наименование верхней грани элементов.
     /// </summary>
-    public const string HeightTop = "TOP";
+    public const string TopFace = "TOP";
+
+    /// <summary>
+    /// Наименование наклонной грани элементов для набора на большой угол.
+    /// </summary>
+    public const string Incline = "INCLINE";
+    /// <summary>
+    /// Наименование ребра поперечного паза элемента.
+    /// </summary>
+    public const string AcrossSlot = "ACROSS_SLOT";
+    /// <summary>
+    /// Наименование ребра продольного паза элемента.
+    /// </summary>
+    public const string AlongSlot = "ALONG_SLOT";
+
+    /// <summary>
+    /// Наименование нижнего ребра у БОЛЬШЕГО КРАЯ элемента УСП.
+    /// </summary>
+    public const string BottomEdge = "BOTTOM_EDGE";
+    /// <summary>
+    /// Наименование верхнего ребра у БОЛЬШЕГО КРАЯ элемента УСП.
+    /// </summary>
+    public const string TopEdge = "TOP_EDGE";
+    /// <summary>
+    /// Наименование первой боковой грани отверстия в продольном пазе элемента.
+    /// </summary>
+    public const string HoleSide0 = "HOLE_SIDE_0";
+    /// <summary>
+    /// Наименование второй боковой грани отверстия в продольном пазе элемента.
+    /// </summary>
+    public const string HoleSide1 = "HOLE_SIDE_1";
+
+
 }

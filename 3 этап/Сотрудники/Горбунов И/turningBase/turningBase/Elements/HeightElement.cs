@@ -339,7 +339,7 @@ public class HeightElement : UspElement
     private void SetFaces()
     {
         _holeFace = GetFace(Config.HeightHole);
-        _topFace = GetFace(Config.HeightTop);
-        _bottomFace = GetFace(Config.HeightBottom);
+        _topFace = GetFace(Config.TopFace);
+        _bottomFace = GetFace(Config.BottomFace);
     }
 }

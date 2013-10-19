@@ -113,6 +113,8 @@
     <Compile Include="Dialogs\milingBase.cs" />
     <Compile Include="Dialogs\tunnelslot.cs" />
     <Compile Include="ElementIntersection.cs" />
+    <Compile Include="Elements\SmallAngleElement.cs" />
+    <Compile Include="Elements\BigAngleElement.cs" />
     <Compile Include="Elements\HeightElement.cs" />
     <Compile Include="Elements\BaseElement.cs" />
     <Compile Include="Elements\JigPlank.cs" />
