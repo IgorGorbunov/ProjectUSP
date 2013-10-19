@@ -54,6 +54,10 @@ public class AngleSet : DialogProgpam
     private UIBlock _group1;// Block type: Group
     private UIBlock _label0;// Block type: Label
     private ListBox _listBox0;// Block type: List Box
+
+    //-----------------------------------------------------
+
+    private int _degrees, _minutes;
     
     //------------------------------------------------------------------------------
     //Constructor for NX Styler class
@@ -79,7 +83,7 @@ public class AngleSet : DialogProgpam
         {
             //---- Enter your exception handling code here -----
             Logger.WriteError(ex.ToString());
-            Message.Show("Block Styler", Message.MessageIcon.Error, ex);
+            Message.Show("Block Styler", Message.MessageType.Error, ex);
             throw;
         }
     }
@@ -98,7 +102,7 @@ public class AngleSet : DialogProgpam
         {
             //---- Enter your exception handling code here -----
             Logger.WriteError(ex.ToString());
-            Message.Show("Block Styler", Message.MessageIcon.Error, ex);
+            Message.Show("Block Styler", Message.MessageType.Error, ex);
         }
         return 0;
     }
@@ -128,7 +132,7 @@ public class AngleSet : DialogProgpam
         {
             //---- Enter your exception handling code here -----
             Logger.WriteError(ex.ToString());
-            Message.Show("Block Styler", Message.MessageIcon.Error, ex);
+            Message.Show("Block Styler", Message.MessageType.Error, ex);
         }
     }
     
@@ -142,12 +146,13 @@ public class AngleSet : DialogProgpam
         try
         {
             //---- Enter your callback code here -----
+            _group1.GetProperties().SetLogical("Expanded", false);
         }
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
             Logger.WriteError(ex.ToString());
-            Message.Show("Block Styler", Message.MessageIcon.Error, ex);
+            Message.Show("Block Styler", Message.MessageType.Error, ex);
         }
     }
     
@@ -166,7 +171,7 @@ public class AngleSet : DialogProgpam
             //---- Enter your exception handling code here -----
             errorCode = 1;
             Logger.WriteError(ex.ToString());
-            Message.Show("Block Styler", Message.MessageIcon.Error, ex);
+            Message.Show("Block Styler", Message.MessageType.Error, ex);
         }
         return errorCode;
     }
@@ -189,6 +194,8 @@ public class AngleSet : DialogProgpam
             else if(block == _button0)
             {
             //---------Enter your code here-----------
+                Logger.WriteLine("Нажат кнопка выбора типа ГОСТа.");
+                SetGostImages();
             }
             else if(block == _label0)
             {
@@ -203,7 +210,7 @@ public class AngleSet : DialogProgpam
         {
             //---- Enter your exception handling code here -----
             Logger.WriteError(ex.ToString());
-            Message.Show("Block Styler", Message.MessageIcon.Error, ex);
+            Message.Show("Block Styler", Message.MessageType.Error, ex);
         }
         return 0;
     }
@@ -224,7 +231,7 @@ public class AngleSet : DialogProgpam
             //---- Enter your exception handling code here -----
             errorCode = 1;
             Logger.WriteError(ex.ToString());
-            Message.Show("Block Styler", Message.MessageIcon.Error, ex);
+            Message.Show("Block Styler", Message.MessageType.Error, ex);
         }
         return errorCode;
     }
@@ -242,7 +249,7 @@ public class AngleSet : DialogProgpam
         {
             //---- Enter your exception handling code here -----
             Logger.WriteError(ex.ToString());
-            Message.Show("Block Styler", Message.MessageIcon.Error, ex);
+            Message.Show("Block Styler", Message.MessageType.Error, ex);
         }
         return 0;
     }
@@ -261,7 +268,7 @@ public class AngleSet : DialogProgpam
         {
             //---- Enter your exception handling code here -----
             Logger.WriteError(ex.ToString());
-            Message.Show("Block Styler", Message.MessageIcon.Error, ex);
+            Message.Show("Block Styler", Message.MessageType.Error, ex);
         }
     }
     
@@ -279,8 +286,52 @@ public class AngleSet : DialogProgpam
         {
             //---- Enter your exception handling code here -----
             Logger.WriteError(ex.ToString());
-            Message.Show("Block Styler", Message.MessageIcon.Error, ex);
+            Message.Show("Block Styler", Message.MessageType.Error, ex);
         }
     }
     
+    //----------------------------------------------------------------------------------
+
+    private void SetGostImages()
+    {
+        _degrees = _integer0.GetProperties().GetInteger("Value");
+        _minutes = _integer01.GetProperties().GetInteger("Value");
+        if (AngleIsGood(_degrees, _minutes))
+        {
+            
+        }
+    }
+
+    private bool AngleIsGood(int degrees, int minutes)
+    {
+        Logger.WriteLine("Введённый угол = " + degrees + " градусов и " + minutes + " минут.");
+        ConvertAngle(ref degrees, ref minutes);
+        if (degrees == 0 && minutes == 0)
+        {
+            const string mess = "Угол не может быть нулевым!";
+            Message.ShowError(mess);
+            return false;
+        }
+        if (degrees == 90)
+        {
+            Message.ShowError("Для набора прямого угла необходимо использовать корпусный элемент!");
+            return false;
+        }
+        if (degrees > 90 ||
+            degrees == 90 && minutes > 0)
+        {
+            Message.ShowWarn("Для набора тупого угла рациональнее использовать корпусный элемент для выдерживания прямого угла и последующий набор острого угла!");
+        }
+        return true;
+    }
+
+    private void ConvertAngle(ref int degrees, ref int minutes)
+    {
+        if (minutes != 60) 
+            return;
+        minutes = 0;
+        degrees++;
+        _integer0.GetProperties().SetInteger("Value", degrees);
+        _integer01.GetProperties().SetInteger("Value", minutes);
+    }
 }

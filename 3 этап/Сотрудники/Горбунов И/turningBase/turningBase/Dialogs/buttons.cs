@@ -1,4 +1,4 @@
-//==============================================================================
+Ôªø//==============================================================================
 //  WARNING!!  This file is overwritten by the Block UI Styler while generating
 //  the automation code. Any modifications to this file will be lost after
 //  generating the code again.
@@ -53,7 +53,7 @@ public class Buttons : DialogProgpam
     private UIBlock _button03;// Block type: Button
     private UIBlock _button04;// Block type: Button
     private UIBlock _button05;// Block type: Button
-    
+
     //------------------------------------------------------------------------------
     //Constructor for NX Styler class
     //------------------------------------------------------------------------------
@@ -77,7 +77,7 @@ public class Buttons : DialogProgpam
         {
             //---- Enter your exception handling code here -----
             Logger.WriteError(ex.ToString());
-            Message.Show("Œ¯Ë·Í‡!", Message.MessageIcon.Error, ex.ToString());
+            Message.Show("–û—à–∏–±–∫–∞!", Message.MessageType.Error, ex.ToString());
             throw;
         }
     }
@@ -105,7 +105,7 @@ public class Buttons : DialogProgpam
         {
             //---- Enter your exception handling code here -----
             Logger.WriteError(ex);
-            Message.Show("Block Styler", Message.MessageIcon.Error,
+            Message.Show("Block Styler", Message.MessageType.Error,
                                            ex.ToString());
         }
     }
@@ -125,7 +125,7 @@ public class Buttons : DialogProgpam
         {
             //---- Enter your exception handling code here -----
             Logger.WriteError(ex);
-            Message.Show("Block Styler", Message.MessageIcon.Error,
+            Message.Show("Block Styler", Message.MessageType.Error,
                                            ex.ToString());
         }
     }
@@ -145,7 +145,7 @@ public class Buttons : DialogProgpam
             //---- Enter your exception handling code here -----
             errorCode = 1;
             Logger.WriteError(ex);
-            Message.Show("Block Styler", Message.MessageIcon.Error,
+            Message.Show("Block Styler", Message.MessageType.Error,
                                            ex.ToString());
         }
         return errorCode;
@@ -195,7 +195,7 @@ public class Buttons : DialogProgpam
         {
             //---- Enter your exception handling code here -----
             Logger.WriteError(ex);
-            Message.Show("Block Styler", Message.MessageIcon.Error,
+            Message.Show("Block Styler", Message.MessageType.Error,
                                            ex.ToString());
         }
         return 0;
@@ -217,7 +217,7 @@ public class Buttons : DialogProgpam
             //---- Enter your exception handling code here -----
             errorCode = 1;
             Logger.WriteError(ex);
-            Message.Show("Block Styler", Message.MessageIcon.Error,
+            Message.Show("Block Styler", Message.MessageType.Error,
                                            ex.ToString());
         }
         return errorCode;
@@ -237,7 +237,7 @@ public class Buttons : DialogProgpam
         {
             //---- Enter your exception handling code here -----
             Logger.WriteError(ex);
-            Message.Show("Block Styler", Message.MessageIcon.Error,
+            Message.Show("Block Styler", Message.MessageType.Error,
                                            ex.ToString());
         }
     }
@@ -256,7 +256,7 @@ public class Buttons : DialogProgpam
         {
             //---- Enter your exception handling code here -----
             Logger.WriteError(ex);
-            Message.Show("Block Styler", Message.MessageIcon.Error,
+            Message.Show("Block Styler", Message.MessageType.Error,
                                            ex.ToString());
         }
     }

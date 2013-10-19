@@ -125,7 +125,7 @@ public sealed class HeightSet : DialogProgpam
         {
             //---- Enter your exception handling code here -----
             Logger.WriteError(ex.ToString());
-            Message.Show("Block Styler", Message.MessageIcon.Error, ex);
+            Message.Show("Block Styler", Message.MessageType.Error, ex);
         }
     }
     
@@ -150,7 +150,7 @@ public sealed class HeightSet : DialogProgpam
         {
             //---- Enter your exception handling code here -----
             Logger.WriteError(ex.ToString());
-            Message.Show("Block Styler", Message.MessageIcon.Error, ex);
+            Message.Show("Block Styler", Message.MessageType.Error, ex);
         }
     }
     
@@ -169,7 +169,7 @@ public sealed class HeightSet : DialogProgpam
             //---- Enter your exception handling code here -----
             errorCode = 1;
             Logger.WriteError(ex.ToString());
-            Message.Show("Block Styler", Message.MessageIcon.Error, ex);
+            Message.Show("Block Styler", Message.MessageType.Error, ex);
         }
         return errorCode;
     }
@@ -216,7 +216,7 @@ public sealed class HeightSet : DialogProgpam
         {
             //---- Enter your exception handling code here -----
             Logger.WriteError(ex.ToString());
-            Message.Show("Block Styler", Message.MessageIcon.Error, ex);
+            Message.Show("Block Styler", Message.MessageType.Error, ex);
         }
         return 0;
     }
@@ -237,7 +237,7 @@ public sealed class HeightSet : DialogProgpam
             //---- Enter your exception handling code here -----
             errorCode = 1;
             Logger.WriteError(ex.ToString());
-            Message.Show("Block Styler", Message.MessageIcon.Error, ex);
+            Message.Show("Block Styler", Message.MessageType.Error, ex);
         }
         return errorCode;
     }
@@ -256,7 +256,7 @@ public sealed class HeightSet : DialogProgpam
         {
             //---- Enter your exception handling code here -----
             Logger.WriteError(ex.ToString());
-            Message.Show("Block Styler", Message.MessageIcon.Error, ex);
+            Message.Show("Block Styler", Message.MessageType.Error, ex);
         }
     }
     
@@ -274,7 +274,7 @@ public sealed class HeightSet : DialogProgpam
         {
             //---- Enter your exception handling code here -----
             Logger.WriteError(ex.ToString());
-            Message.Show("Block Styler", Message.MessageIcon.Error, ex);
+            Message.Show("Block Styler", Message.MessageType.Error, ex);
         }
     }
     

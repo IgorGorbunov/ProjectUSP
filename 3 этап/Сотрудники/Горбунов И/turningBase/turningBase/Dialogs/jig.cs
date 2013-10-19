@@ -115,7 +115,7 @@ public sealed class Jig : DialogProgpam
         {
             //---- Enter your exception handling code here -----
             Logger.WriteError(ex.ToString());
-            Message.Show("Ошибка!", Message.MessageIcon.Error, ex.ToString());
+            Message.Show("Ошибка!", Message.MessageType.Error, ex.ToString());
             throw;
         }
     }
@@ -177,7 +177,7 @@ public sealed class Jig : DialogProgpam
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            Message.Show("Block Styler", Message.MessageIcon.Error,
+            Message.Show("Block Styler", Message.MessageType.Error,
                                            ex.ToString());
         }
     }

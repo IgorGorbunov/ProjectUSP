@@ -16,7 +16,7 @@ public sealed class Program
             SqlOracle.BuildConnectionString("ktc", "ktc", "BASEEOI");
 
 #if(DEBUG)
-            Message.Show("Дебаггг", Message.MessageIcon.Warning, "DEBUG!");
+            Message.Show("Дебаггг", Message.MessageType.Warning, "DEBUG!");
 #endif
 
             //_startProgram = new TurningBase();

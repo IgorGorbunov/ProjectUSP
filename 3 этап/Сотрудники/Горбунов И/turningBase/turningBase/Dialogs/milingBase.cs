@@ -217,7 +217,7 @@ public sealed class MilingBase : DialogProgpam
         {
             //---- Enter your exception handling code here -----
             Logger.WriteError(ex.ToString());
-            Message.Show("Block Styler", Message.MessageIcon.Error, ex);
+            Message.Show("Block Styler", Message.MessageType.Error, ex);
         }
     }
 
@@ -251,7 +251,7 @@ public sealed class MilingBase : DialogProgpam
         {
             //---- Enter your exception handling code here -----
             Logger.WriteError(ex.ToString());
-            Message.Show("Block Styler", Message.MessageIcon.Error, ex);
+            Message.Show("Block Styler", Message.MessageType.Error, ex);
         }
     }
 
@@ -271,7 +271,7 @@ public sealed class MilingBase : DialogProgpam
             //---- Enter your exception handling code here -----
             errorCode = 1;
             Logger.WriteError(ex.ToString());
-            Message.Show("Block Styler", Message.MessageIcon.Error, ex);
+            Message.Show("Block Styler", Message.MessageType.Error, ex);
         }
         return errorCode;
     }
@@ -367,7 +367,7 @@ public sealed class MilingBase : DialogProgpam
         {
             //---- Enter your exception handling code here -----
             Logger.WriteError(ex.ToString());
-            Message.Show("Block Styler", Message.MessageIcon.Error, ex);
+            Message.Show("Block Styler", Message.MessageType.Error, ex);
         }
         return 0;
     }
@@ -389,7 +389,7 @@ public sealed class MilingBase : DialogProgpam
             //---- Enter your exception handling code here -----
             errorCode = 1;
             Logger.WriteError(ex.ToString());
-            Message.Show("Block Styler", Message.MessageIcon.Error, ex);
+            Message.Show("Block Styler", Message.MessageType.Error, ex);
         }
         return errorCode;
     }
@@ -427,7 +427,7 @@ public sealed class MilingBase : DialogProgpam
         {
             //---- Enter your exception handling code here -----
             Logger.WriteError(ex.ToString());
-            Message.Show("Block Styler", Message.MessageIcon.Error, ex);
+            Message.Show("Block Styler", Message.MessageType.Error, ex);
         }
     }
 
@@ -445,7 +445,7 @@ public sealed class MilingBase : DialogProgpam
         {
             //---- Enter your exception handling code here -----
             Logger.WriteError(ex.ToString());
-            Message.Show("Block Styler", Message.MessageIcon.Error, ex);
+            Message.Show("Block Styler", Message.MessageType.Error, ex);
         }
     }
 
@@ -514,7 +514,7 @@ public sealed class MilingBase : DialogProgpam
         string mess = "Выбрана грань базы!" + Environment.NewLine + 
                       "Выберите грань на одном (любом) элементе сборки.";
         Logger.WriteWarning(mess);
-        Message.Show("Ошибка!", Message.MessageIcon.Error, mess);
+        Message.Show("Ошибка!", Message.MessageType.Error, mess);
         _alignFace1 = null;
         UnSelectObjects(block);
         block.Focus();
@@ -533,7 +533,7 @@ public sealed class MilingBase : DialogProgpam
         string mess = "Выбрана грань элемента сборки!" + Environment.NewLine +
                       "Выберите грань базы.";
         Logger.WriteWarning(mess);
-        Message.Show("Ошибка!", Message.MessageIcon.Error, mess);
+        Message.Show("Ошибка!", Message.MessageType.Error, mess);
         _alignFace1 = null;
         UnSelectObjects(block);
         block.Focus();
@@ -595,7 +595,7 @@ public sealed class MilingBase : DialogProgpam
             SetEnable(_parallelGroup, false);
             SetEnable(_distanceGroup, false);
             const string mess = "Базовая плита по заданным параметрам не найдена!";
-            Message.Show("Ошибка!", Message.MessageIcon.Error, mess);
+            Message.Show("Ошибка!", Message.MessageType.Error, mess);
             Logger.WriteWarning(mess);
         }
     }
@@ -1069,7 +1069,7 @@ public sealed class MilingBase : DialogProgpam
         else
         {
             const string mess = "Базовая плита по заданным параметрам не найдена!";
-            Message.Show("Ошибка!", Message.MessageIcon.Error, mess);
+            Message.Show("Ошибка!", Message.MessageType.Error, mess);
             Logger.WriteWarning(mess);
         }
     }
