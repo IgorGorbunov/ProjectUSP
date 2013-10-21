@@ -187,7 +187,7 @@ public class Buttons : DialogProgpam
             else if (block == _button05)
             {
                 //---------Enter your code here-----------
-                dialogProgpam = new AngleSet();
+                dialogProgpam = new AngleSet(new Catalog12());
             }
             dialogProgpam.Show();
         }

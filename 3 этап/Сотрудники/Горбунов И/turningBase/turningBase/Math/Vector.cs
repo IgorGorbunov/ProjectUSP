@@ -35,6 +35,19 @@ public class Vector
         }
     }
     /// <summary>
+    /// Возвращает окрестностную точку начальной точки вектора.
+    /// </summary>
+    public Point3d SurroundingPoint
+    {
+        get
+        {
+            double x = Direction1.X * (Length / 50) + Start.X;
+            double y = Direction1.Y * (Length / 50) + Start.Y;
+            double z = Direction1.Z * (Length / 50) + Start.Z;
+            return new Point3d(x, y, z);
+        }
+    }
+    /// <summary>
     /// Возвращает длину вектора.
     /// </summary>
     public double Length

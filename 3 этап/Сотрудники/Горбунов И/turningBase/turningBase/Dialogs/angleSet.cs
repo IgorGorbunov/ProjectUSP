@@ -35,6 +35,7 @@
 //These imports are needed for the following template code
 //------------------------------------------------------------------------------
 using System;
+using System.Collections.Generic;
 using System.IO;
 using NXOpen.BlockStyler;
 
@@ -57,15 +58,19 @@ public class AngleSet : DialogProgpam
 
     //-----------------------------------------------------
 
+    private Catalog _catalog;
+
     private int _degrees, _minutes;
+    private bool _angleIsObtuse;
     
     //------------------------------------------------------------------------------
     //Constructor for NX Styler class
     //------------------------------------------------------------------------------
-    public AngleSet()
+    public AngleSet(Catalog catalog)
     {
         try
         {
+            _catalog = catalog;
             _theDialogName = AppDomain.CurrentDomain.BaseDirectory +
                              ConfigDlx.DlxFolder + Path.DirectorySeparatorChar + ConfigDlx.DlxAngle; 
 
@@ -298,7 +303,15 @@ public class AngleSet : DialogProgpam
         _minutes = _integer01.GetProperties().GetInteger("Value");
         if (AngleIsGood(_degrees, _minutes))
         {
-            
+            if (_angleIsObtuse)
+            {
+                List<string> gosts = new List<string>();
+                gosts = SqlUspBigAngleElems.GetGosts_ObtuseAngle(_catalog);
+                foreach (string gost in gosts)
+                {
+                    Message.Tst(gost);
+                }
+            }
         }
     }
 
@@ -312,16 +325,19 @@ public class AngleSet : DialogProgpam
             Message.ShowError(mess);
             return false;
         }
+        if (degrees > 90 ||
+            degrees == 90 && minutes > 0)
+        {
+            _angleIsObtuse = true;
+            Message.ShowWarn("Для набора тупого угла рациональнее использовать корпусный элемент для выдерживания прямого угла и последующий набор острого угла!");
+            return true;
+        }
         if (degrees == 90)
         {
             Message.ShowError("Для набора прямого угла необходимо использовать корпусный элемент!");
             return false;
         }
-        if (degrees > 90 ||
-            degrees == 90 && minutes > 0)
-        {
-            Message.ShowWarn("Для набора тупого угла рациональнее использовать корпусный элемент для выдерживания прямого угла и последующий набор острого угла!");
-        }
+        
         return true;
     }
 

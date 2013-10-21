@@ -34,6 +34,7 @@ namespace img_gallery
             // mainPanel
             // 
             this.mainPanel.AutoScroll = true;
+            this.mainPanel.BackColor = System.Drawing.Color.White;
             this.mainPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mainPanel.Location = new System.Drawing.Point(0, 0);
             this.mainPanel.Name = "mainPanel";

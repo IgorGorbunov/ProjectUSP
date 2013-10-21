@@ -20,11 +20,11 @@ public static class SqlUspJigs
         parametrs.Add(par2, diametr.ToString());
 
         string query = Sql.GetBegin(SqlTabUspData.CTitle);
-        query += SqlUspElement.From + Sql.addTable(SqlTabJigData.Name) + Sql.Where;
+        query += SqlUspElement.From + Sql.AddTable(SqlTabJigData.Name) + Sql.Where;
         query += SqlTabUspData.CInnerDiametr + Sql.Eq + Sql.GetPar(par2);
         query += Sql.GetNewCond(SqlTabUspData.CCatalog + Sql.Eq + Sql.GetPar(par1));
         query += Sql.GetNewCond(SqlTabUspData.CGost + Sql.Eq + SqlTabJigData.CGost);
-        query += Sql.orderBy(SqlTabUspData.CWeight);
+        query += Sql.OrderBy(SqlTabUspData.CWeight);
         query = Sql.GetFirst(query);
 
         string str;
@@ -49,7 +49,7 @@ public static class SqlUspJigs
                  Sql.GetBegin(SqlTabUspData.CPicture, SqlTabUspData.CName, SqlTabUspData.CGost);
         query += ",ROW_NUMBER() OVER (partition BY " + SqlTabUspData.CName + "," +
                  SqlTabUspData.CGost + " ORDER BY 1) RN ";
-        query += SqlUspElement.From + Sql.addTable(SqlTabJigData.Name) + Sql.Where;
+        query += SqlUspElement.From + Sql.AddTable(SqlTabJigData.Name) + Sql.Where;
         query += SqlTabUspData.CCatalog + Sql.Eq + Sql.GetPar(cat);
         query += Sql.GetNewCond(SqlTabUspData.CGost + Sql.Eq + SqlTabJigData.CGost);
         query += ") WHERE RN = 1";

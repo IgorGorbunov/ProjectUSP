@@ -70,14 +70,19 @@ public static class Sql
         return "TO_NUMBER(" + str + ")";
     }
 
-    public static string orderBy(string column)
+    public static string OrderBy(string column)
     {
         return " ORDER BY " + column;
     }
 
-    public static string addTable(string table)
+    public static string AddTable(string table)
     {
         return "," + table;
+    }
+
+    public static string Equal(object param1, object param2)
+    {
+        return param1.ToString() + Eq + param2.ToString();
     }
 }
 

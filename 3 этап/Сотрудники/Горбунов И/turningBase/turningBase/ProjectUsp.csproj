@@ -159,7 +159,9 @@
     <Compile Include="NX\NXFunctions.cs" />
     <Compile Include="Replacement.cs" />
     <Compile Include="Sql - мой\Sql.cs" />
+    <Compile Include="SqlAccess\SqlUspBigAngleElems.cs" />
     <Compile Include="SqlAccess\SqlUspJigs.cs" />
+    <Compile Include="SqlTables\SqlTabBigAngleData.cs" />
     <Compile Include="SqlTables\SqlTabJigData.cs" />
     <Compile Include="_Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

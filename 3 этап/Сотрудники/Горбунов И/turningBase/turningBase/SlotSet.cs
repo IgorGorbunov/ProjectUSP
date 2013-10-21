@@ -273,9 +273,9 @@ public sealed class SlotSet
                 if (!IsSlot(vec1, vec2, out slotWidth, edges[i], edges[j])) 
                     continue;
 
-                if (!HasCenterPointOnFace(edges[i], edges[j]))
+                if (!HasSurrPointOnFace(edges[i], edges[j]))
                     continue;
-
+                
 
                 Edge edgeLong1 = edges[i];
                 Point3d start, end;
@@ -357,9 +357,12 @@ public sealed class SlotSet
     {
         Edge[] edges = BottomFace.GetEdges();
         _nearestEdges = new Dictionary<Edge, double>();
+
         foreach (Edge edge in edges)
         {
-            if (edge.SolidEdgeType != Edge.EdgeType.Linear) continue;
+            if (edge.SolidEdgeType != Edge.EdgeType.Linear) 
+                continue;
+
 
             Point3d firstPoint, secondPoint;
             edge.GetVertices(out firstPoint, out  secondPoint);
@@ -560,24 +563,22 @@ public sealed class SlotSet
         return alignment > 2;
     }
 
-    private bool HasCenterPointOnFace(Edge edge1, Edge edge2)
+    private bool HasSurrPointOnFace(Edge edge1, Edge edge2)
     {
-        Point3d centerPoint = GetCenterPoint(edge1, edge2);
+        Point3d surrPoint = GetSurroundingPoint(edge1, edge2);
 
-        double[] centerCoords = new double[3];
-        centerCoords[0] = centerPoint.X;
-        centerCoords[1] = centerPoint.Y;
-        centerCoords[2] = centerPoint.Z;
+        double[] surrCoords = new double[3];
+        surrCoords[0] = surrPoint.X;
+        surrCoords[1] = surrPoint.Y;
+        surrCoords[2] = surrPoint.Z;
 
         int status;
-        Config.TheUfSession.Modl.AskPointContainment(centerCoords, BottomFace.Tag, out status);
+        Config.TheUfSession.Modl.AskPointContainment(surrCoords, BottomFace.Tag, out status);
         return status == 1;
     }
 
-    private Point3d GetCenterPoint(Edge edge1, Edge edge2)
+    private Point3d GetSurroundingPoint(Edge edge1, Edge edge2)
     {
-        //метод определения средней точки паза основан на нахождении максимальной по длине
-        //диагонали в пазовом параллепипиде и его середины
         Point3d point1, point2, point3, point4;
         edge1.GetVertices(out point1, out point2);
         edge2.GetVertices(out point3, out point4);
@@ -598,7 +599,7 @@ public sealed class SlotSet
             maxLength = diagonal.Length;
         }
 
-        return maxDiagonal.Center;
+        return maxDiagonal.SurroundingPoint;
     }
 
     //не используется

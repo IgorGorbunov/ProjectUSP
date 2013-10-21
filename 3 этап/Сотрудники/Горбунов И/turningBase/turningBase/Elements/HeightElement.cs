@@ -235,6 +235,7 @@ public class HeightElement : UspElement
                 projectSurface = _bottomSlotSetSurface;
                 Point3d pointToProject = GetPointOnHoleEdge();
                 Point3d point = projectSurface.GetProection(pointToProject);
+                
                 SetSlot(point, ref _bottomSlot, _bottomSlotSetSurface);
             }
         }
