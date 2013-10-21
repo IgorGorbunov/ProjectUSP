@@ -42,11 +42,11 @@ public static class SqlUspJigs
         param.Add(cat, ((int)catalog.CatalogUsp).ToString());
 
 
-        string query = Sql.GetBegin(SqlTabUspData.CPicture, SqlTabUspData.CName);
+        string query = Sql.GetBegin(SqlTabUspData.CImage, SqlTabUspData.CName);
         query += ",GOST ";
         query += Sql.From;
         query += "(" +
-                 Sql.GetBegin(SqlTabUspData.CPicture, SqlTabUspData.CName, SqlTabUspData.CGost);
+                 Sql.GetBegin(SqlTabUspData.CImage, SqlTabUspData.CName, SqlTabUspData.CGost);
         query += ",ROW_NUMBER() OVER (partition BY " + SqlTabUspData.CName + "," +
                  SqlTabUspData.CGost + " ORDER BY 1) RN ";
         query += SqlUspElement.From + Sql.AddTable(SqlTabJigData.Name) + Sql.Where;

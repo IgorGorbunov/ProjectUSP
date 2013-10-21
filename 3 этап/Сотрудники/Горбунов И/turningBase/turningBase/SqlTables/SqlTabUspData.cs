@@ -59,7 +59,7 @@ public static class SqlTabUspData
     /// <summary>
     /// Название столбца с картинками элементов.
     /// </summary>
-    public const string CPicture = "DET";
+    public const string CImage = "DET";
 
     /// <summary>
     /// Номера имён ГОСТов деталей.

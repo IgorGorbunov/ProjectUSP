@@ -28,13 +28,14 @@ namespace img_gallery
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ImageForm));
             this.mainPanel = new System.Windows.Forms.Panel();
             this.SuspendLayout();
             // 
             // mainPanel
             // 
             this.mainPanel.AutoScroll = true;
-            this.mainPanel.BackColor = System.Drawing.Color.White;
+            this.mainPanel.BackColor = System.Drawing.Color.Gainsboro;
             this.mainPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mainPanel.Location = new System.Drawing.Point(0, 0);
             this.mainPanel.Name = "mainPanel";
@@ -47,7 +48,9 @@ namespace img_gallery
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(452, 329);
             this.Controls.Add(this.mainPanel);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ImageForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "ImageForm";
             this.SizeChanged += new System.EventHandler(this.ImageForm_SizeChanged);
             this.ResumeLayout(false);

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.OracleClient;
+using System.Drawing;
 
 /// <summary>
 /// Класс c методами типа Select
@@ -155,6 +156,53 @@ partial class SqlOracle
             value = ds.Tables[0].Rows.Count == 0 ? null : ds.Tables[0];
 
             ProcessSuccessData(cmdQuery, paramsDict, value);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            ProcessUnSuccess(cmdQuery, paramsDict, ex);
+            return false;
+        }
+        finally
+        {
+            _close();
+        }
+    }
+
+    /// <summary>
+    /// Метод, реализующий параметризированный select-запрос картинки.
+    /// </summary>
+    /// <param name="cmdQuery">SQL-текст запроса.</param>
+    /// <param name="paramsDict">Dictionary c параметризаторами запроса.</param>
+    /// <param name="value">Результирующие изображение.</param>
+    /// <returns></returns>
+    public static bool SelImage(string cmdQuery, Dictionary<string, string> paramsDict,
+                                out Image value)
+    {
+        value = null;
+        byte[] bytes = null;
+        try
+        {
+            _open();
+
+            OracleCommand cmd = new OracleCommand(cmdQuery, _conn);
+            foreach (KeyValuePair<string, string> pair in paramsDict)
+            {
+                cmd.Parameters.AddWithValue(":" + pair.Key, pair.Value);
+            }
+
+            OracleDataReader reader = cmd.ExecuteReader();
+            if (reader.Read())
+            {
+                bytes = (byte[]) reader.GetValue(0);
+            }
+
+            reader.Close();
+            cmd.Dispose();
+
+            value = Instr.GetImage(bytes);
+
+            ProcessSuccess(cmdQuery, paramsDict, value);
             return true;
         }
         catch (Exception ex)

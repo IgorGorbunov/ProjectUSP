@@ -36,8 +36,12 @@
 //------------------------------------------------------------------------------
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
+using System.Windows.Forms;
 using NXOpen.BlockStyler;
+using img_gallery;
+using ListBox = NXOpen.BlockStyler.ListBox;
 
 //------------------------------------------------------------------------------
 //Represents Block Styler application class
@@ -303,16 +307,41 @@ public class AngleSet : DialogProgpam
         _minutes = _integer01.GetProperties().GetInteger("Value");
         if (AngleIsGood(_degrees, _minutes))
         {
+            Dictionary<Image, string> images = new Dictionary<Image, string>();
             if (_angleIsObtuse)
             {
                 List<string> gosts = new List<string>();
-                gosts = SqlUspBigAngleElems.GetGosts_ObtuseAngle(_catalog);
-                foreach (string gost in gosts)
+                try
                 {
-                    Message.Tst(gost);
+                    gosts = SqlUspBigAngleElems.GetGosts_ObtuseAngle(_catalog);
+
+                    foreach (string gost in gosts)
+                    {
+                        Image image = SqlUspElement.GetImage(gost);
+                        string name = SqlUspElement.GetName(gost);
+                        images.Add(image, "ГОСТ " + gost + " " + name);
+                    }
+                }
+                catch (TimeoutException)
+                {
+                    Message.Timeout();
+                    goto Exit;
                 }
             }
+            img_gallery.ImageForm form = new ImageForm(images, MouseClickEventHandler);
+            form.Name = "Типы элементов для набора угла";
+            form.DrawItems();
+            form.ShowDialog();
         }
+
+    Exit:
+        ;
+
+    }
+
+    private void MouseClickEventHandler(object sender, MouseEventArgs mouseEventArgs)
+    {
+        throw new NotImplementedException();
     }
 
     private bool AngleIsGood(int degrees, int minutes)

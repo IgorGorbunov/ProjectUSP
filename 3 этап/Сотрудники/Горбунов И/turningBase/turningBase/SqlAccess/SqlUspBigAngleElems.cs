@@ -6,8 +6,13 @@ using System.Collections.Generic;
 /// </summary>
 static class SqlUspBigAngleElems
 {
-    private static string _from = Sql.From + SqlTabBigAngleData.Name;
+    private const string _FROM = Sql.From + SqlTabBigAngleData.Name;
 
+    /// <summary>
+    /// Возвращает список ГОСТов для набора тупого большего угла.
+    /// </summary>
+    /// <param name="catalog">Каталог элементов УСП.</param>
+    /// <returns></returns>
     public static List<string> GetGosts_ObtuseAngle(Catalog catalog)
     {
         Dictionary<string, string> paramDict = new Dictionary<string, string>();
@@ -15,7 +20,7 @@ static class SqlUspBigAngleElems
         paramDict.Add("CAT", cat);
         List<string> gosts;
 
-        string from = _from + Sql.AddTable(SqlTabUspData.Name);
+        string from = _FROM + Sql.AddTable(SqlTabUspData.Name);
         string query = Sql.GetFirst(Sql.GetBegin(SqlTabBigAngleData.CGost) + from + Sql.Where +
             Sql.Equal(SqlTabUspData.CCatalog, ":CAT") +
             Sql.GetNewCond(Sql.Equal(SqlTabUspData.CGost, SqlTabBigAngleData.CGost)) +

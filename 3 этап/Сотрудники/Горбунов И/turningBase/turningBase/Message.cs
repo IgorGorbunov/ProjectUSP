@@ -116,5 +116,10 @@ public static class Message
 
         Config.TheUi.NXMessageBox.Show(title, dialog, mess == null ? "null" : mess.ToString());
     }
+
+    public static void Timeout()
+    {
+        ShowError("Соединение с БД прервано!");
+    }
 }
 

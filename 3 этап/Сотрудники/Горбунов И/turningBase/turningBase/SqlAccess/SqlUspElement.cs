@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
 
 /// <summary>
 /// Класс запросов информации для детали.
@@ -37,6 +38,55 @@ static class SqlUspElement
         }
         throw new TimeoutException();
     }
+    /// <summary>
+    /// Возвращает схематичное изображение элемента УСП.
+    /// </summary>
+    /// <param name="gost">ГОСТ элемента УСП.</param>
+    /// <returns></returns>
+    public static Image GetImage(string gost)
+    {
+        Dictionary<string, string> paramDict = new Dictionary<string, string>();
+        paramDict.Add("gost", gost);
+
+        string query = Sql.GetFirst("select " + SqlTabUspData.CTitle + " from " + SqlTabUspData.Name +
+                           " where " + SqlTabUspData.CGost + " = :gost");
+
+        string title;
+        if (SqlOracle.Sel(query, paramDict, out title))
+        {
+            paramDict.Clear();
+            paramDict.Add("title", title);
+            query = "select " + SqlTabUspData.CImage + " from " + SqlTabUspData.Name +
+                           " where " + SqlTabUspData.CTitle + " = :title";
+            Image image;
+            if (SqlOracle.SelImage(query, paramDict, out image))
+            {
+                return image;
+            }
+        }
+        throw new TimeoutException();
+    }
+    /// <summary>
+    /// Возвращает наименование ГОСТа.
+    /// </summary>
+    /// <param name="gost">Обозначение ГОСТа.</param>
+    /// <returns></returns>
+    public static string GetName(string gost)
+    {
+        Dictionary<string, string> paramDict = new Dictionary<string, string>();
+        paramDict.Add("gost", gost);
+
+        const string query = "select " + SqlTabUspData.CName + " from " + SqlTabUspData.Name +
+                             " where " + SqlTabUspData.CGost + " = :gost";
+        string name;
+        if (SqlOracle.Sel(query, paramDict, out name))
+        {
+            return name;
+        }
+        throw new TimeoutException();
+    }
+
+
 
     /// <summary>
     /// Возвращает пазовые болты по выборке обозначение-длина.
