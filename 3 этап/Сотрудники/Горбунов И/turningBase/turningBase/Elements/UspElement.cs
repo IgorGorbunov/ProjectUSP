@@ -63,9 +63,35 @@ public class UspElement
     /// <summary>
     /// Возвращает обозначение элемента УСП.
     /// </summary>
-    private string Title
+    public string Title
     {
         get { return GetTitle(); }
+    }
+    /// <summary>
+    /// Возвращает ГОСТ элемента УСП.
+    /// </summary>
+    public string Gost
+    {
+        get { return SqlUspElement.GetGost(Title); }
+    }
+    /// <summary>
+    /// Возвращает true, если элемент для набора большого угла.
+    /// </summary>
+    public bool IsBiqAngleElement
+    {
+        get
+        {
+            string gost = Gost;
+            List<string> gosts = SqlUspBigAngleElems.GetGosts(UspCatalog);
+            foreach (string s in gosts)
+            {
+                if (s == gost)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 
     private readonly Component _component;
@@ -149,13 +175,12 @@ public class UspElement
         }
         return null;
     }
-
     /// <summary>
     /// Возвращает ребро элемента по его имени.
     /// </summary>
     /// <param name="edgeName">Обозначение ребра.</param>
     /// <returns></returns>
-    public Edge GetEdge(string edgeName)
+    protected Edge GetEdge(string edgeName)
     {
         Edge[] edges = _body.GetEdges();
         foreach (Edge edge in edges)
@@ -167,6 +192,27 @@ public class UspElement
         }
         return null;
     }
+
+    public virtual void AttachToMe(SmallAngleElement smallAngleElement)
+    {
+        
+    }
+
+    public Slot GetSlot(Edge edge)
+    {
+        Point3d point1, point2;
+        edge.GetVertices(out point1, out point2);
+
+        SlotSet slotSet = new SlotSet(this);
+        slotSet.SetPoint(point1);
+
+        if (!slotSet.HaveNearestBottomFace())
+            return null;
+
+        Slot slot = slotSet.GetNearestSlot();
+        return slot;
+    }
+
 
 
     /// <summary>

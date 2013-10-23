@@ -44,6 +44,11 @@ public sealed class SlotSet
     {
         get
         {
+            if (_bottomFace == null)
+            {
+                HaveNearestBottomFace();
+                SetNearestEdges();
+            }
             return _bottomFace;
         }
     }
@@ -77,6 +82,7 @@ public sealed class SlotSet
     /// Инициализирует новый экземпляр класса для заданного элемента УСП, с заданной гранью.
     /// </summary>
     /// <param name="element">Элемент УСП, на котором существует набор пазов.</param>
+    /// <param name="face">НГП пазов.</param>
     public SlotSet(UspElement element, Face face)
     {
         _element = element;
@@ -275,6 +281,7 @@ public sealed class SlotSet
 
                 if (!HasSurrPointOnFace(edges[i], edges[j]))
                     continue;
+
                 
 
                 Edge edgeLong1 = edges[i];
@@ -484,7 +491,8 @@ public sealed class SlotSet
                     {
                         double length = tempVec.Length;
                         if (Config.Round(length) == _element.UspCatalog.PSlotWidth ||
-                            Config.Round(length) == _element.UspCatalog.SlotWidthB)
+                            Config.Round(length) == _element.UspCatalog.SlotWidthB ||
+                            Config.Round(length) == 11.2) //расстояние П-паза в элементах набора малого угла в 12ом пазе
                         {
                             distance = length;
                             nPerpendicular++;

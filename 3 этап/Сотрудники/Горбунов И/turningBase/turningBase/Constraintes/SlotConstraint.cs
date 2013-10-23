@@ -34,6 +34,18 @@ class SlotConstraint
         Config.TheUfSession.Modl.Update();
     }
     /// <summary>
+    /// Производит соединение вдоль паза по рёбрам первого паза.
+    /// </summary>
+    public void SetCenterEdgeConstraint()
+    {
+        _centerConstr.Create(_firstSlot.ParentComponent,
+                            _firstSlot.EdgeLong1, _firstSlot.EdgeLong2,
+                            _secondSlot.ParentComponent,
+                            _secondSlot.SideFace1, _secondSlot.SideFace2);
+
+        Config.TheUfSession.Modl.Update();
+    }
+    /// <summary>
     /// Реверс детали УСП вдоль паза.
     /// </summary>
     public void Reverse()

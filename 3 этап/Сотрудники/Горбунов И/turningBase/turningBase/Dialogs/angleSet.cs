@@ -156,6 +156,8 @@ public class AngleSet : DialogProgpam
         {
             //---- Enter your callback code here -----
             _group1.GetProperties().SetLogical("Expanded", false);
+            _integer0.GetProperties().SetInteger("Value", 0);
+            _integer01.GetProperties().SetInteger("Value", 0);
         }
         catch (Exception ex)
         {
@@ -307,10 +309,10 @@ public class AngleSet : DialogProgpam
         _minutes = _integer01.GetProperties().GetInteger("Value");
         if (AngleIsGood(_degrees, _minutes))
         {
+            List<string> gosts = new List<string>();
             Dictionary<Image, string> images = new Dictionary<Image, string>();
             if (_angleIsObtuse)
             {
-                List<string> gosts = new List<string>();
                 try
                 {
                     gosts = SqlUspBigAngleElems.GetGosts_ObtuseAngle(_catalog);
@@ -328,7 +330,26 @@ public class AngleSet : DialogProgpam
                     goto Exit;
                 }
             }
-            img_gallery.ImageForm form = new ImageForm(images, MouseClickEventHandler);
+            else
+            {
+                try
+                {
+                    gosts = SqlUspBigAngleElems.GetGosts_AcuteAngle(_catalog);
+
+                    foreach (string gost in gosts)
+                    {
+                        Image image = SqlUspElement.GetImage(gost);
+                        string name = SqlUspElement.GetName(gost);
+                        images.Add(image, "ГОСТ " + gost + " " + name);
+                    }
+                }
+                catch (TimeoutException)
+                {
+                    Message.Timeout();
+                    goto Exit;
+                }
+            }
+            ImageForm form = new ImageForm(images, MouseClickEventHandler);
             form.Name = "Типы элементов для набора угла";
             form.DrawItems();
             form.ShowDialog();
@@ -337,6 +358,54 @@ public class AngleSet : DialogProgpam
     Exit:
         ;
 
+        SetElements();
+    }
+
+    private void SetElements()
+    {
+        //Dictionary<Element, byte> eDictionary = new Dictionary<Element, byte>();
+        //eDictionary = solution.getMainSolution(0);
+
+        List<string> list = new List<string>();
+        //foreach (KeyValuePair<Element, byte> keyValuePair in eDictionary)
+        //{
+        //    for (int i = 0; i < keyValuePair.Value; i++)
+        //    {
+        //        list.Add(keyValuePair.Key.Obozn);
+        //    }
+        //}
+        list.Add("7033-2606");
+        list.Add("7033-2503");
+        list.Add("7033-2504");
+        LoadParts(list);
+    }
+
+    private void LoadParts(List<string> list)
+    {
+        bool notFirst = false;
+        UspElement prevElement = null;
+        foreach (string s in list)
+        {
+            Katalog2005.Algorithm.SpecialFunctions.LoadPart(s, false);
+            UspElement element = new SmallAngleElement(Katalog2005.Algorithm.SpecialFunctions.LoadedPart);
+
+            if (element.IsBiqAngleElement)
+            {
+                element = new BigAngleElement(Katalog2005.Algorithm.SpecialFunctions.LoadedPart);
+            }
+            else
+            {
+                element = new SmallAngleElement(Katalog2005.Algorithm.SpecialFunctions.LoadedPart);
+            }
+
+            if (notFirst)
+            {
+                SmallAngleElement smallAngleElement = new SmallAngleElement(element.ElementComponent);
+                prevElement.AttachToMe(smallAngleElement);
+            }
+            prevElement = element;
+            notFirst = true;
+        }
     }
 
     private void MouseClickEventHandler(object sender, MouseEventArgs mouseEventArgs)
@@ -366,7 +435,7 @@ public class AngleSet : DialogProgpam
             Message.ShowError("Для набора прямого угла необходимо использовать корпусный элемент!");
             return false;
         }
-        
+        _angleIsObtuse = false;
         return true;
     }
 

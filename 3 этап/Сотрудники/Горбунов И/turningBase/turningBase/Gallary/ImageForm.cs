@@ -35,8 +35,8 @@ namespace img_gallery
             InitializeComponent();
         }
 
-        private const int _HEIGHT = 170;
-        private const int _WIDTH = 150;
+        private const int _HEIGHT = 220;
+        private const int _WIDTH = 180;
         private const int _DIFF = 10;
 
         /// <summary>

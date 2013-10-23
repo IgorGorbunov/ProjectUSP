@@ -85,6 +85,25 @@ static class SqlUspElement
         }
         throw new TimeoutException();
     }
+    /// <summary>
+    /// Возвращает ГОСТ для данной детали.
+    /// </summary>
+    /// <param name="title">Обозначение детали.</param>
+    /// <returns></returns>
+    public static string GetGost(string title)
+    {
+        Dictionary<string, string> paramDict = new Dictionary<string, string>();
+        paramDict.Add("title", title);
+
+        const string query = "select " + SqlTabUspData.CGost + " from " + SqlTabUspData.Name +
+                             " where " + SqlTabUspData.CTitle + " = :title";
+        string gost;
+        if (SqlOracle.Sel(query, paramDict, out gost))
+        {
+            return gost;
+        }
+        throw new TimeoutException();
+    }
 
 
 

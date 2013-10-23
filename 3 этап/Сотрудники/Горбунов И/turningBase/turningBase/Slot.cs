@@ -361,10 +361,31 @@ public class Slot
         Face[] faces = slotEdge.GetFaces();
         foreach (Face f in faces)
         {
-            if (f != BottomFace)
-            {
-                return f;
-            }
+            if (f == BottomFace) 
+                continue;
+            //проверка на скругление
+            //if (f.SolidFaceType != Face.FaceType.Planar)
+            //{
+            //    Edge[] edges = f.GetEdges();
+            //    foreach (Edge edge in edges)
+            //    {
+            //        if (edge.SolidEdgeType != Edge.EdgeType.Linear)
+            //            continue;
+
+            //        if (edge == slotEdge)
+            //            continue;
+
+            //        Face[] faces1 = edge.GetFaces();
+            //        foreach (Face face in faces1)
+            //        {
+            //            if (face != f)
+            //            {
+            //                return face;
+            //            }
+            //        }
+            //    }
+            //}
+            return f;
         }
 
         return null;

@@ -108,16 +108,24 @@ public class SmallAngleElement : UspElement
     {
         SetFaces();
     }
-    /// <summary>
-    /// Метод ставит текущий элемент на заданный.
-    /// </summary>
-    /// <param name="element">Заданный элемент.</param>
-    public void SetOn(HeightElement element)
+
+
+    public override void AttachToMe(SmallAngleElement smallAngleElement)
     {
+        Align align = new Align();
+        align.Create(smallAngleElement.ElementComponent, smallAngleElement.BottomEdge,
+                     ElementComponent, TopEdge);
+
+        Touch touch = new Touch();
+        touch.Create(smallAngleElement.ElementComponent, smallAngleElement.BottomFace,
+                     ElementComponent, TopFace);
+
+        Center center = new Center();
+        center.Create(smallAngleElement.ElementComponent, smallAngleElement.HoleSideFace0,
+                      smallAngleElement.HoleSideFace1, ElementComponent, HoleSideFace0, HoleSideFace1);
 
         NxFunctions.Update();
     }
-
 
     private void SetFaces()
     {

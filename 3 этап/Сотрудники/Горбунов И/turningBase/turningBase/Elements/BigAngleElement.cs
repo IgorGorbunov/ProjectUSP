@@ -69,6 +69,25 @@ public class BigAngleElement : UspElement
         SetFaces();
     }
 
+    public override void AttachToMe(SmallAngleElement smallAngleElement)
+    {
+        Touch touch = new Touch();
+        touch.Create(smallAngleElement.ElementComponent, smallAngleElement.BottomFace,
+                     ElementComponent, InclineFace);
+
+        Slot alongSlot = GetSlot(AlongSlotEdge);
+        Center center = new Center();
+        center.Create(smallAngleElement.ElementComponent, smallAngleElement.HoleSideFace0,
+                      smallAngleElement.HoleSideFace1, ElementComponent, alongSlot.SideFace1, alongSlot.SideFace2);
+
+        Slot acrossSlot1 = smallAngleElement.GetSlot(smallAngleElement.AcrossSlotEdge);
+        Slot acrossSlot2 = GetSlot(AcrossSlotEdge);
+        SlotConstraint slotConstraint = new SlotConstraint(acrossSlot1, acrossSlot2);
+        slotConstraint.SetCenterEdgeConstraint();
+
+        NxFunctions.Update();
+    }
+
     ///// <summary>
     ///// Метод ставит текущий элемент на заданный.
     ///// </summary>
