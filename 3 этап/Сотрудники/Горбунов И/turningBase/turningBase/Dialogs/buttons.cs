@@ -53,6 +53,7 @@ public class Buttons : DialogProgpam
     private UIBlock _button03;// Block type: Button
     private UIBlock _button04;// Block type: Button
     private UIBlock _button05;// Block type: Button
+    private UIBlock _button06;// Block type: Button
 
     //------------------------------------------------------------------------------
     //Constructor for NX Styler class
@@ -100,6 +101,7 @@ public class Buttons : DialogProgpam
             _button03 = TheDialog.TopBlock.FindBlock("button03");
             _button04 = TheDialog.TopBlock.FindBlock("button04");
             _button05 = TheDialog.TopBlock.FindBlock("button05");
+            _button06 = TheDialog.TopBlock.FindBlock("button06");
         }
         catch (Exception ex)
         {
@@ -188,6 +190,11 @@ public class Buttons : DialogProgpam
             {
                 //---------Enter your code here-----------
                 dialogProgpam = new AngleSet(new Catalog12());
+            }
+            else if (block == _button06)
+            {
+                //---------Enter your code here-----------
+                dialogProgpam = new TurnElement();
             }
             dialogProgpam.Show();
         }

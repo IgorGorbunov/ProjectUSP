@@ -43,5 +43,9 @@ public static class ConfigDlx
     /// Возвращает имя файла с формой для набора угла.
     /// </summary>
     public const string DlxAngle = @"angleSet.dlx";
+    /// <summary>
+    /// Возвращает имя файла с формой для поворота элемента.
+    /// </summary>
+    public const string DlxTurn = @"turnElement.dlx";
 
 }

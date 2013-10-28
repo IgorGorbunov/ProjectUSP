@@ -60,8 +60,21 @@ public sealed class SlotSet
         get { return _element; }
     }
 
+    public Slot[] Slots
+    {
+        get
+        {
+            if (_slots == null)
+            {
+                SetSlots();
+            }
+            return _slots;
+        }
+    }
+
     Face _bottomFace;
     private Edge _nearestEdge;
+    private Slot[] _slots;
 
     Dictionary<Edge, double> _nearestEdges;
 
@@ -610,36 +623,35 @@ public sealed class SlotSet
         return maxDiagonal.SurroundingPoint;
     }
 
-    //не используется
-    /*bool hasCommonEdge(Vector v1, Vector v2, out Edge edge, out int k, out int n)
+    private void SetSlots()
     {
-        Point3d[] points1, points2;
-        points1[0] = v1.start;
-        points1[1] = v1.end;
-        points2[0] = v2.start;
-        points2[1] = v2.end;
-
-        foreach (Edge edg in this.bottomFace.GetEdges())
+        List<Slot> slotList = new List<Slot>();
+        Edge[] edges = BottomFace.GetEdges();
+        for (int i = 0; i < edges.Length; i++)
         {
-            Point3d start, end;
-            edg.GetVertices(start, end);
-
-            for (int i = 0; i < points1.Length; i++)
+            for (int j = i + 1; j < edges.Length; j++)
             {
-                for (int j = 0; j < points2.Length; j++)
-                {
-                    if ((start == points1[i] && end == points2[j]) || (start == points2[j] && end == points1[i]))
-                    {
-                        edge = edg;
-                        k = i;
-                        n = j;
-                        return true;
-                    }
-                }
-            }
-  
-        }
+                if (edges[i].SolidEdgeType != Edge.EdgeType.Linear ||
+                    edges[j].SolidEdgeType != Edge.EdgeType.Linear)
+                    continue;
 
-        return false;
-    }*/
+                Vector vec1 = new Vector(edges[i]);
+                Vector vec2 = new Vector(edges[j]);
+
+                double slotWidth;
+                if (!IsSlot(vec1, vec2, out slotWidth, edges[i], edges[j]))
+                    continue;
+
+                if (!HasSurrPointOnFace(edges[i], edges[j]))
+                    continue;
+
+                Edge edgeLong1 = edges[i];
+                Edge edgeLong2 = edges[j];
+
+                slotList.Add(new Slot(this, edgeLong1, edgeLong2, Config.GetSlotType(slotWidth, _element.UspCatalog)));
+            }
+        }
+        _slots = slotList.ToArray();
+    }
+
 }

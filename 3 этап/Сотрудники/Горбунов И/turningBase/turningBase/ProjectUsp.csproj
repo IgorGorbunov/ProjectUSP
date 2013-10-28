@@ -40,7 +40,7 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <OutputPath>bin\x86\Release\</OutputPath>
+    <OutputPath>C:\ug_customization\application\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
@@ -56,7 +56,7 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
-    <OutputPath>bin\x64\Release\</OutputPath>
+    <OutputPath>C:\ug_customization\application\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
@@ -113,6 +113,7 @@
     <Compile Include="Dialogs\jig.cs" />
     <Compile Include="Dialogs\milingBase.cs" />
     <Compile Include="Dialogs\tunnelslot.cs" />
+    <Compile Include="Dialogs\turnElement.cs" />
     <Compile Include="ElementIntersection.cs" />
     <Compile Include="Elements\SmallAngleElement.cs" />
     <Compile Include="Elements\BigAngleElement.cs" />

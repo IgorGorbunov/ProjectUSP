@@ -12,8 +12,8 @@ public sealed class Program
     {
         try
         {
-            SQLOracle.BuildConnectionString("ktc", "ktc", "BASEEOI");
-            SqlOracle.BuildConnectionString("ktc", "ktc", "BASEEOI");
+            SQLOracle.BuildConnectionString("591014", "591000", "EOI");
+            SqlOracle.BuildConnectionString("591014", "591000", "EOI");
 
 #if(DEBUG)
             Message.Show("Дебаггг", Message.MessageType.Warning, "DEBUG!");
