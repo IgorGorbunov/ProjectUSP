@@ -1,30 +1,12 @@
+C:\ug_customization\application\ProjectUsp.dll
+C:\ug_customization\application\ProjectUsp.pdb
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Release\ResolveAssemblyReference.cache
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Release\ProjectUsp.dll
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Release\ProjectUsp.pdb
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\bin\x86\Debug\ProjectUsp.dll
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\bin\x86\Debug\ProjectUsp.pdb
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\bin\x86\Debug\NXOpen.dll
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\bin\x86\Debug\NXOpen.UF.dll
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\bin\x86\Debug\NXOpen.Utilities.dll
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\bin\x86\Debug\NXOpenUI.dll
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\x86\Debug\ResolveAssemblyReference.cache
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\x86\Debug\ProjectUsp.dll
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\x86\Debug\ProjectUsp.pdb
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\bin\x86\Release\ProjectUsp.dll
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\bin\x86\Release\ProjectUsp.pdb
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\bin\x86\Release\NXOpen.dll
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\bin\x86\Release\NXOpen.UF.dll
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\bin\x86\Release\NXOpen.Utilities.dll
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\bin\x86\Release\NXOpenUI.dll
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\x86\Release\ResolveAssemblyReference.cache
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\x86\Release\ProjectUsp.dll
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\x86\Release\ProjectUsp.pdb
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Release\img_gallery.Controls.ImageBox.resources
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Release\img_gallery.ImageForm.resources
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Release\ImageSqlForm.resources
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Release\ProjectUsp.csproj.GenerateResource.Cache
-C:\ug_customization\application\ProjectUsp.dll
-C:\ug_customization\application\ProjectUsp.pdb
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Release\ProjectUsp.dll
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Release\ProjectUsp.pdb
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Debug\ResolveAssemblyReference.cache
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Debug\img_gallery.Controls.ImageBox.resources
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Debug\img_gallery.ImageForm.resources
@@ -32,20 +14,3 @@ G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningB
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Debug\ProjectUsp.csproj.GenerateResource.Cache
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Debug\ProjectUsp.dll
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Debug\ProjectUsp.pdb
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\bin\x64\Release\ProjectUsp.dll
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\bin\x64\Release\ProjectUsp.pdb
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\bin\x64\Release\NXOpen.dll
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\bin\x64\Release\NXOpen.UF.dll
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\bin\x64\Release\NXOpen.Utilities.dll
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\bin\x64\Release\NXOpenUI.dll
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\x64\Release\ResolveAssemblyReference.cache
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\x64\Release\img_gallery.Controls.ImageBox.resources
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\x64\Release\img_gallery.ImageForm.resources
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\x64\Release\ImageSqlForm.resources
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\x64\Release\ProjectUsp.csproj.GenerateResource.Cache
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\x64\Release\ProjectUsp.dll
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\x64\Release\ProjectUsp.pdb
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\x86\Release\img_gallery.Controls.ImageBox.resources
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\x86\Release\img_gallery.ImageForm.resources
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\x86\Release\ImageSqlForm.resources
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\x86\Release\ProjectUsp.csproj.GenerateResource.Cache

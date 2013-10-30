@@ -96,6 +96,24 @@ public class Surface
             return new Vector(_faceDirection);
         }
     }
+    /// <summary>
+    /// Возвращает вектор поверхности.
+    /// </summary>
+    public Vector VectorDirection2
+    {
+        get
+        {
+            return new Vector(CenterPoint, _faceDirection);
+        }
+    }
+    
+    public Point3d CenterPoint
+    {
+        get 
+        { 
+            return new Point3d(_faceCenterPoint[0], _faceCenterPoint[1], _faceCenterPoint[2]); 
+        }
+    }
 
 
     readonly double[] _equation;

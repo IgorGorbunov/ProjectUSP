@@ -181,7 +181,16 @@ public class TurnElement : DialogProgpam
                 Component component = (Component)
                     block.GetProperties().GetTaggedObjectVector("SelectedObjects")[0];
                 HeightElement heightElement = new HeightElement(component);
-
+                Face face = heightElement.HoleFace;
+                Surface surface = new Surface(face);
+                Vector vector = surface.Direction2;
+                Vector offsetVector = new Vector(surface.CenterPoint, vector.Start);
+                Point3d offsetPoint = offsetVector.GetOffsetPoint(new Point3d(0.0, 75.0, 451.2));
+                NxFunctions.SetAsterix(offsetPoint);
+                NxFunctions.SetAsterix(surface.CenterPoint);
+                Message.Tst(surface.CenterPoint);
+                Point3d point = vector.GetRotatePoint(offsetPoint, 90);
+                NxFunctions.SetAsterix(point);
             }
             else if(block == _button0)
             {

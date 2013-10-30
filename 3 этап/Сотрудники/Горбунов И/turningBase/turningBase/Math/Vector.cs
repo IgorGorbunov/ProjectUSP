@@ -97,6 +97,18 @@ public class Vector
         }
     }
 
+    public double X
+    {
+        get
+        {
+            if (Geom.IsEqual(_direction, new Point3d(0.0, 0.0, 0.0)))
+            {
+                SetDirection();
+            }
+            return _direction.X;
+        }
+    }
+
     double _length = -1.0;
     Point3d _direction = new Point3d(0.0, 0.0, 0.0);
     private Point3d _start, _end;
@@ -188,12 +200,12 @@ public class Vector
     /// </summary>
     /// <param name="point">Начальная точка.</param>
     /// <param name="direction">Направление.</param>
-    public Vector(double[] point, double[] direction)
+    public Vector(Point3d point, double[] direction)
     {
         Point3d start, end;
-        start.X = point[0];
-        start.Y = point[1];
-        start.Z = point[2];
+        start.X = point.X;
+        start.Y = point.Y;
+        start.Z = point.Z;
 
         end.X = start.X + direction[0];
         end.Y = start.Y + direction[1];
@@ -286,7 +298,11 @@ public class Vector
 
         return new Point3d(xD, yD, zD);
     }
-
+    /// <summary>
+    /// Возвращает угол между текущим вектором и заданным.
+    /// </summary>
+    /// <param name="vec">Заданный вектор.</param>
+    /// <returns></returns>
     public double GetAngle(Vector vec)
     {
         UFSession theUfSession = UFSession.GetUFSession();
@@ -344,6 +360,55 @@ public class Vector
     {
         double angle = GetAngle(vector);
         return Config.Round(angle) == 0.0;
+    }
+
+    /// <summary>
+    /// Возвращает координаты точки смещения заданной точки по текущему векору.
+    /// </summary>
+    /// <param name="point">Заданная точка.</param>
+    /// <returns></returns>
+    public Point3d GetOffsetPoint(Point3d point)
+    {
+        Point3d offsetPoint = new Point3d();
+
+        offsetPoint.X = End.X - (Start.X - point.X);
+        offsetPoint.Y = End.Y - (Start.Y - point.Y);
+        offsetPoint.Z = End.Z - (Start.Z - point.Z);
+        return offsetPoint;
+    }
+    
+
+    public Point3d GetRotatePoint(Point3d point, double angle)
+    {
+        Matrix3x3 matrix = GetRotateMatrix(angle);
+        MathUtils mathUtils = Config.TheSession.MathUtils;
+        return mathUtils.Multiply(matrix, point);
+    }
+
+    private Matrix3x3 GetRotateMatrix(double a)
+    {
+        Matrix3x3 matrix;
+        if (Geom.IsEqual(_direction, new Point3d(0.0, 0.0, 0.0)))
+        {
+            SetDirection();
+        }
+        Message.Tst(_direction.X, _direction.Y, _direction.Z);
+        a = Geom.Rad(a);
+        matrix.Xx = Math.Cos(a) + (1 - Math.Cos(a)) * _direction.X * _direction.X;
+        matrix.Xy = (1 - Math.Cos(a)) * _direction.X * _direction.Y - Math.Sin(a) * _direction.Z;
+        matrix.Xz = (1 - Math.Cos(a)) * _direction.X * _direction.Z + Math.Sin(a) * _direction.Y;
+        matrix.Yx = (1 - Math.Cos(a)) * _direction.Y * _direction.X + Math.Sin(a) * _direction.Z;
+        matrix.Yy = Math.Cos(a) + (1 - Math.Cos(a)) * _direction.Y * _direction.Y;
+        matrix.Yz = (1 - Math.Cos(a)) * _direction.Y * _direction.Z - Math.Sin(a) * _direction.X;
+        matrix.Zx = (1 - Math.Cos(a)) * _direction.Z * _direction.X - Math.Sin(a) * _direction.Y;
+        matrix.Zy = (1 - Math.Cos(a)) * _direction.Z * _direction.Y + Math.Sin(a) * _direction.X;
+        matrix.Zz = Math.Cos(a) + (1 - Math.Cos(a)) * _direction.Z * _direction.Z;
+        string mess = matrix.Xx + " " + matrix.Xy + " " + matrix.Xz + " " + Environment.NewLine;
+        mess += matrix.Yx.ToString() + " " + matrix.Yy + " " + matrix.Yz + Environment.NewLine;
+        mess += matrix.Zx.ToString() + " " + matrix.Zy + " " + matrix.Zz + Environment.NewLine;
+        Message.Tst(mess);
+
+        return matrix;
     }
 
 

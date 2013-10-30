@@ -12,16 +12,15 @@ public sealed class Program
     {
         try
         {
-            SQLOracle.BuildConnectionString("591014", "591000", "EOI");
-            SqlOracle.BuildConnectionString("591014", "591000", "EOI");
+            //SQLOracle.BuildConnectionString("591014", "591000", "EOI");
+            //SqlOracle.BuildConnectionString("591014", "591000", "EOI");
+            SQLOracle.BuildConnectionString("ktc", "ktc", "baseeoi");
+            SqlOracle.BuildConnectionString("ktc", "ktc", "baseeoi");
 
 #if(DEBUG)
             Message.Show("Дебаггг", Message.MessageType.Warning, "DEBUG!");
 #endif
 
-            //_startProgram = new TurningBase();
-            //_startProgram = new MilingBase();
-            //_startProgram = new Jig();
             _startProgram = new Buttons();
             Logger.WriteLine("++++++++++++++++++++++++++++++++++++++++++++++++" + " Начало работы программы " + _startProgram.GetType().Name);
 
