@@ -251,6 +251,7 @@ public class Vector
         Point3d tmpPoint = _start;
         _start = _end;
         _end = tmpPoint;
+        Initialize();
     }
 
     
@@ -377,12 +378,25 @@ public class Vector
         return offsetPoint;
     }
     
-
+    /// <summary>
+    /// Возвращает точку повёрнутую вокруг данного вектора на определённый угол.
+    /// </summary>
+    /// <param name="point">Начальная точка.</param>
+    /// <param name="angle">Угол в градусах.</param>
+    /// <returns></returns>
     public Point3d GetRotatePoint(Point3d point, double angle)
     {
+        Vector offsetVector = new Vector(Start, new Point3d(0.0, 0.0, 0.0));
+        Point3d offsetPoint = offsetVector.GetOffsetPoint(point);
+
         Matrix3x3 matrix = GetRotateMatrix(angle);
         MathUtils mathUtils = Config.TheSession.MathUtils;
-        return mathUtils.Multiply(matrix, point);
+        Point3d offsetNewPoint = mathUtils.Multiply(matrix, offsetPoint);
+        Message.Tst("offset", offsetPoint, offsetNewPoint);
+        Reverse();
+        Point3d newPoint = offsetVector.GetOffsetPoint(offsetNewPoint);
+        Reverse();
+        return newPoint;
     }
 
     private Matrix3x3 GetRotateMatrix(double a)
@@ -392,7 +406,7 @@ public class Vector
         {
             SetDirection();
         }
-        Message.Tst(_direction.X, _direction.Y, _direction.Z);
+
         a = Geom.Rad(a);
         matrix.Xx = Math.Cos(a) + (1 - Math.Cos(a)) * _direction.X * _direction.X;
         matrix.Xy = (1 - Math.Cos(a)) * _direction.X * _direction.Y - Math.Sin(a) * _direction.Z;
@@ -403,10 +417,6 @@ public class Vector
         matrix.Zx = (1 - Math.Cos(a)) * _direction.Z * _direction.X - Math.Sin(a) * _direction.Y;
         matrix.Zy = (1 - Math.Cos(a)) * _direction.Z * _direction.Y + Math.Sin(a) * _direction.X;
         matrix.Zz = Math.Cos(a) + (1 - Math.Cos(a)) * _direction.Z * _direction.Z;
-        string mess = matrix.Xx + " " + matrix.Xy + " " + matrix.Xz + " " + Environment.NewLine;
-        mess += matrix.Yx.ToString() + " " + matrix.Yy + " " + matrix.Yz + Environment.NewLine;
-        mess += matrix.Zx.ToString() + " " + matrix.Zy + " " + matrix.Zz + Environment.NewLine;
-        Message.Tst(mess);
 
         return matrix;
     }
@@ -423,6 +433,12 @@ public class Vector
         _end.X = end.X;
         _end.Y = end.Y;
         _end.Z = end.Z;
+        Initialize();
+    }
+
+    void Initialize()
+    {
+        _direction = new Point3d(0.0, 0.0, 0.0);
     }
 
     double GetLength()

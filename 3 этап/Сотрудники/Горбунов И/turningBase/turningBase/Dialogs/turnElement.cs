@@ -54,7 +54,15 @@ public class TurnElement : DialogProgpam
     private UIBlock _button0;// Block type: Button
     private UIBlock _button01;// Block type: Button
 
-    
+    //------------------------------------------------------------------------------
+
+    private HeightElement _element;
+    private bool _elementSelected;
+
+    private const int _TURNS = 4;
+    private const int _TURN_ANGLE = 90;
+
+
     //------------------------------------------------------------------------------
     //Constructor for NX Styler class
     //------------------------------------------------------------------------------
@@ -178,19 +186,12 @@ public class TurnElement : DialogProgpam
             if(block == _selection0)
             {
             //---------Enter your code here-----------
-                Component component = (Component)
-                    block.GetProperties().GetTaggedObjectVector("SelectedObjects")[0];
-                HeightElement heightElement = new HeightElement(component);
-                Face face = heightElement.HoleFace;
-                Surface surface = new Surface(face);
-                Vector vector = surface.Direction2;
-                Vector offsetVector = new Vector(surface.CenterPoint, vector.Start);
-                Point3d offsetPoint = offsetVector.GetOffsetPoint(new Point3d(0.0, 75.0, 451.2));
-                NxFunctions.SetAsterix(offsetPoint);
-                NxFunctions.SetAsterix(surface.CenterPoint);
-                Message.Tst(surface.CenterPoint);
-                Point3d point = vector.GetRotatePoint(offsetPoint, 90);
-                NxFunctions.SetAsterix(point);
+                Logger.WriteLine("Нажата кнопка выбора компонента!");
+                SetComponent(block);
+                if (_elementSelected)
+                {
+                    SetTurns();
+                }
             }
             else if(block == _button0)
             {
@@ -269,9 +270,72 @@ public class TurnElement : DialogProgpam
 
     //----------------------------------------------------------------------------------
 
+    private void SetComponent(UIBlock block)
+    {
+        TaggedObject[] taggedObjects = block.GetProperties()
+                                            .GetTaggedObjectVector("SelectedObjects");
+        if (taggedObjects.Length == 1)
+        {
+            _element = new HeightElement((Component)taggedObjects[0]);
+            Logger.WriteLine("Выбран " + _element.ElementComponent + " - " + _element.ElementComponent.Name);
+            _elementSelected = true;
+        }
+        else
+        {
+            _elementSelected = false;
+            string mess = "";
+            if (taggedObjects.Length > 1)
+            {
+                mess = "Выбрано больше двух элементов!";
+            }
+            if (taggedObjects.Length < 1)
+            {
+                mess = "Элемент не выбран!";
+            }
+            Logger.WriteError(mess);
+            Message.ShowError(mess);
+        }
+    }
+
     private void SetTurns()
     {
+        SetBottomTurn();
+    }
+
+    private void SetTopTurn()
+    {
         
+    }
+
+    private void SetBottomTurn()
+    {
+        if (_element.HasOutBottomSlotSet)
+        {
+            Slot firstSlot = _element.BottomSlot;
+            SetTurn(firstSlot);
+        }
+    }
+
+    private void SetTurn(Slot slot)
+    {
+        Point3d[] centerPoints = new Point3d[_TURNS];
+        centerPoints[0] = slot.CenterPoint;
+        NxFunctions.SetAsterix(centerPoints[0]);
+        
+
+        Surface surface = new Surface(_element.HoleFace);
+        Vector vector = surface.VectorDirection2;
+
+        //tst
+        Point3d newoint = vector.GetRotatePoint(centerPoints[0], 0.0);
+        Message.Tst(centerPoints[0], newoint);
+
+        //for (int i = 1; i < _TURNS; i++)
+        //{
+        //    Point3d newPoint = vector.GetRotatePoint(centerPoints[0], _TURN_ANGLE * i);
+        //    NxFunctions.SetAsterix(newPoint);
+
+        //}
     }
     
 }

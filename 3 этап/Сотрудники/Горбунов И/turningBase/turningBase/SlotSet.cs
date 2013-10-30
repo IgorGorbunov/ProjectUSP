@@ -80,6 +80,7 @@ public sealed class SlotSet
 
     Point3d _selectPoint;
 
+
     readonly UspElement _element;
     
     /// <summary>

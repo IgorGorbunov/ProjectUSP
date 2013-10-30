@@ -94,7 +94,9 @@ public class HeightElement : UspElement
             return _bottomSlot;
         }
     }
-
+    /// <summary>
+    /// Возвращает true, если есть верхний небоковой паз.
+    /// </summary>
     public bool HasOutTopSlotSet
     {
         get
@@ -106,7 +108,9 @@ public class HeightElement : UspElement
             return _hasOutTopSlotSet;
         }
     }
-
+    /// <summary>
+    /// Возвращает true, если есть нижний небоковой паз.
+    /// </summary>
     public bool HasOutBottomSlotSet
     {
         get
