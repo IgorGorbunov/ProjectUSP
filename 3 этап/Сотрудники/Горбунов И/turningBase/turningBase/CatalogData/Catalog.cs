@@ -128,8 +128,6 @@ public abstract class Catalog
         return !(one == other);
     }
 
-    #region Equality members
-
     private bool Equals(Catalog other)
     {
         return Series == other.Series;
@@ -160,8 +158,6 @@ public abstract class Catalog
     {
         return Series.GetHashCode();
     }
-
-    #endregion
 
     /// <summary>
     /// Возвращает строку, которая представляет текущий объект.

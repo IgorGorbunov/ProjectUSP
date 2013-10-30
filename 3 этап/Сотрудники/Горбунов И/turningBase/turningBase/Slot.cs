@@ -231,6 +231,65 @@ public class Slot
         _touchEdge = otherEdge;
     }
 
+    public override bool Equals(Object obj)
+    {
+        if (obj.GetType() != GetType()) return false;
+        return Equals((Slot)obj);
+    }
+
+    public bool Equals(Slot p)
+    {
+        return this == p;
+    }
+
+    public override int GetHashCode()
+    {
+        int tag1 = int.Parse(_sideFace1.Tag.ToString());
+        int tag2 = int.Parse(_sideFace2.Tag.ToString());
+        return tag1 ^ tag2;
+    }
+    
+    public static bool operator ==(Slot a, Slot b)
+    {
+        // If both are null, or both are same instance, return true.
+        if (ReferenceEquals(a, b))
+        {
+            return true;
+        }
+
+        // If one is null, but not both, return false.
+        if (((object)a == null) || ((object)b == null))
+        {
+            return false;
+        }
+
+        // Return true if the fields match:
+        bool equal = false;
+        if (a._sideFace1.Tag == b._sideFace1.Tag)
+        {
+            if (a._sideFace2.Tag == b._sideFace2.Tag)
+            {
+                equal = true;
+            }
+        }
+        else
+        {
+            if (a._sideFace1.Tag == b._sideFace2.Tag)
+            {
+                if (a._sideFace2.Tag == b._sideFace1.Tag)
+                {
+                    equal = true;
+                }
+            }
+        }
+        return equal;
+    }
+
+    public static bool operator !=(Slot a, Slot b)
+    {
+        return !(a == b);
+    }
+
     
 
 
