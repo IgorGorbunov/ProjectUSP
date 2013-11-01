@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using NXOpen;
 using NXOpen.Assemblies;
+using NXOpen.Positioning;
 
 /// <summary>
 /// Класс содержащий элемент УСП.
@@ -198,19 +199,58 @@ public class UspElement
         
     }
 
+    /// <summary>
+    /// Возвращает паз, к которому принадлежит заданное ребро.
+    /// </summary>
+    /// <param name="edge">Ребро паза, желательно - поперечное.</param>
+    /// <returns></returns>
     public Slot GetSlot(Edge edge)
     {
         Point3d point1, point2;
         edge.GetVertices(out point1, out point2);
 
+        return GetNearestSlot(point1);
+    }
+    /// <summary>
+    /// Возвращает ближайший паз для данной точки.
+    /// </summary>
+    /// <param name="point">Точка.</param>
+    /// <returns></returns>
+    public Slot GetNearestSlot(Point3d point)
+    {
         SlotSet slotSet = new SlotSet(this);
-        slotSet.SetPoint(point1);
+        slotSet.SetPoint(point);
 
         if (!slotSet.HaveNearestBottomFace())
             return null;
 
         Slot slot = slotSet.GetNearestSlot();
         return slot;
+    }
+    /// <summary>
+    /// Возвращает объекты позиционирования заданного констрэйента для данного элемента.
+    /// </summary>
+    /// <param name="constraint">Заданный констрэйнт.</param>
+    /// <param name="otherObjects">Объекты позиционирования для другого элемента.</param>
+    /// <returns></returns>
+    public List<NXObject> GetConstraintObjects(ComponentConstraint constraint, out List<NXObject> otherObjects)
+    {
+        List<NXObject> nxObjects = new List<NXObject>();
+        otherObjects = new List<NXObject>();
+        ConstraintReference[] references = constraint.GetReferences();
+        foreach (ConstraintReference reference in references)
+        {
+            NXObject nxObject = reference.GetGeometry();
+            if (nxObject.OwningComponent == ElementComponent)
+            {
+                nxObjects.Add(nxObject);
+            }
+            else
+            {
+                otherObjects.Add(nxObject);
+            }
+        }
+        return nxObjects;
     }
 
 

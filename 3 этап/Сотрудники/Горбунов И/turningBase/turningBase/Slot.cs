@@ -177,6 +177,7 @@ public class Slot
     readonly Edge _edge2;
 
     readonly List<Edge> _touchEdges = new List<Edge>();
+
     /// <summary>
     /// Инициализирует новый экземпляр класса паза.
     /// </summary>
@@ -194,6 +195,8 @@ public class Slot
         _sideFace1 = GetNotBottomFace(edgeLong1);
         _sideFace2 = GetNotBottomFace(edgeLong2);
     }
+
+
     /// <summary>
     /// Возвращает грань, перпендикулярную направлению паза.
     /// </summary>

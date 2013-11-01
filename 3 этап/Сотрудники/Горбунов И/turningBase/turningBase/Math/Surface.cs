@@ -346,4 +346,14 @@ public class Surface
         }
         return true;
     }
+    /// <summary>
+    /// Возвращает примерную серединную точку между текущей и заданной плоскостью.
+    /// </summary>
+    /// <param name="surface">Заданная плоскость.</param>
+    /// <returns></returns>
+    public Point3d GetCenterPoint(Surface surface)
+    {
+        Vector vector = new Vector(CenterPoint, surface.CenterPoint);
+        return vector.Center;
+    }
 }

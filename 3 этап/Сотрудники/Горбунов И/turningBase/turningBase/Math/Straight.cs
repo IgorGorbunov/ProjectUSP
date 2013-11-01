@@ -239,6 +239,16 @@ public sealed class Straight
         Point3d point = straight.PointOnStraight;
         return GetDistance(point);
     }
+    /// <summary>
+    /// Возвращает точку пересечения перпендикуляра проведенного из заданной точки
+    /// и данной прямой.
+    /// </summary>
+    /// <param name="point">Заданная точка.</param>
+    /// <returns></returns>
+    public Point3d GetProjectPoint(Point3d point)
+    {
+        return Geom.GetIntersectionPointStraight(point, this);
+    }
 
     void SetEquation(Point3d firstPoint, Point3d secondPoint)
     {

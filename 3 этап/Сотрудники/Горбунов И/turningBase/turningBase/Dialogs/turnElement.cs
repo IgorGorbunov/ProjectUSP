@@ -35,10 +35,12 @@
 //These imports are needed for the following template code
 //------------------------------------------------------------------------------
 using System;
+using System.Collections.Generic;
 using System.IO;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.BlockStyler;
+using NXOpen.Positioning;
 using NXOpen.UF;
 
 //------------------------------------------------------------------------------
@@ -58,6 +60,11 @@ public class TurnElement : DialogProgpam
 
     private HeightElement _element;
     private bool _elementSelected;
+
+    private List<NXObject> _otherElementObjects; 
+
+    private Slot _checkerSlot;
+    private List<Slot> _bottomSlots;
 
     private const int _TURNS = 4;
     private const int _TURN_ANGLE = 90;
@@ -188,18 +195,27 @@ public class TurnElement : DialogProgpam
             //---------Enter your code here-----------
                 Logger.WriteLine("Нажата кнопка выбора компонента!");
                 SetComponent(block);
-                if (_elementSelected)
-                {
-                    SetTurns();
-                }
+                
             }
             else if(block == _button0)
             {
             //---------Enter your code here-----------
+                if (_elementSelected)
+                {
+                    List<Point3d> initialPoints;
+                    DeleteSlotConstraints(out initialPoints);
+                    SetBottomTurn(initialPoints[0], 90);
+                }
             }
             else if(block == _button01)
             {
             //---------Enter your code here-----------
+                if (_elementSelected)
+                {
+                    List<Point3d> initialPoints;
+                    DeleteSlotConstraints(out initialPoints);
+                    SetBottomTurn(initialPoints[0], -90);
+                }
             }
         }
         catch (Exception ex)
@@ -299,7 +315,27 @@ public class TurnElement : DialogProgpam
 
     private void SetTurns()
     {
-        SetBottomTurn();
+
+    }
+
+    private void DeleteSlotConstraints(out List<Point3d> centerPoints)
+    {
+        centerPoints = new List<Point3d>();
+        ComponentConstraint[] componentConstraints = _element.ElementComponent.GetConstraints();
+        foreach (ComponentConstraint componentConstraint in componentConstraints)
+        {
+            if (componentConstraint.ConstraintType == Constraint.Type.Center22)
+            {
+                List<NXObject> faces = _element.GetConstraintObjects(componentConstraint, out _otherElementObjects);
+
+                Surface surface1 = new Surface((Face) faces[0]);
+                Surface surface2 = new Surface((Face) faces[1]);
+                centerPoints.Add(surface1.GetCenterPoint(surface2));
+
+                NxFunctions.Delete(componentConstraint);
+            }
+        }
+        NxFunctions.Update();
     }
 
     private void SetTopTurn()
@@ -307,35 +343,73 @@ public class TurnElement : DialogProgpam
         
     }
 
-    private void SetBottomTurn()
+    private void SetBottomTurn(Point3d point, double angle)
     {
-        if (_element.HasOutBottomSlotSet)
+        Slot oldSlot = _element.GetNearestSlot(point);
+        if (_element.IsHorizontSlot(oldSlot))
         {
-            Slot firstSlot = _element.BottomSlot;
-            SetTurn(firstSlot);
+            Point3d newPoint = GetTurn(point, angle);
+            Slot newSlot = _element.GetNearestSlot(newPoint);
+            Center center = new Center();
+            center.Create(newSlot, (Face)_otherElementObjects[0], (Face)_otherElementObjects[1]);
+
+            Vector rightSlotDirection = GetRightSlotDirection((Face) _otherElementObjects[0],
+                                                              (Face) _otherElementObjects[1]);
+            Vector slotDirection = _element.GetHorizontSlotDirection(newSlot);
+            Message.Tst(rightSlotDirection, slotDirection);
+            Message.Tst(rightSlotDirection.GetAngle(slotDirection));
+
+            if (!rightSlotDirection.IsCoDirectionalInProject(slotDirection))
+            {
+                Message.Tst("Пазы не сонаправлены!");
+                center.Reverse();
+            }
+            
         }
+        //if (_element.HasOutBottomSlotSet)
+        //{
+        //    Slot firstSlot = _element.BottomSlot;
+        //    Point3d[] centerPoints = GetTurn(firstSlot);
+        //    _bottomSlots = new List<Slot>();
+        //    for (int i = 0; i < centerPoints.Length; i++)
+        //    {
+        //        _checkerSlot = _element.GetNearestSlot(centerPoints[i]);
+        //        if (!_bottomSlots.Exists(ExistSlot))
+        //        {
+        //            _bottomSlots.Add(_checkerSlot);
+        //        }
+        //    }
+        //}
+        NxFunctions.Update();
     }
 
-    private void SetTurn(Slot slot)
+    private Vector GetRightSlotDirection(Face face1, Face face2)
     {
-        Point3d[] centerPoints = new Point3d[_TURNS];
-        centerPoints[0] = slot.CenterPoint;
-        NxFunctions.SetAsterix(centerPoints[0]);
-        
+        Surface surface1 = new Surface(face1);
+        Surface surface2 = new Surface(face2);
+        Point3d center = surface1.GetCenterPoint(surface2);
+        return _element.GetOrtHoleDirection(center);
+    }
+
+    private bool ExistSlot(Slot slot)
+    {
+        return slot == _checkerSlot;
+    }
+
+
+    private Point3d GetTurn(Point3d oldPoint, double angle)
+    {
+        //Point3d[] centerPoints = new Point3d[_TURNS];
+        //centerPoints[0] = slot.CenterPoint;
 
         Surface surface = new Surface(_element.HoleFace);
         Vector vector = surface.VectorDirection2;
 
-        //tst
-        Point3d newoint = vector.GetRotatePoint(centerPoints[0], 0.0);
-        Message.Tst(centerPoints[0], newoint);
-
         //for (int i = 1; i < _TURNS; i++)
         //{
-        //    Point3d newPoint = vector.GetRotatePoint(centerPoints[0], _TURN_ANGLE * i);
-        //    NxFunctions.SetAsterix(newPoint);
-
+        //    centerPoints[i] = vector.GetRotatePoint(centerPoints[0], _TURN_ANGLE * i);
         //}
+        return vector.GetRotatePoint(oldPoint, angle);
     }
     
 }

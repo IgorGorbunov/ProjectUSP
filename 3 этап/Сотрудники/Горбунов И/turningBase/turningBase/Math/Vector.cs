@@ -360,7 +360,22 @@ public class Vector
     internal bool IsCoDirectional(Vector vector)
     {
         double angle = GetAngle(vector);
+        Message.Tst(angle);
         return Config.Round(angle) == 0.0;
+    }
+    /// <summary>
+    /// Возвращает true, если заданный вектор сонаправлен текущему в плоскости проекции текущего.
+    /// </summary>
+    /// <param name="vector">Вектор.</param>
+    /// <returns></returns>
+    public bool IsCoDirectionalInProject(Vector vector)
+    {
+        Straight rStraight = new Straight(this);
+        Point3d start = rStraight.GetProjectPoint(vector.Start);
+        Point3d end = rStraight.GetProjectPoint(vector.End);
+        Vector trueSlotDirection = new Vector(start, end);
+
+        return IsCoDirectional(trueSlotDirection);
     }
 
     /// <summary>
@@ -392,10 +407,9 @@ public class Vector
         Matrix3x3 matrix = GetRotateMatrix(angle);
         MathUtils mathUtils = Config.TheSession.MathUtils;
         Point3d offsetNewPoint = mathUtils.Multiply(matrix, offsetPoint);
-        Message.Tst("offset", offsetPoint, offsetNewPoint);
-        Reverse();
+        offsetVector.Reverse();
         Point3d newPoint = offsetVector.GetOffsetPoint(offsetNewPoint);
-        Reverse();
+        offsetVector.Reverse();
         return newPoint;
     }
 

@@ -97,7 +97,7 @@ public class HeightElement : UspElement
     /// <summary>
     /// Возвращает true, если есть верхний небоковой паз.
     /// </summary>
-    public bool HasOutTopSlotSet
+    public bool HasHorizontTopSlotSet
     {
         get
         {
@@ -111,7 +111,7 @@ public class HeightElement : UspElement
     /// <summary>
     /// Возвращает true, если есть нижний небоковой паз.
     /// </summary>
-    public bool HasOutBottomSlotSet
+    public bool HasHorizontBottomSlotSet
     {
         get
         {
@@ -161,7 +161,7 @@ public class HeightElement : UspElement
         _touchConstraint = new Touch();
         _touchConstraint.Create(ElementComponent, BottomFace, element.ElementComponent, element.TopFace);
 
-        if (HasOutBottomSlotSet && element.HasOutTopSlotSet)
+        if (HasHorizontBottomSlotSet && element.HasHorizontTopSlotSet)
         {
             _slotConstraint = new SlotConstraint(BottomSlot, element.TopSlot);
             _slotConstraint.SetCenterConstraint();
@@ -177,15 +177,41 @@ public class HeightElement : UspElement
         NxFunctions.Update();
     }
 
-    //private void SetBottomSlot()
-    //{
-    //    SetSlot(BottomFace, ref _bottomSlot);
-    //}
+    /// <summary>
+    /// Возвращает true, если заданный паз "горизонтальный" - перпендикулярен отверстию для набора высоты.
+    /// </summary>
+    /// <param name="slot">Проверяемый паз.</param>
+    /// <returns></returns>
+    public bool IsHorizontSlot(Slot slot)
+    {
+        Vector holeDirection = (new Surface(HoleFace)).Direction2;
+        Vector slotDirection = (new Surface(slot.BottomFace)).Direction2;
+        return holeDirection.IsParallel(slotDirection);
+    }
+    /// <summary>
+    /// Возвращает точное направление горизонтального паза.
+    /// </summary>
+    /// <param name="slot"></param>
+    /// <returns></returns>
+    public Vector GetHorizontSlotDirection(Slot slot)
+    {
+        return GetOrtHoleDirection(slot.CenterPoint);
+    }
+    /// <summary>
+    /// Возвращает вектор направления к заданной точке от оси отверстия по высоте,
+    /// перпендикулярно ему же.
+    /// </summary>
+    /// <param name="point">Заданная точка.</param>
+    /// <returns></returns>
+    public Vector GetOrtHoleDirection(Point3d point)
+    {
+        Surface holeSurface = new Surface(HoleFace);
+        Straight holeStraight = new Straight(holeSurface.Direction2);
+        Point3d projectPoint = holeStraight.GetProjectPoint(point);
+        return new Vector(projectPoint, point);
+    }
 
-    //private void SetTopSlot()
-    //{
-    //    SetSlot(TopFace, ref _topSlot);
-    //}
+
 
     private void SetSlot(Point3d point, ref Slot slot, Surface surface)
     {
