@@ -176,7 +176,7 @@ public static class SqlTabUspData
     /// </summary>
     public static string ThereIs
     {
-        get { return "(" + CCount + " > 0 and " + CCount + " <> " + _NULL_NUMBER + ")"; }
+        get { return CCount + ">TO_NUMBER(0) "; }
     }
 
     private const int _NULL_NUMBER = 999;

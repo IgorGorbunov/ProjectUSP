@@ -50,7 +50,7 @@ public static class Sql
         return query;
     }
 
-    public static string GetPar(string parametr)
+    public static string Par(string parametr)
     {
         return ":" + parametr;
     }
@@ -60,14 +60,32 @@ public static class Sql
         return " and " + condition;
     }
 
+    /// <summary>
+    /// Возвращает первую строку запроса.
+    /// </summary>
+    /// <param name="query">Текст запроса.</param>
+    /// <returns></returns>
     public static string GetFirst(string query)
     {
-        return "select * from (" + query + ") where rownum = 1";
+        return "select * from(" + query + ")where rownum=1";
     }
-
-    public static string ToNumber(string str)
+    /// <summary>
+    /// Возвращает аргумент обёрнутый в TO_NUMBER().
+    /// </summary>
+    /// <param name="str">Аргумент.</param>
+    /// <returns></returns>
+    public static string Num(string str)
     {
-        return "TO_NUMBER(" + str + ")";
+        return "TO_NUMBER(" + str + ") ";
+    }
+    /// <summary>
+    /// Возвращает аргумент завёрнутый в MAX().
+    /// </summary>
+    /// <param name="str"></param>
+    /// <returns></returns>
+    public static string Max(string str)
+    {
+        return "MAX(" + str + ") ";
     }
 
     public static string OrderBy(string column)

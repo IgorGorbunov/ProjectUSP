@@ -74,6 +74,23 @@ public static class Message
         Show("Ошибка!", MessageType.Error, message);
     }
     /// <summary>
+    /// Выводит сообщение об ошибке.
+    /// </summary>
+    /// <param name="message">Текст сообщения.</param>
+    public static void ShowError(params object[] message)
+    {
+        string mess = "";
+        for (int i = 0; i < message.Length; i++)
+        {
+            if (message[i] == null)
+            {
+                mess += "null" + Environment.NewLine;
+            }
+            mess += message[i] + Environment.NewLine;
+        }
+        ShowError(mess);
+    }
+    /// <summary>
     /// Выводит сообщение о предупреждении.
     /// </summary>
     /// <param name="message">Текст сообщения.</param>

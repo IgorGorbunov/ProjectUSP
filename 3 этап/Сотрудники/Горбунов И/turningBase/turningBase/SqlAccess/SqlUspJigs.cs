@@ -21,8 +21,8 @@ public static class SqlUspJigs
 
         string query = Sql.GetBegin(SqlTabUspData.CTitle);
         query += SqlUspElement.From + Sql.AddTable(SqlTabJigData.Name) + Sql.Where;
-        query += SqlTabUspData.CInnerDiametr + Sql.Eq + Sql.GetPar(par2);
-        query += Sql.GetNewCond(SqlTabUspData.CCatalog + Sql.Eq + Sql.GetPar(par1));
+        query += SqlTabUspData.CInnerDiametr + Sql.Eq + Sql.Par(par2);
+        query += Sql.GetNewCond(SqlTabUspData.CCatalog + Sql.Eq + Sql.Par(par1));
         query += Sql.GetNewCond(SqlTabUspData.CGost + Sql.Eq + SqlTabJigData.CGost);
         query += Sql.OrderBy(SqlTabUspData.CWeight);
         query = Sql.GetFirst(query);
@@ -50,7 +50,7 @@ public static class SqlUspJigs
         query += ",ROW_NUMBER() OVER (partition BY " + SqlTabUspData.CName + "," +
                  SqlTabUspData.CGost + " ORDER BY 1) RN ";
         query += SqlUspElement.From + Sql.AddTable(SqlTabJigData.Name) + Sql.Where;
-        query += SqlTabUspData.CCatalog + Sql.Eq + Sql.GetPar(cat);
+        query += SqlTabUspData.CCatalog + Sql.Eq + Sql.Par(cat);
         query += Sql.GetNewCond(SqlTabUspData.CGost + Sql.Eq + SqlTabJigData.CGost);
         query += ") WHERE RN = 1";
 

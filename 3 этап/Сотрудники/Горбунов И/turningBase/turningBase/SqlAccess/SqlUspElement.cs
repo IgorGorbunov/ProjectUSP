@@ -15,7 +15,7 @@ static class SqlUspElement
                            " and (" + SqlTabUspData.CName + " like '" + SqlTabUspData.GetName(SqlTabUspData.NameUsp.RoundPlate) + "%'" +
                                 " or " + SqlTabUspData.CName + " like '" + SqlTabUspData.GetName(SqlTabUspData.NameUsp.RoundPlates) + "%')";
 
-    public const string From = "from " + SqlTabUspData.Name + "";
+    public const string From = "from " + SqlTabUspData.Name;
 
 
     /// <summary>
@@ -105,7 +105,27 @@ static class SqlUspElement
         throw new TimeoutException();
     }
 
+    public static double GetMaxLenSlotFixture(Catalog catalog)
+    {
+        Dictionary<string, string> paramDict = new Dictionary<string, string>();
+        paramDict.Add("dia", "%" + catalog.Diametr + "%");
+        paramDict.Add("cat", ((int)catalog.CatalogUsp).ToString());
 
+        string query = "select " + Sql.Max(Sql.Num(SqlTabUspData.CLength)) + From;
+        query += Sql.Where + Sql.Equal(SqlTabUspData.CCatalog, Sql.Par("cat"));
+        query += Sql.GetNewCond(SqlTabUspData.CDiametr + " like " + Sql.Par("dia"));
+        query += Sql.GetNewCond(SqlTabUspData.ThereIs);
+        query += Sql.GetNewCond(Sql.Equal(SqlTabUspData.CGroup, (int)SqlTabUspData.GroupUsp.Fixture));
+        query += Sql.GetNewCond(Sql.Equal(SqlTabUspData.CName, SqlTabUspData.GetName(SqlTabUspData.NameUsp.SlotBolt)));
+        query = Sql.GetFirst(query);
+
+        decimal length;
+        if (SqlOracle.Sel(query, paramDict, out length))
+        {
+            return (double)length;
+        }
+        throw new TimeoutException();
+    }
 
     /// <summary>
     /// Возвращает пазовые болты по выборке обозначение-длина.
@@ -281,8 +301,8 @@ static class SqlUspElement
 
         string query = Sql.GetBegin(SqlTabUspData.CDiametr);
         query += From + Sql.Where;
-        query += SqlTabUspData.CTitle + Sql.Eq + Sql.GetPar(par2);
-        query += Sql.GetNewCond(SqlTabUspData.CCatalog + Sql.Eq + Sql.GetPar(par1));
+        query += SqlTabUspData.CTitle + Sql.Eq + Sql.Par(par2);
+        query += Sql.GetNewCond(SqlTabUspData.CCatalog + Sql.Eq + Sql.Par(par1));
 
         string str;
         if (SqlOracle.Sel(query, parametrs, out str))
@@ -300,7 +320,7 @@ static class SqlUspElement
 
         string query = Sql.GetBegin(SqlTabUspData.CInnerDiametr);
         query += From + Sql.Where;
-        query += SqlTabUspData.CTitle + Sql.Eq + Sql.GetPar(par1);
+        query += SqlTabUspData.CTitle + Sql.Eq + Sql.Par(par1);
 
         string str;
         if (SqlOracle.Sel(query, parametrs, out str))

@@ -58,6 +58,8 @@ public sealed class HeightSet : DialogProgpam
     private Face _face1, _face2;
     private bool _face1Selected, _face2Selected;
 
+    private Catalog _catalog = new Catalog12();
+
     
     //------------------------------------------------------------------------------
     //Constructor for NX Styler class
@@ -283,25 +285,46 @@ public sealed class HeightSet : DialogProgpam
     {
         if (_face1Selected && _face2Selected)
         {
-            double height = Config.Round(Math.Abs(GetHeight()));
-            Message.Tst(height);
-            Solution solution = new SelectionAlgorihtm(
-                DatabaseUtils.loadFromDb(ElementType.HeightByRectangle, false),//учитываем колво на складе
-                1000).solve(height, false); //учитываем колво на складе
-
-            Dictionary<Element, byte> eDictionary = new Dictionary<Element, byte>();
-            eDictionary = solution.getMainSolution(0);
-
-            List<string> list = new List<string>();
-            foreach (KeyValuePair<Element, byte> keyValuePair in eDictionary)
+            try
             {
-                for (int i = 0; i < keyValuePair.Value; i++)
+                double maxLen = SqlUspElement.GetMaxLenSlotFixture(_catalog);
+                double height = Config.Round(Math.Abs(GetHeight()));
+                if (maxLen >= height)
                 {
-                    list.Add(keyValuePair.Key.Obozn);
+                    SetHeihgtElems(height);
+                }
+                else
+                {
+                    Message.ShowError("Высота для набора слишком большая!", "Подходящий П-образный болт не найден!");
                 }
             }
-            LoadParts(list);
+            catch (TimeoutException)
+            {
+                Message.Timeout();
+                throw;
+            }
         }
+    }
+
+    private void SetHeihgtElems(double height)
+    {
+
+        Solution solution = new SelectionAlgorihtm(
+            DatabaseUtils.loadFromDb(ElementType.HeightByRectangle, false),//учитываем колво на складе
+            1000).solve(height, false); //учитываем колво на складе
+
+        Dictionary<Element, byte> eDictionary = new Dictionary<Element, byte>();
+        eDictionary = solution.getMainSolution(0);
+
+        List<string> list = new List<string>();
+        foreach (KeyValuePair<Element, byte> keyValuePair in eDictionary)
+        {
+            for (int i = 0; i < keyValuePair.Value; i++)
+            {
+                list.Add(keyValuePair.Key.Obozn);
+            }
+        }
+        LoadParts(list);
     }
 
     private double GetHeight()
