@@ -48,6 +48,10 @@ using img_gallery;
 //------------------------------------------------------------------------------
 public sealed class HeightSet : DialogProgpam
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    public static double UserHeight;
     //class members
     private readonly string _theDialogName;
 
@@ -289,6 +293,7 @@ public sealed class HeightSet : DialogProgpam
             {
                 double maxLen = SqlUspElement.GetMaxLenSlotFixture(_catalog);
                 double height = Config.Round(Math.Abs(GetHeight()));
+
                 if (maxLen >= height)
                 {
                     SetHeihgtElems(height);
@@ -310,12 +315,37 @@ public sealed class HeightSet : DialogProgpam
     {
 
         Solution solution = new SelectionAlgorihtm(
-            DatabaseUtils.loadFromDb(ElementType.HeightByRectangle, false),//учитываем колво на складе
+            DatabaseUtils.loadFromDb(ElementType.HeightBySquare, false),//учитываем колво на складе
             1000).solve(height, false); //учитываем колво на складе
 
-        Dictionary<Element, byte> eDictionary = new Dictionary<Element, byte>();
-        eDictionary = solution.getMainSolution(0);
+        if (solution.mainAnswer == -1)
+        {
+            ExactHeightForm form = new ExactHeightForm(height, solution.lowerBound,
+                                                       solution.upperBound);
+            form.ShowDialog();
 
+            if (UserHeight == -1)
+            {
+                UnSelectObjects(_selection0);
+                UnSelectObjects(_selection01);
+                _selection0.Focus();
+            }
+            else
+            {
+                SetElems(new SelectionAlgorihtm(
+                    DatabaseUtils.loadFromDb(ElementType.HeightBySquare, false),
+                    1000).solve(UserHeight, false));
+            }
+        }
+        else
+        {
+            SetElems(solution);
+        }
+    }
+
+    private void SetElems(Solution solution)
+    {
+        Dictionary<Element, byte> eDictionary = solution.getMainSolution(0);
         List<string> list = new List<string>();
         foreach (KeyValuePair<Element, byte> keyValuePair in eDictionary)
         {

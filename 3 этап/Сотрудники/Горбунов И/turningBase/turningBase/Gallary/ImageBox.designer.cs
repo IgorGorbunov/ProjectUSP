@@ -60,6 +60,7 @@ namespace img_gallery.Controls
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.label1);
             this.Controls.Add(this.pictureBox1);
+            this.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.Name = "ImageBox";
             this.Size = new System.Drawing.Size(180, 222);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();

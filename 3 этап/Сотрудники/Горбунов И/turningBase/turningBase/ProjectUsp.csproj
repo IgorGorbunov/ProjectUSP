@@ -110,6 +110,12 @@
     <Compile Include="Dialogs\angleSet.cs" />
     <Compile Include="Dialogs\buttons.cs" />
     <Compile Include="Dialogs\DialogProgpam.cs" />
+    <Compile Include="Dialogs\ExactHeightForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\ExactHeightForm.Designer.cs">
+      <DependentUpon>ExactHeightForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\jig.cs" />
     <Compile Include="Dialogs\milingBase.cs" />
     <Compile Include="Dialogs\tunnelslot.cs" />
@@ -187,6 +193,10 @@
     <Compile Include="Math\Vector.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Dialogs\ExactHeightForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ExactHeightForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Gallary\ImageBox.resx">
       <DependentUpon>ImageBox.cs</DependentUpon>
       <SubType>Designer</SubType>

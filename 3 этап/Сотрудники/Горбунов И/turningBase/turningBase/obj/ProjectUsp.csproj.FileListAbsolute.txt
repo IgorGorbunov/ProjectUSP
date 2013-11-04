@@ -14,3 +14,4 @@ G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningB
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Debug\ProjectUsp.csproj.GenerateResource.Cache
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Debug\ProjectUsp.dll
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Debug\ProjectUsp.pdb
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Debug\ExactHeightForm.resources
