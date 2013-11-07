@@ -305,9 +305,19 @@ public sealed class HeightSet : DialogProgpam
             Slot slot = element.GetNearestSlot(point);
             double maxSlotHeight = Instr.Max(_catalog.SlotHeight1);
             double needHeight = maxSlotHeight + _height + _RESERVE_HEIGHT;
+            double maxLen = SqlUspElement.GetMaxLenSlotFixture(_catalog);
+            if (maxLen < needHeight)
+            {
+                UnSelectObjects(block);
+                const string mess = "Подходящих по длине болтов не было найдено!";
+                Logger.WriteLine(mess);
+                Message.ShowError(mess);
+                return;
+            }
             string boltTitle = SqlUspElement.GetTitleMinLengthFixture(needHeight, _catalog);
             Katalog2005.Algorithm.SpecialFunctions.LoadPart(boltTitle, false);
             SlotTBolt bolt = new SlotTBolt(Katalog2005.Algorithm.SpecialFunctions.LoadedPart);
+            bolt.SetInSlot(slot);
         }
         catch (TimeoutException)
         {
