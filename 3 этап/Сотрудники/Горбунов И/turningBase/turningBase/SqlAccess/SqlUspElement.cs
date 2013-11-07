@@ -128,12 +128,45 @@ static class SqlUspElement
     }
 
     /// <summary>
+    /// Возвращает обозначение минимально подходящего пазового болта.
+    /// </summary>
+    /// <param name="length">Минимальная длина.</param>
+    /// <param name="catalog">Каталог для элементов.</param>
+    /// <returns></returns>
+    public static string GetTitleMinLengthFixture(double length, Catalog catalog)
+    {
+        Dictionary<string, string> paramDict = new Dictionary<string, string>();
+        paramDict.Add("diametr", "%" + catalog.Diametr + "%");
+        paramDict.Add("length", length.ToString());
+
+        string title;
+
+        string query = "select " + SqlTabUspData.CTitle +
+                       " from " + SqlTabUspData.Name +
+                       " where " + SqlTabUspData.CCatalog + " = " + (int) catalog.CatalogUsp +
+                       " and " + SqlTabUspData.CGroup + " = " + (int) SqlTabUspData.GroupUsp.Fixture +
+                       Sql.GetNewCond(SqlTabUspData.ThereIs) +
+                       " and " + SqlTabUspData.CDiametr + " like :diametr" +
+                       " and TO_NUMBER(" + SqlTabUspData.CLength + ") >= :length" +
+                       " and " + SqlTabUspData.CName + " = " +
+                       SqlTabUspData.GetName(SqlTabUspData.NameUsp.SlotBolt) +
+                       Sql.OrderBy(Sql.Num(SqlTabUspData.CLength));
+        query = Sql.GetFirst(query);
+
+        if (SqlOracle.Sel(query, paramDict, out title))
+        {
+            return title;
+        }
+        throw new TimeoutException();
+    }
+
+    /// <summary>
     /// Возвращает пазовые болты по выборке обозначение-длина.
     /// </summary>
     /// <param name="length">Минимальная длина.</param>
     /// <param name="catalog">Каталог для элементов.</param>
     /// <returns></returns>
-    public static Dictionary<string, string> GetTitleMinLengthFixture(double length, Catalog catalog)
+    public static Dictionary<string, string> GetTitleMinLengthFixtures(double length, Catalog catalog)
     {
         Dictionary<string, string> paramDict = new Dictionary<string, string>();
         paramDict.Add("diametr", "%" + catalog.Diametr + "%");
@@ -145,7 +178,7 @@ static class SqlUspElement
                        " from " + SqlTabUspData.Name +
                        " where " + SqlTabUspData.CCatalog + " = " + (int) catalog.CatalogUsp +
                            " and " + SqlTabUspData.CGroup + " = " + (int) SqlTabUspData.GroupUsp.Fixture +
-                           //Sql.GetNewCond(SqlTabUspData.ThereIs) + 
+                           Sql.GetNewCond(SqlTabUspData.ThereIs) + 
                            " and " + SqlTabUspData.CDiametr + " like :diametr" +
                            " and " + SqlTabUspData.CLength + " >= :length" +
                            " and " + SqlTabUspData.CName + " = " + SqlTabUspData.GetName(SqlTabUspData.NameUsp.SlotBolt);

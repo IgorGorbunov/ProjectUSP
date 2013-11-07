@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using NXOpen;
 using NXOpen.Assemblies;
 
@@ -621,6 +622,7 @@ public sealed class SlotSet
             maxLength = diagonal.Length;
         }
 
+        Debug.Assert(maxDiagonal != null, "maxDiagonal != null");
         return maxDiagonal.SurroundingPoint;
     }
 

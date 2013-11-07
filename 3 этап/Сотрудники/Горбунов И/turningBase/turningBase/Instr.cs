@@ -90,5 +90,24 @@ public static class Instr
     {
         return Image.FromStream(new MemoryStream(bytes));
     }
+    /// <summary>
+    /// Возвращает максимальное значение для заданного массива.
+    /// </summary>
+    /// <param name="array"></param>
+    public static double Max(IEnumerable<double> array)
+    {
+        double maxEl = double.MinValue;
+        if (array == null)
+            return maxEl;
+
+        foreach (double var in array)
+        {
+            if (var > maxEl)
+            {
+                maxEl = var;
+            }
+        }
+        return maxEl;
+    }
 }
 

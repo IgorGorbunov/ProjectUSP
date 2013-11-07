@@ -309,7 +309,7 @@ public class AngleSet : DialogProgpam
         _minutes = _integer01.GetProperties().GetInteger("Value");
         if (AngleIsGood(_degrees, _minutes))
         {
-            List<string> gosts = new List<string>();
+            List<string> gosts;
             Dictionary<Image, string> images = new Dictionary<Image, string>();
             if (_angleIsObtuse)
             {
@@ -356,7 +356,6 @@ public class AngleSet : DialogProgpam
         }
 
     Exit:
-        ;
 
         SetElements();
     }

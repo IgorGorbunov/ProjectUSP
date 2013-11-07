@@ -41,7 +41,9 @@ public static class Message
     /// </summary>
     /// <param name="vars">Переменные для текста сообщения. 
     /// В сообщениии каждая будет располагаться на новой строке</param>
+// ReSharper disable MethodOverloadWithOptionalParameter
     public static void Tst(params object[] vars)
+// ReSharper restore MethodOverloadWithOptionalParameter
     {
 #if(DEBUG)
         string mess = "";

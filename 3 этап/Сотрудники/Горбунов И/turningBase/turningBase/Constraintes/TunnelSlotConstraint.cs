@@ -167,7 +167,7 @@ public sealed class TunnelSlotConstraint
     {
         double requiredLen = setLen + _secondElement.UspCatalog.SlotBoltLendthTolerance;
         Dictionary<string, string> dictionary =
-            SqlUspElement.GetTitleMinLengthFixture(requiredLen, _secondElement.UspCatalog);
+            SqlUspElement.GetTitleMinLengthFixtures(requiredLen, _secondElement.UspCatalog);
 
         string title = "";
         int minLen = int.MaxValue;

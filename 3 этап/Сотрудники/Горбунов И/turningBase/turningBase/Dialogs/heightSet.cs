@@ -41,7 +41,6 @@ using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.BlockStyler;
 using NXOpen.UF;
-using img_gallery;
 
 //------------------------------------------------------------------------------
 //Represents Block Styler application class
@@ -58,13 +57,16 @@ public sealed class HeightSet : DialogProgpam
     private UIBlock _group0;// Block type: Group
     private UIBlock _selection0;// Block type: Selection
     private UIBlock _selection01;// Block type: Selection
+    private UIBlock _point0;// Block type: Selection
 
     private Face _face1, _face2;
     private bool _face1Selected, _face2Selected;
 
-    private Catalog _catalog = new Catalog12();
+    private readonly Catalog _catalog = new Catalog12();
+    private double _height;
+    private const double _RESERVE_HEIGHT = 10;
 
-    
+
     //------------------------------------------------------------------------------
     //Constructor for NX Styler class
     //------------------------------------------------------------------------------
@@ -126,6 +128,7 @@ public sealed class HeightSet : DialogProgpam
             _group0 = TheDialog.TopBlock.FindBlock("group0");
             _selection0 = TheDialog.TopBlock.FindBlock("selection0");
             _selection01 = TheDialog.TopBlock.FindBlock("selection01");
+            _point0 = TheDialog.TopBlock.FindBlock("point0");
         }
         catch (Exception ex)
         {
@@ -190,6 +193,7 @@ public sealed class HeightSet : DialogProgpam
             if(block == _selection0)
             {
             //---------Enter your code here-----------
+                Logger.WriteLine("Активирована кнопка выбора первой грани.");
                 TaggedObject[] taggedObjects = block.GetProperties().GetTaggedObjectVector("SelectedObjects");
                 if (taggedObjects.Length > 0)
                 {
@@ -199,12 +203,13 @@ public sealed class HeightSet : DialogProgpam
                 }
                 else
                 {
-                    
+                    _face1Selected = false;
                 }
             }
             else if(block == _selection01)
             {
             //---------Enter your code here-----------
+                Logger.WriteLine("Активирована кнопка выбора второй грани.");
                 TaggedObject[] taggedObjects = block.GetProperties().GetTaggedObjectVector("SelectedObjects");
                 if (taggedObjects.Length > 0)
                 {
@@ -214,8 +219,12 @@ public sealed class HeightSet : DialogProgpam
                 }
                 else
                 {
-
+                    _face2Selected = false;
                 }
+            }
+            else if (block == _point0)
+            {
+                SetBolt(block);
             }
         }
         catch (Exception ex)
@@ -284,30 +293,77 @@ public sealed class HeightSet : DialogProgpam
         }
     }
     
+    //----------------------------------------------------------------------------------
+
+    private void SetBolt(UIBlock block)
+    {
+        try
+        {
+            Point3d point = GetPoint(block);
+            UspElement element = NxFunctions.GetUnsuppressElement(point);
+            Logger.WriteLine("Точка находится на компоненте ", element.ElementComponent.Name);
+            Slot slot = element.GetNearestSlot(point);
+            double maxSlotHeight = Instr.Max(_catalog.SlotHeight1);
+            double needHeight = maxSlotHeight + _height + _RESERVE_HEIGHT;
+            string boltTitle = SqlUspElement.GetTitleMinLengthFixture(needHeight, _catalog);
+            Katalog2005.Algorithm.SpecialFunctions.LoadPart(boltTitle, false);
+            SlotTBolt bolt = new SlotTBolt(Katalog2005.Algorithm.SpecialFunctions.LoadedPart);
+        }
+        catch (TimeoutException)
+        {
+            Message.Timeout();
+            throw;
+        }
+    }
+
+    private Point3d GetPoint(UIBlock block)
+    {
+        Logger.WriteLine("Активирована кнопка постановки точки.");
+        Point3d point = block.GetProperties().GetPoint("Point");
+        Logger.WriteLine("Координаты точки", point);
+        return point;
+    }
 
     private void DoMagic()
     {
-        if (_face1Selected && _face2Selected)
-        {
-            try
-            {
-                double maxLen = SqlUspElement.GetMaxLenSlotFixture(_catalog);
-                double height = Config.Round(Math.Abs(GetHeight()));
+        if (!_face1Selected || !_face2Selected) 
+            return;
 
-                if (maxLen >= height)
-                {
-                    SetHeihgtElems(height);
-                }
-                else
-                {
-                    Message.ShowError("Высота для набора слишком большая!", "Подходящий П-образный болт не найден!");
-                }
-            }
-            catch (TimeoutException)
+        Surface surface1 = new Surface(_face1);
+        Surface surface2 = new Surface(_face2);
+        if (!surface1.IsParallel(surface2))
+        {
+            const string mess = "Выбранные грани не параллельны!";
+            Logger.WriteLine(mess);
+            Message.ShowError(mess);
+            return;
+        }
+
+        _height = Config.Round(Math.Abs(GetHeight()));
+        if (Config.Round(_height) == 0.0)
+        {
+            const string mess = "Расстояние между гранями равно нулю!";
+            Logger.WriteLine(mess);
+            Message.ShowError(mess);
+            return;
+        }
+
+        try
+        {
+            double maxLen = SqlUspElement.GetMaxLenSlotFixture(_catalog);
+            if (maxLen >= _height)
             {
-                Message.Timeout();
-                throw;
+                SetHeihgtElems(_height);
             }
+            else
+            {
+                Message.ShowError("Высота для набора слишком большая!", "Подходящий П-образный болт не найден!");
+            }
+        }
+        catch (TimeoutException)
+        {
+            Message.Timeout();
+            throw;
         }
     }
 
@@ -315,9 +371,9 @@ public sealed class HeightSet : DialogProgpam
     {
 
         Solution solution = new SelectionAlgorihtm(
-            DatabaseUtils.loadFromDb(ElementType.HeightBySquare, false),//учитываем колво на складе
+            DatabaseUtils.loadFromDb(ElementType.HeightBySquare, false, (int)_catalog.CatalogUsp),//учитываем колво на складе
             1000).solve(height, false); //учитываем колво на складе
-
+ 
         if (solution.mainAnswer == -1)
         {
             ExactHeightForm form = new ExactHeightForm(height, solution.lowerBound,
@@ -333,7 +389,7 @@ public sealed class HeightSet : DialogProgpam
             else
             {
                 SetElems(new SelectionAlgorihtm(
-                    DatabaseUtils.loadFromDb(ElementType.HeightBySquare, false),
+                    DatabaseUtils.loadFromDb(ElementType.HeightBySquare, false, (int)_catalog.CatalogUsp),
                     1000).solve(UserHeight, false));
             }
         }
@@ -361,7 +417,10 @@ public sealed class HeightSet : DialogProgpam
     {
         Surface surface1 = new Surface(_face1);
         Surface surface2 = new Surface(_face2);
-        return surface1.GetDistance(surface2);
+        double height = surface1.GetDistance(surface2);
+
+        Logger.WriteLine("Расстояние между гранями = " + height);
+        return height;
     }
 
     private void LoadParts(List<string> partList)

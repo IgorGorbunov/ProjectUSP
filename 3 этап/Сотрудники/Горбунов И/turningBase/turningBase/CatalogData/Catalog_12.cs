@@ -54,7 +54,7 @@ sealed class Catalog12 : Catalog
     {
         get { return _SLOT_HEIGHT; }
     }
-    protected override double[] SlotHeight1
+    public override double[] SlotHeight1
     {
         get { return _SLOT_HEIGHT1; }
     }
@@ -81,7 +81,7 @@ sealed class Catalog12 : Catalog
     private const double _SLOT_WIDTH_B = 20;
     private const double _SLOT_WIDTH_B1 = 13;
     private static readonly double[] _SLOT_HEIGHT = { 6, 8, 10 };
-    private static readonly double[] _SLOT_HEIGHT1 = { 7, 7.2, 7.5, 8, 9 };
+    private static readonly double[] _SLOT_HEIGHT1 = { 7, 7.2, 7.5, 8 };
     private const double _SLOT_HEIGHT2 = 4;
 
     private const double _STEP_WIDTH_T_SLOT1 = (_SLOT_WIDTH_B - _SLOT_WIDTH_A) / 2.0;

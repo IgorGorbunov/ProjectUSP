@@ -121,6 +121,7 @@
     <Compile Include="Dialogs\tunnelslot.cs" />
     <Compile Include="Dialogs\turnElement.cs" />
     <Compile Include="ElementIntersection.cs" />
+    <Compile Include="Elements\SlotTBolt.cs" />
     <Compile Include="Elements\SmallAngleElement.cs" />
     <Compile Include="Elements\BigAngleElement.cs" />
     <Compile Include="Elements\HeightElement.cs" />
@@ -149,6 +150,7 @@
     <Compile Include="Dialogs\heightSet.cs" />
     <Compile Include="Korneev\AlgoForm.cs">
     </Compile>
+    <Compile Include="Korneev\HeightAlgorithm.cs" />
     <Compile Include="Log\Log.cs" />
     <Compile Include="Math\Axes\CoordinateAxe.cs" />
     <Compile Include="Math\Axes\xAxe.cs" />

@@ -178,7 +178,5 @@ public static class SqlTabUspData
     {
         get { return CCount + ">TO_NUMBER(0) "; }
     }
-
-    private const int _NULL_NUMBER = 999;
 }
 

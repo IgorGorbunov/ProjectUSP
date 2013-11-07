@@ -69,7 +69,6 @@ public class Tunnelslot : DialogProgpam
     private TunnelSlotConstraint _constraint;
 
     private Catalog _firstElementCatalog;
-    private Catalog _secondElementCatalog;
 
     private static bool _secondPointSelected;
     private static bool _firstPointSelected;
@@ -323,31 +322,10 @@ public class Tunnelslot : DialogProgpam
 
     //--------------------------------------------------------------------
 
-    void SetFirstComponent(UIBlock block)
-    {
-        if (SetComponent(block, ref _element1, _secondElementCatalog))
-        {
-            _firstElementCatalog = _element1.UspCatalog;
-            SetEnable(_faceSelect0, true);
-
-            _slotSet1 = new SlotSet(_element1);
-            _element1.SetBottomFaces();
-        }
-        else
-        {
-            _firstElementCatalog = null;
-            SetEnable(_faceSelect0, false);
-        }
-        SetEnable(_direction0, false);
-        UnSelectSlot(_slot1, _slotTunPoint);
-        _firstPointSelected = false;
-        UnSelectObjects(_faceSelect0);
-    }
     void SetSecondComponent(UIBlock block)
     {
         if (SetComponent(block, ref _element2, _firstElementCatalog))
         {
-            _secondElementCatalog = _element2.UspCatalog;
             SetEnable(_point0, true);
 
             _slotSet2 = new SlotSet(_element2);
@@ -355,7 +333,6 @@ public class Tunnelslot : DialogProgpam
         }
         else
         {
-            _secondElementCatalog = null;
             SetEnable(_point0, false);
         }
         _secondPointSelected = false;
@@ -467,28 +444,6 @@ public class Tunnelslot : DialogProgpam
             return false;
         }
         Logger.WriteLine("Деселект грани");
-        return false;
-    }
-
-    static bool FindFace(TaggedObject[] to, UspElement element, out Face face)
-    {
-        TaggedObject t = to[0];
-
-        Part p = (Part)element.ElementComponent.OwningPart;
-        BodyCollection bc = p.Bodies;
-        foreach (Body b in bc)
-        {
-            Face[] fc = b.GetFaces();
-
-            foreach (Face f in fc)
-            {
-                if (f.Tag != t.Tag) continue;
-                face = f;
-                return true;
-            }
-        }
-
-        face = null;
         return false;
     }
 
@@ -605,17 +560,6 @@ public class Tunnelslot : DialogProgpam
         }
         return false;
     }
-
-    static void UnSelectSlot(Slot slot, UIBlock slotSetBlock)
-    {
-        if (slot != null)
-        {
-            slot.Unhighlight();
-        }
-        UnSelectObjects(slotSetBlock);
-        SetEnable(slotSetBlock, false);
-    }
-
 
 
     void SetConstraints()

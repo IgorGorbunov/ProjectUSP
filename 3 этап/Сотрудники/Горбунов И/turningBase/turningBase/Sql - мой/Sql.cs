@@ -100,7 +100,7 @@ public static class Sql
 
     public static string Equal(object param1, object param2)
     {
-        return param1.ToString() + Eq + param2.ToString();
+        return param1 + Eq + param2;
     }
 }
 

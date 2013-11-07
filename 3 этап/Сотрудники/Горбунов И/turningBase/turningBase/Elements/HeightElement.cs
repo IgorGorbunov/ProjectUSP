@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using NXOpen;
 using NXOpen.Assemblies;
 
@@ -303,24 +302,6 @@ public class HeightElement : UspElement
             projectSurface = new Surface(_topFace);
             _topSlot = GetSideSlot(projectSurface, GetPointOnHoleEdge());
         }
-    }
-
-    private Face GetNearestSlotFace(Surface outSurface, Point3d point)
-    {
-        double minDistance = Double.MaxValue;
-        Face face = null;
-        foreach (Face slotFace in SlotFaces)
-        {
-            Surface surface = new Surface(slotFace);
-            if (surface.IsParallel(outSurface))
-                continue;
-            double distance = surface.GetDistance(point);
-            if (distance > minDistance) 
-                continue;
-            minDistance = distance;
-            face = slotFace;
-        }
-        return face;
     }
 
     private Slot GetSideSlot(Surface outSurface, Point3d point)

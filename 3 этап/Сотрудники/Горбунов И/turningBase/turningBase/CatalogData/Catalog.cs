@@ -94,7 +94,7 @@ public abstract class Catalog
     /// <summary>
     /// Возвращает высоту h1 Т-образного паза.
     /// </summary>
-    protected virtual double[] SlotHeight1
+    public virtual double[] SlotHeight1
     {
         get { return null; }
     }

@@ -50,7 +50,8 @@ sealed class Catalog8 : Catalog
     {
         get { return _SLOT_HEIGHT; }
     }
-    protected override double[] SlotHeight1
+
+    public override double[] SlotHeight1
     {
         get { return _SLOT_HEIGHT1; }
     }

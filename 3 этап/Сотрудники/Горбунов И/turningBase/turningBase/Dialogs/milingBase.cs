@@ -36,6 +36,7 @@
 //------------------------------------------------------------------------------
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using NXOpen;
 using NXOpen.Assemblies;
@@ -860,6 +861,7 @@ public sealed class MilingBase : DialogProgpam
         }
         Exit:
 
+        Debug.Assert(_selectedFace != null, "_selectedFace != null");
         _someParalElement = new UspElement(_selectedFace.OwningComponent);
         bool isFixed = _someParalElement.ElementComponent.IsFixed;
 
@@ -939,6 +941,7 @@ public sealed class MilingBase : DialogProgpam
             }
         }
         Vertex centerVertex = new Vertex(xCoord, yCoord, zCoord);
+        Debug.Assert(someVertex != null, "someVertex != null");
         centerVertex.SetCoordinate(_ortAxe, someVertex.GetCoordinate(_ortAxe));
         return centerVertex;
     }
@@ -1005,6 +1008,7 @@ public sealed class MilingBase : DialogProgpam
             }
         }
         Vertex centerVertex = new Vertex(xCoord, yCoord, zCoord);
+        Debug.Assert(someVertex != null, "someVertex != null");
         centerVertex.SetCoordinate(_ortAxe, someVertex.GetCoordinate(_ortAxe));
         return centerVertex;
     }

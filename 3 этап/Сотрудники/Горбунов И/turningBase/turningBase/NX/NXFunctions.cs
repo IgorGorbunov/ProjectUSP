@@ -1,5 +1,7 @@
 ﻿using NXOpen;
+using NXOpen.Assemblies;
 using NXOpen.UF;
+using NXOpen.Utilities;
 
 internal static class NxFunctions
 {
@@ -96,5 +98,42 @@ internal static class NxFunctions
     public static void SetAsterix(Vertex vertex)
     {
         SetAsterix(vertex.Point);
+    }
+
+    /// <summary>
+    /// Возвращает непогашенный элемент УСП, к которому принадлежит заданная точка.
+    /// </summary>
+    /// <param name="point">Точка НА компоненте.</param>
+    /// <returns></returns>
+    public static UspElement GetUnsuppressElement(Point3d point)
+    {
+        PartCollection collection = Config.TheSession.Parts;
+        foreach (Part part in collection)
+        {
+            Tag[] occurences;
+            Config.TheUfSession.Assem.AskOccsOfPart(Config.WorkPart.Tag, part.Tag, out occurences);
+
+            foreach (Tag tag in occurences)
+            {
+                Component component = (Component)NXObjectManager.Get(tag);
+                if (component.IsBlanked) continue;
+
+                UspElement element = new UspElement(component);
+
+                double[] surrCoords = new double[3];
+                surrCoords[0] = point.X;
+                surrCoords[1] = point.Y;
+                surrCoords[2] = point.Z;
+
+                int status;
+                Config.TheUfSession.Modl.AskPointContainment(surrCoords, element.Body.Tag, out status);
+
+                if (status == 3)
+                {
+                    return element;
+                }
+            }
+        }
+        return null;
     }
 }
