@@ -57,7 +57,7 @@ public sealed class HeightSet : DialogProgpam
     private UIBlock _group0;// Block type: Group
     private UIBlock _selection0;// Block type: Selection
     private UIBlock _selection01;// Block type: Selection
-    private UIBlock _point0;// Block type: Selection
+    private UIBlock _button0;// Block type: Selection
 
     private Face _face1, _face2;
     private bool _face1Selected, _face2Selected;
@@ -65,6 +65,8 @@ public sealed class HeightSet : DialogProgpam
     private readonly Catalog _catalog = new Catalog12();
     private double _height;
     private const double _RESERVE_HEIGHT = 10;
+
+    private HeightElement _firstElement;
 
 
     //------------------------------------------------------------------------------
@@ -128,7 +130,7 @@ public sealed class HeightSet : DialogProgpam
             _group0 = TheDialog.TopBlock.FindBlock("group0");
             _selection0 = TheDialog.TopBlock.FindBlock("selection0");
             _selection01 = TheDialog.TopBlock.FindBlock("selection01");
-            _point0 = TheDialog.TopBlock.FindBlock("point0");
+            _button0 = TheDialog.TopBlock.FindBlock("button0");
         }
         catch (Exception ex)
         {
@@ -222,9 +224,11 @@ public sealed class HeightSet : DialogProgpam
                     _face2Selected = false;
                 }
             }
-            else if (block == _point0)
+            else if (block == _button0)
             {
-                SetBolt(block);
+                SetBoltInSlot setBolt = new SetBoltInSlot(_catalog, _height, _RESERVE_HEIGHT,
+                                                          _firstElement);
+                setBolt.Show();
             }
         }
         catch (Exception ex)
@@ -295,36 +299,37 @@ public sealed class HeightSet : DialogProgpam
     
     //----------------------------------------------------------------------------------
 
-    private void SetBolt(UIBlock block)
-    {
-        try
-        {
-            Point3d point = GetPoint(block);
-            UspElement element = NxFunctions.GetUnsuppressElement(point);
-            Logger.WriteLine("Точка находится на компоненте ", element.ElementComponent.Name);
-            Slot slot = element.GetNearestSlot(point);
-            double maxSlotHeight = Instr.Max(_catalog.SlotHeight1);
-            double needHeight = maxSlotHeight + _height + _RESERVE_HEIGHT;
-            double maxLen = SqlUspElement.GetMaxLenSlotFixture(_catalog);
-            if (maxLen < needHeight)
-            {
-                UnSelectObjects(block);
-                const string mess = "Подходящих по длине болтов не было найдено!";
-                Logger.WriteLine(mess);
-                Message.ShowError(mess);
-                return;
-            }
-            string boltTitle = SqlUspElement.GetTitleMinLengthFixture(needHeight, _catalog);
-            Katalog2005.Algorithm.SpecialFunctions.LoadPart(boltTitle, false);
-            SlotTBolt bolt = new SlotTBolt(Katalog2005.Algorithm.SpecialFunctions.LoadedPart);
-            bolt.SetInSlot(slot);
-        }
-        catch (TimeoutException)
-        {
-            Message.Timeout();
-            throw;
-        }
-    }
+    //private void SetBolt(UIBlock block)
+    //{
+    //    try
+    //    {
+    //        Point3d point = GetPoint(block);
+    //        UspElement element = NxFunctions.GetUnsuppressElement(point);
+    //        Logger.WriteLine("Точка находится на компоненте ", element.ElementComponent.Name);
+    //        Slot slot = element.GetNearestSlot(point);
+    //        double maxSlotHeight = Instr.Max(_catalog.SlotHeight1);
+    //        double needHeight = maxSlotHeight + _height + _RESERVE_HEIGHT;
+    //        double maxLen = SqlUspElement.GetMaxLenSlotFixture(_catalog);
+    //        if (maxLen < needHeight)
+    //        {
+    //            UnSelectObjects(block);
+    //            const string mess = "Подходящих по длине болтов не было найдено!";
+    //            Logger.WriteLine(mess);
+    //            Message.ShowError(mess);
+    //            return;
+    //        }
+    //        string boltTitle = SqlUspElement.GetTitleMinLengthFixture(needHeight, _catalog);
+    //        Katalog2005.Algorithm.SpecialFunctions.LoadPart(boltTitle, false);
+    //        SlotTBolt bolt = new SlotTBolt(Katalog2005.Algorithm.SpecialFunctions.LoadedPart);
+    //        bolt.SetInSlot(slot);
+    //        bolt.SetInTunnel(_firstElement.HoleFace);
+    //    }
+    //    catch (TimeoutException)
+    //    {
+    //        Message.Timeout();
+    //        throw;
+    //    }
+    //}
 
     private Point3d GetPoint(UIBlock block)
     {
@@ -420,6 +425,7 @@ public sealed class HeightSet : DialogProgpam
                 list.Add(keyValuePair.Key.Obozn);
             }
         }
+        
         LoadParts(list);
     }
 
@@ -448,6 +454,7 @@ public sealed class HeightSet : DialogProgpam
             }
             else
             {
+                _firstElement = elements[i];
                 Touch touch = new Touch();
                 touch.Create(_face1.OwningComponent, _face1, component, elements[i].BottomFace);
                 NxFunctions.Update();

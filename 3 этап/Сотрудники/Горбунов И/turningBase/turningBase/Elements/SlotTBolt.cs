@@ -20,10 +20,28 @@ public class SlotTBolt : UspElement
         SetFixtureFaces();
     }
 
+    /// <summary>
+    /// Вставляет выгруженный элемент в паз.
+    /// </summary>
+    /// <param name="slot">Заданный паз.</param>
     public void SetInSlot(Slot slot)
     {
         SetConstraints(slot);
         MoveBolt(slot);
+    }
+
+    /// <summary>
+    /// Вставляет текущий болт в заданное отверстие.
+    /// </summary>
+    /// <param name="face">Цилиндрическая грань отверстия.</param>
+    public void SetInTunnel(Face face)
+    {
+        Fix();
+        NxFunctions.Update();
+        TouchAxe touchAxe = new TouchAxe();
+        touchAxe.Create(face, _tunnelFace);
+        NxFunctions.Update();
+        Unfix();
     }
 
     private void SetConstraints(Slot slot)

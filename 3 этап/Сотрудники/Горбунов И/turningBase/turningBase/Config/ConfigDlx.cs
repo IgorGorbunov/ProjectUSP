@@ -47,5 +47,9 @@ public static class ConfigDlx
     /// Возвращает имя файла с формой для поворота элемента.
     /// </summary>
     public const string DlxTurn = @"turnElement.dlx";
+    /// <summary>
+    /// Возвращает имя файла с формой для вставки болта в паз.
+    /// </summary>
+    public const string DlxSetBoltInSlot = @"setBoltInSlot.dlx";
 
 }

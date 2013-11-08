@@ -118,6 +118,7 @@
     </Compile>
     <Compile Include="Dialogs\jig.cs" />
     <Compile Include="Dialogs\milingBase.cs" />
+    <Compile Include="Dialogs\setBoltInSlot.cs" />
     <Compile Include="Dialogs\tunnelslot.cs" />
     <Compile Include="Dialogs\turnElement.cs" />
     <Compile Include="ElementIntersection.cs" />

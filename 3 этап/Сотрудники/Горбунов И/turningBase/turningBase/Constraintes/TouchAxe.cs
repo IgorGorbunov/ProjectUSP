@@ -36,5 +36,31 @@ public sealed class TouchAxe : Constrainter
         }
         
     }
+
+    /// <summary>
+    /// Создание соединения между отверстиями двух компонентов.
+    /// </summary>
+    /// <param name="firstFace">Грань отверстия с первого компонента.</param>
+    /// <param name="secondFace">Грань отверстия со второго компонента.</param>
+    public void Create(Face firstFace, Face secondFace)
+    {
+        Constr = (ComponentConstraint)CompPositioner.CreateConstraint();
+        Constr.ConstraintAlignment = Constraint.Alignment.ContraAlign;
+        Constr.ConstraintType = Constraint.Type.Touch;
+
+        Constr.CreateConstraintReference(firstFace.OwningComponent,
+                                         firstFace, true, false, false);
+
+        Constr.CreateConstraintReference(secondFace.OwningComponent,
+                                         secondFace, true, false, false);
+
+        ExecuteConstraints();
+
+        if (Constr.GetConstraintStatus() == Constraint.SolverStatus.OverConstrained)
+        {
+            Reverse();
+        }
+
+    }
 }
 
