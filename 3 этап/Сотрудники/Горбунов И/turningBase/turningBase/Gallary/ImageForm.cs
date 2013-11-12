@@ -2,13 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using img_gallery.Controls;
+//using algorithm;
+//using img_gallery.Controls;
 
 namespace img_gallery
 {
     public partial class ImageForm : Form
     {
-        public Dictionary<Image, string> Images; 
+        public List<ImageInfo> Images; 
         public readonly MouseEventHandler MouseClickEventHandler;
         
         public int ItemAtRow
@@ -23,7 +24,7 @@ namespace img_gallery
         }
         private int _itemAtRow;
 
-        public ImageForm(Dictionary<Image, string> images, MouseEventHandler mouseClickEventHandler)
+        public ImageForm(List<ImageInfo> images, MouseEventHandler mouseClickEventHandler)
         {
             InitializeComponent();
             Images = images;
@@ -50,10 +51,9 @@ namespace img_gallery
 
             mainPanel.Controls.Clear();
 
-            foreach (KeyValuePair<Image, string> keyValuePair in Images)
+            foreach (ImageInfo info in Images)
             {
-                Image img = keyValuePair.Key;
-                ImageBox pb = new ImageBox(img, keyValuePair.Value);
+                ImageBox pb = new ImageBox(info);
 
                 pb.Margin = new Padding(3);
                 pb.pictureBox1.MouseClick += MouseClickEventHandler;
@@ -78,6 +78,23 @@ namespace img_gallery
         private void ImageForm_SizeChanged(object sender, EventArgs e)
         {
             ItemAtRow = mainPanel.Width / (_WIDTH + _DIFF + 6);
+        }
+    }
+
+    public class ImageInfo {
+        public Image Image;
+        public String Name;
+        public int ElementCount;
+        public bool Selected;        
+        public AngleSolution Solution;
+
+        public ImageInfo(AngleSolution solution, Image image, String name, int elementCount, bool selected)
+        {
+            this.Image = image;
+            this.Name = name;
+            this.Selected = selected;
+            this.ElementCount = elementCount;
+            this.Solution = solution;
         }
     }
 }
