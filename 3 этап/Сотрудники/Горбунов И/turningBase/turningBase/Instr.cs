@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using NXOpen;
@@ -39,25 +40,34 @@ public static class Instr
     /// <param name="high">Верхняя грань сортировки (по умолчанию - длина_массива-1).</param>
     public static void QSortPairs<TKey>(KeyValuePair<TKey, double>[] a, int low, int high)
     {
-        int i = low;
-        int j = high;
-        double x = a[(low + high) / 2].Value;  // x - опорный элемент посредине между low и high
-        do
+        try
         {
-            while (a[i].Value < x) ++i;  // поиск элемента для переноса в старшую часть
-            while (a[j].Value > x) --j;  // поиск элемента для переноса в младшую часть
-            if (i <= j)
+            int i = low;
+            int j = high;
+            double x = a[(low + high) / 2].Value;  // x - опорный элемент посредине между low и high
+            do
             {
-                // обмен элементов местами:
-                KeyValuePair<TKey, double> temp = a[i];
-                a[i] = a[j];
-                a[j] = temp;
-                // переход к следующим элементам:
-                i++; j--;
-            }
-        } while (i < j);
-        if (low < j) QSortPairs(a, low, j);
-        if (i < high) QSortPairs(a, i, high);
+                while (a[i].Value < x) ++i;  // поиск элемента для переноса в старшую часть
+                while (a[j].Value > x) --j;  // поиск элемента для переноса в младшую часть
+                if (i <= j)
+                {
+                    // обмен элементов местами:
+                    KeyValuePair<TKey, double> temp = a[i];
+                    a[i] = a[j];
+                    a[j] = temp;
+                    // переход к следующим элементам:
+                    i++; j--;
+                }
+            } while (i < j);
+            if (low < j) QSortPairs(a, low, j);
+            if (i < high) QSortPairs(a, i, high);
+        }
+        catch (Exception exception)
+        {
+            const string mess = "Проблемы с сортировкой!";
+            Logger.WriteError(mess, exception.ToString(), "a.Length - " + a.Length, "low - " + low, "high - " + high);
+            Message.ShowError(mess);
+        }
     }
 
     /// <summary>

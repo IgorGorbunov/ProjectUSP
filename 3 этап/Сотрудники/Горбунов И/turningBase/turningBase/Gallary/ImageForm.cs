@@ -85,16 +85,14 @@ namespace img_gallery
         public Image Image;
         public String Name;
         public int ElementCount;
-        public bool Selected;        
-        public AngleSolution Solution;
+        public bool Selected;
 
-        public ImageInfo(AngleSolution solution, Image image, String name, int elementCount, bool selected)
+        public ImageInfo(Image image, String name, int elementCount, bool selected)
         {
-            this.Image = image;
-            this.Name = name;
-            this.Selected = selected;
-            this.ElementCount = elementCount;
-            this.Solution = solution;
+            Image = image;
+            Name = name;
+            Selected = selected;
+            ElementCount = elementCount;
         }
     }
 }

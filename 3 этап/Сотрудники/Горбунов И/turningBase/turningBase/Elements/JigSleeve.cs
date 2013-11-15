@@ -9,7 +9,7 @@ public class JigSleeve : UspElement
     /// <summary>
     /// Возвращает грань для центрирования втулки в кондукторной планке.
     /// </summary>
-    public Face SleeveFace
+    protected Face SleeveFace
     {
         get
         {
@@ -31,7 +31,7 @@ public class JigSleeve : UspElement
     /// <summary>
     /// Устанавливает цилиндрическую грань для установки в кондукторную планку, использовать после Replacement.
     /// </summary>
-    public void SetSleeveFace()
+    private void SetSleeveFace()
     {
         _cyllindricalFace = GetFace(Config.SleeveFaceName);
     }

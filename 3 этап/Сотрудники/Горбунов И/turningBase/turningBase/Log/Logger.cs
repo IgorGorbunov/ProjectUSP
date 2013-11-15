@@ -55,11 +55,25 @@ public static class Logger
     /// <summary>
     /// Записывает новую строку с сообщением об ошибки.
     /// </summary>
-    /// <param name="warning"></param>
+    /// <param name="warning">Текст ошибки.</param>
     public static void WriteError(object warning)
     {
         string message = "************************************" +
             Environment.NewLine + warning;
+        WriteLine(message);
+    }
+
+    /// <summary>
+    /// Записывает новую строку с сообщением об ошибки.
+    /// </summary>
+    /// <param name="errors">Текст ошибки.</param>
+    public static void WriteError(params object[] errors)
+    {
+        string message = "************************************";
+        foreach (object error in errors)
+        {
+            message += Environment.NewLine + error;
+        }
         WriteLine(message);
     }
 

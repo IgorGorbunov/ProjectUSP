@@ -305,12 +305,20 @@ public class AngleSet : DialogProgpam
 
     private void SetGostImages()
     {
+        //Dictionary<String, AngleSolution> solution = AngleSolver.solve(getAngle(), false, Math.Max(comboBox1.SelectedIndex, 0));
+        //List<AngleSolution> orderedList = AngleSolver.GetOrderedList(solution);
+        //Dictionary<Element, byte> smallSolution = orderedList[0].solution.getMainSolution(0);
+        //int a = 1 + orderedList.Count + smallSolution.Count;
+        //PrintAnswer(orderedList);
+        //ShowGallery(orderedList);
+
+
         _degrees = _integer0.GetProperties().GetInteger("Value");
         _minutes = _integer01.GetProperties().GetInteger("Value");
         if (AngleIsGood(_degrees, _minutes))
         {
             List<string> gosts;
-            Dictionary<Image, string> images = new Dictionary<Image, string>();
+            List<ImageInfo> images = new List<ImageInfo>();
             if (_angleIsObtuse)
             {
                 try
@@ -321,7 +329,8 @@ public class AngleSet : DialogProgpam
                     {
                         Image image = SqlUspElement.GetImage(gost);
                         string name = SqlUspElement.GetName(gost);
-                        images.Add(image, "ГОСТ " + gost + " " + name);
+                        ImageInfo info = new ImageInfo(image, name, 1, false);
+                        images.Add(info);
                     }
                 }
                 catch (TimeoutException)
@@ -340,7 +349,8 @@ public class AngleSet : DialogProgpam
                     {
                         Image image = SqlUspElement.GetImage(gost);
                         string name = SqlUspElement.GetName(gost);
-                        images.Add(image, "ГОСТ " + gost + " " + name);
+                        ImageInfo info = new ImageInfo(image, name, 1, false);
+                        images.Add(info);
                     }
                 }
                 catch (TimeoutException)
@@ -358,6 +368,26 @@ public class AngleSet : DialogProgpam
     Exit:
 
         SetElements();
+    }
+
+    private void ShowGallery(List<AngleSolution> answer)
+    {
+        List<ImageInfo> images = new List<ImageInfo>();
+        int minCount = answer[0].count;
+        foreach (AngleSolution solution in answer)
+        {
+            try
+            {
+                Image image = SqlUspElement.GetImage(solution.Gost);
+                string name = SqlUspElement.GetName(solution.Gost);
+                images.Add(new ImageInfo(image, "ГОСТ " + solution.Gost + " " + name, solution.count + 1, solution.count == minCount));
+            }
+            catch (TimeoutException ex) { }
+        }
+        ImageForm form = new ImageForm(images, null);
+        form.Name = "Типы элементов для набора угла";
+        form.DrawItems();
+        form.ShowDialog();
     }
 
     private void SetElements()
@@ -446,5 +476,10 @@ public class AngleSet : DialogProgpam
         degrees++;
         _integer0.GetProperties().SetInteger("Value", degrees);
         _integer01.GetProperties().SetInteger("Value", minutes);
+    }
+
+    private int GetAngle()
+    {
+        return _degrees*60 + _minutes;
     }
 }

@@ -174,6 +174,9 @@ public class UspElement
                 return face;
             }
         }
+        string mess = "Грань " + faceName + " в элементе " + ElementComponent.Name + " не найдена.";
+        Logger.WriteLine(mess);
+        Message.ShowError(mess);
         return null;
     }
     /// <summary>

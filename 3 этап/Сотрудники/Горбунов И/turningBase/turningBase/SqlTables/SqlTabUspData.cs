@@ -97,7 +97,7 @@ public static class SqlTabUspData
         switch ((int)name)
         {
             case 0:
-                return "'Болты пазовые'";
+                return "'Болты  пазовые'";
             case 1:
                 return "Плиты круглые";
             case 2:
@@ -176,7 +176,14 @@ public static class SqlTabUspData
     /// </summary>
     public static string ThereIs
     {
-        get { return CCount + ">TO_NUMBER(0) "; }
+        get
+        {
+            string predicate = "TO_NUMBER(" + CCount + ")>0 ";
+#if(DEBUG)
+            predicate = "TO_NUMBER(" + CCount + ")>-1 ";
+#endif
+            return predicate;
+        }
     }
 }
 

@@ -23,7 +23,7 @@ public sealed class TunnelSlotConstraint
     private readonly Tunnel _tunnel;
     private readonly Slot _slot;
 
-    private readonly bool _hasFixture;
+    private bool _hasFixture;
 
     Face _tunnelFixtureFace;
     Face _bottomFace;
@@ -45,12 +45,12 @@ public sealed class TunnelSlotConstraint
         _firstElement = firstElement;
         _secondElement = secondElement;
 
-        _hasFixture = true;
+
     }
     /// <summary>
     /// Создание связей.
     /// </summary>
-    public void Create()
+    public void Create(bool withBolt)
     {
         bool isFixed = Fix();
 
@@ -60,12 +60,16 @@ public sealed class TunnelSlotConstraint
         _parallel.Delete();
         Touch();
 
-        InsertBolt();
+        if (withBolt)
+        {
+            _hasFixture = true;
+            InsertBolt();
 
-        _touchAxe = new TouchAxe();
-        _touchAxe.Create(_firstElement.ElementComponent, _tunnel.TunnelFace,
-                         _fixture.ElementComponent, _tunnelFixtureFace);
-
+            _touchAxe = new TouchAxe();
+            _touchAxe.Create(_firstElement.ElementComponent, _tunnel.TunnelFace,
+                             _fixture.ElementComponent, _tunnelFixtureFace);
+        }
+        
         
         if (Geom.IsEqual(Geom.GetDirection(_tunnel.Slot.BottomFace),
                         (Geom.GetDirection(_slot.BottomFace))))
@@ -88,7 +92,11 @@ public sealed class TunnelSlotConstraint
         Fix fixFlement = new Fix();
         Fix fixFixture = new Fix();
 
-        fixFixture.Create(_fixture.ElementComponent);
+        if (_hasFixture)
+        {
+            fixFixture.Create(_fixture.ElementComponent);
+        }
+        
         fixFlement.Create(_secondElement.ElementComponent);
 
         _slotConstr.Reverse();
@@ -99,12 +107,79 @@ public sealed class TunnelSlotConstraint
         Config.TheUfSession.Modl.Update();
     }
 
+    public void InsertTBolt()
+    {
+        if (!_hasFixture)
+        {
+            InsertBolt();
+
+            _touchAxe = new TouchAxe();
+            _touchAxe.Create(_firstElement.ElementComponent, _tunnel.TunnelFace,
+                             _fixture.ElementComponent, _tunnelFixtureFace);
+            NxFunctions.Update();
+            _hasFixture = true;
+        }
+        else
+        {
+            DeleteBolt();
+            _hasFixture = false;
+        }
+    }
+
+    void DeleteBolt()
+    {
+        ComponentConstraint[] componentConstraints = _fixture.ElementComponent.GetConstraints();
+        foreach (ComponentConstraint componentConstraint in componentConstraints)
+        {
+            NxFunctions.Delete(componentConstraint);
+        }
+        NxFunctions.Delete(_fixture.ElementComponent);
+        _fixture = null;
+    }
+
     void InsertBolt()
     {
         double length;
         SetBoltParams(out length);
         UnloadBolt(length);
 
+        bool isFixed1 = _firstElement.ElementComponent.IsFixed;
+        bool isFixed2 = _secondElement.ElementComponent.IsFixed;
+        FixElems(isFixed1, isFixed2);
+
+        SetBoltConstraints();
+        MoveBolt();
+
+        UnfixElems(isFixed1, isFixed2);
+    }
+
+    void FixElems(bool isFixed1, bool isFixed2)
+    {
+        
+        if (!isFixed1)
+        {
+            _firstElement.Fix();
+        }
+        if (!isFixed2)
+        {
+            _secondElement.Fix();
+        }
+    }
+
+    void UnfixElems(bool isFixed1, bool isFixed2)
+    {
+        if (!isFixed1)
+        {
+            _firstElement.Unfix();
+        }
+        if (!isFixed2)
+        {
+            _secondElement.Unfix();
+        }
+    }
+
+    void SetBoltConstraints()
+    {
         SetFixtureFaces();
 
         Center center = new Center();
@@ -114,11 +189,6 @@ public sealed class TunnelSlotConstraint
         Touch touch = new Touch();
         touch.Create(_fixture.ElementComponent, _bottomFace,
                      _secondElement.ElementComponent, _slot.BottomFace);
-
-        MoveBolt();
-
-        _fixFixture = new Fix();
-        _fixFixture.Create(_fixture.ElementComponent);
     }
 
     void SetBoltParams(out double len)
@@ -165,7 +235,7 @@ public sealed class TunnelSlotConstraint
 
     void UnloadBolt(double setLen)
     {
-        double requiredLen = setLen + _secondElement.UspCatalog.SlotBoltLendthTolerance;
+        double requiredLen = setLen + Catalog.SlotBoltLendthTolerance;
         Dictionary<string, string> dictionary =
             SqlUspElement.GetTitleMinLengthFixtures(requiredLen, _secondElement.UspCatalog);
 

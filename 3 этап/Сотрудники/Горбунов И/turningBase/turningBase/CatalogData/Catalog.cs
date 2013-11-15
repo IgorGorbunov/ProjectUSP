@@ -45,7 +45,7 @@ public abstract class Catalog
     {
         get { return 0; }
     }
-    public virtual double SlotBoltLendthTolerance
+    public static double SlotBoltLendthTolerance
     {
         get { return 10; }
     }

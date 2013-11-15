@@ -1,9 +1,9 @@
-using System;
+﻿using System;
 using NXOpen;
 using NXOpen.BlockStyler;
 
 /// <summary>
-/// ����� �������� UI Styler.
+/// Класс диалогов UI Styler.
 /// </summary>
 public abstract class DialogProgpam
 {
@@ -16,6 +16,7 @@ public abstract class DialogProgpam
     {
         try
         {
+            Logger.WriteLine("~~~~~~~~~~ Запущен диалог " + GetType().Name);
             TheDialog.Show();
         }
         catch (Exception ex)

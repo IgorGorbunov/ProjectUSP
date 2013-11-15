@@ -441,6 +441,7 @@ public sealed class HeightSet : DialogProgpam
 
     private void LoadParts(List<string> partList)
     {
+        IEnumerable<UspElement> fixElements = FixElements();
         int i = 0;
         HeightElement[] elements = new HeightElement[partList.Count];
         foreach (string s in partList)
@@ -467,6 +468,39 @@ public sealed class HeightSet : DialogProgpam
                 NxFunctions.Update();
             }
             i++;
+        }
+        Unfix(fixElements);
+    }
+
+    private IEnumerable<UspElement> FixElements()
+    {
+        UspElement element1 = null;
+        bool firstElementIsFixed = _face1.OwningComponent.IsFixed;
+        if (!firstElementIsFixed)
+        {
+            element1 = new UspElement(_face1.OwningComponent);
+            element1.Fix();
+        }
+
+        UspElement element2 = null;
+        bool secondElementIsFixed = _face1.OwningComponent.IsFixed;
+        if (!secondElementIsFixed)
+        {
+            element2 = new UspElement(_face1.OwningComponent);
+            element2.Fix();
+        }
+        UspElement[] array = {element1, element2};
+        return array;
+    }
+
+    private void Unfix(IEnumerable<UspElement> uspElements)
+    {
+        foreach (UspElement uspElement in uspElements)
+        {
+            if (uspElement != null)
+            {
+                uspElement.Unfix();
+            }
         }
     }
 }

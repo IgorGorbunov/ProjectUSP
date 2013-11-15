@@ -613,6 +613,7 @@ public sealed class Jig : DialogProgpam
             {
                 newRow[i] = row[i].ToString();
             }
+            Message.Tst(minD, maxD, newRow);
             _goodSleeves.Add(newRow);
         }
 
@@ -631,7 +632,7 @@ public sealed class Jig : DialogProgpam
         }
         if (_goodSleeves.Count > 1)
         {
-            Instr.QSortPairs(sleeveDict, 0, _goodSleeves.Count);
+            Instr.QSortPairs(sleeveDict, 0, _goodSleeves.Count-1);
         }
         if (_goodSleeves.Count > 0)
         {

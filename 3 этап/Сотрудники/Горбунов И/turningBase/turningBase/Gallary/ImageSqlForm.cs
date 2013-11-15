@@ -1,17 +1,18 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
+using img_gallery;
 
 
-public partial class ImageSqlForm : img_gallery.ImageForm
+public partial class ImageSqlForm : ImageForm
 {
     public ImageSqlForm(string sqlQuery, Dictionary<string, string> param)
     {
-        Initialize();
         DataTable dataTable;
         if (SqlOracle.SelData(sqlQuery, param, out dataTable))
         {
             SetImages(dataTable);
+            Initialize();
             DrawItems();
         }
         else
@@ -23,7 +24,7 @@ public partial class ImageSqlForm : img_gallery.ImageForm
 
     private void SetImages(DataTable dataTable)
     {
-        Dictionary<Image, string> images = new Dictionary<Image, string>();
+        List<ImageInfo> images = new List<ImageInfo>();
         foreach (DataRow row in dataTable.Rows)
         {
             Image image = null;
@@ -46,9 +47,11 @@ public partial class ImageSqlForm : img_gallery.ImageForm
                     title += " - ";
                 }
             }
+            ImageInfo info = new ImageInfo(image, title, 1, false);
 
-            if (image != null) images.Add(image, title);
+            if (image != null) images.Add(info);
         }
+        
         Images = images;
     }
 

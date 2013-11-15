@@ -57,6 +57,7 @@ public class Tunnelslot : DialogProgpam
     private UIBlock _selection01;// Block type: Selection
     private UIBlock _point0;// Block type: Specify Point
     private UIBlock _slotTunPoint;
+    private UIBlock _toggle0;// Block type: Specify Point
 
     //---------------------------------------------------------------------------------
 
@@ -122,6 +123,7 @@ public class Tunnelslot : DialogProgpam
             _direction0 = TheDialog.TopBlock.FindBlock("direction0");
             _selection01 = TheDialog.TopBlock.FindBlock("selection01");
             _point0 = TheDialog.TopBlock.FindBlock("point0");
+            _toggle0 = TheDialog.TopBlock.FindBlock("toggle0");
 
             SQLOracle.BuildConnectionString("591014", "591000", "BASEEOI");
             SqlOracle.BuildConnectionString("591014", "591000", "BASEEOI");
@@ -148,6 +150,8 @@ public class Tunnelslot : DialogProgpam
             mask[0].Subtype = UFConstants.UF_all_subtype;
             mask[0].SolidBodySubtype = UFConstants.UF_UI_SEL_FEATURE_CYLINDRICAL_FACE;
             _selection0.GetProperties().SetSelectionFilter("SelectionFilter", Selection.SelectionAction.ClearAndEnableSpecific, mask);
+
+            _toggle0.GetProperties().SetLogical("Value", false);
         }
         catch (Exception ex)
         {
@@ -222,6 +226,12 @@ public class Tunnelslot : DialogProgpam
                 Logger.WriteLine("Нажата постановка второй точки.");
                 SetSecondPoint(block);
                 
+            }
+            else if (block == _toggle0)
+            {
+                //---------Enter your code here-----------
+                Logger.WriteLine("Нажат переключатель вставки болта.");
+                _constraint.InsertTBolt();
             }
         }
         catch (Exception ex)
@@ -571,10 +581,12 @@ public class Tunnelslot : DialogProgpam
         {
             _tunnel1.SetSlot(_slot1);
 
+            bool withBolt = _toggle0.GetProperties().GetLogical("Value");
             _constraint = new TunnelSlotConstraint(_element1, _tunnel1, _element2, _slot2);
-            _constraint.Create();
+            _constraint.Create(withBolt);
 
             SetEnable(_direction0, true);
+            SetEnable(_toggle0, true);
         }
         else
         {
