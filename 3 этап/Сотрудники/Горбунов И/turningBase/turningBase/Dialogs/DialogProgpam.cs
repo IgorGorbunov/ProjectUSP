@@ -19,6 +19,11 @@ public abstract class DialogProgpam
             Logger.WriteLine("~~~~~~~~~~ Запущен диалог " + GetType().Name);
             TheDialog.Show();
         }
+        catch (TimeoutException)
+        {
+            //---- Enter your exception handling code here -----
+            throw;
+        }
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----

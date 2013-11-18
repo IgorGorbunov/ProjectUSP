@@ -64,7 +64,7 @@ public class Buttons : DialogProgpam
     {
         try
         {
-            Message.Tst("22");
+            Init();
             _theDialogName = AppDomain.CurrentDomain.BaseDirectory +
                              ConfigDlx.DlxFolder + Path.DirectorySeparatorChar + ConfigDlx.Dlx;
             
@@ -76,13 +76,21 @@ public class Buttons : DialogProgpam
             TheDialog.AddFocusNotifyHandler(focusNotify_cb);
             TheDialog.AddKeyboardFocusNotifyHandler(keyboardFocusNotify_cb);
             TheDialog.AddDialogShownHandler(dialogShown_cb);
-            Message.Tst("22");
+        }
+        catch (TimeoutException)
+        {
+            //---- Enter your exception handling code here -----
+            //const string mess = "Нет соединения с БД!";
+            //Logger.WriteError(mess, ex);
+            //Message.Show(mess);
+            throw;
         }
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            Logger.WriteError(ex.ToString());
-            Message.Show("Ошибка!", Message.MessageType.Error, ex.ToString());
+            string mess = "Ошибка в конструкторе " + GetType().Name;
+            Logger.WriteError(mess, ex);
+            Message.Show(mess);
             throw;
         }
     }
@@ -202,6 +210,13 @@ public class Buttons : DialogProgpam
             }
             dialogProgpam.Show();
         }
+        catch (TimeoutException ex)
+        {
+            //---- Enter your exception handling code here -----
+            const string mess = "Нет соединения с БД!";
+            Logger.WriteError(mess, ex);
+            Message.Show(mess);
+        }
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
@@ -274,5 +289,14 @@ public class Buttons : DialogProgpam
     
     //---------------------------------------------------------------------------------
 
-    
+    private void Init()
+    {
+        Check();
+    }
+
+    private void Check()
+    {
+        ConfigDlx.UnloadDialog(ConfigDlx.Dlx);
+    }
+
 }

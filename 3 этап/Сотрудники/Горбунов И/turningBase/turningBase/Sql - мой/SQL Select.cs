@@ -42,6 +42,10 @@ partial class SqlOracle
             ProcessSuccess(cmdQuery, paramsDict, value);
             return true;
         }
+        catch (TimeoutException)
+        {
+            return false;
+        }
         catch (Exception ex)
         {
             ProcessUnSuccess(cmdQuery, paramsDict, ex);
@@ -77,6 +81,10 @@ partial class SqlOracle
 
             ProcessSuccess(cmdQuery, paramsDict, values);
             return true;
+        }
+        catch (TimeoutException)
+        {
+            return false;
         }
         catch (Exception ex)
         {
@@ -115,6 +123,10 @@ partial class SqlOracle
 
             ProcessSuccess(cmdQuery, paramsDict, values);
             return true;
+        }
+        catch (TimeoutException)
+        {
+            return false;
         }
         catch (Exception ex)
         {
@@ -158,6 +170,10 @@ partial class SqlOracle
 
             ProcessSuccessData(cmdQuery, paramsDict, value);
             return true;
+        }
+        catch (TimeoutException)
+        {
+            return false;
         }
         catch (Exception ex)
         {
@@ -205,6 +221,10 @@ partial class SqlOracle
 
             ProcessSuccess(cmdQuery, paramsDict, value);
             return true;
+        }
+        catch (TimeoutException)
+        {
+            return false;
         }
         catch (Exception ex)
         {

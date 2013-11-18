@@ -77,6 +77,7 @@ public class TurnElement : DialogProgpam
     {
         try
         {
+            Init();
             _theDialogName = AppDomain.CurrentDomain.BaseDirectory +
                 ConfigDlx.DlxFolder + Path.DirectorySeparatorChar + ConfigDlx.DlxTurn;
 
@@ -89,11 +90,20 @@ public class TurnElement : DialogProgpam
             TheDialog.AddKeyboardFocusNotifyHandler(keyboardFocusNotify_cb);
             TheDialog.AddDialogShownHandler(dialogShown_cb);
         }
+        catch (TimeoutException)
+        {
+            //---- Enter your exception handling code here -----
+            //const string mess = "Нет соединения с БД!";
+            //Logger.WriteError(mess, ex);
+            //Message.Show(mess);
+            throw;
+        }
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            Logger.WriteError(ex.ToString());
-            Message.Show("Block Styler", Message.MessageType.Error, ex);
+            string mess = "Ошибка в конструкторе " + GetType().Name;
+            Logger.WriteError(mess, ex);
+            Message.Show(mess);
             throw;
         }
     }
@@ -411,5 +421,16 @@ public class TurnElement : DialogProgpam
         //}
         return vector.GetRotatePoint(oldPoint, angle);
     }
+
+    private void Init()
+    {
+        Check();
+    }
+
+    private void Check()
+    {
+        ConfigDlx.UnloadDialog(ConfigDlx.DlxTurn);
+    }
+
     
 }

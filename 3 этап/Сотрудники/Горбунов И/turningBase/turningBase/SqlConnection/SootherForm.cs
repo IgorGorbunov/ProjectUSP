@@ -1,9 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 using Katalog2005;
 
@@ -32,14 +27,28 @@ public partial class SootherForm : Form
 
         }
 
-        public void start()
+        public void Start()
         {
-            _startProgram = new Buttons();
-            _startProgram.Show();
+            try
+            {
+                _startProgram = new Buttons();
+                _startProgram.Show();
+            }
+            catch (TimeoutException ex)
+            {
+                const string mess = "Нет соединения с БД!";
+                Logger.WriteError(mess, ex);
+                Message.Show(mess);
+            }
+            
         }
 
     private void SootherForm_Load(object sender, EventArgs e)
     {
-        Authorization();
+        //Authorization();
+        SqlOracle.BuildConnectionString("591014", "591000", "BASEEOI", "192.168.1.170", "1521");
+        Start();
+        
+        Logger.WriteLine(Instr.ComputeMd5Checksum(@"C:\ug_customization\application\dialogs\buttons.dlx"));
     }
     }

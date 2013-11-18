@@ -84,6 +84,8 @@ public class Tunnelslot : DialogProgpam
     {
         try
         {
+            Init();
+
             _theDialogName = AppDomain.CurrentDomain.BaseDirectory +
                 ConfigDlx.DlxFolder + Path.DirectorySeparatorChar + ConfigDlx.DlxTunnelSlot;
 
@@ -98,10 +100,20 @@ public class Tunnelslot : DialogProgpam
             TheDialog.AddKeyboardFocusNotifyHandler(keyboardFocusNotify_cb);
             TheDialog.AddDialogShownHandler(dialogShown_cb);
         }
-        catch (Exception)
+        catch (TimeoutException)
         {
             //---- Enter your exception handling code here -----
-            Message.Show("Конструктор NX диалога не запустился!");
+            //const string mess = "Нет соединения с БД!";
+            //Logger.WriteError(mess, ex);
+            //Message.Show(mess);
+            throw;
+        }
+        catch (Exception ex)
+        {
+            //---- Enter your exception handling code here -----
+            string mess = "Ошибка в конструкторе " + GetType().Name;
+            Logger.WriteError(mess, ex);
+            Message.Show(mess);
             throw;
         }
     }
@@ -609,6 +621,16 @@ public class Tunnelslot : DialogProgpam
 
         _hasNearestSlot1 = false;
         _hasNearestSlot2 = false;
+    }
+
+    private void Init()
+    {
+        Check();
+    }
+
+    private void Check()
+    {
+        ConfigDlx.UnloadDialog(ConfigDlx.DlxTunnelSlot);
     }
 
 }

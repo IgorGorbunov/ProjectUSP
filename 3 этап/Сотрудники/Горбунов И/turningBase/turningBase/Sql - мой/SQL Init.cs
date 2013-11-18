@@ -28,9 +28,10 @@ static partial class SqlOracle
         }
         catch (Exception ex)
         {
-            string sss = "Попытка соединения с БД прошла неудачно!" + Environment.NewLine + ex;
-            Logger.WriteLine(sss);
+            const string sss = "Попытка соединения с БД прошла неудачно!";
+            Logger.WriteLine(sss, ex);
             Message.Show(sss);
+            throw new TimeoutException();
         }
     }
     static void _close()

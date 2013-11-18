@@ -178,6 +178,7 @@
     <Compile Include="NX\NXFunctionKatalog.cs" />
     <Compile Include="NX\NXFunctions.cs" />
     <Compile Include="Replacement.cs" />
+    <Compile Include="Sql - мой\SQL BLOB.cs" />
     <Compile Include="Sql - мой\Sql.cs" />
     <Compile Include="SqlAccess\SqlUspBigAngleElems.cs" />
     <Compile Include="SqlAccess\SqlUspJigs.cs" />
@@ -209,7 +210,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Slot.cs" />
     <Compile Include="SlotSet.cs" />
-    <Compile Include="Sql - мой\SQL BLOB.cs" />
     <Compile Include="Sql - мой\SQL Init.cs" />
     <Compile Include="Sql - мой\SQL Select.cs" />
     <Compile Include="SqlTables\SqlTabUspData.cs" />

@@ -9,9 +9,7 @@ namespace Katalog2005
 
         public ConnectBD()
         {
-            Message.Tst("+");
             InitializeComponent();
-            Message.Tst("+");
         }
 
         private void button1_KeyDown(object sender, KeyEventArgs e)

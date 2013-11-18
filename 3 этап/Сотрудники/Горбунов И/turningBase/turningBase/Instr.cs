@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Security.Cryptography;
 using NXOpen;
 
 /// <summary>
@@ -119,5 +120,19 @@ public static class Instr
         }
         return maxEl;
     }
+
+    public static string ComputeMd5Checksum(string path)
+    {
+        using (FileStream fs = File.OpenRead(path))
+        {
+            MD5 md5 = new MD5CryptoServiceProvider();
+            byte[] fileData = new byte[fs.Length];
+            fs.Read(fileData, 0, (int) fs.Length);
+            byte[] checkSum = md5.ComputeHash(fileData);
+            string result = BitConverter.ToString(checkSum).Replace("-", String.Empty);
+            return result;
+        }
+    }
+
 }
 

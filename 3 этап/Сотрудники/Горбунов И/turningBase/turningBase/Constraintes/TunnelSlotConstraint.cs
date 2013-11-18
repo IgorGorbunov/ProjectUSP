@@ -13,7 +13,7 @@ public sealed class TunnelSlotConstraint
     SlotConstraint _slotConstr;
     TunnelConstraint _tunnelConstsr;
     private Parallel _parallel;
-    private Fix _fixConstr, _fixFixture;
+    private Fix _fixConstr;
     private TouchAxe _touchAxe;
 
     private readonly UspElement _firstElement;
@@ -428,11 +428,6 @@ public sealed class TunnelSlotConstraint
 
     void Delete(bool isFixed)
     {
-        if (_hasFixture)
-        {
-            _fixFixture.Delete();
-        }
-        
         if (isFixed)
         {
             _fixConstr.Delete();

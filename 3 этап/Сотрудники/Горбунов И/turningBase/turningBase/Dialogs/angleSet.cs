@@ -62,7 +62,7 @@ public class AngleSet : DialogProgpam
 
     //-----------------------------------------------------
 
-    private Catalog _catalog;
+    private readonly Catalog _catalog;
 
     private int _degrees, _minutes;
     private bool _angleIsObtuse;
@@ -74,6 +74,7 @@ public class AngleSet : DialogProgpam
     {
         try
         {
+            Init();
             _catalog = catalog;
             _theDialogName = AppDomain.CurrentDomain.BaseDirectory +
                              ConfigDlx.DlxFolder + Path.DirectorySeparatorChar + ConfigDlx.DlxAngle; 
@@ -88,11 +89,20 @@ public class AngleSet : DialogProgpam
             TheDialog.AddKeyboardFocusNotifyHandler(keyboardFocusNotify_cb);
             TheDialog.AddDialogShownHandler(dialogShown_cb);
         }
+        catch (TimeoutException)
+        {
+            //---- Enter your exception handling code here -----
+            //const string mess = "Нет соединения с БД!";
+            //Logger.WriteError(mess, ex);
+            //Message.Show(mess);
+            throw;
+        }
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            Logger.WriteError(ex.ToString());
-            Message.Show("Block Styler", Message.MessageType.Error, ex);
+            string mess = "Ошибка в конструкторе " + GetType().Name;
+            Logger.WriteError(mess, ex);
+            Message.Show(mess);
             throw;
         }
     }
@@ -376,13 +386,10 @@ public class AngleSet : DialogProgpam
         int minCount = answer[0].count;
         foreach (AngleSolution solution in answer)
         {
-            try
-            {
                 Image image = SqlUspElement.GetImage(solution.Gost);
                 string name = SqlUspElement.GetName(solution.Gost);
                 images.Add(new ImageInfo(image, "ГОСТ " + solution.Gost + " " + name, solution.count + 1, solution.count == minCount));
-            }
-            catch (TimeoutException ex) { }
+
         }
         ImageForm form = new ImageForm(images, null);
         form.Name = "Типы элементов для набора угла";
@@ -482,4 +489,15 @@ public class AngleSet : DialogProgpam
     {
         return _degrees*60 + _minutes;
     }
+
+    private void Init()
+    {
+        Check();
+    }
+
+    private void Check()
+    {
+        ConfigDlx.UnloadDialog(ConfigDlx.DlxAngle);
+    }
+
 }

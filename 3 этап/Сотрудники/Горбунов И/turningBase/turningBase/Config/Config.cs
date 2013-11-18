@@ -39,6 +39,11 @@ public static partial class Config
     public const string TmpFolder = @"UGH";
 
     /// <summary>
+    /// Возвращает наименование нашей temp-папки для проекта.
+    /// </summary>
+    public const string OurTmpFolder = @"USP";
+
+    /// <summary>
     /// Расширение файлов деталей УСП.
     /// </summary>
     public const string PartFileExtension = ".prt";

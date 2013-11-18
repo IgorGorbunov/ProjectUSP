@@ -113,6 +113,7 @@ public sealed class MilingBase : DialogProgpam
     {
         try
         {
+            Init();
             _theDialogName = AppDomain.CurrentDomain.BaseDirectory +
                              ConfigDlx.DlxFolder + Path.DirectorySeparatorChar + ConfigDlx.DlxMilingBase;
 
@@ -126,11 +127,20 @@ public sealed class MilingBase : DialogProgpam
             TheDialog.AddKeyboardFocusNotifyHandler(keyboardFocusNotify_cb);
             TheDialog.AddDialogShownHandler(dialogShown_cb);
         }
+        catch (TimeoutException)
+        {
+            //---- Enter your exception handling code here -----
+            //const string mess = "Нет соединения с БД!";
+            //Logger.WriteError(mess, ex);
+            //Message.Show(mess);
+            throw;
+        }
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            Logger.WriteError(ex.ToString());
-            Message.Show(ex);
+            string mess = "Ошибка в конструкторе " + GetType().Name;
+            Logger.WriteError(mess, ex);
+            Message.Show(mess);
             throw;
         }
     }
@@ -1097,6 +1107,16 @@ public sealed class MilingBase : DialogProgpam
         propertyList.SetLogical("Value", true);
         propertyList = _distance.GetProperties();
         propertyList.SetDouble("Value", 0.0);
+    }
+
+    private void Init()
+    {
+        Check();
+    }
+
+    private void Check()
+    {
+        ConfigDlx.UnloadDialog(ConfigDlx.DlxMilingBase);
     }
 
 }

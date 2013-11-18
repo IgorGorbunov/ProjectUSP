@@ -31,7 +31,7 @@ namespace Katalog2005
                     //отображение информации на форме
                     //me
                     //((Katalog)this.Owner).ViewInform();
-                    ((SootherForm) Owner).start();
+                    ((SootherForm) Owner).Start();
                     //Close();
                 }
                  
@@ -84,6 +84,7 @@ namespace Katalog2005
                                    );
                 //me
                 SqlOracle.BuildConnectionString(Environment.GetEnvironmentVariable("KTPP_DB_USER"), Environment.GetEnvironmentVariable("KTPP_DB_PASSWORD"), paramsBD[2], paramsBD[0], paramsBD[1]);
+                //Logger.WriteLine(Environment.GetEnvironmentVariable("KTPP_DB_USER"), Environment.GetEnvironmentVariable("KTPP_DB_PASSWORD"), paramsBD[2], paramsBD[0], paramsBD[1]);
             }       
                 
 
@@ -97,7 +98,7 @@ namespace Katalog2005
                         //me
                         //((Katalog)this.Owner).ViewInform();
 
-                        ((SootherForm)Owner).start();
+                        ((SootherForm)Owner).Start();
                         //Close();
                     }
                     else

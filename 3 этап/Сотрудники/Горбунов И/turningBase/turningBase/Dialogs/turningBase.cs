@@ -102,6 +102,7 @@ public sealed class TurningBase : DialogProgpam
     {
         try
         {
+            Init();
             _theDialogName = AppDomain.CurrentDomain.BaseDirectory +
                 ConfigDlx.DlxFolder + Path.DirectorySeparatorChar + ConfigDlx.DlxTurningBase;
 
@@ -115,10 +116,20 @@ public sealed class TurningBase : DialogProgpam
             TheDialog.AddKeyboardFocusNotifyHandler(keyboardFocusNotify_cb);
             TheDialog.AddDialogShownHandler(dialogShown_cb);
         }
+        catch (TimeoutException)
+        {
+            //---- Enter your exception handling code here -----
+            //const string mess = "Нет соединения с БД!";
+            //Logger.WriteError(mess, ex);
+            //Message.Show(mess);
+            throw;
+        }
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            Message.Show(ex);
+            string mess = "Ошибка в конструкторе " + GetType().Name;
+            Logger.WriteError(mess, ex);
+            Message.Show(mess);
             throw;
         }
     }
@@ -866,4 +877,15 @@ public sealed class TurningBase : DialogProgpam
             _turningElement.Unfix();
         }
     }
+
+    private void Init()
+    {
+        Check();
+    }
+
+    private void Check()
+    {
+        ConfigDlx.UnloadDialog(ConfigDlx.DlxTurningBase);
+    }
+
 }

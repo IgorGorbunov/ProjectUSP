@@ -5,7 +5,7 @@ using System.Windows.Forms;
 public sealed class Program
 // ReSharper restore UnusedMember.Global
 {
-    private static DialogProgpam _startProgram;
+    private static Form _form;
 
 // ReSharper disable UnusedMember.Global
     public static void Main()
@@ -23,9 +23,8 @@ public sealed class Program
             //_startProgram = new Buttons();
             Logger.WriteLine("++++++++++++++++++++++++++++++++++++++++++++++++" + " Начало работы программы ");
 
-            Form form = new SootherForm();
-            Message.Tst("!");
-            form.Show();
+            _form = new SootherForm();
+            _form.Show();
             // The following method shows the dialog immediately
             
             //_startProgram.Show();
@@ -39,7 +38,8 @@ public sealed class Program
         }
         finally
         {
-            _startProgram.Dispose();
+            _form.Close();
+            _form.Dispose();
         }
     }
 }

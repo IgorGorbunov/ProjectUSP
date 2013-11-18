@@ -59,7 +59,6 @@ public class SetBoltInSlot : DialogProgpam
     private readonly HeightElement _firstElement;
 
     private bool _pointIsSet;
-    private Session.UndoMarkId _markId1;
 
 
     /// <summary>
@@ -73,6 +72,7 @@ public class SetBoltInSlot : DialogProgpam
     {
         try
         {
+            Init();
             _catalog = catalog;
             _height = height;
             _reserveHeight = reserveHeight;
@@ -90,11 +90,20 @@ public class SetBoltInSlot : DialogProgpam
             TheDialog.AddKeyboardFocusNotifyHandler(keyboardFocusNotify_cb);
             TheDialog.AddDialogShownHandler(dialogShown_cb);
         }
+        catch (TimeoutException)
+        {
+            //---- Enter your exception handling code here -----
+            //const string mess = "Нет соединения с БД!";
+            //Logger.WriteError(mess, ex);
+            //Message.Show(mess);
+            throw;
+        }
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            Logger.WriteError(ex.ToString());
-            Message.Show(ex);
+            string mess = "Ошибка в конструкторе " + GetType().Name;
+            Logger.WriteError(mess, ex);
+            Message.Show(mess);
             throw;
         }
     }
@@ -267,13 +276,6 @@ public class SetBoltInSlot : DialogProgpam
 
     private void SetBolt(UIBlock block)
     {
-        //Message.Tst(_markId1);
-        //if (_pointIsSet)
-        //{
-        //    Config.TheSession.UndoToMark(_markId1, "InsertSlotBolt");
-        //}
-        //_markId1 = Config.TheSession.SetUndoMark(Session.MarkVisibility.Visible,
-        //                                                    "InsertSlotBolt");
         try
         {
             Point3d point = GetPoint(block);
@@ -322,5 +324,16 @@ public class SetBoltInSlot : DialogProgpam
         Logger.WriteLine("Координаты точки", point);
         return point;
     }
+
+    private void Init()
+    {
+        Check();
+    }
+
+    private void Check()
+    {
+        ConfigDlx.UnloadDialog(ConfigDlx.DlxSetBoltInSlot);
+    }
+
     
 }
