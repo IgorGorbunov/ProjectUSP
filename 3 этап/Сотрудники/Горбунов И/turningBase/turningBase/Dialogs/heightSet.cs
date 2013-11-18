@@ -58,11 +58,13 @@ public sealed class HeightSet : DialogProgpam
     private UIBlock _selection0;// Block type: Selection
     private UIBlock _selection01;// Block type: Selection
     private UIBlock _button0;// Block type: Selection
+    private UIBlock _double0;// Block type: Selection
+    private UIBlock _toggle0;// Block type: Selection
 
     private Face _face1, _face2;
-    private bool _face1Selected, _face2Selected;
+    private bool _face1Selected, _face2Selected, _heightSetted;
 
-    private readonly Catalog _catalog = new Catalog12();
+    private readonly Catalog _catalog;
     private double _height;
     private const double _RESERVE_HEIGHT = 10;
 
@@ -72,11 +74,12 @@ public sealed class HeightSet : DialogProgpam
     //------------------------------------------------------------------------------
     //Constructor for NX Styler class
     //------------------------------------------------------------------------------
-    public HeightSet()
+    public HeightSet(Catalog catalog)
     {
         try
         {
             Init();
+            _catalog = catalog;
             _theDialogName = AppDomain.CurrentDomain.BaseDirectory +
                              ConfigDlx.DlxFolder + Path.DirectorySeparatorChar + ConfigDlx.DlxHeight;
 
@@ -141,6 +144,8 @@ public sealed class HeightSet : DialogProgpam
             _selection0 = TheDialog.TopBlock.FindBlock("selection0");
             _selection01 = TheDialog.TopBlock.FindBlock("selection01");
             _button0 = TheDialog.TopBlock.FindBlock("button0");
+            _double0 = TheDialog.TopBlock.FindBlock("double0");
+            _toggle0 = TheDialog.TopBlock.FindBlock("toggle0");
         }
         catch (Exception ex)
         {
@@ -239,6 +244,29 @@ public sealed class HeightSet : DialogProgpam
                 SetBoltInSlot setBolt = new SetBoltInSlot(_catalog, _height, _RESERVE_HEIGHT,
                                                           _firstElement);
                 setBolt.Show();
+            }
+            else if (block == _double0)
+            {
+                _height = _double0.GetProperties().GetDouble("Value");
+                _heightSetted = true;
+                DoMagic();
+            }
+            else if (block == _toggle0)
+            {
+                bool isToggle = block.GetProperties().GetLogical("Value");
+                if (isToggle)
+                {
+                    SetEnable(_double0, true);
+                    SetEnable(_group0, false);
+                    UnSelectObjects(_selection0);
+                    UnSelectObjects(_selection01);
+                }
+                else
+                {
+                    SetEnable(_double0, false);
+                    SetEnable(_group0, true);
+                    _double0.GetProperties().SetDouble("Value", 0.0);
+                }
             }
         }
         catch (Exception ex)
@@ -351,20 +379,24 @@ public sealed class HeightSet : DialogProgpam
 
     private void DoMagic()
     {
-        if (!_face1Selected || !_face2Selected) 
+        if ((!_face1Selected || !_face2Selected) && !_heightSetted) 
             return;
 
-        Surface surface1 = new Surface(_face1);
-        Surface surface2 = new Surface(_face2);
-        if (!surface1.IsParallel(surface2))
+        if (!_heightSetted)
         {
-            const string mess = "Выбранные грани не параллельны!";
-            Logger.WriteLine(mess);
-            Message.ShowError(mess);
-            return;
-        }
+            Surface surface1 = new Surface(_face1);
+            Surface surface2 = new Surface(_face2);
+            if (!surface1.IsParallel(surface2))
+            {
+                const string mess = "Выбранные грани не параллельны!";
+                Logger.WriteLine(mess);
+                Message.ShowError(mess);
+                return;
+            }
 
-        _height = Config.Round(Math.Abs(GetHeight()));
+            _height = Config.Round(Math.Abs(GetHeight()));
+        }
+        
         if (Config.Round(_height) == 0.0)
         {
             const string mess = "Расстояние между гранями равно нулю!";
@@ -382,7 +414,8 @@ public sealed class HeightSet : DialogProgpam
             }
             else
             {
-                Message.ShowError("Высота для набора слишком большая!", "Подходящий П-образный болт не найден!");
+                Message.ShowError("Высота для набора слишком большая!",
+                                  "Подходящий П-образный болт не найден!");
             }
         }
         catch (TimeoutException)

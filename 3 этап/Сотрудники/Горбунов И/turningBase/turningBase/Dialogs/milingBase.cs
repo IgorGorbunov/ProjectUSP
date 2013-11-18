@@ -72,6 +72,8 @@ public sealed class MilingBase : DialogProgpam
 
     //------------------------------------------
 
+    private readonly Catalog _catalog;
+
     private Face _selectedFace;
 
     private Face _topSlotFace;
@@ -109,11 +111,12 @@ public sealed class MilingBase : DialogProgpam
     //------------------------------------------------------------------------------
     //Constructor for NX Styler class
     //------------------------------------------------------------------------------
-    public MilingBase()
+    public MilingBase(Catalog catalog)
     {
         try
         {
             Init();
+            _catalog = catalog;
             _theDialogName = AppDomain.CurrentDomain.BaseDirectory +
                              ConfigDlx.DlxFolder + Path.DirectorySeparatorChar + ConfigDlx.DlxMilingBase;
 
@@ -752,7 +755,7 @@ public sealed class MilingBase : DialogProgpam
         string coditions = GetCondition_Round() + GetCondition_Slot() + GetCondition_NoRound();
         
 
-        return SqlUspElement.GetNoRoundBase(_length, _width, selectColumns, coditions, new Catalog8());
+        return SqlUspElement.GetNoRoundBase(_length, _width, selectColumns, coditions, _catalog);
     }
 
     private void LoadBase()

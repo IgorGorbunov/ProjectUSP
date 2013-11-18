@@ -71,7 +71,7 @@ public sealed class Jig : DialogProgpam
 
     private string _gost;
 
-    private Catalog _catalog;
+    private readonly Catalog _catalog;
 
     private readonly List<string[]> _goodSleeves = new List<string[]>();
     private int _nSleeveColumns;
@@ -95,11 +95,12 @@ public sealed class Jig : DialogProgpam
     //------------------------------------------------------------------------------
     //Constructor for NX Styler class
     //------------------------------------------------------------------------------
-    public Jig()
+    public Jig(Catalog catalog)
     {
         try
         {
             Init();
+            _catalog = catalog;
             _theDialogName = AppDomain.CurrentDomain.BaseDirectory +
                              ConfigDlx.DlxFolder + Path.DirectorySeparatorChar + ConfigDlx.DlxJig;
 
@@ -181,8 +182,6 @@ public sealed class Jig : DialogProgpam
             _toggle01 = TheDialog.TopBlock.FindBlock("toggle01");
             _integer0 = TheDialog.TopBlock.FindBlock("integer0");
             _direction0 = TheDialog.TopBlock.FindBlock("direction0");
-
-            _catalog = new Catalog12();
         }
         catch (Exception ex)
         {

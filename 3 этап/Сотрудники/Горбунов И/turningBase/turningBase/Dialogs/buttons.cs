@@ -181,22 +181,22 @@ public class Buttons : DialogProgpam
             else if(block == _button01)
             {
             //---------Enter your code here-----------
-                dialogProgpam = new TurningBase();
+                dialogProgpam = new TurningBase(new Catalog12());
             }
             else if(block == _button02)
             {
             //---------Enter your code here-----------
-                dialogProgpam = new MilingBase();
+                dialogProgpam = new MilingBase(new Catalog12());
             }
             else if(block == _button03)
             {
             //---------Enter your code here-----------
-                dialogProgpam = new Jig();
+                dialogProgpam = new Jig(new Catalog12());
             }
             else if (block == _button04)
             {
                 //---------Enter your code here-----------
-                dialogProgpam = new HeightSet();
+                dialogProgpam = new HeightSet(new Catalog12());
             }
             else if (block == _button05)
             {
