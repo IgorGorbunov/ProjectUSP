@@ -33,7 +33,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86\Debug\</OutputPath>
+    <OutputPath>C:\ug_customization\application\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -49,7 +49,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x64\Debug\</OutputPath>
+    <OutputPath>C:\ug_customization\application\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -64,6 +64,16 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Devart.Data, Version=5.0.818.0, Culture=neutral, PublicKeyToken=09af7300eec23701, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files\Devart\dotConnect\Oracle\Devart.Data.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Devart.Data.Oracle, Version=8.1.26.0, Culture=neutral, PublicKeyToken=09af7300eec23701, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files\Devart\dotConnect\Oracle\Devart.Data.Oracle.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="NXOpen, Version=7.5.0.32, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Documents and Settings\USP\Рабочий стол\NXOpen.dll</HintPath>
@@ -82,7 +92,6 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Data.OracleClient" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
@@ -172,8 +181,30 @@
     <Compile Include="Sql - мой\Sql.cs" />
     <Compile Include="SqlAccess\SqlUspBigAngleElems.cs" />
     <Compile Include="SqlAccess\SqlUspJigs.cs" />
+    <Compile Include="SqlConnection\Alg\ConnectBD.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SqlConnection\Alg\SpecialFunctions.cs" />
+    <Compile Include="SqlConnection\ConnectBD.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SqlConnection\ConnectBD.designer.cs">
+      <DependentUpon>ConnectBD.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SqlConnection\SootherForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SqlConnection\SootherForm.Designer.cs">
+      <DependentUpon>SootherForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="SqlTables\SqlTabBigAngleData.cs" />
     <Compile Include="SqlTables\SqlTabJigData.cs" />
+    <Compile Include="SQL\SQL BLOB.cs" />
+    <Compile Include="SQL\SQL Exist.cs" />
+    <Compile Include="SQL\SQL Init.cs" />
+    <Compile Include="SQL\SQL Insert.cs" />
+    <Compile Include="SQL\SQL Select.cs" />
+    <Compile Include="SQL\SQL Update.cs" />
     <Compile Include="_Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Slot.cs" />
@@ -184,12 +215,6 @@
     <Compile Include="SqlTables\SqlTabUspData.cs" />
     <Compile Include="SqlAccess\SqlUspElement.cs" />
     <Compile Include="Math\Straight.cs" />
-    <Compile Include="SQL\SQL BLOB.cs" />
-    <Compile Include="SQL\SQL Exist.cs" />
-    <Compile Include="SQL\SQL Init.cs" />
-    <Compile Include="SQL\SQL Insert.cs" />
-    <Compile Include="SQL\SQL Select.cs" />
-    <Compile Include="SQL\SQL Update.cs" />
     <Compile Include="Tunnel.cs" />
     <Compile Include="Dialogs\turningBase.cs" />
     <Compile Include="Elements\UspElement.cs" />
@@ -211,6 +236,17 @@
     <EmbeddedResource Include="Gallary\ImageSqlForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ImageSqlForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="licenses.licx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SqlConnection\ConnectBD.resx">
+      <DependentUpon>ConnectBD.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SqlConnection\SootherForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>SootherForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

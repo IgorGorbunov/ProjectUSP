@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Forms;
 
 // ReSharper disable UnusedMember.Global
 public sealed class Program
@@ -14,19 +15,21 @@ public sealed class Program
         {
             //SQLOracle.BuildConnectionString("591014", "591000", "EOI");
             //SqlOracle.BuildConnectionString("591014", "591000", "EOI");
-            SQLOracle.BuildConnectionString("ktc", "ktc", "baseeoi");
-            SqlOracle.BuildConnectionString("ktc", "ktc", "baseeoi");
 
 #if(DEBUG)
             Message.Show("Дебаггг", Message.MessageType.Warning, "DEBUG!");
 #endif
 
-            _startProgram = new Buttons();
-            Logger.WriteLine("++++++++++++++++++++++++++++++++++++++++++++++++" + " Начало работы программы " + _startProgram.GetType().Name);
+            //_startProgram = new Buttons();
+            Logger.WriteLine("++++++++++++++++++++++++++++++++++++++++++++++++" + " Начало работы программы ");
 
+            Form form = new SootherForm();
+            Message.Tst("!");
+            form.Show();
             // The following method shows the dialog immediately
-            _startProgram.Show();
-            Logger.WriteLine("--------------------------------------------------" + " Конец работы программы " + _startProgram.GetType().Name);
+            
+            //_startProgram.Show();
+            Logger.WriteLine("--------------------------------------------------" + " Конец работы программы ");
         }
         catch (Exception ex)
         {

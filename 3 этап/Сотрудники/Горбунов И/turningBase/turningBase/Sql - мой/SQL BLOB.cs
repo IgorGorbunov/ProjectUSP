@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Data.OracleClient;
 using System.IO;
+using Devart.Data.Oracle;
 
 
 /// <summary>

@@ -6,7 +6,7 @@ using NXOpen.Assemblies;
 
 namespace Katalog2005.Algorithm
 {
-    static class SpecialFunctions
+    static partial class SpecialFunctions
 
     {
         public static Component LoadedPart;

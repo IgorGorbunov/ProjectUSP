@@ -360,7 +360,6 @@ public class Vector
     internal bool IsCoDirectional(Vector vector)
     {
         double angle = GetAngle(vector);
-        Message.Tst(angle);
         return Config.Round(angle) == 0.0;
     }
     /// <summary>

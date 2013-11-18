@@ -1,7 +1,11 @@
-
-using System.Data.OracleClient;
-using UchetUSP.LOG;
-
+using System;
+using System.Collections.Generic;
+using Devart.Data.Oracle;
+using Devart.Data;
+using System.Windows.Forms;
+using System.Data;
+using System.Drawing;
+using LOG;
 
 /// <summary>
 /// Класс c инициаизацией переменных и проверкой соединения с БД
@@ -14,17 +18,17 @@ partial class SQLOracle
     /// </summary>
     static OracleConnection _conn;
 
-    static private OracleDataAdapter oracleDataAdapter1;
+    static private OracleDataAdapter oracleDataAdapter1 = null;
 
-    static private System.Data.DataSet dataSet11;
+    static private System.Data.DataSet dataSet11 = null;
 
-    static private OracleCommand oracleSelectCommand1;
+    static private OracleCommand oracleSelectCommand1 = null;
 
-    static private OracleCommand oracleInsertCommand1;
+    static private OracleCommand oracleInsertCommand1 = null;
 
-    static private OracleCommand oracleUpdateCommand1;
+    static private OracleCommand oracleUpdateCommand1 = null;
 
-    static private OracleDataReader reader;
+    static private OracleDataReader reader =  null;
 
 
 
@@ -35,8 +39,9 @@ partial class SQLOracle
     static string _password = "";
     static string _dataSource = "";
 
-    public static string _connectionString;
-
+    public static string _connectionString;// =  "User id=system;password=123;Direct = true; Host = 192.168.1.170; Service Name = baseeoi; Port = 1521";
+        //"User id=591014;password=591000;Service Name = baseeoi;";
+    
 
 
     /// <summary>
@@ -52,8 +57,7 @@ partial class SQLOracle
         }
         catch (System.Exception ex)
         {
-            //System.Windows.Forms.MessageBox.Show(ex.ToString());
-            Message.Show(ex);
+            System.Windows.Forms.MessageBox.Show(ex.ToString());
         }
     }
     static void _close()
@@ -177,11 +181,14 @@ partial class SQLOracle
     /// Метод построения строки соеднинения
     /// </summary>   
     /// <returns></returns>
-    public static void BuildConnectionString(string user, string password, string dataSource)
+    public static void BuildConnectionString(string user, string password, string dataSource,string Host,string Port)
     {
         _connectionString = "User id=" + user +
                                              ";password=" + password +
-                                             ";Data Source = " + dataSource;
+                                               ";Service Name  = " + dataSource +
+                                                    ";Host = " + Host +
+                                                        ";Direct = true" +
+                                                            ";Port = " + Port;
 
     }
 
@@ -204,9 +211,7 @@ partial class SQLOracle
         }
         catch (OracleException ex)
         {
-            //MessageBox.Show(ex.Message);
-            Message.Show(ex);
-
+            
             oracleSelectCommand1.Connection.Close();
 
             Log.WriteLog(ex);

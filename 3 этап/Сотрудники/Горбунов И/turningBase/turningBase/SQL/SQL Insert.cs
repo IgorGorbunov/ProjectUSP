@@ -1,7 +1,11 @@
-
-using System.Data.OracleClient;
-using UchetUSP.LOG;
-
+using System;
+using System.Collections.Generic;
+using Devart.Data.Oracle;
+using Devart.Data;
+using System.Windows.Forms;
+using System.Data;
+using System.Drawing;
+using LOG;
 
 /// <summary>
 /// Класс c методами типа Insert
@@ -36,21 +40,19 @@ partial class SQLOracle
             }
 
 
-            oracleInsertCommand1.Parameters.Add(new OracleParameter(":DET", OracleType.Blob, BMPInByte.Length, System.Data.ParameterDirection.Input, false, 0, 0, null, System.Data.DataRowVersion.Current, BMPInByte));
+            oracleInsertCommand1.Parameters.Add(new OracleParameter(":DET", OracleDbType.Blob, BMPInByte.Length, System.Data.ParameterDirection.Input, false, 0, 0, null, System.Data.DataRowVersion.Current, BMPInByte));
 
 
             oracleInsertCommand1.ExecuteNonQuery();
 
             oracleInsertCommand1.Connection.Close();
 
-            Message.Show("Параметры введены без ошибок.Загрузка прошла успешно!");
-            //System.Windows.Forms.MessageBox.Show("Параметры введены без ошибок.Загрузка прошла успешно!", "Сообщение!");
+            System.Windows.Forms.MessageBox.Show("Параметры введены без ошибок.Загрузка прошла успешно!", "Сообщение!");
 
         }
         catch (OracleException ex)
         {
-            //System.Windows.Forms.MessageBox.Show(ex.Message);
-            Message.Show(ex);
+            System.Windows.Forms.MessageBox.Show(ex.Message);
 
             Log.WriteLog(ex);
 

@@ -124,9 +124,6 @@ public class Tunnelslot : DialogProgpam
             _selection01 = TheDialog.TopBlock.FindBlock("selection01");
             _point0 = TheDialog.TopBlock.FindBlock("point0");
             _toggle0 = TheDialog.TopBlock.FindBlock("toggle0");
-
-            SQLOracle.BuildConnectionString("591014", "591000", "BASEEOI");
-            SqlOracle.BuildConnectionString("591014", "591000", "BASEEOI");
         }
         catch (Exception ex)
         {

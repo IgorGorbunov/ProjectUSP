@@ -1,8 +1,11 @@
-
+using System;
 using System.Collections.Generic;
-using System.Data.OracleClient;
-using UchetUSP.LOG;
-
+using Devart.Data.Oracle;
+using Devart.Data;
+using System.Windows.Forms;
+using System.Data;
+using System.Drawing;
+using LOG;
 
 /// <summary>
 /// Класс c методами типа Exist
@@ -63,8 +66,7 @@ partial class SQLOracle
         }
         catch (System.Exception e)
         {
-            //System.Windows.Forms.MessageBox.Show(e.ToString());
-            Message.Show(e);
+            System.Windows.Forms.MessageBox.Show(e.ToString());
         }
         finally
         {
@@ -90,7 +92,7 @@ partial class SQLOracle
         try
         {
             string cmdQuery = "select " + idField + " from " + table + " where " + where;
-            Message.Show(cmdQuery);
+
             OracleCommand cmd = new OracleCommand(cmdQuery, _conn);
             OracleDataReader reader = cmd.ExecuteReader();
 
@@ -105,8 +107,7 @@ partial class SQLOracle
         }
         catch (System.Exception e)
         {
-            //System.Windows.Forms.MessageBox.Show(e.ToString());
-            Message.Show(e);
+            System.Windows.Forms.MessageBox.Show(e.ToString());
 
             Log.WriteLog(e);
 
@@ -162,8 +163,8 @@ partial class SQLOracle
         }
         catch (System.Exception ex)
         {
-            //System.Windows.Forms.MessageBox.Show(ex.Message);
-            Message.Show(ex);
+            System.Windows.Forms.MessageBox.Show(ex.Message);
+
             Log.WriteLog(ex);
 
         }

@@ -613,7 +613,6 @@ public sealed class Jig : DialogProgpam
             {
                 newRow[i] = row[i].ToString();
             }
-            Message.Tst(minD, maxD, newRow);
             _goodSleeves.Add(newRow);
         }
 

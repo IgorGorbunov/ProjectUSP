@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Data;
-using System.Data.OracleClient;
+using Devart.Data.Oracle;
 
 /// <summary>
 /// Класс c инициаизацией переменных и проверкой соединения с БД
@@ -87,7 +87,20 @@ static partial class SqlOracle
                             ";password=" + password +
                             ";Data Source = " + dataSource;
     }
+    /// <summary>
+    /// Метод построения строки соеднинения
+    /// </summary>   
+    /// <returns></returns>
+    public static void BuildConnectionString(string user, string password, string dataSource, string host, string port)
+    {
+        _connectionString = "User id=" + user +
+                                             ";password=" + password +
+                                               ";Service Name  = " + dataSource +
+                                                    ";Host = " + host +
+                                                        ";Direct = true" +
+                                                            ";Port = " + port;
 
+    }
 
 
 }

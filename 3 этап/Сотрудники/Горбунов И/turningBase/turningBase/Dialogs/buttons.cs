@@ -36,6 +36,8 @@
 //------------------------------------------------------------------------------
 using System;
 using System.IO;
+using System.Windows.Forms;
+using Katalog2005;
 using NXOpen.BlockStyler;
 
 //------------------------------------------------------------------------------
@@ -62,9 +64,10 @@ public class Buttons : DialogProgpam
     {
         try
         {
+            Message.Tst("22");
             _theDialogName = AppDomain.CurrentDomain.BaseDirectory +
                              ConfigDlx.DlxFolder + Path.DirectorySeparatorChar + ConfigDlx.Dlx;
-
+            
             TheDialog = Config.TheUi.CreateDialog(_theDialogName);
             TheDialog.AddApplyHandler(apply_cb);
             TheDialog.AddOkHandler(ok_cb);
@@ -73,6 +76,7 @@ public class Buttons : DialogProgpam
             TheDialog.AddFocusNotifyHandler(focusNotify_cb);
             TheDialog.AddKeyboardFocusNotifyHandler(keyboardFocusNotify_cb);
             TheDialog.AddDialogShownHandler(dialogShown_cb);
+            Message.Tst("22");
         }
         catch (Exception ex)
         {
@@ -267,5 +271,8 @@ public class Buttons : DialogProgpam
                                            ex.ToString());
         }
     }
+    
+    //---------------------------------------------------------------------------------
+
     
 }

@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Data.OracleClient;
-
+using Devart.Data.Oracle;
+using Devart.Data;
+using System.Windows.Forms;
 using System.Data;
-using UchetUSP.LOG;
-
+using System.Drawing;
+using LOG;
 
 /// <summary>
 /// Класс c методами типа Select
@@ -52,8 +53,7 @@ partial class SQLOracle
                 mess += Pair.Key + " - " + Pair.Value + "\n";
             }
             mess += Ex.ToString();
-            //MessageBox.Show(mess);
-            Message.Show(mess);
+            MessageBox.Show(mess);
             Log.WriteLog(mess);
         }
         finally
@@ -104,8 +104,7 @@ partial class SQLOracle
         }
         catch (System.Exception ex)
         {
-            //System.Windows.Forms.MessageBox.Show(ex.Message);
-            Message.Show(ex);
+            System.Windows.Forms.MessageBox.Show(ex.Message);
 
             Log.WriteLog(ex);
 
@@ -167,8 +166,7 @@ partial class SQLOracle
         }
         catch (OracleException ex)
         {
-            //System.Windows.Forms.MessageBox.Show(ex.Message);
-            Message.Show(ex);
+            System.Windows.Forms.MessageBox.Show(ex.Message);
 
             oracleSelectCommand1.Connection.Close();
 
@@ -178,7 +176,10 @@ partial class SQLOracle
         }
         finally
         {
-            reader.Dispose();
+            if (reader != null)
+            {
+                reader.Dispose();
+            }
             disposeObjectsForSelectQuery();
         }
 
@@ -224,8 +225,7 @@ partial class SQLOracle
         }
         catch (OracleException ex)
         {
-            //System.Windows.Forms.MessageBox.Show(ex.Message);
-            Message.Show(ex);
+            System.Windows.Forms.MessageBox.Show(ex.Message);
 
             oracleSelectCommand1.Connection.Close();
 
@@ -268,8 +268,7 @@ partial class SQLOracle
         }
         catch (Exception ex)
         {
-            //MessageBox.Show(cmdQuery + "\n" + ex.Message);
-            Message.Show(ex);
+            MessageBox.Show(cmdQuery + "\n" + ex.Message);
         }
         finally
         {
@@ -278,6 +277,113 @@ partial class SQLOracle
 
         return DS;
 }
+
+/// <summary>
+/// Возвращает таблицу с параметризированным select-запросом
+/// </summary>
+/// <param name="cmdQuery">select-запрос</param>
+/// <param name="Dict">Dictioanry с параметризаторрами запроса</param>
+/// <returns></returns>
+public static DataTable getDT(string cmdQuery, Dictionary<string, string> ParamsDict)
+{
+    DataSet DS = new DataSet();
+
+    try
+    {
+        _open();
+        OracleCommand Cmd = new OracleCommand(cmdQuery, _conn);
+        OracleDataAdapter DA = new OracleDataAdapter(Cmd);
+
+        foreach (KeyValuePair<string, string> pair in ParamsDict)
+        {
+            DA.SelectCommand.Parameters.AddWithValue(":" + pair.Key, pair.Value);
+        }
+
+        DA.Fill(DS);
+
+        DA.Dispose();
+        Cmd.Dispose();
+
+    }
+    catch (Exception Ex)
+    {
+        string mess = cmdQuery + "\n";
+        mess += "Parametrs:" + "\n";
+
+        foreach (KeyValuePair<string, string> Pair in ParamsDict)
+        {
+            mess += Pair.Key + " - " + Pair.Value + "\n";
+        }
+        mess += Ex.ToString();
+        Log.WriteLog(mess);
+        MessageBox.Show("Ошибка! Обратитесь к администратору!");
+    }
+    finally
+    {
+        _close();
+    }
+
+    if (DS.Tables.Count == 0)
+    {
+        return null;
+    }
+    else
+    {
+        return DS.Tables[0];
+    }
+}
+
+    public String selectID(String cmdQuery)
+    {
+
+        String result = "";
+
+        initObjectsForSelectQuery();
+
+
+        try
+        {
+                     
+
+            oracleSelectCommand1.Connection.Open();
+
+            oracleDataAdapter1.SelectCommand.CommandText = cmdQuery;
+
+            reader = oracleSelectCommand1.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    //получает значение из последней строки
+                    result = reader.GetInt32(0).ToString();
+                }
+            }
+            else
+            {
+                Log.WriteLog("No rows found.");  
+            }
+
+            reader.Close();
+
+            return result;
+
+        }
+        catch (OracleException ex)
+        {
+           
+            oracleSelectCommand1.Connection.Close();
+
+            Log.WriteLog(ex);
+
+            return result;
+        }
+        finally
+        {
+            disposeObjectsForSelectQuery();
+        }
+    }
+
 
 
 }

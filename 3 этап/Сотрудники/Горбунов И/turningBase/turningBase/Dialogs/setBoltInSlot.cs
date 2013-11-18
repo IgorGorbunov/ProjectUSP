@@ -267,13 +267,13 @@ public class SetBoltInSlot : DialogProgpam
 
     private void SetBolt(UIBlock block)
     {
-        Message.Tst(_markId1);
-        if (_pointIsSet)
-        {
-            Config.TheSession.UndoToMark(_markId1, "InsertSlotBolt");
-        }
-        _markId1 = Config.TheSession.SetUndoMark(Session.MarkVisibility.Visible,
-                                                            "InsertSlotBolt");
+        //Message.Tst(_markId1);
+        //if (_pointIsSet)
+        //{
+        //    Config.TheSession.UndoToMark(_markId1, "InsertSlotBolt");
+        //}
+        //_markId1 = Config.TheSession.SetUndoMark(Session.MarkVisibility.Visible,
+        //                                                    "InsertSlotBolt");
         try
         {
             Point3d point = GetPoint(block);
