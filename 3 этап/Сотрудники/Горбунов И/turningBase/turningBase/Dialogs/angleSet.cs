@@ -43,9 +43,9 @@ using NXOpen.BlockStyler;
 using img_gallery;
 using ListBox = NXOpen.BlockStyler.ListBox;
 
-//------------------------------------------------------------------------------
-//Represents Block Styler application class
-//------------------------------------------------------------------------------
+/// <summary>
+/// Класс набора угла.
+/// </summary>
 public class AngleSet : DialogProgpam
 {
     //class members
@@ -67,9 +67,10 @@ public class AngleSet : DialogProgpam
     private int _degrees, _minutes;
     private bool _angleIsObtuse;
     
-    //------------------------------------------------------------------------------
-    //Constructor for NX Styler class
-    //------------------------------------------------------------------------------
+    /// <summary>
+    /// Инициализирует новый экземпляр класса диалога для набора угла для заданного каталога.
+    /// </summary>
+    /// <param name="catalog">Каталог.</param>
     public AngleSet(Catalog catalog)
     {
         try

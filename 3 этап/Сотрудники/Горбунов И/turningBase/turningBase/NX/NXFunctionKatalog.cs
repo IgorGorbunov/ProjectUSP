@@ -31,17 +31,17 @@ namespace Katalog2005.Algorithm
             string fullPath = Path.Combine(path, fileName);
             if (!File.Exists(fullPath))
             {
-                if (SQLOracle.exist((object)oboznOfUsp, "HD", "MODEL_ATTR"))
+                if (SqlOracle1.exist((object)oboznOfUsp, "HD", "MODEL_ATTR"))
                 {
                     LoadPartToTemp(oboznOfUsp);
                 }
-                else if (SQLOracle.exist((object)oboznOfUsp, "HD", "MODEL_ATTR20"))
+                else if (SqlOracle1.exist((object)oboznOfUsp, "HD", "MODEL_ATTR20"))
                 {
                     LoadPartToTempSpecDet(oboznOfUsp);
                 }
                 else
                 {
-                    string mess = "Детали " + oboznOfUsp + "нет в каталоге!";
+                    string mess = "Детали '" + oboznOfUsp + "' нет в каталоге!";
                     Logger.WriteError(mess);
                     Message.Show(mess);
                 }
@@ -60,9 +60,9 @@ namespace Katalog2005.Algorithm
         /// <returns></returns>
         private static void LoadPartToTemp(string oboznachenie)
         {
-            SQLOracle.UnloadPartToTEMPFolder(oboznachenie);
+            SqlOracle1.UnloadPartToTEMPFolder(oboznachenie);
 
-            List<string> childComponents = SQLOracle.GetInformationListWithParamQuery("NMF",
+            List<string> childComponents = SqlOracle1.GetInformationListWithParamQuery("NMF",
                                                                                       "MODEL_STRUCT21",
                                                                                       "PARENT",
                                                                                       (oboznachenie +
@@ -71,7 +71,7 @@ namespace Katalog2005.Algorithm
             for (int i = 0; i < childComponents.Count; i++)
             {
                 string curname = Path.GetFileNameWithoutExtension(childComponents[i]);
-                SQLOracle.UnloadPartToTEMPFolder(curname);
+                SqlOracle1.UnloadPartToTEMPFolder(curname);
             }
         }
 
@@ -83,11 +83,11 @@ namespace Katalog2005.Algorithm
         {
 
             string nmf =
-                SQLOracle.ParamQuerySelect("SELECT NMF FROM KTC.MODEL_ATTR20 WHERE HD = :HD", "HD",
+                SqlOracle1.ParamQuerySelect("SELECT NMF FROM KTC.MODEL_ATTR20 WHERE HD = :HD", "HD",
                                            oboznachenie);
 
 
-            string openPart = SQLOracle.UnloadOsnasToTEMPFolderFile20(nmf.Trim());
+            string openPart = SqlOracle1.UnloadOsnasToTEMPFolderFile20(nmf.Trim());
         }
 
         /// <summary>

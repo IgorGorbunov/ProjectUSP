@@ -196,11 +196,11 @@
 //        public static List<Element> loadFromDb(ElementType elementType, bool ignoreInStock)
 //        {
 //            List<Element> result = new List<Element>();
-//            DataSet elementLinks = SQLOracle.getDS("SELECT * FROM " + ElementTypeInfo.getTableName(elementType));
+//            DataSet elementLinks = SqlOracle1.getDS("SELECT * FROM " + ElementTypeInfo.getTableName(elementType));
 //            foreach (DataRow row in elementLinks.Tables[0].Rows)
 //            {
 //                string paramH = row["PARAM_H"].ToString();
-//                DataSet subElements = SQLOracle.getDS("SELECT NAME, OBOZN, " + paramH + ", NALICHI FROM DB_DATA"
+//                DataSet subElements = SqlOracle1.getDS("SELECT NAME, OBOZN, " + paramH + ", NALICHI FROM DB_DATA"
 //                    + " WHERE GOST='" + row["GOST"] + "'"
 //                    + (ignoreInStock ? "" : " AND NALICHI > 0"));
 //                foreach (DataRow elementRow in subElements.Tables[0].Rows)

@@ -4,17 +4,6 @@ G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningB
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Release\ProjectUsp.csproj.GenerateResource.Cache
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Release\ProjectUsp.dll
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Release\ProjectUsp.pdb
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Debug\ResolveAssemblyReference.cache
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Debug\ExactHeightForm.resources
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Debug\img_gallery.ImageForm.resources
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Debug\ImageSqlForm.resources
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Debug\ProjectUsp.csproj.GenerateResource.Cache
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Debug\ProjectUsp.dll
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Debug\ProjectUsp.pdb
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Debug\ImageBox.resources
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Debug\Katalog2005.ConnectBD.resources
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Debug\ProjectUsp.dll.licenses
-C:\ug_customization\application\licenses.licx
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\x86\Debug\ResolveAssemblyReference.cache
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\x86\Debug\ExactHeightForm.resources
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\x86\Debug\ImageBox.resources
@@ -53,9 +42,6 @@ G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningB
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\x64\Release\ImageSqlForm.resources
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\x64\Release\Katalog2005.ConnectBD.resources
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\x64\Release\ProjectUsp.csproj.GenerateResource.Cache
-C:\ug_customization\application\ProjectUsp.dll
-C:\ug_customization\application\ProjectUsp.pdb
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Debug\SootherForm.resources
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\x64\Release\SootherForm.resources
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\x64\Release\ProjectUsp.dll.licenses
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\x64\Release\ProjectUsp.dll
@@ -65,3 +51,17 @@ G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningB
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Release\Katalog2005.ConnectBD.resources
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Release\SootherForm.resources
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Release\ProjectUsp.dll.licenses
+C:\ug_customization\application\licenses.licx
+C:\ug_customization\application\ProjectUsp.dll
+C:\ug_customization\application\ProjectUsp.pdb
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Debug\ResolveAssemblyReference.cache
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Debug\ExactHeightForm.resources
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Debug\ImageBox.resources
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Debug\img_gallery.ImageForm.resources
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Debug\ImageSqlForm.resources
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Debug\Katalog2005.ConnectBD.resources
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Debug\SootherForm.resources
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Debug\ProjectUsp.csproj.GenerateResource.Cache
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Debug\ProjectUsp.dll.licenses
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Debug\ProjectUsp.dll
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\Debug\ProjectUsp.pdb

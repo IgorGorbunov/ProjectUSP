@@ -180,7 +180,7 @@ static class SqlUspElement
                            " and " + SqlTabUspData.CGroup + " = " + (int) SqlTabUspData.GroupUsp.Fixture +
                            Sql.GetNewCond(SqlTabUspData.ThereIs) + 
                            " and " + SqlTabUspData.CDiametr + " like :diametr" +
-                           " and " + SqlTabUspData.CLength + " >= :length" +
+                           " and " + Sql.Num(SqlTabUspData.CLength) + " >= :length" +
                            " and " + SqlTabUspData.CName + " = " + SqlTabUspData.GetName(SqlTabUspData.NameUsp.SlotBolt);
 
         if (SqlOracle.Sel(query, paramDict, out dictionary))

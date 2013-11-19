@@ -10,7 +10,7 @@ using LOG;
 /// <summary>
 /// Класс c методами типа Exist
 /// </summary>
-partial class SQLOracle
+partial class SqlOracle1
 {
     /// <summary>
     /// Mетод возвращает true, если значение в соответствующем поле и таблице найдено

@@ -516,11 +516,11 @@ using System.Data;
         public static List<Element> loadFromDb(ElementType elementType, bool ignoreInStock, int KatologUsp)
         {
             List<Element> result = new List<Element>();
-            DataSet elementLinks = SQLOracle.getDS("SELECT * FROM " + ElementTypeInfo.getTableName(elementType));
+            DataSet elementLinks = SqlOracle1.getDS("SELECT * FROM " + ElementTypeInfo.getTableName(elementType));
             foreach (DataRow row in elementLinks.Tables[0].Rows)
             {
                 string paramH = row["PARAM_H"].ToString();
-                DataSet subElements = SQLOracle.getDS("SELECT NAME, OBOZN, " + paramH + ", NALICHI FROM DB_DATA"
+                DataSet subElements = SqlOracle1.getDS("SELECT NAME, OBOZN, " + paramH + ", NALICHI FROM DB_DATA"
                     + " WHERE GOST='" + row["GOST"] + "'"
                     + (ignoreInStock ? "" : " AND NALICHI > 0 ")
                     + " AND KATALOG_USP='" + KatologUsp + "'");
@@ -544,10 +544,10 @@ using System.Data;
         public static List<Element> loadAngleElement(ElementType elementType, bool ignoreInStock, int KatologUsp)
         {
             List<Element> result = new List<Element>();
-            DataSet elementLinks = SQLOracle.getDS("SELECT * FROM " + ElementTypeInfo.getTableName(elementType));
+            DataSet elementLinks = SqlOracle1.getDS("SELECT * FROM " + ElementTypeInfo.getTableName(elementType));
             foreach (DataRow row in elementLinks.Tables[0].Rows)
             {
-                DataSet subElements = SQLOracle.getDS("SELECT NAME, OBOZN, A, NALICHI FROM DB_DATA"
+                DataSet subElements = SqlOracle1.getDS("SELECT NAME, OBOZN, A, NALICHI FROM DB_DATA"
                     + " WHERE GOST='" + row["GOST"] + "'"
                     + (ignoreInStock ? "" : " AND NALICHI > 0 AND NALICHI <> 999")
                     + " AND KATALOG_USP='" + KatologUsp + "'");
@@ -569,12 +569,12 @@ using System.Data;
         public static Dictionary<String, BigAngleGost> loadBigAngleElement(bool ignoreInStock, int KatologUsp)
         {
             Dictionary<String, BigAngleGost> result = new Dictionary<string, BigAngleGost>();
-            DataSet elementLinks = SQLOracle.getDS("SELECT * FROM " + ElementTypeInfo.getTableName(ElementType.BigAngle));
+            DataSet elementLinks = SqlOracle1.getDS("SELECT * FROM " + ElementTypeInfo.getTableName(ElementType.BigAngle));
             foreach (DataRow row in elementLinks.Tables[0].Rows)
             {
                 int type = int.Parse(row["REAL_ANGLE_TYPE"].ToString());
                 string gost = row["GOST"].ToString();
-                DataSet subElements = SQLOracle.getDS("SELECT NAME, OBOZN, A, NALICHI FROM DB_DATA"
+                DataSet subElements = SqlOracle1.getDS("SELECT NAME, OBOZN, A, NALICHI FROM DB_DATA"
                     + " WHERE GOST='" + gost + "'"
                     + (ignoreInStock ? "" : " AND NALICHI > 0 AND NALICHI <> 999")
                     + " AND KATALOG_USP='" + KatologUsp + "'");

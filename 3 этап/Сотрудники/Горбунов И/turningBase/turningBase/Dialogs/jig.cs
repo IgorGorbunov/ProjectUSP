@@ -42,9 +42,9 @@ using NXOpen;
 using NXOpen.BlockStyler;
 using NXOpen.UF;
 
-//------------------------------------------------------------------------------
-//Represents Block Styler application class
-//------------------------------------------------------------------------------
+/// <summary>
+/// Класс диалога для установки кондуктора.
+/// </summary>
 public sealed class Jig : DialogProgpam
 {
     //class members
@@ -90,11 +90,10 @@ public sealed class Jig : DialogProgpam
 
     private double _startAngle;
 
-    //private 
-    
-    //------------------------------------------------------------------------------
-    //Constructor for NX Styler class
-    //------------------------------------------------------------------------------
+    /// <summary>
+    /// Инициализирует новый экземпляр класса диалога для установки кондуктора для заданного каталога.
+    /// </summary>
+    /// <param name="catalog">Каталог.</param>
     public Jig(Catalog catalog)
     {
         try

@@ -10,7 +10,7 @@ using LOG;
 /// <summary>
 /// Класс c методами типа Update
 /// </summary>
-partial class SQLOracle
+partial class SqlOracle1
 {
 
 
@@ -145,7 +145,7 @@ partial class SQLOracle
 
     //                    MessageBox.Show("Test");
 
-    //                    if (SQLOracle.UpdateQuery(cmd, Parameters, DataFromTextBox) == true)
+    //                    if (SqlOracle1.UpdateQuery(cmd, Parameters, DataFromTextBox) == true)
     //                    {
     //                        System.Windows.Forms.MessageBox.Show("Обновление данных прошло успешно!");
     //                    }

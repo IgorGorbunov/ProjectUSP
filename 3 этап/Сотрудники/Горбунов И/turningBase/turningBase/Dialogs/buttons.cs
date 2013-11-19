@@ -77,6 +77,14 @@ public class Buttons : DialogProgpam
             TheDialog.AddKeyboardFocusNotifyHandler(keyboardFocusNotify_cb);
             TheDialog.AddDialogShownHandler(dialogShown_cb);
         }
+        catch (BadQueryExeption)
+        {
+            throw;
+        }
+        catch (UnauthorizedAccessException)
+        {
+            throw;
+        }
         catch (TimeoutException)
         {
             //---- Enter your exception handling code here -----

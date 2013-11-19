@@ -29,7 +29,7 @@ partial class SqlOracle
             {
                 cmd.Parameters.AddWithValue(":" + pair.Key, pair.Value);
             }
-            
+
             OracleDataReader reader = cmd.ExecuteReader();
             if (reader.Read())
             {
@@ -44,7 +44,12 @@ partial class SqlOracle
         }
         catch (TimeoutException)
         {
-            return false;
+            throw;
+        }
+        catch (OracleException ex)
+        {
+            ProcessUnSuccess(cmdQuery, paramsDict, ex);
+            throw new BadQueryExeption();
         }
         catch (Exception ex)
         {
@@ -84,7 +89,12 @@ partial class SqlOracle
         }
         catch (TimeoutException)
         {
-            return false;
+            throw;
+        }
+        catch (OracleException ex)
+        {
+            ProcessUnSuccess(cmdQuery, paramsDict, ex);
+            throw new BadQueryExeption();
         }
         catch (Exception ex)
         {
@@ -126,7 +136,12 @@ partial class SqlOracle
         }
         catch (TimeoutException)
         {
-            return false;
+            throw;
+        }
+        catch (OracleException ex)
+        {
+            ProcessUnSuccess(cmdQuery, paramsDict, ex);
+            throw new BadQueryExeption();
         }
         catch (Exception ex)
         {
@@ -173,7 +188,12 @@ partial class SqlOracle
         }
         catch (TimeoutException)
         {
-            return false;
+            throw;
+        }
+        catch (OracleException ex)
+        {
+            ProcessUnSuccess(cmdQuery, paramsDict, ex);
+            throw new BadQueryExeption();
         }
         catch (Exception ex)
         {
@@ -224,7 +244,12 @@ partial class SqlOracle
         }
         catch (TimeoutException)
         {
-            return false;
+            throw;
+        }
+        catch (OracleException ex)
+        {
+            ProcessUnSuccess(cmdQuery, paramsDict, ex);
+            throw new BadQueryExeption();
         }
         catch (Exception ex)
         {

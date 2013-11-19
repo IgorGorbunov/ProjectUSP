@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Devart.Data.Oracle;
 
 /// <summary>
 /// Класс настроек форм.
@@ -73,9 +74,9 @@ public static class ConfigDlx
         {
             string etalonHash = GetDlxHashSum(name);
             string fileHash = Instr.ComputeMd5Checksum(fullPath);
-            if (etalonHash != fileHash)
+            if (etalonHash == fileHash)
             {
-                File.Delete(fullPath);
+                return;
             }
         }
 
@@ -90,11 +91,27 @@ public static class ConfigDlx
         string query = Sql.GetBegin(CFile) + From;
         query += Sql.Where + Sql.Equal(CName, Sql.Par("name"));
 
-        if (!SqlOracle.UnloadFile(query, path,
-                             dictionary))
+        try
         {
-            throw new TimeoutException();
+            if (!SqlOracle.UnloadFile(query, path, name,
+                             dictionary))
+            {
+                throw new TimeoutException();
+            }
         }
+// ReSharper disable RedundantCatchClause
+        catch (BadQueryExeption)
+        {
+            throw;
+        }
+// ReSharper restore RedundantCatchClause
+// ReSharper disable RedundantCatchClause
+        catch (UnauthorizedAccessException)
+        {
+            throw;
+        }
+// ReSharper restore RedundantCatchClause
+        
         
     }
 
@@ -103,7 +120,7 @@ public static class ConfigDlx
     private const string Name = "USP_TEMPLATES";
     private const string From = "from " + Name;
 
-    private const string CName ="NAME";
+    private const string CName ="NAMEFILE";
     private const string CHashSum = "HASHFILE";
     private const string CFile = "FILEBLOB";
 
@@ -121,6 +138,6 @@ public static class ConfigDlx
         {
             return sum;
         }
-        throw new TimeoutException();
+        throw new BadQueryExeption();
     }
 }

@@ -13,7 +13,7 @@ public sealed class Program
     {
         try
         {
-            //SQLOracle.BuildConnectionString("591014", "591000", "EOI");
+            //SqlOracle1.BuildConnectionString("591014", "591000", "EOI");
             //SqlOracle.BuildConnectionString("591014", "591000", "EOI");
 
 #if(DEBUG)

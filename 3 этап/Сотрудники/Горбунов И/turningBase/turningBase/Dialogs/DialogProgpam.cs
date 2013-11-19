@@ -9,9 +9,9 @@ public abstract class DialogProgpam
 {
     protected BlockDialog TheDialog;
 
-    //------------------------------------------------------------------------------
-    //This method shows the dialog on the screen
-    //------------------------------------------------------------------------------
+    /// <summary>
+    /// Метод запускает и показывает диалог в Siemens NX.
+    /// </summary>
     public void Show()
     {
         try

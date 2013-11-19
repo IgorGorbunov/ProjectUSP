@@ -45,9 +45,9 @@ using NXOpen.UF;
 using NXOpen.Utilities;
 
 
-//------------------------------------------------------------------------------
-//Represents Block Styler application class
-//------------------------------------------------------------------------------
+/// <summary>
+/// Класс диалога для выгрузки плиты для операций на фрезерном станке.
+/// </summary>
 public sealed class MilingBase : DialogProgpam
 {
     //class members
@@ -108,9 +108,11 @@ public sealed class MilingBase : DialogProgpam
     private readonly List<Vertex> _projectPoints = new List<Vertex>(); 
 
 
-    //------------------------------------------------------------------------------
-    //Constructor for NX Styler class
-    //------------------------------------------------------------------------------
+    /// <summary>
+    /// Инициализирует новый экземпляр класса диалога для выгрузки базовой плиты для фрезерки для
+    /// заданного каталога.
+    /// </summary>
+    /// <param name="catalog">Заданный каталог.</param>
     public MilingBase(Catalog catalog)
     {
         try

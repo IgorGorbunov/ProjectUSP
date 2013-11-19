@@ -139,6 +139,8 @@
     <Compile Include="Elements\JigPlank.cs" />
     <Compile Include="Elements\JigSleeve.cs" />
     <Compile Include="Elements\QuickJigSleeve.cs" />
+    <Compile Include="Exeptions\BadQueryExeption.cs" />
+    <Compile Include="Exeptions\EmptyQueryExeption.cs" />
     <Compile Include="Gallary\ImageBox.cs">
       <SubType>UserControl</SubType>
     </Compile>

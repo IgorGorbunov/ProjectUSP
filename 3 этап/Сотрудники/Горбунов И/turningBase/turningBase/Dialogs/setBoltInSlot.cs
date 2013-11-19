@@ -39,9 +39,9 @@ using System.IO;
 using NXOpen;
 using NXOpen.BlockStyler;
 
-//------------------------------------------------------------------------------
-//Represents Block Styler application class
-//------------------------------------------------------------------------------
+/// <summary>
+/// Класс диалога для вставки болта в наборе высоты.
+/// </summary>
 public class SetBoltInSlot : DialogProgpam
 {
     //class members

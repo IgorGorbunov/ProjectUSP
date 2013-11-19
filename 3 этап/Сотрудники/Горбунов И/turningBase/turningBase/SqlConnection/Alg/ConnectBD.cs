@@ -20,12 +20,12 @@ namespace Katalog2005
         {
             if ((!SpecialFunctions.IsEmpty(textBox1)) && (!SpecialFunctions.IsEmpty(textBox2)) && (!SpecialFunctions.IsEmpty(textBox3)) && (!SpecialFunctions.IsEmpty(textBox4)) && (!SpecialFunctions.IsEmpty(textBox5)))
             {                
-                SQLOracle.BuildConnectionString(this.textBox1.Text.ToString(), this.textBox2.Text.ToString(), this.textBox3.Text.ToString(), this.textBox4.Text.ToString(), this.textBox5.Text.ToString());
+                SqlOracle1.BuildConnectionString(this.textBox1.Text.ToString(), this.textBox2.Text.ToString(), this.textBox3.Text.ToString(), this.textBox4.Text.ToString(), this.textBox5.Text.ToString());
                 //me
                 SqlOracle.BuildConnectionString(textBox1.Text, textBox2.Text, textBox3.Text, textBox4.Text, textBox5.Text);
 
 
-                if (SQLOracle.CheckConnection())
+                if (SqlOracle1.CheckConnection())
                 {
                     this.Visible = false;
                     //отображение информации на форме
@@ -76,7 +76,7 @@ namespace Katalog2005
                 string[] paramsBD = GetServerBDparams(System.Environment.GetEnvironmentVariable("KTPP_DB_SERVER"));
 
                  //получение данных соединения
-                SQLOracle.BuildConnectionString(System.Environment.GetEnvironmentVariable("KTPP_DB_USER"),
+                SqlOracle1.BuildConnectionString(System.Environment.GetEnvironmentVariable("KTPP_DB_USER"),
                                     System.Environment.GetEnvironmentVariable("KTPP_DB_PASSWORD"), 
                                      paramsBD[2],
                                     paramsBD[0], 
@@ -90,7 +90,7 @@ namespace Katalog2005
 
                
 
-                    if (SQLOracle.CheckConnection())
+                    if (SqlOracle1.CheckConnection())
                     {
                         
                         this.Visible = false;

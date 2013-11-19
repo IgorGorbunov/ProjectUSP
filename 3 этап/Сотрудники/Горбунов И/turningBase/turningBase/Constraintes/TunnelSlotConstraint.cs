@@ -60,14 +60,25 @@ public sealed class TunnelSlotConstraint
         _parallel.Delete();
         Touch();
 
+        
+        
         if (withBolt)
         {
+            try
+            {
             _hasFixture = true;
             InsertBolt();
 
             _touchAxe = new TouchAxe();
             _touchAxe.Create(_firstElement.ElementComponent, _tunnel.TunnelFace,
                              _fixture.ElementComponent, _tunnelFixtureFace);
+            }
+            catch (EmptyQueryExeption)
+            {
+                const string mess = "Подходящий болт не найден!";
+                Logger.WriteError(mess);
+                Message.ShowError(mess);
+            }
         }
         
         
@@ -109,21 +120,21 @@ public sealed class TunnelSlotConstraint
 
     public void InsertTBolt()
     {
-        if (!_hasFixture)
-        {
-            InsertBolt();
+            if (!_hasFixture)
+            {
+                InsertBolt();
 
-            _touchAxe = new TouchAxe();
-            _touchAxe.Create(_firstElement.ElementComponent, _tunnel.TunnelFace,
-                             _fixture.ElementComponent, _tunnelFixtureFace);
-            NxFunctions.Update();
-            _hasFixture = true;
-        }
-        else
-        {
-            DeleteBolt();
-            _hasFixture = false;
-        }
+                _touchAxe = new TouchAxe();
+                _touchAxe.Create(_firstElement.ElementComponent, _tunnel.TunnelFace,
+                                 _fixture.ElementComponent, _tunnelFixtureFace);
+                NxFunctions.Update();
+                _hasFixture = true;
+            }
+            else
+            {
+                DeleteBolt();
+                _hasFixture = false;
+            }
     }
 
     void DeleteBolt()
@@ -239,6 +250,10 @@ public sealed class TunnelSlotConstraint
         Dictionary<string, string> dictionary =
             SqlUspElement.GetTitleMinLengthFixtures(requiredLen, _secondElement.UspCatalog);
 
+        if (dictionary.Count <= 0)
+        {
+            throw new EmptyQueryExeption();
+        }
         string title = "";
         int minLen = int.MaxValue;
         foreach (KeyValuePair<string, string> keyValuePair in dictionary)

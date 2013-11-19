@@ -16,7 +16,7 @@ partial class SqlOracle
     /// <param name="path"></param>
     /// <param name="paramsDict"></param>
     /// <returns></returns>
-    static public bool UnloadFile(string cmdQuery, string path, Dictionary<string, string> paramsDict)
+    static public bool UnloadFile(string cmdQuery, string path, string fileName, Dictionary<string, string> paramsDict)
     {
         try
         {
@@ -39,7 +39,8 @@ partial class SqlOracle
             reader.Close();
             cmd.Dispose();
 
-            FileStream fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write);
+            string fullPath = Path.Combine(path, fileName);
+            FileStream fs = new FileStream(fullPath, FileMode.Create, FileAccess.Write);
             IDisposable d = fs;
 
             Debug.Assert(b != null, "b != null");
@@ -49,9 +50,19 @@ partial class SqlOracle
             ProcessSuccess(cmdQuery, paramsDict, path);
             return true;
         }
+        catch (UnauthorizedAccessException ex)
+        {
+            Logger.WriteError(ex, "Путь для записи - " + path);
+            throw;
+        }
         catch (TimeoutException)
         {
             return false;
+        }
+        catch (OracleException ex)
+        {
+            ProcessUnSuccess(cmdQuery, paramsDict, ex);
+            throw new BadQueryExeption();
         }
         catch (Exception ex)
         {

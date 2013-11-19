@@ -10,7 +10,7 @@ using LOG;
 /// <summary>
 /// Класс c методами типа Insert
 /// </summary>
-partial class SQLOracle
+partial class SqlOracle1
 {
 
 

@@ -42,13 +42,13 @@ using NXOpen.Assemblies;
 using NXOpen.BlockStyler;
 using NXOpen.UF;
 
-//------------------------------------------------------------------------------
-//Represents Block Styler application class
-//------------------------------------------------------------------------------
+/// <summary>
+/// Класс диалога для набора высоты.
+/// </summary>
 public sealed class HeightSet : DialogProgpam
 {
     /// <summary>
-    /// 
+    /// Высота введенная пользователем.
     /// </summary>
     public static double UserHeight;
     //class members
@@ -71,9 +71,10 @@ public sealed class HeightSet : DialogProgpam
     private HeightElement _firstElement;
 
 
-    //------------------------------------------------------------------------------
-    //Constructor for NX Styler class
-    //------------------------------------------------------------------------------
+    /// <summary>
+    /// Инициализирует новый экземпляр класса диалога для набора высоты для заданного каталога.
+    /// </summary>
+    /// <param name="catalog">Каталог.</param>
     public HeightSet(Catalog catalog)
     {
         try

@@ -10,7 +10,7 @@ using LOG;
 /// <summary>
 /// Класс c методами по работе с BLOB данными
 /// </summary>
-partial class SQLOracle
+partial class SqlOracle1
 {
 
     /// <summary>
@@ -200,9 +200,9 @@ partial class SQLOracle
 
             System.Collections.Generic.List<string> ChildrenList;
 
-            if (SQLOracle.existParamQuery("NMF", "MODEL_STRUCT20", "NMF", NMF))
+            if (SqlOracle1.existParamQuery("NMF", "MODEL_STRUCT20", "NMF", NMF))
             {
-                ChildrenList = SQLOracle.GetInformationListWithParamQuery("NMF", "MODEL_STRUCT20", "PARENT", NMF);
+                ChildrenList = SqlOracle1.GetInformationListWithParamQuery("NMF", "MODEL_STRUCT20", "PARENT", NMF);
 
                 for (int i = 0; i < ChildrenList.Count; i++)
                 {

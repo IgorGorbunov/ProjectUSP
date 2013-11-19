@@ -10,7 +10,7 @@ using LOG;
 /// <summary>
 /// Класс c методами типа Select
 /// </summary>
-partial class SQLOracle
+partial class SqlOracle1
 {
 
     /// <summary>

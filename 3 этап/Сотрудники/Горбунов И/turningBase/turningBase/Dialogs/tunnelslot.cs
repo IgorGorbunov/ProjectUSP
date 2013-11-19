@@ -42,12 +42,10 @@ using NXOpen.Assemblies;
 using NXOpen.BlockStyler;
 using NXOpen.UF;
 
-//------------------------------------------------------------------------------
-//Represents Block Styler application class
-//------------------------------------------------------------------------------
-// ReSharper disable UnusedMember.Global
-public class Tunnelslot : DialogProgpam
-// ReSharper restore UnusedMember.Global
+/// <summary>
+/// Класс диалога для соединения по пазам.
+/// </summary>
+public sealed class Tunnelslot : DialogProgpam
 {
     private readonly string _theDialogName;
 
@@ -77,9 +75,9 @@ public class Tunnelslot : DialogProgpam
     private static bool _hasNearestSlot1;
     private static bool _hasNearestSlot2;
 
-    //------------------------------------------------------------------------------
-    //Constructor for NX Styler class
-    //------------------------------------------------------------------------------
+    /// <summary>
+    /// Инициализирует новый экземпляр класса диалога для соединения по пазам.
+    /// </summary>
     public Tunnelslot()
     {
         try
@@ -240,7 +238,18 @@ public class Tunnelslot : DialogProgpam
             {
                 //---------Enter your code here-----------
                 Logger.WriteLine("Нажат переключатель вставки болта.");
-                _constraint.InsertTBolt();
+                try
+                {
+                    _constraint.InsertTBolt();
+                }
+                catch (EmptyQueryExeption)
+                {
+                    const string mess = "Подходящий болт не найден!";
+                    Logger.WriteError(mess);
+                    Message.ShowError(mess);
+                    _toggle0.GetProperties().SetLogical("Value", false);
+                }
+                
             }
         }
         catch (Exception ex)
@@ -489,12 +498,16 @@ public class Tunnelslot : DialogProgpam
             }
             else
             {
+                //tst
+                _slot1.Highlight();
                 string message = "Базовое отверстие не пересекается с пазом!" + Environment.NewLine +
                          "Выберите другое отверстие или паз!";
+                
                 Logger.WriteWarning(message);
                 Config.TheUi.NXMessageBox.Show("Error!",
                                                NXMessageBox.DialogType.Error,
                                                message);
+                _slot1.Unhighlight();
                 _firstPointSelected = false;
                 UnSelectObjects(_slotTunPoint);
                 _slotTunPoint.Focus();

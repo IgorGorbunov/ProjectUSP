@@ -10,7 +10,7 @@ using LOG;
 /// <summary>
 /// Класс c инициаизацией переменных и проверкой соединения с БД
 /// </summary>
-partial class SQLOracle
+partial class SqlOracle1
 {
 
     /// <summary>
