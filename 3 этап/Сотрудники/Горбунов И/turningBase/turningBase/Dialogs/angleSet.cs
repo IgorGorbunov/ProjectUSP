@@ -493,16 +493,26 @@ public class AngleSet : DialogProgpam
             prevElement = element;
             notFirst = true;
         }
-        //SetAngleConstraint(firstElement, prevElement);
+        SetAngleConstraint(firstElement, prevElement);
     }
 
     private void SetAngleConstraint(UspElement first, UspElement last)
     {
-        Angle angle = new Angle();
         BigAngleElement firstElement = new BigAngleElement(first.ElementComponent);
         SmallAngleElement lastElement = new SmallAngleElement(last.ElementComponent);
-
-        //angle.Create(firstElement.BottomFace, lastElement.TopFace, 0);
+        double firstAngle = new Surface(firstElement.BottomFace).GetAngle(new Surface(lastElement.TopFace));
+        Message.Tst(firstAngle);
+        AlongSlotReverse(first);
+        double secondAngle = new Surface(firstElement.BottomFace).GetAngle(new Surface(lastElement.TopFace));
+        Message.Tst(secondAngle);
+        double difference1 = Math.Abs(GetDecimalAngle() - firstAngle);
+        double difference2 = Math.Abs(GetDecimalAngle() - secondAngle);
+        Message.Tst(difference1, difference2);
+        if (difference1 < difference2)
+        {
+            Message.Tst("!");
+            AlongSlotReverse(first);
+        }
     }
 
     private void AlongSlotReverse(UspElement first)
@@ -589,7 +599,12 @@ public class AngleSet : DialogProgpam
 
     private int GetAngle()
     {
-        return _degrees*60 + _minutes;
+        return _degrees * 60 + _minutes;
+    }
+
+    private double GetDecimalAngle()
+    {
+        return _degrees + _minutes/60;
     }
 
     private void Init()

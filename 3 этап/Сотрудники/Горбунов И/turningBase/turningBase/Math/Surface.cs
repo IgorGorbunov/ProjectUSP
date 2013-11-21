@@ -356,4 +356,20 @@ public class Surface
         Vector vector = new Vector(CenterPoint, surface.CenterPoint);
         return vector.Center;
     }
+
+    public double GetAngle(Surface surface)
+    {
+        Vector vector1 = Direction2;
+        Vector vector2 = surface.Direction2;
+        double angle = vector1.GetAngle(vector2);
+        if (angle > 180)
+        {
+            return 360 - angle;
+        }
+        if (angle > 90)
+        {
+            return 180 - angle;
+        }
+        return angle;
+    }
 }
