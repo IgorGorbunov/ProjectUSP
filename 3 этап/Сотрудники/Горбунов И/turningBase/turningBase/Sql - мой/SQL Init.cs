@@ -18,7 +18,7 @@ static partial class SqlOracle
     /// <summary>
     /// Cоединене с БД (второе исполнение)
     /// </summary>
-    static void _open()
+    public static void _open()
     {
         try
         {
@@ -30,11 +30,12 @@ static partial class SqlOracle
         {
             const string sss = "Попытка соединения с БД прошла неудачно!";
             Logger.WriteLine(sss, ex);
-            Message.Show(sss);
+            //tst
+            //Message.Show(sss);
             throw new TimeoutException();
         }
     }
-    static void _close()
+    public static void _close()
     {
         Logger.WriteLine(_conn.State + " - закрытие соединения...");
         bool closed = false;

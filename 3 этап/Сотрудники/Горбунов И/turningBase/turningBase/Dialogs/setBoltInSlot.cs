@@ -78,8 +78,7 @@ public class SetBoltInSlot : DialogProgpam
             _reserveHeight = reserveHeight;
             _firstElement = firstElement;
 
-            _theDialogName = AppDomain.CurrentDomain.BaseDirectory +
-                             ConfigDlx.DlxFolder + Path.DirectorySeparatorChar + ConfigDlx.DlxSetBoltInSlot;
+            _theDialogName = Path.Combine(ConfigDlx.FullDlxFolder, ConfigDlx.DlxSetBoltInSlot);
 
             TheDialog = Config.TheUi.CreateDialog(_theDialogName);
             TheDialog.AddApplyHandler(apply_cb);

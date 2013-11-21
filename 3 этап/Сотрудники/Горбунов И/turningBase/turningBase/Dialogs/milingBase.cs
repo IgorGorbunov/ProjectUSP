@@ -119,8 +119,7 @@ public sealed class MilingBase : DialogProgpam
         {
             Init();
             _catalog = catalog;
-            _theDialogName = AppDomain.CurrentDomain.BaseDirectory +
-                             ConfigDlx.DlxFolder + Path.DirectorySeparatorChar + ConfigDlx.DlxMilingBase;
+            _theDialogName = Path.Combine(ConfigDlx.FullDlxFolder, ConfigDlx.DlxMilingBase);
 
             TheDialog = Config.TheUi.CreateDialog(_theDialogName);
             TheDialog.AddApplyHandler(apply_cb);

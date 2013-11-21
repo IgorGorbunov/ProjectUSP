@@ -268,7 +268,7 @@ partial class SqlOracle1
         }
         catch (Exception ex)
         {
-            MessageBox.Show(cmdQuery + "\n" + ex.Message);
+            MessageBox.Show(cmdQuery + "\n" + ex.ToString());
         }
         finally
         {

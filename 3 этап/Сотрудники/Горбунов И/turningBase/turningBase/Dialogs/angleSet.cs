@@ -77,8 +77,7 @@ public class AngleSet : DialogProgpam
         {
             Init();
             _catalog = catalog;
-            _theDialogName = AppDomain.CurrentDomain.BaseDirectory +
-                             ConfigDlx.DlxFolder + Path.DirectorySeparatorChar + ConfigDlx.DlxAngle; 
+            _theDialogName = Path.Combine(ConfigDlx.FullDlxFolder, ConfigDlx.DlxAngle); 
 
             TheDialog = Config.TheUi.CreateDialog(_theDialogName);
             TheDialog.AddApplyHandler(apply_cb);
@@ -371,7 +370,7 @@ public class AngleSet : DialogProgpam
                 }
             }
             ImageForm form = new ImageForm(images, MouseClickEventHandler);
-            form.Name = "Типы элементов для набора угла";
+            form.Text = "Типы элементов для набора угла";
             form.DrawItems();
             form.ShowDialog();
         }

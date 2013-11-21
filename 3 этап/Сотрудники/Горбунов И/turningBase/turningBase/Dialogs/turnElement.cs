@@ -78,8 +78,7 @@ public class TurnElement : DialogProgpam
         try
         {
             Init();
-            _theDialogName = AppDomain.CurrentDomain.BaseDirectory +
-                ConfigDlx.DlxFolder + Path.DirectorySeparatorChar + ConfigDlx.DlxTurn;
+            _theDialogName = Path.Combine(ConfigDlx.FullDlxFolder, ConfigDlx.DlxTurn);
 
             TheDialog = Config.TheUi.CreateDialog(_theDialogName);
             TheDialog.AddApplyHandler(apply_cb);

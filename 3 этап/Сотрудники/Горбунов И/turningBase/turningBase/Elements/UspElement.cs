@@ -175,6 +175,7 @@ public class UspElement
             }
         }
         string mess = "Грань " + faceName + " в элементе " + ElementComponent.Name + " не найдена.";
+        mess += Environment.NewLine + "Тип элемента - " + GetType();
         Logger.WriteLine(mess);
         Message.ShowError(mess);
         return null;

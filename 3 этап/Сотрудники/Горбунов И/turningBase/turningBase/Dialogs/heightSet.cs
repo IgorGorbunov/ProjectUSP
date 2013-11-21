@@ -55,6 +55,7 @@ public sealed class HeightSet : DialogProgpam
     private readonly string _theDialogName;
 
     private UIBlock _group0;// Block type: Group
+    private UIBlock _group01;// Block type: Group
     private UIBlock _selection0;// Block type: Selection
     private UIBlock _selection01;// Block type: Selection
     private UIBlock _button0;// Block type: Selection
@@ -81,8 +82,7 @@ public sealed class HeightSet : DialogProgpam
         {
             Init();
             _catalog = catalog;
-            _theDialogName = AppDomain.CurrentDomain.BaseDirectory +
-                             ConfigDlx.DlxFolder + Path.DirectorySeparatorChar + ConfigDlx.DlxHeight;
+            _theDialogName = Path.Combine(ConfigDlx.FullDlxFolder, ConfigDlx.DlxHeight);
 
             TheDialog = Config.TheUi.CreateDialog(_theDialogName);
             TheDialog.AddApplyHandler(apply_cb);
@@ -142,6 +142,7 @@ public sealed class HeightSet : DialogProgpam
         try
         {
             _group0 = TheDialog.TopBlock.FindBlock("group0");
+            _group01 = TheDialog.TopBlock.FindBlock("group01");
             _selection0 = TheDialog.TopBlock.FindBlock("selection0");
             _selection01 = TheDialog.TopBlock.FindBlock("selection01");
             _button0 = TheDialog.TopBlock.FindBlock("button0");
@@ -417,6 +418,7 @@ public sealed class HeightSet : DialogProgpam
             {
                 Message.ShowError("Высота для набора слишком большая!",
                                   "Подходящий П-образный болт не найден!");
+                Unselect();
             }
         }
         catch (TimeoutException)
@@ -441,9 +443,7 @@ public sealed class HeightSet : DialogProgpam
 
             if (UserHeight == -1)
             {
-                UnSelectObjects(_selection0);
-                UnSelectObjects(_selection01);
-                _selection0.Focus();
+                Unselect();
             }
             else
             {
@@ -456,6 +456,7 @@ public sealed class HeightSet : DialogProgpam
         {
             SetElems(solution);
         }
+        SetEnable(_group01, true);
     }
 
     private void SetElems(Solution solution)
@@ -485,7 +486,12 @@ public sealed class HeightSet : DialogProgpam
 
     private void LoadParts(List<string> partList)
     {
-        IEnumerable<UspElement> fixElements = FixElements();
+        IEnumerable<UspElement> fixElements = null;
+        if (!_heightSetted)
+        {
+            fixElements = FixElements();
+        }
+        
         int i = 0;
         HeightElement[] elements = new HeightElement[partList.Count];
         foreach (string s in partList)
@@ -493,7 +499,7 @@ public sealed class HeightSet : DialogProgpam
             Katalog2005.Algorithm.SpecialFunctions.LoadPart(s, false);
             Component component = Katalog2005.Algorithm.SpecialFunctions.LoadedPart;
             elements[i] = new HeightElement(component);
-            if (i > 0)
+            if (_heightSetted || i > 0)
             {
                 elements[i].SetOn(elements[i - 1]);
             }
@@ -505,7 +511,7 @@ public sealed class HeightSet : DialogProgpam
                 NxFunctions.Update();
             }
 
-            if (i == elements.Length - 1)
+            if (!_heightSetted && i == elements.Length - 1)
             {
                 Touch touch = new Touch();
                 touch.Create(_face2.OwningComponent, _face2, component, elements[i].TopFace);
@@ -513,6 +519,7 @@ public sealed class HeightSet : DialogProgpam
             }
             i++;
         }
+
         Unfix(fixElements);
     }
 
@@ -558,4 +565,13 @@ public sealed class HeightSet : DialogProgpam
         ConfigDlx.UnloadDialog(ConfigDlx.DlxHeight);
     }
 
+    private void Unselect()
+    {
+        UnSelectObjects(_selection0);
+        UnSelectObjects(_selection01);
+        SetEnable(_group01, false);
+        _face1Selected = false;
+        _face2Selected = false;
+        _selection0.Focus();
+    }
 }

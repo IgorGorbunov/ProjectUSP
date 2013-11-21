@@ -12,6 +12,17 @@ public static class ConfigDlx
     /// Папка с формами для диалогов.
     /// </summary>
     public const string DlxFolder = @"dialogs";
+
+    public static string FullDlxFolder
+    {
+        get
+        {
+            string dialogsPath = Path.Combine(Path.GetTempPath(), Config.TmpFolder);
+            dialogsPath = Path.Combine(dialogsPath, Config.OurTmpFolder);
+            dialogsPath = Path.Combine(dialogsPath, DlxFolder);
+            return dialogsPath;
+        }
+    }
     /// <summary>
     /// Имя файла с формой базирования элементов по отверстиям.
     /// </summary>
