@@ -8,27 +8,32 @@ public class ParamObjectNotFoundExeption : Exception
     /// <summary>
     /// Наименование детали.
     /// </summary>
-    public string PartName;
+    public readonly string PartName;
+    /// <summary>
+    /// Наименование параметризированного объекта.
+    /// </summary>
+    public readonly string NxObjectName;
 
     public ParamObjectNotFoundExeption()
     {
         
     }
 
-    public ParamObjectNotFoundExeption(string partName, string objectName)
+    public ParamObjectNotFoundExeption(string partName, string objectName, string nxObjectName)
     {
         PartName = partName;
+        NxObjectName = nxObjectName;
     }
 
-    public ParamObjectNotFoundExeption(string message)
+    public ParamObjectNotFoundExeption(string message, string nxObjectName)
         : base(message)
     {
-
+        NxObjectName = nxObjectName;
     }
 
-    public ParamObjectNotFoundExeption(string message, Exception inner)
+    public ParamObjectNotFoundExeption(string message, Exception inner, string nxObjectName)
         : base(message, inner)
     {
-
+        NxObjectName = nxObjectName;
     }
 }

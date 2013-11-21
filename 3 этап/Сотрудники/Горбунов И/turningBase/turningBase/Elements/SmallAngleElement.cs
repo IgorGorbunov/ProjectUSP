@@ -113,8 +113,6 @@ public class SmallAngleElement : UspElement
     public override void AttachToMe(SmallAngleElement smallAngleElement)
     {
         Align align = new Align();
-        Message.Tst(smallAngleElement.ElementComponent, smallAngleElement.BottomEdge,
-                     ElementComponent, TopEdge);
         align.Create(smallAngleElement.ElementComponent, smallAngleElement.BottomEdge,
                      ElementComponent, TopEdge);
 

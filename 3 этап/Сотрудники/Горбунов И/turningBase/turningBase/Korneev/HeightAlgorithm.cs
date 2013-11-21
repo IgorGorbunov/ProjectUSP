@@ -212,6 +212,7 @@ namespace algorithm
                         {
                             int h = (int)(angle - element.Height);
                             int cn = smallAngleTable[katalog].getElementCount(h);
+                            //if (cn > 4) continue;
                             if (baseElement == null || elementCount > cn)
                             {
                                 elementCount = cn;
@@ -219,6 +220,7 @@ namespace algorithm
                             }
                         }
                     }
+                    //Message.Tst(baseElement);
                     result[gost] = new AngleSolution(elementCount, baseElement,
                                         smallAngleTable[katalog].solve(angle - baseElement.Height, ignoreInStock), gost);
                 }

@@ -39,6 +39,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using NXOpen.Assemblies;
 using NXOpen.BlockStyler;
 using algorithm;
 using img_gallery;
@@ -433,18 +434,25 @@ public class AngleSet : DialogProgpam
         //list.Add("7033-2606");
         //list.Add("7033-2503");
         //list.Add("7033-2504");
+        NxFunctions.FreezeDisplay();
+        Stack<Component> loadedElements = new Stack<Component>();
         try
         {
-            LoadParts(list);
+            LoadParts(list, loadedElements);
         }
         catch (ParamObjectNotFoundExeption ex)
         {
-            Message.ShowError("Деталь " + ex.PartName + " неверно параметризированна!");
+            NxFunctions.Delete(loadedElements);
+            string mess = "Деталь " + ex.PartName + " неверно параметризированна!" +
+                          Environment.NewLine;
+            mess += "Не хватает параметра " + ex.NxObjectName;
+            Message.ShowError(mess);
         }
-        
+        NxFunctions.UnFreezeDisplay();
+
     }
 
-    private void LoadParts(List<string> list)
+    private void LoadParts(List<string> list, Stack<Component> loadedElements)
     {
         Logger.WriteLine("Элементы для набора на угол:");
         Logger.WriteLine(list);
@@ -455,6 +463,7 @@ public class AngleSet : DialogProgpam
         {
             Katalog2005.Algorithm.SpecialFunctions.LoadPart(s, false);
             UspElement element = new UspElement(Katalog2005.Algorithm.SpecialFunctions.LoadedPart);
+            loadedElements.Push(element.ElementComponent);
 
             if (element.IsBiqAngleElement)
             {
@@ -480,11 +489,23 @@ public class AngleSet : DialogProgpam
         PictureBox pictureBox = (PictureBox) sender;
         foreach (ImageInfo imageInfo in _dialogForm.Images)
         {
-            if (!imageInfo.Image.Equals(pictureBox.Image)) 
-                continue;
-            SetElements(imageInfo.Solution);
-            _dialogForm.Close();
-            return;
+            if (pictureBox.Image == null)
+            {
+                if (imageInfo.Image == null)
+                {
+                    SetElements(imageInfo.Solution);
+                    _dialogForm.Close();
+                    return;
+                }
+            }
+            else
+            {
+                if (!imageInfo.Image.Equals(pictureBox.Image))
+                    continue;
+                SetElements(imageInfo.Solution);
+                _dialogForm.Close();
+                return;
+            }
         }
     }
 

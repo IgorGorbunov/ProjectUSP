@@ -1,5 +1,7 @@
-﻿using NXOpen;
+﻿using System.Collections.Generic;
+using NXOpen;
 using NXOpen.Assemblies;
+using NXOpen.Positioning;
 using NXOpen.UF;
 using NXOpen.Utilities;
 
@@ -40,13 +42,16 @@ internal static class NxFunctions
     /// </summary>
     public static void FreezeDisplay()
     {
+#if(!DEBUG)
         Config.TheUfSession.Disp.SetDisplay(UFConstants.UF_DISP_SUPPRESS_DISPLAY);
+#endif
     }
     /// <summary>
     /// Разморозить экран.
     /// </summary>
     public static void UnFreezeDisplay()
     {
+#if(!DEBUG)
         int displayCode;
         Config.TheUfSession.Disp.AskDisplay(out displayCode);
 
@@ -56,8 +61,12 @@ internal static class NxFunctions
         {
             Config.TheUfSession.Disp.RegenerateDisplay();
         }
+#endif
     }
-
+    /// <summary>
+    /// Удаляет NX-объект.
+    /// </summary>
+    /// <param name="objectNx">NX-объект</param>
     public static void Delete(NXObject objectNx)
     {
         Session.UndoMarkId markId =
@@ -65,6 +74,22 @@ internal static class NxFunctions
 
         Config.TheSession.UpdateManager.AddToDeleteList(objectNx);
         Config.TheSession.UpdateManager.DoUpdate(markId);
+    }
+    /// <summary>
+    /// Удаляет компоненты из NX.
+    /// </summary>
+    /// <param name="components">Компоненты.</param>
+    public static void Delete(IEnumerable<Component> components)
+    {
+        foreach (Component component in components)
+        {
+            ComponentConstraint[] constraints = component.GetConstraints();
+            foreach (ComponentConstraint componentConstraint in constraints)
+            {
+                Delete(componentConstraint);
+            }
+            Delete(component);
+        }
     }
 
     public static void SetAsterix(Point3d point)

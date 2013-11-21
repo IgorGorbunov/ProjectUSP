@@ -297,8 +297,6 @@ public sealed class SlotSet
                 if (!HasSurrPointOnFace(edges[i], edges[j]))
                     continue;
 
-                
-
                 Edge edgeLong1 = edges[i];
                 Point3d start, end;
                 edgeLong1.GetVertices(out start, out end);
@@ -586,18 +584,28 @@ public sealed class SlotSet
         return alignment > 2;
     }
 
+    //проверка на попадание точки на плоскость между рёбрами паза
+    //точка попадает иногда в шпоночное отверстие - берем в окрестности одной из точек
+    //иногда точка в окрестности попадает в отверстие от соседней цилиндрической плоскости - 
+    //делаем 4 точки вдоль диагонали, проверяем на попадание хотя бы одной
     private bool HasSurrPointOnFace(Edge edge1, Edge edge2)
     {
-        Point3d surrPoint = GetSurroundingPoint(edge1, edge2);
+        List<Point3d> points = GetSurroundingPoints(edge1, edge2);
+        foreach (Point3d point3D in points)
+        {
+            double[] surrCoords = new double[3];
+            surrCoords[0] = point3D.X;
+            surrCoords[1] = point3D.Y;
+            surrCoords[2] = point3D.Z;
 
-        double[] surrCoords = new double[3];
-        surrCoords[0] = surrPoint.X;
-        surrCoords[1] = surrPoint.Y;
-        surrCoords[2] = surrPoint.Z;
-
-        int status;
-        Config.TheUfSession.Modl.AskPointContainment(surrCoords, BottomFace.Tag, out status);
-        return status == 1;
+            int status;
+            Config.TheUfSession.Modl.AskPointContainment(surrCoords, BottomFace.Tag, out status);
+            if (status == 1)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     private Point3d GetSurroundingPoint(Edge edge1, Edge edge2)
@@ -624,6 +632,32 @@ public sealed class SlotSet
 
         Debug.Assert(maxDiagonal != null, "maxDiagonal != null");
         return maxDiagonal.SurroundingPoint;
+    }
+
+    private List<Point3d> GetSurroundingPoints(Edge edge1, Edge edge2)
+    {
+        Point3d point1, point2, point3, point4;
+        edge1.GetVertices(out point1, out point2);
+        edge2.GetVertices(out point3, out point4);
+
+        Vector[] diagonals = new Vector[4];
+        diagonals[0] = new Vector(point1, point3);
+        diagonals[1] = new Vector(point1, point4);
+        diagonals[2] = new Vector(point2, point3);
+        diagonals[3] = new Vector(point2, point4);
+
+        double maxLength = double.MinValue;
+        Vector maxDiagonal = null;
+        foreach (Vector diagonal in diagonals)
+        {
+            if (diagonal.Length <= maxLength)
+                continue;
+            maxDiagonal = diagonal;
+            maxLength = diagonal.Length;
+        }
+
+        Debug.Assert(maxDiagonal != null, "maxDiagonal != null");
+        return maxDiagonal.SurroundingPoints;
     }
 
     private void SetSlots()

@@ -82,6 +82,7 @@ public class BigAngleElement : UspElement
 
         Slot acrossSlot1 = smallAngleElement.GetSlot(smallAngleElement.AcrossSlotEdge);
         Slot acrossSlot2 = GetSlot(AcrossSlotEdge);
+
         SlotConstraint slotConstraint = new SlotConstraint(acrossSlot1, acrossSlot2);
         slotConstraint.SetCenterEdgeConstraint();
 

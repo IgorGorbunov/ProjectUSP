@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using NXOpen;
 using NXOpen.UF;
 
@@ -45,6 +46,31 @@ public class Vector
             double y = Direction1.Y * (Length / 50) + Start.Y;
             double z = Direction1.Z * (Length / 50) + Start.Z;
             return new Point3d(x, y, z);
+        }
+    }
+    /// <summary>
+    /// Возвращает 4 точки вдоль вектора.
+    /// </summary>
+    public List<Point3d> SurroundingPoints
+    {
+        get
+        {
+            List<Point3d> points = new List<Point3d>();
+            Point3d tmpPoint = new Point3d();
+            tmpPoint.X = Direction1.X * (Length / 5) + Start.X;
+            tmpPoint.Y = Direction1.Y * (Length / 5) + Start.Y;
+            tmpPoint.Z = Direction1.Z * (Length / 5) + Start.Z;
+            points.Add(tmpPoint);
+            for (int i = 0; i < 3; i++)
+            {
+                double x = Direction1.X * (Length / 5) + tmpPoint.X;
+                double y = Direction1.Y * (Length / 5) + tmpPoint.Y;
+                double z = Direction1.Z * (Length / 5) + tmpPoint.Z;
+                tmpPoint = new Point3d(x, y, z);
+                points.Add(tmpPoint);
+            }
+
+            return points;
         }
     }
     /// <summary>

@@ -214,7 +214,6 @@ public class UspElement
     {
         Point3d point1, point2;
         edge.GetVertices(out point1, out point2);
-
         return GetNearestSlot(point1);
     }
     /// <summary>
