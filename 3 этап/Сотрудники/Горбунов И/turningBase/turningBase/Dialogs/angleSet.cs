@@ -333,7 +333,7 @@ public class AngleSet : DialogProgpam
 
             try
             {
-                bool freeElems;
+                bool freeElems = false;
     #if(DEBUG)
                 freeElems = true;
     #endif
@@ -341,7 +341,7 @@ public class AngleSet : DialogProgpam
                 List<AngleSolution> orderedList = AngleSolver.GetOrderedList(solution);
                 if (orderedList == null || orderedList.Count == 0)
                 {
-                    Message.Tst("Нет решений");
+                    Message.ShowError("Нет решений");
                     return;
                 }
                 _orderedList = AngleSolver.GetOrderedList(solution);
@@ -493,7 +493,10 @@ public class AngleSet : DialogProgpam
             prevElement = element;
             notFirst = true;
         }
-        SetAngleConstraint(firstElement, prevElement);
+        if (list.Count > 1)
+        {
+            SetAngleConstraint(firstElement, prevElement);
+        }
     }
 
     private void SetAngleConstraint(UspElement first, UspElement last)
@@ -501,18 +504,18 @@ public class AngleSet : DialogProgpam
         BigAngleElement firstElement = new BigAngleElement(first.ElementComponent);
         SmallAngleElement lastElement = new SmallAngleElement(last.ElementComponent);
         double firstAngle = new Surface(firstElement.BottomFace).GetAngle(new Surface(lastElement.TopFace));
-        Message.Tst(firstAngle);
-        AlongSlotReverse(first);
-        double secondAngle = new Surface(firstElement.BottomFace).GetAngle(new Surface(lastElement.TopFace));
-        Message.Tst(secondAngle);
-        double difference1 = Math.Abs(GetDecimalAngle() - firstAngle);
-        double difference2 = Math.Abs(GetDecimalAngle() - secondAngle);
-        Message.Tst(difference1, difference2);
-        if (difference1 < difference2)
-        {
-            Message.Tst("!");
-            AlongSlotReverse(first);
-        }
+        //Message.Tst(firstAngle);
+        //AlongSlotReverse(first);
+        //double secondAngle = new Surface(firstElement.BottomFace).GetAngle(new Surface(lastElement.TopFace));
+        //Message.Tst(secondAngle);
+        //double difference1 = Math.Abs(GetDecimalAngle() - firstAngle);
+        //double difference2 = Math.Abs(GetDecimalAngle() - secondAngle);
+        //Message.Tst(difference1, difference2);
+        //if (difference1 < difference2)
+        //{
+        //    Message.Tst("!");
+        //    AlongSlotReverse(first);
+        //}
     }
 
     private void AlongSlotReverse(UspElement first)

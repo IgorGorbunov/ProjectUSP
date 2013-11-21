@@ -174,6 +174,8 @@ public sealed class HeightSet : DialogProgpam
             mask[0].SolidBodySubtype = UFConstants.UF_UI_SEL_FEATURE_PLANAR_FACE;
             _selection0.GetProperties().SetSelectionFilter("SelectionFilter", Selection.SelectionAction.ClearAndEnableSpecific, mask);
             _selection01.GetProperties().SetSelectionFilter("SelectionFilter", Selection.SelectionAction.ClearAndEnableSpecific, mask);
+            SetEnable(_button0, false);
+            _double0.GetProperties().SetDouble("Value", 0);
         }
         catch (Exception ex)
         {
@@ -500,16 +502,20 @@ public sealed class HeightSet : DialogProgpam
             Katalog2005.Algorithm.SpecialFunctions.LoadPart(s, false);
             Component component = Katalog2005.Algorithm.SpecialFunctions.LoadedPart;
             elements[i] = new HeightElement(component);
-            if (_heightSetted || i > 0)
+
+            if (i > 0)
             {
                 elements[i].SetOn(elements[i - 1]);
             }
             else
             {
                 _firstElement = elements[i];
-                Touch touch = new Touch();
-                touch.Create(_face1.OwningComponent, _face1, component, elements[i].BottomFace);
-                NxFunctions.Update();
+                if (!_heightSetted)
+                {
+                    Touch touch = new Touch();
+                    touch.Create(_face1.OwningComponent, _face1, component, elements[i].BottomFace);
+                    NxFunctions.Update();
+                }
             }
 
             if (!_heightSetted && i == elements.Length - 1)
@@ -547,6 +553,8 @@ public sealed class HeightSet : DialogProgpam
 
     private void Unfix(IEnumerable<UspElement> uspElements)
     {
+        if (uspElements == null)
+            return;
         foreach (UspElement uspElement in uspElements)
         {
             if (uspElement != null)
