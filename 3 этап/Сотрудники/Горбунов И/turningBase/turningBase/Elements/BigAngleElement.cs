@@ -77,8 +77,7 @@ public class BigAngleElement : UspElement
 
         Slot alongSlot = GetSlot(AlongSlotEdge);
         Center center = new Center();
-        center.Create(smallAngleElement.ElementComponent, smallAngleElement.HoleSideFace0,
-                      smallAngleElement.HoleSideFace1, ElementComponent, alongSlot.SideFace1, alongSlot.SideFace2);
+        center.Create(smallAngleElement.HoleSideFace0, smallAngleElement.HoleSideFace1, alongSlot.SideFace1, alongSlot.SideFace2, "ALONG_SLOT");
 
         Slot acrossSlot1 = smallAngleElement.GetSlot(smallAngleElement.AcrossSlotEdge);
         Slot acrossSlot2 = GetSlot(AcrossSlotEdge);

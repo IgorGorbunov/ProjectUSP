@@ -188,6 +188,8 @@ namespace algorithm
             }
         }
 
+        public static int maxElementInSolution = 4;
+
         /// <summary>
         /// Список решений для каждого ГОСТа
         /// </summary>
@@ -197,7 +199,7 @@ namespace algorithm
         /// <returns>Список решений для каждого ГОСТа</returns>
         public static Dictionary<String, AngleSolution> solve(int angle, bool ignoreInStock, int katalog) 
         {
-            int lowerBound = (angle > 90*60 ? 2 : -1);
+            int lowerBound = (angle > 90 * 60 ? 2 : -1);
             Dictionary<String, AngleSolution> result = new Dictionary<string, AngleSolution>();
             foreach (string gost in bigAngleGosts[katalog].Keys)
             {
@@ -212,7 +214,7 @@ namespace algorithm
                         {
                             int h = (int)(angle - element.Height);
                             int cn = smallAngleTable[katalog].getElementCount(h);
-                            //if (cn > 4) continue;
+                            if (cn > maxElementInSolution) continue;
                             if (baseElement == null || elementCount > cn)
                             {
                                 elementCount = cn;
@@ -220,13 +222,18 @@ namespace algorithm
                             }
                         }
                     }
-                    //Message.Tst(baseElement);
-                    result[gost] = new AngleSolution(elementCount, baseElement,
-                                        smallAngleTable[katalog].solve(angle - baseElement.Height, ignoreInStock), gost);
+                    if (baseElement != null)
+                    {
+                        result[gost] = new AngleSolution(elementCount, baseElement,
+                                            smallAngleTable[katalog].solve(angle - baseElement.Height, ignoreInStock), gost);
+                    }
                 }
             }
-            result["Без большого элемента"] = new AngleSolution(smallAngleTable[katalog].getElementCount(angle), null,
-                                        smallAngleTable[katalog].solve(angle, ignoreInStock), "Без большого элемента");
+            if (smallAngleTable[katalog].getElementCount(angle) <= maxElementInSolution)
+            {
+                result["Без большого элемента"] = new AngleSolution(smallAngleTable[katalog].getElementCount(angle), null,
+                                            smallAngleTable[katalog].solve(angle, ignoreInStock), "Без большого элемента");
+            }
             return result;
         }
 

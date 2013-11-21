@@ -41,6 +41,7 @@ using System.IO;
 using System.Windows.Forms;
 using NXOpen.Assemblies;
 using NXOpen.BlockStyler;
+using NXOpen.Positioning;
 using algorithm;
 using img_gallery;
 using ListBox = NXOpen.BlockStyler.ListBox;
@@ -337,6 +338,12 @@ public class AngleSet : DialogProgpam
                 freeElems = true;
     #endif
                 Dictionary<String, AngleSolution> solution = AngleSolver.solve(GetAngle(), freeElems, (int)_catalog.CatalogUsp);
+                List<AngleSolution> orderedList = AngleSolver.GetOrderedList(solution);
+                if (orderedList == null || orderedList.Count == 0)
+                {
+                    Message.Tst("Нет решений");
+                    return;
+                }
                 _orderedList = AngleSolver.GetOrderedList(solution);
                 //Dictionary<Element, byte> smallSolution = orderedList[0].solution.getMainSolution(0);
                 //PrintAnswer(orderedList);
@@ -431,14 +438,12 @@ public class AngleSet : DialogProgpam
             }
         }
         
-        //list.Add("7033-2606");
-        //list.Add("7033-2503");
-        //list.Add("7033-2504");
         NxFunctions.FreezeDisplay();
         Stack<Component> loadedElements = new Stack<Component>();
         try
         {
             LoadParts(list, loadedElements);
+            SetEnable(_button0, false);
         }
         catch (ParamObjectNotFoundExeption ex)
         {
@@ -447,6 +452,7 @@ public class AngleSet : DialogProgpam
                           Environment.NewLine;
             mess += "Не хватает параметра " + ex.NxObjectName;
             Message.ShowError(mess);
+            SetEnable(_button0, true);
         }
         NxFunctions.UnFreezeDisplay();
 
@@ -459,6 +465,7 @@ public class AngleSet : DialogProgpam
 
         bool notFirst = false;
         UspElement prevElement = null;
+        UspElement firstElement = null;
         foreach (string s in list)
         {
             Katalog2005.Algorithm.SpecialFunctions.LoadPart(s, false);
@@ -479,8 +486,43 @@ public class AngleSet : DialogProgpam
                 SmallAngleElement smallAngleElement = new SmallAngleElement(element.ElementComponent);
                 prevElement.AttachToMe(smallAngleElement);
             }
+            else
+            {
+                firstElement = element;
+            }
             prevElement = element;
             notFirst = true;
+        }
+        //SetAngleConstraint(firstElement, prevElement);
+    }
+
+    private void SetAngleConstraint(UspElement first, UspElement last)
+    {
+        Angle angle = new Angle();
+        BigAngleElement firstElement = new BigAngleElement(first.ElementComponent);
+        SmallAngleElement lastElement = new SmallAngleElement(last.ElementComponent);
+
+        //angle.Create(firstElement.BottomFace, lastElement.TopFace, 0);
+    }
+
+    private void AlongSlotReverse(UspElement first)
+    {
+        bool isFixed = first.ElementComponent.IsFixed;
+        if (!isFixed)
+        {
+            first.Fix();
+        }
+        ComponentConstraint[] references = first.ElementComponent.GetConstraints();
+        foreach (ComponentConstraint componentConstraint in references)
+        {
+            if (componentConstraint.Name != "ALONG_SLOT") 
+                continue;
+            componentConstraint.FlipAlignment();
+            NxFunctions.Update();
+        }
+        if (!isFixed)
+        {
+            first.Unfix();
         }
     }
 

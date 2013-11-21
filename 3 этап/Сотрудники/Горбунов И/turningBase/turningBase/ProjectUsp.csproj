@@ -107,6 +107,7 @@
     <Compile Include="Constraintes\Center.cs" />
     <Compile Include="Constraintes\Constrainter.cs" />
     <Compile Include="Constraintes\Align.cs" />
+    <Compile Include="Constraintes\Angle.cs" />
     <Compile Include="Constraintes\Distance.cs" />
     <Compile Include="Constraintes\Fix.cs" />
     <Compile Include="Constraintes\Parallel.cs" />
