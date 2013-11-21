@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using algorithm;
+
 //using algorithm;
 //using img_gallery.Controls;
 
@@ -57,6 +59,7 @@ namespace img_gallery
 
                 pb.Margin = new Padding(3);
                 pb.pictureBox1.MouseClick += MouseClickEventHandler;
+                
 
                 pb.Location = new Point(x, y);
 
@@ -86,13 +89,15 @@ namespace img_gallery
         public String Name;
         public int ElementCount;
         public bool Selected;
+        public AngleSolution Solution;
 
-        public ImageInfo(Image image, String name, int elementCount, bool selected)
+        public ImageInfo(Image image, String name, int elementCount, bool selected, AngleSolution solution)
         {
             Image = image;
             Name = name;
             Selected = selected;
             ElementCount = elementCount;
+            Solution = solution;
         }
     }
 }

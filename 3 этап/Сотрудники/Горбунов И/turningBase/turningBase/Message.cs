@@ -73,6 +73,7 @@ public static class Message
     /// <param name="message">Текст сообщения.</param>
     public static void ShowError(object message)
     {
+        Logger.WriteError(message);
         Show("Ошибка!", MessageType.Error, message);
     }
     /// <summary>

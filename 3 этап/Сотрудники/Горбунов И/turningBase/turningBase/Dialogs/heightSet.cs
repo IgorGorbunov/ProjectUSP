@@ -41,6 +41,7 @@ using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.BlockStyler;
 using NXOpen.UF;
+using algorithm;
 
 /// <summary>
 /// Класс диалога для набора высоты.

@@ -237,7 +237,10 @@ partial class SqlOracle
             reader.Close();
             cmd.Dispose();
 
-            value = Instr.GetImage(bytes);
+            if (bytes != null)
+            {
+                value = Instr.GetImage(bytes);
+            }
 
             ProcessSuccess(cmdQuery, paramsDict, value);
             return true;

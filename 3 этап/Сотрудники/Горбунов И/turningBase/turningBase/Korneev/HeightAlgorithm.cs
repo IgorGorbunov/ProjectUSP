@@ -1,10 +1,12 @@
-п»їusing System;
+using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Data;
 
-
+namespace algorithm
+{
     /// <summary>
-    /// РљР»Р°СЃСЃ, СЂРµР°Р»РёР·СѓСЋС‰РёР№ Р°Р»РіРѕСЂРёС‚Рј РЅР°Р±РѕСЂР° РІС‹СЃРѕС‚С‹ Рё СѓРіР»Р°
+    /// Класс, реализующий алгоритм набора высоты и угла
     /// </summary>
     public class SelectionAlgorihtm
     {
@@ -17,19 +19,19 @@ using System.Data;
         int MULTIPLY_CONST = 20;
 
         /// <summary>
-        /// РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ
+        /// Конструктор
         /// </summary>
-        /// <param name="availableElements">Р­Р»РµРјРµРЅС‚С‹ Р·Р° СЃС‡РµС‚ РєРѕС‚РѕСЂС‹С… РёРґРµС‚ РЅР°Р±РѕСЂ Р·РЅР°С‡РµРЅРёСЏ</param>
-        /// <param name="maxHeight">РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РІРѕР·РјРѕР¶РЅРѕРµ Р·РЅР°С‡РµРЅРёРµ</param>
+        /// <param name="availableElements">Элементы за счет которых идет набор значения</param>
+        /// <param name="maxHeight">Максимальное возможное значение</param>
         public SelectionAlgorihtm(List<Element> availableElements, int maxHeight)
             : this(availableElements, maxHeight, 20) { }
 
         /// <summary>
-        /// РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ
+        /// Конструктор
         /// </summary>
-        /// <param name="availableElements">Р­Р»РµРјРµРЅС‚С‹ Р·Р° СЃС‡РµС‚ РєРѕС‚РѕСЂС‹С… РёРґРµС‚ РЅР°Р±РѕСЂ Р·РЅР°С‡РµРЅРёСЏ</param>
-        /// <param name="maxHeight">РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РІРѕР·РјРѕР¶РЅРѕРµ Р·РЅР°С‡РµРЅРёРµ</param>
-        /// <param name="multiplyConst">РљРѕРЅСЃС‚Р°РЅС‚Р°, РЅРµРѕР±С…РѕРґРёРјР°СЏ РґР»СЏ РїСЂРµРґСЃС‚Р°РІР»РµРЅРёСЏ РІСЃРµС… Р·РЅР°С‡РµРЅРёР№ РІ С†РµР»С‹С… С‡РёСЃР»Р°С…</param>
+        /// <param name="availableElements">Элементы за счет которых идет набор значения</param>
+        /// <param name="maxHeight">Максимальное возможное значение</param>
+        /// <param name="multiplyConst">Константа, необходимая для представления всех значений в целых числах</param>
         public SelectionAlgorihtm(List<Element> availableElements, int maxHeight, int multiplyConst)
         {
             MULTIPLY_CONST = multiplyConst;
@@ -54,11 +56,11 @@ using System.Data;
         }
 
         /// <summary>
-        /// Р РµС€РµРЅРёРµ РґР»СЏ Р·Р°РґР°РЅРЅРѕР№ РІС‹СЃРѕС‚С‹/СѓРіР»Р°
+        /// Решение для заданной высоты/угла
         /// </summary>
-        /// <param name="needHeight">РўСЂРµР±СѓРµРјРѕРµ Р·РЅР°С‡РµРЅРёРµ РїР°СЂР°РјРµС‚СЂР°</param>
-        /// <param name="ignoreInStock">РРіРЅРѕСЂРёСЂРѕРІР°С‚СЊ РЅР°Р»РёС‡РёРµ РЅР° СЃРєР»Р°РґРµ</param>
-        /// <returns>РќР°Р№РґРµРЅРЅРѕРµ СЂРµС€РµРЅРёРµ</returns>
+        /// <param name="needHeight">Требуемое значение параметра</param>
+        /// <param name="ignoreInStock">Игнорировать наличие на складе</param>
+        /// <returns>Найденное решение</returns>
         public Solution solve(double needHeight, bool ignoreInStock)
         {
             int H = (int)(needHeight * MULTIPLY_CONST) + 20;
@@ -116,8 +118,8 @@ using System.Data;
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="h">РўСЂРµР±СѓРµРјРѕРµ Р·РЅР°С‡РµРЅРёРµ РїР°СЂР°РјРµС‚СЂР°</param>
-        /// <returns>РљРѕР»РёС‡РµСЃС‚РІРѕ СЌР»РµРјРµРЅС‚РѕРІ, РєРѕС‚РѕСЂС‹Рј РјРѕР¶РЅРѕ РЅР°Р±СЂР°С‚СЊ Р·РЅР°С‡РµРЅРёРµ h</returns>
+        /// <param name="h">Требуемое значение параметра</param>
+        /// <returns>Количество элементов, которым можно набрать значение h</returns>
         public byte getElementCount(double h)
         {
             return counts[heights.Length, (int)(h * MULTIPLY_CONST)];
@@ -126,9 +128,9 @@ using System.Data;
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="h">РўСЂРµР±СѓРµРјРѕРµ Р·РЅР°С‡РµРЅРёРµ РїР°СЂР°РјРµС‚СЂР°</param>
-        /// <param name="solutionNumber">РќРѕРјРµСЂ СЂРµС€РµРЅРёРµ (РЅСѓРјРµСЂСѓСЋС‚СЃСЏ СЃ 0)</param>
-        /// <returns>РЎРїРёСЃРѕРє СЌР»РµРјРµРЅС‚РѕРІ, РєРѕС‚РѕСЂС‹Рј РјРѕР¶РЅРѕ РЅР°Р±СЂР°С‚СЊ Р·РЅР°С‡РµРЅРёРµ h</returns>
+        /// <param name="h">Требуемое значение параметра</param>
+        /// <param name="solutionNumber">Номер решение (нумеруются с 0)</param>
+        /// <returns>Список элементов, которым можно набрать значение h</returns>
         public Dictionary<Element, byte> getSolution(double h, int solutionNumber)
         {
             int H = (int)(h * MULTIPLY_CONST);
@@ -169,7 +171,7 @@ using System.Data;
     }
 
     /// <summary>
-    /// РљР»Р°СЃСЃ, РѕР±РµСЃРїРµС‡РёРІР°СЋС‰РёР№ РїРѕР»СѓС‡РµРЅРёРµ СЂРµС€РµРЅРёСЏ РґР»СЏ РЅР°Р±РѕСЂР° СѓРіР»Р°
+    /// Класс, обеспечивающий получение решения для набора угла
     /// </summary>
     static class AngleSolver
     {
@@ -187,12 +189,12 @@ using System.Data;
         }
 
         /// <summary>
-        /// РЎРїРёСЃРѕРє СЂРµС€РµРЅРёР№ РґР»СЏ РєР°Р¶РґРѕРіРѕ Р“РћРЎРўР°
+        /// Список решений для каждого ГОСТа
         /// </summary>
-        /// <param name="angle">РўСЂРµР±СѓРµРјС‹Р№ СѓРіРѕР»</param>
-        /// <param name="ignoreInStock">РРіРЅРѕСЂРёСЂРѕРІР°С‚СЊ РЅР°Р»РёС‡РёРµ РЅР° СЃРєР»Р°РґРµ</param>
-        /// <param name="katalog">РљР°С‚Р°Р»РѕРі РЈРЎРџ</param>
-        /// <returns>РЎРїРёСЃРѕРє СЂРµС€РµРЅРёР№ РґР»СЏ РєР°Р¶РґРѕРіРѕ Р“РћРЎРўР°</returns>
+        /// <param name="angle">Требуемый угол</param>
+        /// <param name="ignoreInStock">Игнорировать наличие на складе</param>
+        /// <param name="katalog">Каталог УСП</param>
+        /// <returns>Список решений для каждого ГОСТа</returns>
         public static Dictionary<String, AngleSolution> solve(int angle, bool ignoreInStock, int katalog) 
         {
             int lowerBound = (angle > 90*60 ? 2 : -1);
@@ -221,16 +223,16 @@ using System.Data;
                                         smallAngleTable[katalog].solve(angle - baseElement.Height, ignoreInStock), gost);
                 }
             }
-            result["Р‘РµР· Р±РѕР»СЊС€РѕРіРѕ СЌР»РµРјРµРЅС‚Р°"] = new AngleSolution(smallAngleTable[katalog].getElementCount(angle), null,
-                                        smallAngleTable[katalog].solve(angle, ignoreInStock), "Р‘РµР· Р±РѕР»СЊС€РѕРіРѕ СЌР»РµРјРµРЅС‚Р°");
+            result["Без большого элемента"] = new AngleSolution(smallAngleTable[katalog].getElementCount(angle), null,
+                                        smallAngleTable[katalog].solve(angle, ignoreInStock), "Без большого элемента");
             return result;
         }
 
         /// <summary>
-        /// РџРѕР»СѓС‡РёС‚СЊ РѕС‚СЃРѕСЂС‚РёСЂРѕРІР°РЅРЅС‹Р№ РІ РїРѕСЂСЏРґРєРµ РЅРµ СѓР±С‹РІР°РЅРёСЏ РєРѕР»РёС‡РµСЃС‚РІР° СЃРїРёСЃРѕРє СЂРµС€РµРЅРёР№
+        /// Получить отсортированный в порядке не убывания количества список решений
         /// </summary>
-        /// <param name="solution">РЎРїРёСЃРѕРє СЂРµС€РµРЅРёР№ РґР»СЏ РєР°Р¶РґРѕРіРѕ Р“РћРЎРўР°</param>
-        /// <returns>РћС‚СЃРѕСЂС‚РёСЂРѕРІР°РЅРЅС‹Р№ РІ РїРѕСЂСЏРґРєРµ РЅРµ СѓР±С‹РІР°РЅРёСЏ РєРѕР»РёС‡РµСЃС‚РІР° СЃРїРёСЃРѕРє СЂРµС€РµРЅРёР№</returns>
+        /// <param name="solution">Список решений для каждого ГОСТа</param>
+        /// <returns>Отсортированный в порядке не убывания количества список решений</returns>
         public static List<AngleSolution> GetOrderedList(Dictionary<String, AngleSolution> solution)
         {
             List<AngleSolution> result = new List<AngleSolution>(solution.Values);
@@ -240,7 +242,7 @@ using System.Data;
     }
 
     /// <summary>
-    /// Р РµС€РµРЅРёРµ РґР»СЏ РЅР°Р±РѕСЂР° Р·Р°РґР°РЅРЅРѕРіРѕ Р·РЅР°С‡РµРЅРёСЏ РїР°СЂР°РјРµС‚СЂР°
+    /// Решение для набора заданного значения параметра
     /// </summary>
     public class Solution
     {
@@ -260,8 +262,8 @@ using System.Data;
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="solutionNumber">РќРѕРјРµСЂ СЂРµС€РµРЅРёСЏ</param>
-        /// <returns>РЎРїРёСЃРѕРє СЌР»РµРјРµРЅС‚РѕРІ, РєРѕС‚РѕСЂС‹Рј РјРѕР¶РЅРѕ РЅР°Р±СЂР°С‚СЊ С‚СЂРµР±СѓРµРјРѕРµ</returns>
+        /// <param name="solutionNumber">Номер решения</param>
+        /// <returns>Список элементов, которым можно набрать требуемое</returns>
         public Dictionary<Element, byte> getMainSolution(int solutionNumber)
         {
             if (mainAnswer == -1.0) return null;
@@ -271,8 +273,8 @@ using System.Data;
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="solutionNumber">РќРѕРјРµСЂ СЂРµС€РµРЅРёСЏ</param>
-        /// <returns>РЎРїРёСЃРѕРє СЌР»РµРјРµРЅС‚РѕРІ, РєРѕС‚РѕСЂС‹Рј РјРѕР¶РЅРѕ РЅР°Р±СЂР°С‚СЊ Р±Р»РёР¶Р°Р№С€РµРµ СЃРЅРёР·Сѓ Р·РЅР°С‡РµРЅРёРµ РїР°СЂР°РјРµС‚СЂР°</returns>
+        /// <param name="solutionNumber">Номер решения</param>
+        /// <returns>Список элементов, которым можно набрать ближайшее снизу значение параметра</returns>
         public Dictionary<Element, byte> getLowerSolution(int solutionNumber)
         {
             if (lowerBound == -1.0) return null;
@@ -282,8 +284,8 @@ using System.Data;
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="solutionNumber">РќРѕРјРµСЂ СЂРµС€РµРЅРёСЏ</param>
-        /// <returns>РЎРїРёСЃРѕРє СЌР»РµРјРµРЅС‚РѕРІ, РєРѕС‚РѕСЂС‹Рј РјРѕР¶РЅРѕ РЅР°Р±СЂР°С‚СЊ Р±Р»РёР¶Р°Р№С€РµРµ СЃРІРµСЂС…Сѓ Р·РЅР°С‡РµРЅРёРµ РїР°СЂР°РјРµС‚СЂР°</returns>
+        /// <param name="solutionNumber">Номер решения</param>
+        /// <returns>Список элементов, которым можно набрать ближайшее сверху значение параметра</returns>
         public Dictionary<Element, byte> getUpperSolution(int solutionNumber)
         {
             if (upperBound == -1.0) return null;
@@ -293,8 +295,8 @@ using System.Data;
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="h">РўСЂРµР±СѓРµРјРѕРµ Р·РЅР°С‡РµРЅРёРµ РїР°СЂР°РјРµС‚СЂР°</param>
-        /// <returns>РљРѕР»РёС‡РµСЃС‚РІРѕ СЌР»РµРјРµРЅС‚РѕРІ, РєРѕС‚РѕСЂС‹Рј РјРѕР¶РЅРѕ РЅР°Р±СЂР°С‚СЊ Р·РЅР°С‡РµРЅРёРµ h</returns>
+        /// <param name="h">Требуемое значение параметра</param>
+        /// <returns>Количество элементов, которым можно набрать значение h</returns>
         public byte getElementCount(double h)
         {
             return source.getElementCount(h);
@@ -302,24 +304,24 @@ using System.Data;
     }
 
     /// <summary>
-    /// Р РµС€РµРЅРёРµ РґР»СЏ РЅР°Р±РѕСЂР° СѓРіР»Р°
+    /// Решение для набора угла
     /// </summary>
     public class AngleSolution : IComparable<AngleSolution>
     {
         /// <summary>
-        /// Р‘Р°Р·РѕРІС‹Р№ Р±РѕР»СЊС€РѕР№ СЌР»РµРјРµРЅС‚
+        /// Базовый большой элемент
         /// </summary>
         public Element baseElement;
 
         public string Gost;
 
         /// <summary>
-        /// РўСЂРµР±СѓРµРјРѕРµ РєРѕР»РёС‡РµСЃС‚РІ РјР°Р»С‹С… СЌР»РµРјРµРЅС‚РѕРІ
+        /// Требуемое количеств малых элементов
         /// </summary>
         public int count;
 
         /// <summary>
-        /// Р РµС€РµРЅРёРµ РґР»СЏ РЅР°Р±РѕСЂР° РјР°Р»С‹С… СЌР»РµРјРµРЅС‚РѕРІ
+        /// Решение для набора малых элементов
         /// </summary>
         public Solution solution;
 
@@ -340,34 +342,34 @@ using System.Data;
     }
 
     /// <summary>
-    /// Р“РѕСЃС‚ РЅР° Р±РѕР»СЊС€РёРµ СѓРіР»С‹
+    /// Гост на большие углы
     /// </summary>
     public class BigAngleGost
     {
         /// <summary>
-        /// РќР°РёРјРµРЅРѕРІР°РЅРёРµ Р“РћРЎРўР°
+        /// Наименование ГОСТа
         /// </summary>
         public string Gost;
         /// <summary>
-        /// Р‘РѕР»СЊС€РѕР№ СЌР»РµРјРµРЅС‚ СЃ РјРёРЅРёРјР°Р»СЊРЅС‹Рј СѓРіР»РѕРј
+        /// Большой элемент с минимальным углом
         /// </summary>
         public int minimalAngle;
         /// <summary>
-        /// РўРёРї РіРѕСЃС‚Р° (REAL_ANGLE_TYPE)
+        /// Тип госта (REAL_ANGLE_TYPE)
         /// </summary>
         public int type;
         /// <summary>
-        /// РЎРїРёСЃРѕРє СЌР»РµРјРµРЅС‚РѕРІ, РїСЂРёРЅР°РґР»РµР¶Р°С‰РёС… СЌС‚РѕРјСѓ Р“РћРЎРўСѓ
+        /// Список элементов, принадлежащих этому ГОСТу
         /// </summary>
         public List<Element> elements;
 
         /// <summary>
-        /// РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ
+        /// Конструктор
         /// </summary>
-        /// <param name="gost">РќР°РёРјРµРЅРѕРІР°РЅРёРµ Р“РћРЎРўР°</param>
-        /// <param name="minAngle">Р‘РѕР»СЊС€РѕР№ СЌР»РµРјРµРЅС‚ СЃ РјРёРЅРёРјР°Р»СЊРЅС‹Рј СѓРіР»РѕРј</param>
-        /// <param name="type">РўРёРї РіРѕСЃС‚Р° (REAL_ANGLE_TYPE)</param>
-        /// <param name="elements">РЎРїРёСЃРѕРє СЌР»РµРјРµРЅС‚РѕРІ, РїСЂРёРЅР°РґР»РµР¶Р°С‰РёС… СЌС‚РѕРјСѓ Р“РћРЎРўСѓ</param>
+        /// <param name="gost">Наименование ГОСТа</param>
+        /// <param name="minAngle">Большой элемент с минимальным углом</param>
+        /// <param name="type">Тип госта (REAL_ANGLE_TYPE)</param>
+        /// <param name="elements">Список элементов, принадлежащих этому ГОСТу</param>
         public BigAngleGost(string gost, int minAngle, int type, List<Element> elements)
         {
             this.Gost = gost;
@@ -378,18 +380,18 @@ using System.Data;
     }
 
     /// <summary>
-    /// РљРѕРЅРІРµСЂС‚РѕСЂ РґР»СЏ СѓРіР»Р°
+    /// Конвертор для угла
     /// </summary>
     public static class AngleConverter
     {
         /// <summary>
-        /// РљРѕРЅРІРµСЂС‚РёСЂРѕРІР°РЅРёРµ СЃС‚СЂРѕРєРё РІ С‡РёСЃР»РѕРІРѕРµ Р·РЅР°С‡РµРЅРёРµ - РєРѕР»РёС‡РµСЃС‚РІРѕ РјРёРЅСѓС‚ 
+        /// Конвертирование строки в числовое значение - количество минут 
         /// </summary>
-        /// <param name="s">РЎС‚СЂРѕРєР° РІРёРґР° xxВ°xx'</param>
-        /// <returns>РљРѕР»РёС‡РµСЃС‚РІРѕ РјРёРЅСѓС‚ РІ Р·Р°РґР°РЅРЅРѕРј СѓРіР»Рµ</returns>
+        /// <param name="s">Строка вида xx°xx'</param>
+        /// <returns>Количество минут в заданном угле</returns>
         public static int StringToInt(string s)
         {
-            string[] t = s.Split('В°');
+            string[] t = s.Split('°');
             int res = 0;
             if (t.Length > 1)
             {
@@ -404,42 +406,43 @@ using System.Data;
         }
 
         /// <summary>
-        /// РљРѕРЅРІРµСЂС‚РёСЂРѕРІР°РЅРёРµ РєРѕР»РёС‡РµС‚СЃРІРѕ РјРёРЅСѓС‚ РІ СЃС‚СЂРѕРєСѓ
+        /// Конвертирование количетсво минут в строку
         /// </summary>
-        /// <param name="s">РљРѕР»РёС‡РµСЃС‚РІРѕ РјРёРЅСѓС‚ РІ СѓРіР»Рµ</param>
-        /// <returns>РЎС‚СЂРѕРєСѓ РІРёРґР° xxВ°xx'</returns>
+        /// <param name="s">Количество минут в угле</param>
+        /// <returns>Строку вида xx°xx'</returns>
         public static string IntToString(int value)
         {
             int degree = value / 60;
             int minutes = value % 60;
+            string min = "00'";
 
-            return (degree > 0 ? (degree + "В°") : "") +
+            return (degree > 0 ? (degree + "°") : "") +
                 minutes.ToString("D2") + "'";
         }
     }
 
     /// <summary>
-    /// Р­Р»РµРјРµРЅС‚ РґР»СЏ РЅР°Р±РѕСЂР° РІС‹СЃРѕС‚С‹ Рё СѓРіР»Р°
+    /// Элемент для набора высоты и угла
     /// </summary>
     public class Element
     {
         /// <summary>
-        /// Р’С‹СЃРѕС‚Р° РёР»Рё СѓРіРѕР»
+        /// Высота или угол
         /// </summary>
         public double Height;
         
         /// <summary>
-        /// Р”РѕСЃС‚СѓРїРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ РЅР° СЃРєР»Р°РґРµ
+        /// Доступное количество на складе
         /// </summary>
         public int StockCount;
 
         /// <summary>
-        /// РРјСЏ СЌР»РµРјРµРЅС‚Р°
+        /// Имя элемента
         /// </summary>
         public string ElementName;
 
         /// <summary>
-        /// РћР±РѕР·РЅР°С‡РµРЅРёРµ
+        /// Обозначение
         /// </summary>
         public string Obozn;
 
@@ -453,7 +456,7 @@ using System.Data;
     }
 
     /// <summary>
-    /// РўРёРї СЌР»РµРјРµРЅС‚Р°
+    /// Тип элемента
     /// </summary>
     public enum ElementType
     {
@@ -466,7 +469,7 @@ using System.Data;
     }
 
     /// <summary>
-    /// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С‚РёРїРµ СЌР»РµРјРµРЅС‚Р°
+    /// Информация о типе элемента
     /// </summary>
     public static class ElementTypeInfo
     {
@@ -482,12 +485,12 @@ using System.Data;
             tableNames[ElementType.HeightByRectangle] = "USP_VISOTA_1OTV_PR";
             tableNames[ElementType.BigAngle] = "USP_ANGLE_BIG";
             tableNames[ElementType.SmallAngle] = "USP_ANGLE_SMALL";
-            propertyNames[ElementType.HeightByCircle] = "РљСЂСѓРіР»С‹Рµ СЌР»РµРјРµРЅС‚С‹";
-            propertyNames[ElementType.HeightBySquare] = "РљРІР°РґСЂР°С‚РЅС‹Рµ СЌР»РµРјРµРЅС‚С‹";
-            propertyNames[ElementType.HeightByRectangle] = "РџСЂСЏРјРѕСѓРіРѕР»СЊРЅС‹Рµ СЌР»РµРјРµРЅС‚С‹";
-            propertyNames[ElementType.BigAngle] = "Р‘РѕР»СЊС€РёРµ СЌР»РµРјРµРЅС‚С‹ РґР»СЏ РЅР°Р±РѕСЂР° СѓРіСЂР°";
-            propertyNames[ElementType.SmallAngle] = "РњР°Р»С‹Рµ СЌР»РµРјРµРЅС‚С‹ РґР»СЏ РЅР°Р±РѕСЂР° СѓРіР»Р°";
-            propertyNames[ElementType.None] = "РќРµ РІС‹Р±СЂР°РЅРѕ";
+            propertyNames[ElementType.HeightByCircle] = "Круглые элементы";
+            propertyNames[ElementType.HeightBySquare] = "Квадратные элементы";
+            propertyNames[ElementType.HeightByRectangle] = "Прямоугольные элементы";
+            propertyNames[ElementType.BigAngle] = "Большие элементы для набора угра";
+            propertyNames[ElementType.SmallAngle] = "Малые элементы для набора угла";
+            propertyNames[ElementType.None] = "Не выбрано";
         }
 
         public static string getTableName(ElementType type)
@@ -502,17 +505,17 @@ using System.Data;
     }
 
     /// <summary>
-    /// РљР»Р°СЃСЃ РґР»СЏ РІС‹Р±РѕСЂРєРё РёР· Р‘Р” СЌР»РµРјРµРЅС‚РѕРІ РґР»СЏ РЅР°Р±РѕСЂР° РІС‹СЃРѕС‚С‹ Рё СѓРіР»Р°
+    /// Класс для выборки из БД элементов для набора высоты и угла
     /// </summary>
     public class DatabaseUtils
     {
         /// <summary>
-        /// РЎРїРёСЃРѕРє СЌР»РµРјРµРЅС‚РѕРІ РґР»СЏ РЅР°Р±РѕСЂР° РІС‹СЃРѕС‚С‹, СѓРґРѕРІР»РµС‚РІРѕСЂСЏСЋС‰РёС… Р·Р°РґР°РЅРЅС‹Рј РїР°СЂР°РјРµС‚СЂР°Рј
+        /// Список элементов для набора высоты, удовлетворяющих заданным параметрам
         /// </summary>
-        /// <param name="elementType">РўРёРї СЌР»РµРјРµРЅС‚Р°</param>
-        /// <param name="ignoreInStock">РРіРЅРѕСЂРёСЂРѕРІР°С‚СЊ РЅР°Р»РёС‡РёРµ РЅР° СЃРєР»Р°РґРµ</param>
-        /// <param name="KatologUsp">РќРѕРјРµСЂ РєР°С‚Р°Р»РѕРіР° РЈРЎРџ - 0/1</param>
-        /// <returns>РЎРїРёСЃРѕРє СЌР»РµРјРµРЅС‚РѕРІ РґР»СЏ РЅР°Р±РѕСЂР° РІС‹СЃРѕС‚С‹, СѓРґРѕРІР»РµС‚РІРѕСЂСЏСЋС‰РёС… Р·Р°РґР°РЅРЅС‹Рј РїР°СЂР°РјРµС‚СЂР°Рј</returns>
+        /// <param name="elementType">Тип элемента</param>
+        /// <param name="ignoreInStock">Игнорировать наличие на складе</param>
+        /// <param name="KatologUsp">Номер каталога УСП - 0/1</param>
+        /// <returns>Список элементов для набора высоты, удовлетворяющих заданным параметрам</returns>
         public static List<Element> loadFromDb(ElementType elementType, bool ignoreInStock, int KatologUsp)
         {
             List<Element> result = new List<Element>();
@@ -535,12 +538,12 @@ using System.Data;
         }
 
         /// <summary>
-        /// РЎРїРёСЃРѕРє РјР°Р»С‹С… СЌР»РµРјРµРЅС‚РѕРІ РґР»СЏ РЅР°Р±РѕСЂР° СѓРіР»Р°, СѓРґРѕРІР»РµС‚РІРѕСЂСЏСЋС‰РёС… Р·Р°РґР°РЅРЅС‹Рј РїР°СЂР°РјРµС‚СЂР°Рј
+        /// Список малых элементов для набора угла, удовлетворяющих заданным параметрам
         /// </summary>
-        /// <param name="elementType">РўРёРї СЌР»РµРјРµРЅС‚Р°</param>
-        /// <param name="ignoreInStock">РРіРЅРѕСЂРёСЂРѕРІР°С‚СЊ РЅР°Р»РёС‡РёРµ РЅР° СЃРєР»Р°РґРµ</param>
-        /// <param name="KatologUsp">РќРѕРјРµСЂ РєР°С‚Р°Р»РѕРіР° РЈРЎРџ - 0/1</param>
-        /// <returns>РЎРїРёСЃРѕРє РјР°Р»С‹С… СЌР»РµРјРµРЅС‚РѕРІ РґР»СЏ РЅР°Р±РѕСЂР° СѓРіР»Р°, СѓРґРѕРІР»РµС‚РІРѕСЂСЏСЋС‰РёС… Р·Р°РґР°РЅРЅС‹Рј РїР°СЂР°РјРµС‚СЂР°Рј</returns>
+        /// <param name="elementType">Тип элемента</param>
+        /// <param name="ignoreInStock">Игнорировать наличие на складе</param>
+        /// <param name="KatologUsp">Номер каталога УСП - 0/1</param>
+        /// <returns>Список малых элементов для набора угла, удовлетворяющих заданным параметрам</returns>
         public static List<Element> loadAngleElement(ElementType elementType, bool ignoreInStock, int KatologUsp)
         {
             List<Element> result = new List<Element>();
@@ -561,11 +564,11 @@ using System.Data;
         }
 
         /// <summary>
-        /// РЎРїРёСЃРѕРє Р±РѕР»СЊС€РёС… СЌР»РµРјРµРЅС‚РѕРІ РґР»СЏ РЅР°Р±РѕСЂР° СѓРіР»Р°, СѓРґРѕРІР»РµС‚РІРѕСЂСЏСЋС‰РёС… Р·Р°РґР°РЅРЅС‹Рј РїР°СЂР°РјРµС‚СЂР°Рј
+        /// Список больших элементов для набора угла, удовлетворяющих заданным параметрам
         /// </summary>
-        /// <param name="ignoreInStock">РРіРЅРѕСЂРёСЂРѕРІР°С‚СЊ РЅР°Р»РёС‡РёРµ РЅР° СЃРєР»Р°РґРµ</param>
-        /// <param name="KatologUsp">РќРѕРјРµСЂ РєР°С‚Р°Р»РѕРіР° РЈРЎРџ - 0/1</param>
-        /// <returns>РЎРїРёСЃРѕРє Р±РѕР»СЊС€РёС… СЌР»РµРјРµРЅС‚РѕРІ РґР»СЏ РЅР°Р±РѕСЂР° СѓРіР»Р°, СѓРґРѕРІР»РµС‚РІРѕСЂСЏСЋС‰РёС… Р·Р°РґР°РЅРЅС‹Рј РїР°СЂР°РјРµС‚СЂР°Рј</returns>
+        /// <param name="ignoreInStock">Игнорировать наличие на складе</param>
+        /// <param name="KatologUsp">Номер каталога УСП - 0/1</param>
+        /// <returns>Список больших элементов для набора угла, удовлетворяющих заданным параметрам</returns>
         public static Dictionary<String, BigAngleGost> loadBigAngleElement(bool ignoreInStock, int KatologUsp)
         {
             Dictionary<String, BigAngleGost> result = new Dictionary<string, BigAngleGost>();
@@ -606,3 +609,4 @@ using System.Data;
             return result;
         }
     }    
+}

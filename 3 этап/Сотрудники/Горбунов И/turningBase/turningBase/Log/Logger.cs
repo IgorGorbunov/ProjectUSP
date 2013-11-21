@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using System.IO;
@@ -39,6 +40,19 @@ public static class Logger
         foreach (object o in lines)
         {
             line += o + Environment.NewLine;
+        }
+        WriteLine(line);
+    }
+    /// <summary>
+    /// Записывает новую строку в лог.
+    /// </summary>
+    /// <param name="lines">Переменные для строки.</param>
+    public static void WriteLine<T>(List<T> lines)
+    {
+        string line = "";
+        foreach (T line1 in lines)
+        {
+            line += line1 + Environment.NewLine;
         }
         WriteLine(line);
     }

@@ -47,7 +47,7 @@ public partial class ImageSqlForm : ImageForm
                     title += " - ";
                 }
             }
-            ImageInfo info = new ImageInfo(image, title, 1, false);
+            ImageInfo info = new ImageInfo(image, title, 1, false, null);
 
             if (image != null) images.Add(info);
         }

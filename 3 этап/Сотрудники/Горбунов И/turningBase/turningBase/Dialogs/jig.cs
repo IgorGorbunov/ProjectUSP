@@ -649,10 +649,10 @@ public sealed class Jig : DialogProgpam
 
     private void ShowJigPlanks()
     {
-        Dictionary<string, string> param;
-        string query = SqlUspJigs.GetQueryJigTypes(_catalog, out param);
-        ImageSqlForm imageSqlForm = new ImageSqlForm(query, param);
-        imageSqlForm.ShowDialog();
+        //Dictionary<string, string> param;
+        //string query = SqlUspJigs.GetQueryJigTypes(_catalog, out param);
+        //ImageSqlForm imageSqlForm = new ImageSqlForm(query, param);
+        //imageSqlForm.ShowDialog();
     }
 
     private void Init()

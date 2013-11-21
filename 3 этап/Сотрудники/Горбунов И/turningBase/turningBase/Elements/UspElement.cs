@@ -177,8 +177,7 @@ public class UspElement
         string mess = "Грань " + faceName + " в элементе " + ElementComponent.Name + " не найдена.";
         mess += Environment.NewLine + "Тип элемента - " + GetType();
         Logger.WriteLine(mess);
-        Message.ShowError(mess);
-        return null;
+        throw new ParamObjectNotFoundExeption(Title, faceName);
     }
     /// <summary>
     /// Возвращает ребро элемента по его имени.
@@ -195,7 +194,10 @@ public class UspElement
                 return edge;
             }
         }
-        return null;
+        string mess = "Грань " + edgeName + " в элементе " + ElementComponent.Name + " не найдена.";
+        mess += Environment.NewLine + "Тип элемента - " + GetType();
+        Logger.WriteLine(mess);
+        throw new ParamObjectNotFoundExeption(Title, edgeName);
     }
 
     public virtual void AttachToMe(SmallAngleElement smallAngleElement)

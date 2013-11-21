@@ -40,6 +40,7 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using NXOpen.BlockStyler;
+using algorithm;
 using img_gallery;
 using ListBox = NXOpen.BlockStyler.ListBox;
 
@@ -66,6 +67,9 @@ public class AngleSet : DialogProgpam
 
     private int _degrees, _minutes;
     private bool _angleIsObtuse;
+
+    private ImageForm _dialogForm;
+    private List<AngleSolution> _orderedList;
     
     /// <summary>
     /// Инициализирует новый экземпляр класса диалога для набора угла для заданного каталога.
@@ -315,69 +319,83 @@ public class AngleSet : DialogProgpam
 
     private void SetGostImages()
     {
-        //Dictionary<String, AngleSolution> solution = AngleSolver.solve(getAngle(), false, Math.Max(comboBox1.SelectedIndex, 0));
-        //List<AngleSolution> orderedList = AngleSolver.GetOrderedList(solution);
-        //Dictionary<Element, byte> smallSolution = orderedList[0].solution.getMainSolution(0);
-        //int a = 1 + orderedList.Count + smallSolution.Count;
-        //PrintAnswer(orderedList);
-        //ShowGallery(orderedList);
+        
 
 
         _degrees = _integer0.GetProperties().GetInteger("Value");
         _minutes = _integer01.GetProperties().GetInteger("Value");
         if (AngleIsGood(_degrees, _minutes))
         {
-            List<string> gosts;
-            List<ImageInfo> images = new List<ImageInfo>();
+            //List<string> gosts;
+            //List<ImageInfo> images = new List<ImageInfo>();
+
+            try
+            {
+                bool freeElems;
+    #if(DEBUG)
+                freeElems = true;
+    #endif
+                Dictionary<String, AngleSolution> solution = AngleSolver.solve(GetAngle(), freeElems, (int)_catalog.CatalogUsp);
+                _orderedList = AngleSolver.GetOrderedList(solution);
+                //Dictionary<Element, byte> smallSolution = orderedList[0].solution.getMainSolution(0);
+                //PrintAnswer(orderedList);
+                ShowGallery(_orderedList);
+            }
+            catch (TimeoutException)
+            {
+                Message.Timeout();
+                //goto Exit;
+            }
+
             if (_angleIsObtuse)
             {
                 try
                 {
-                    gosts = SqlUspBigAngleElems.GetGosts_ObtuseAngle(_catalog);
+                    //gosts = SqlUspBigAngleElems.GetGosts_ObtuseAngle(_catalog);
 
-                    foreach (string gost in gosts)
-                    {
-                        Image image = SqlUspElement.GetImage(gost);
-                        string name = SqlUspElement.GetName(gost);
-                        ImageInfo info = new ImageInfo(image, name, 1, false);
-                        images.Add(info);
-                    }
+                    //foreach (string gost in gosts)
+                    //{
+                    //    Image image = SqlUspElement.GetImage(gost);
+                    //    string name = SqlUspElement.GetName(gost);
+                    //    ImageInfo info = new ImageInfo(image, name, 1, false);
+                    //    images.Add(info);
+                    //}
                 }
                 catch (TimeoutException)
                 {
                     Message.Timeout();
-                    goto Exit;
+                    //goto Exit;
                 }
             }
             else
             {
                 try
                 {
-                    gosts = SqlUspBigAngleElems.GetGosts_AcuteAngle(_catalog);
+                    //gosts = SqlUspBigAngleElems.GetGosts_AcuteAngle(_catalog);
 
-                    foreach (string gost in gosts)
-                    {
-                        Image image = SqlUspElement.GetImage(gost);
-                        string name = SqlUspElement.GetName(gost);
-                        ImageInfo info = new ImageInfo(image, name, 1, false);
-                        images.Add(info);
-                    }
+                    //foreach (string gost in gosts)
+                    //{
+                    //    Image image = SqlUspElement.GetImage(gost);
+                    //    string name = SqlUspElement.GetName(gost);
+                    //    ImageInfo info = new ImageInfo(image, name, 1, false);
+                    //    images.Add(info);
+                    //}
                 }
                 catch (TimeoutException)
                 {
                     Message.Timeout();
-                    goto Exit;
+                    //goto Exit;
                 }
             }
-            ImageForm form = new ImageForm(images, MouseClickEventHandler);
-            form.Text = "Типы элементов для набора угла";
-            form.DrawItems();
-            form.ShowDialog();
+            //ImageForm form = new ImageForm(images, MouseClickEventHandler);
+            //form.Text = "Типы элементов для набора угла";
+            //form.DrawItems();
+            //form.ShowDialog();
         }
 
-    Exit:
+    //Exit:
 
-        SetElements();
+        //SetElements();
     }
 
     private void ShowGallery(List<AngleSolution> answer)
@@ -388,42 +406,55 @@ public class AngleSet : DialogProgpam
         {
                 Image image = SqlUspElement.GetImage(solution.Gost);
                 string name = SqlUspElement.GetName(solution.Gost);
-                images.Add(new ImageInfo(image, "ГОСТ " + solution.Gost + " " + name, solution.count + 1, solution.count == minCount));
+                images.Add(new ImageInfo(image, "ГОСТ " + solution.Gost + " " + name, solution.count + 1, solution.count == minCount, solution));
 
         }
-        ImageForm form = new ImageForm(images, null);
-        form.Name = "Типы элементов для набора угла";
-        form.DrawItems();
-        form.ShowDialog();
+        _dialogForm = new ImageForm(images, MouseClickEventHandler);
+        _dialogForm.Text = "Типы элементов для набора угла";
+        _dialogForm.DrawItems();
+        _dialogForm.ShowDialog();
     }
 
-    private void SetElements()
+    private void SetElements(AngleSolution solution)
     {
-        //Dictionary<Element, byte> eDictionary = new Dictionary<Element, byte>();
-        //eDictionary = solution.getMainSolution(0);
+        Dictionary<Element, byte> eDictionary = solution.solution.getMainSolution(0);
 
         List<string> list = new List<string>();
-        //foreach (KeyValuePair<Element, byte> keyValuePair in eDictionary)
-        //{
-        //    for (int i = 0; i < keyValuePair.Value; i++)
-        //    {
-        //        list.Add(keyValuePair.Key.Obozn);
-        //    }
-        //}
-        list.Add("7033-2606");
-        list.Add("7033-2503");
-        list.Add("7033-2504");
-        LoadParts(list);
+        list.Add(solution.baseElement.Obozn);
+
+        foreach (KeyValuePair<Element, byte> keyValuePair in eDictionary)
+        {
+            for (int i = 0; i < keyValuePair.Value; i++)
+            {
+                list.Add(keyValuePair.Key.Obozn);
+            }
+        }
+        
+        //list.Add("7033-2606");
+        //list.Add("7033-2503");
+        //list.Add("7033-2504");
+        try
+        {
+            LoadParts(list);
+        }
+        catch (ParamObjectNotFoundExeption ex)
+        {
+            Message.ShowError("Деталь " + ex.PartName + " неверно параметризированна!");
+        }
+        
     }
 
     private void LoadParts(List<string> list)
     {
+        Logger.WriteLine("Элементы для набора на угол:");
+        Logger.WriteLine(list);
+
         bool notFirst = false;
         UspElement prevElement = null;
         foreach (string s in list)
         {
             Katalog2005.Algorithm.SpecialFunctions.LoadPart(s, false);
-            UspElement element = new SmallAngleElement(Katalog2005.Algorithm.SpecialFunctions.LoadedPart);
+            UspElement element = new UspElement(Katalog2005.Algorithm.SpecialFunctions.LoadedPart);
 
             if (element.IsBiqAngleElement)
             {
@@ -446,7 +477,15 @@ public class AngleSet : DialogProgpam
 
     private void MouseClickEventHandler(object sender, MouseEventArgs mouseEventArgs)
     {
-        throw new NotImplementedException();
+        PictureBox pictureBox = (PictureBox) sender;
+        foreach (ImageInfo imageInfo in _dialogForm.Images)
+        {
+            if (!imageInfo.Image.Equals(pictureBox.Image)) 
+                continue;
+            SetElements(imageInfo.Solution);
+            _dialogForm.Close();
+            return;
+        }
     }
 
     private bool AngleIsGood(int degrees, int minutes)
