@@ -43,7 +43,10 @@ partial class SqlOracle
             FileStream fs = new FileStream(fullPath, FileMode.Create, FileAccess.Write);
             IDisposable d = fs;
 
-            Debug.Assert(b != null, "b != null");
+            if (b == null)
+            {
+                throw new TimeoutException();
+            }
             fs.Write(b, 0, b.Length);
             d.Dispose();
 

@@ -29,6 +29,7 @@ namespace Katalog2005.Algorithm
                 Directory.CreateDirectory(path);
             }
             string fullPath = Path.Combine(path, fileName);
+            
             if (!File.Exists(fullPath))
             {
                 if (SqlOracle1.exist((object)oboznOfUsp, "HD", "MODEL_ATTR"))
@@ -83,7 +84,7 @@ namespace Katalog2005.Algorithm
         {
 
             string nmf =
-                SqlOracle1.ParamQuerySelect("SELECT NMF FROM KTC.MODEL_ATTR20 WHERE HD = :HD", "HD",
+                SqlOracle1.ParamQuerySelect("SELECT NMF FROM MODEL_ATTR20 WHERE HD = :HD", "HD",
                                            oboznachenie);
 
 

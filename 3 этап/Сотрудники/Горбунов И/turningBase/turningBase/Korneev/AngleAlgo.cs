@@ -42,7 +42,7 @@ using algorithm;
             double h = AngleConverter.StringToInt(txtHeight.Text);
             answer = new SelectionAlgorihtm(
                 DatabaseUtils.loadAngleElement(ElementType.SmallAngle, chkInStock.Checked, 0),
-                10000, 1).solve(h, chkInStock.Checked);
+                11000, 1).solve(h, chkInStock.Checked);
             byte minCount = 99;
             foreach (Element element in bigAngleElements)
             {
@@ -112,7 +112,7 @@ using algorithm;
             }
             answer = new SelectionAlgorihtm(
                 DatabaseUtils.loadAngleElement(ElementType.SmallAngle, chkInStock.Checked, 0),
-                10000, 1).solve(h, chkInStock.Checked);
+                11000, 1).solve(h, chkInStock.Checked);
             button1.Text = AngleConverter.IntToString((int)answer.lowerBound);
             button2.Text = AngleConverter.IntToString((int)answer.mainAnswer);
             button3.Text = AngleConverter.IntToString((int)answer.upperBound);

@@ -175,7 +175,9 @@ public sealed class HeightSet : DialogProgpam
             _selection0.GetProperties().SetSelectionFilter("SelectionFilter", Selection.SelectionAction.ClearAndEnableSpecific, mask);
             _selection01.GetProperties().SetSelectionFilter("SelectionFilter", Selection.SelectionAction.ClearAndEnableSpecific, mask);
             SetEnable(_button0, false);
+            SetEnable(_toggle0, true);
             _double0.GetProperties().SetDouble("Value", 0);
+            _toggle0.GetProperties().SetLogical("Value", true);
         }
         catch (Exception ex)
         {
@@ -424,6 +426,11 @@ public sealed class HeightSet : DialogProgpam
                 Unselect();
             }
         }
+        catch (BadQueryExeption)
+        {
+            Message.ShowError("Болты не найдены!");
+            throw;
+        }
         catch (TimeoutException)
         {
             Message.Timeout();
@@ -460,6 +467,7 @@ public sealed class HeightSet : DialogProgpam
             SetElems(solution);
         }
         SetEnable(_group01, true);
+        SetEnable(_button0, true);
     }
 
     private void SetElems(Solution solution)
@@ -528,6 +536,7 @@ public sealed class HeightSet : DialogProgpam
         }
 
         Unfix(fixElements);
+        SetEnable(_toggle0, false);
     }
 
     private IEnumerable<UspElement> FixElements()

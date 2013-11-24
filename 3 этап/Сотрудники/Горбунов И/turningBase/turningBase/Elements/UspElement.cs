@@ -307,7 +307,8 @@ public class UspElement
         string[] split = componentName.Split('_');
         string nameWithEx = split[split.Length - 1];
         split = nameWithEx.Split('.');
-        return split[0];
+        string[] nameWithRevision = split[0].Split(' ');
+        return nameWithRevision[0];
     }
 
 }

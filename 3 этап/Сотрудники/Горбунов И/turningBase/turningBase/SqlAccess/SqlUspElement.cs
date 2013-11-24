@@ -114,7 +114,7 @@ static class SqlUspElement
         string query = "select " + Sql.Max(Sql.Num(SqlTabUspData.CLength)) + From;
         query += Sql.Where + Sql.Equal(SqlTabUspData.CCatalog, Sql.Par("cat"));
         query += Sql.GetNewCond(SqlTabUspData.CDiametr + " like " + Sql.Par("dia"));
-        query += Sql.GetNewCond(SqlTabUspData.ThereIs);
+        //query += Sql.GetNewCond(SqlTabUspData.ThereIs);
         query += Sql.GetNewCond(Sql.Equal(SqlTabUspData.CGroup, (int)SqlTabUspData.GroupUsp.Fixture));
         query += Sql.GetNewCond(Sql.Equal(SqlTabUspData.CName, SqlTabUspData.GetName(SqlTabUspData.NameUsp.SlotBolt)));
         query = Sql.GetFirst(query);
@@ -155,6 +155,10 @@ static class SqlUspElement
 
         if (SqlOracle.Sel(query, paramDict, out title))
         {
+            if (title == "" || title == null)
+            {
+                throw new BadQueryExeption();
+            }
             return title;
         }
         throw new TimeoutException();

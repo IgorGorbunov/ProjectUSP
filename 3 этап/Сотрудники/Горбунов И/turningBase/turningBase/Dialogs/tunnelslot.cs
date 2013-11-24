@@ -596,6 +596,7 @@ public sealed class Tunnelslot : DialogProgpam
     void SetConstraints()
     {
         if (!_firstPointSelected || !_secondPointSelected) return;
+        
         Logger.WriteLine("Запущена процедура позиционирования.");
 
         if (_hasNearestSlot1 && _hasNearestSlot2)

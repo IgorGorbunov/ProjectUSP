@@ -24,7 +24,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>C:\ug_customization\application\</OutputPath>
+    <OutputPath>bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -40,7 +40,7 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <OutputPath>C:\ug_customization\application\</OutputPath>
+    <OutputPath>bin\x86\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
@@ -56,7 +56,7 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
-    <OutputPath>C:\ug_customization\application\</OutputPath>
+    <OutputPath>bin\x64\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
@@ -76,19 +76,19 @@
     </Reference>
     <Reference Include="NXOpen, Version=7.5.0.32, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Documents and Settings\USP\Рабочий стол\NXOpen.dll</HintPath>
+      <HintPath>..\..\libs\NXOpen.dll</HintPath>
     </Reference>
     <Reference Include="NXOpen.UF, Version=7.5.0.31, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Documents and Settings\USP\Рабочий стол\NXOpen.UF.dll</HintPath>
+      <HintPath>..\..\libs\NXOpen.UF.dll</HintPath>
     </Reference>
     <Reference Include="NXOpen.Utilities, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Documents and Settings\USP\Рабочий стол\NXOpen.Utilities.dll</HintPath>
+      <HintPath>..\..\libs\NXOpen.Utilities.dll</HintPath>
     </Reference>
     <Reference Include="NXOpenUI, Version=7.5.0.32, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Documents and Settings\USP\Рабочий стол\NXOpenUI.dll</HintPath>
+      <HintPath>..\..\libs\NXOpenUI.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -162,12 +162,6 @@
       <DependentUpon>ImageSqlForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\heightSet.cs" />
-    <Compile Include="Korneev\AlgoForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Korneev\AlgoForm.designer.cs">
-      <DependentUpon>AlgoForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Korneev\AngleAlgo.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -251,10 +245,6 @@
     <EmbeddedResource Include="Gallary\ImageSqlForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ImageSqlForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Korneev\AlgoForm.resx">
-      <DependentUpon>AlgoForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Korneev\AngleAlgo.resx">
       <DependentUpon>AngleAlgo.cs</DependentUpon>

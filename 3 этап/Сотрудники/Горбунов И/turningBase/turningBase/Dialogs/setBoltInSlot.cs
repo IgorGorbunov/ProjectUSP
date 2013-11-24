@@ -309,6 +309,10 @@ public class SetBoltInSlot : DialogProgpam
             bolt.SetInTunnel(_firstElement.HoleFace);
             _pointIsSet = true;
         }
+        catch (BadQueryExeption)
+        {
+            Message.ShowError("Подходящих болтов не найдено!");
+        }
         catch (TimeoutException)
         {
             Message.Timeout();

@@ -33,7 +33,8 @@ partial class SqlOracle
             OracleDataReader reader = cmd.ExecuteReader();
             if (reader.Read())
             {
-                value = (T) reader.GetValue(0);
+                object o = reader.GetValue(0);
+                value = (T)o;
             }
 
             reader.Close();

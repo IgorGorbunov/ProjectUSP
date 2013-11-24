@@ -188,7 +188,7 @@ namespace algorithm
                     bool ignore = j > 0;
                     smallAngleTable[i, j] = new SelectionAlgorihtm(
                         DatabaseUtils.loadAngleElement(ElementType.SmallAngle, ignore, i),
-                        10000, 1);
+                        11000, 1);
                     smallAngleTable[i, j].solve(6000, ignore);
                     bigAngleGosts[i, j] = DatabaseUtils.loadBigAngleElement(ignore, i);
                 }
@@ -497,11 +497,11 @@ namespace algorithm
         {
             tableNames = new Dictionary<ElementType, string>();
             propertyNames = new Dictionary<ElementType, string>();
-            tableNames[ElementType.HeightByCircle] = "KTC.USP_VISOTA_1OTV_KRUG";
-            tableNames[ElementType.HeightBySquare] = "KTC.USP_VISOTA_1OTV_KV";
-            tableNames[ElementType.HeightByRectangle] = "KTC.USP_VISOTA_1OTV_PR";
-            tableNames[ElementType.BigAngle] = "KTC.USP_ANGLE_BIG";
-            tableNames[ElementType.SmallAngle] = "KTC.USP_ANGLE_SMALL";
+            tableNames[ElementType.HeightByCircle] = "USP_VISOTA_1OTV_KRUG";
+            tableNames[ElementType.HeightBySquare] = "USP_VISOTA_1OTV_KV";
+            tableNames[ElementType.HeightByRectangle] = "USP_VISOTA_1OTV_PR";
+            tableNames[ElementType.BigAngle] = "USP_ANGLE_BIG";
+            tableNames[ElementType.SmallAngle] = "USP_ANGLE_SMALL";
             propertyNames[ElementType.HeightByCircle] = "Круглые элементы";
             propertyNames[ElementType.HeightBySquare] = "Квадратные элементы";
             propertyNames[ElementType.HeightByRectangle] = "Прямоугольные элементы";
@@ -540,7 +540,7 @@ namespace algorithm
             foreach (DataRow row in elementLinks.Tables[0].Rows)
             {
                 string paramH = row["PARAM_H"].ToString();
-                DataSet subElements = SqlOracle1.getDS("SELECT NAME, OBOZN, " + paramH + ", NALICHI FROM KTC.DB_DATA"
+                DataSet subElements = SqlOracle1.getDS("SELECT NAME, OBOZN, " + paramH + ", NALICHI FROM DB_DATA"
                     + " WHERE GOST='" + row["GOST"] + "'"
                     + (ignoreInStock ? "" : " AND NALICHI > 0 AND NALICHI <> 999")
                     + " AND KATALOG_USP='" + KatologUsp + "'");
@@ -567,7 +567,7 @@ namespace algorithm
             DataSet elementLinks = SqlOracle1.getDS("SELECT * FROM " + ElementTypeInfo.getTableName(elementType));
             foreach (DataRow row in elementLinks.Tables[0].Rows)
             {
-                DataSet subElements = SqlOracle1.getDS("SELECT NAME, OBOZN, A, NALICHI FROM KTC.DB_DATA"
+                DataSet subElements = SqlOracle1.getDS("SELECT NAME, OBOZN, A, NALICHI FROM DB_DATA"
                     + " WHERE GOST='" + row["GOST"] + "'"
                     + (ignoreInStock ? "" : " AND NALICHI > 0 AND NALICHI <> 999")
                     + " AND KATALOG_USP='" + KatologUsp + "'");
@@ -602,12 +602,12 @@ namespace algorithm
                 if (KatologUsp == 1 && type == 2)
                 {
                     System.Diagnostics.Trace.WriteLine(gost + " " + type);
-                    System.Diagnostics.Trace.WriteLine("SELECT NAME, OBOZN, A, NALICHI FROM KTC.DB_DATA"
+                    System.Diagnostics.Trace.WriteLine("SELECT NAME, OBOZN, A, NALICHI FROM DB_DATA"
                     + " WHERE GOST='" + gost + "'"
                     + (ignoreInStock ? "" : " AND NALICHI > 0 AND NALICHI <> 999")
                     + " AND KATALOG_USP='" + KatologUsp + "'");
                 }
-                DataSet subElements = SqlOracle1.getDS("SELECT NAME, OBOZN, A, NALICHI FROM KTC.DB_DATA"
+                DataSet subElements = SqlOracle1.getDS("SELECT NAME, OBOZN, A, NALICHI FROM DB_DATA"
                     + " WHERE GOST='" + gost + "'"
                     + (ignoreInStock ? "" : " AND NALICHI > 0 AND NALICHI <> 999")
                     + " AND KATALOG_USP='" + KatologUsp + "'");

@@ -457,8 +457,10 @@ public sealed class TurningBase : DialogProgpam
             Config.TheUfSession.Modl.AskFaceData(face.Tag, out type, point, dir, box, out voidDouble, out voidDouble, out type);
 
             //цилиндрическая грань
-            if (type == 16)
-            {
+            //перестало работать у Никулина
+            Logger.WriteLine("Nikulin - " + type);
+            //if (type == 16)
+            //{
                 point3D.X = point[0];
                 point3D.Y = point[1];
                 point3D.Z = point[2];
@@ -482,12 +484,12 @@ public sealed class TurningBase : DialogProgpam
                 }
                  
                 return true;
-            }
-            const string message = "Грань не цилиндрическая! Выберите другую грань!";
-            Logger.WriteWarning(message + Environment.NewLine + "Выбрана грань - " + face);
-            Message.Show(message);
-            UnSelectObjects(block);
-            return false;
+            //}
+            //const string message = "Грань не цилиндрическая! Выберите другую грань!";
+            //Logger.WriteWarning(message + Environment.NewLine + "Выбрана грань - " + face);
+            //Message.Show(message);
+            //UnSelectObjects(block);
+            //return false;
         }
         Logger.WriteLine("Деселект грани");
         return false;

@@ -100,14 +100,14 @@ public partial class SootherForm : Form
 //#endif
         Start();
 
-        Logger.WriteLine(Instr.ComputeMd5Checksum(@"C:\ug_customization\application\dialogs\buttons.dlx"));
-        Logger.WriteLine(Instr.ComputeMd5Checksum(@"C:\ug_customization\application\dialogs\tunnel+slot.dlx"));
-        Logger.WriteLine(Instr.ComputeMd5Checksum(@"C:\ug_customization\application\dialogs\milingBase.dlx"));
-        Logger.WriteLine(Instr.ComputeMd5Checksum(@"C:\ug_customization\application\dialogs\turningBase.dlx"));
-        Logger.WriteLine(Instr.ComputeMd5Checksum(@"C:\ug_customization\application\dialogs\jig.dlx"));
-        Logger.WriteLine(Instr.ComputeMd5Checksum(@"C:\ug_customization\application\dialogs\heightSet.dlx"));
-        Logger.WriteLine(Instr.ComputeMd5Checksum(@"C:\ug_customization\application\dialogs\angleSet.dlx"));
-        Logger.WriteLine(Instr.ComputeMd5Checksum(@"C:\ug_customization\application\dialogs\setBoltInSlot.dlx"));
-        Logger.WriteLine(Instr.ComputeMd5Checksum(@"C:\ug_customization\application\dialogs\turnElement.dlx"));
+        //Logger.WriteLine(Instr.ComputeMd5Checksum(@"C:\ug_customization\application\dialogs\buttons.dlx"));
+        //Logger.WriteLine(Instr.ComputeMd5Checksum(@"C:\ug_customization\application\dialogs\tunnel+slot.dlx"));
+        //Logger.WriteLine(Instr.ComputeMd5Checksum(@"C:\ug_customization\application\dialogs\milingBase.dlx"));
+        //Logger.WriteLine(Instr.ComputeMd5Checksum(@"C:\ug_customization\application\dialogs\turningBase.dlx"));
+        //Logger.WriteLine(Instr.ComputeMd5Checksum(@"C:\ug_customization\application\dialogs\jig.dlx"));
+        //Logger.WriteLine(Instr.ComputeMd5Checksum(@"C:\ug_customization\application\dialogs\heightSet.dlx"));
+        //Logger.WriteLine(Instr.ComputeMd5Checksum(@"C:\ug_customization\application\dialogs\angleSet.dlx"));
+        //Logger.WriteLine(Instr.ComputeMd5Checksum(@"C:\ug_customization\application\dialogs\setBoltInSlot.dlx"));
+        //Logger.WriteLine(Instr.ComputeMd5Checksum(@"C:\ug_customization\application\dialogs\turnElement.dlx"));
     }
     }
