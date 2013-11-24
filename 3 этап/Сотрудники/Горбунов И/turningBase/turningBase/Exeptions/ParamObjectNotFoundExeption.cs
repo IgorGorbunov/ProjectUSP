@@ -1,4 +1,5 @@
 using System;
+using NXOpen.Assemblies;
 
 /// <summary>
 /// Класс исключения отсутствия параметризированного объекта на детали.
@@ -8,7 +9,7 @@ public class ParamObjectNotFoundExeption : Exception
     /// <summary>
     /// Наименование детали.
     /// </summary>
-    public readonly string PartName;
+    public readonly UspElement Element;
     /// <summary>
     /// Наименование параметризированного объекта.
     /// </summary>
@@ -19,9 +20,9 @@ public class ParamObjectNotFoundExeption : Exception
         
     }
 
-    public ParamObjectNotFoundExeption(string partName, string objectName, string nxObjectName)
+    public ParamObjectNotFoundExeption(UspElement element, string nxObjectName)
     {
-        PartName = partName;
+        Element = element;
         NxObjectName = nxObjectName;
     }
 

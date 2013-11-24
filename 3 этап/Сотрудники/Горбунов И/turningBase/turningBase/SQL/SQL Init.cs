@@ -35,9 +35,7 @@ partial class SqlOracle1
     /// <summary>
     /// Параметры командной строки
     /// </summary>
-    public static string _user = "";
-    static string _password = "";
-    static string _dataSource = "";
+
 
     public static string _connectionString;// =  "User id=system;password=123;Direct = true; Host = 192.168.1.170; Service Name = baseeoi; Port = 1521";
         //"User id=591014;password=591000;Service Name = baseeoi;";

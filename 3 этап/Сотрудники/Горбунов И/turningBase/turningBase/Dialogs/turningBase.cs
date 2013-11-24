@@ -71,7 +71,6 @@ public sealed class TurningBase : DialogProgpam
     private bool _faceSelected;
     private bool _partIsLoaded;
     private bool _isFixed = true;
-    private bool _isFirstReplace = true;
 
     private Surface _projectSurface;
     private readonly List<Point3d> _projectList = new List<Point3d>();
@@ -428,10 +427,12 @@ public sealed class TurningBase : DialogProgpam
 
             Straight straight = new Straight(_centrePoint, point2);
             _projectSurface = new Surface(_centrePoint, straight);
+            SetEnable(block, false);
         }
         else
         {
             _faceSelected = false;
+            SetEnable(block, true);
         }
 
     }
@@ -632,81 +633,109 @@ public sealed class TurningBase : DialogProgpam
 
     void UpdateLoad(UIBlock block)
     {
-        if (!_faceSelected) return;
-
-        string title;
-        double[] threeBases;
-
-        if (_partIsLoaded)
+        try
         {
-            if (block == _enum0)
-            {
-                SetBaseType();
-                _bases = GetAllBases();
-            }
+            if (!_faceSelected) return;
 
-            if (block.Type != "Button")
+            string title;
+            double[] threeBases = new double[3];
+
+            if (_partIsLoaded)
             {
-                _newDiametr = SetNewPartDiametr(_label0);
-                _newTitle = GetTitle(_newDiametr);
-            }
+                if (block == _enum0)
+                {
+                    SetBaseType();
+                    _bases = GetAllBases();
+                }
+
+                if (block.Type != "Button")
+                {
+                    _newDiametr = SetNewPartDiametr(_label0);
+                    _newTitle = GetTitle(_newDiametr);
+                }
 
 #if(!DEBUG)
             NxFunctions.FreezeDisplay();
 #endif
 
-            if (Config.Round(_globeDirection.GetAngle(_moveDirection)) != 0)
-            {
-                _touchAxe.Reverse();
-                NxFunctions.Update();
-            }
+                if (Config.Round(_globeDirection.GetAngle(_moveDirection)) != 0)
+                {
+                    _touchAxe.Reverse();
+                    NxFunctions.Update();
+                }
 
-            ReplaceComponent(_newTitle);
+                //ReplaceComponent(_newTitle);
+                try
+                {
+                    Component newComponent =
+                        Replacement.ReplaceByTitle(_baseElement.ElementComponent, _newTitle);
+                    _baseElement = new UspElement(newComponent);
 
-            _baseFace = _baseElement.GetFace(Config.BaseHoleName);
 
-            PropertyList propertyList = _double0.GetProperties();
-            double doub = propertyList.GetDouble("Value");
-            Point3d newPoint = _moveDirection.GetPoint(doub);
-            Vector newVector = new Vector(_oldPointMovement, newPoint);
-            Movement.MoveByDirection(_baseElement.ElementComponent, newVector);
-            _oldPointMovement = newPoint;
+
+                    _baseFace = _baseElement.GetFace(Config.BaseHoleName);
+
+                    PropertyList propertyList = _double0.GetProperties();
+                    double doub = propertyList.GetDouble("Value");
+                    Point3d newPoint = _moveDirection.GetPoint(doub);
+                    Vector newVector = new Vector(_oldPointMovement, newPoint);
+                    Movement.MoveByDirection(_baseElement.ElementComponent, newVector);
+                    _oldPointMovement = newPoint;
+
+                    threeBases = GetThreeBases(_bases, _newDiametr, out title);
+                }
+                catch (PartAlreadyLoadedExeption)
+                {
+                    Katalog2005.Algorithm.SpecialFunctions.LoadPart(_newTitle, false);
+                    SetConstraints();
+                    Component[] comps = new Component[1];
+                    comps[0] = _baseElement.ElementComponent;
+                    NxFunctions.Delete(comps);
+                }
 #if(!DEBUG)
             NxFunctions.UnFreezeDisplay();
 #endif
 
-            threeBases = GetThreeBases(_bases, _newDiametr, out title);
-        }
-        else
-        {
-            SetEnable(_group1, true);
-            SetEnable(_group, true);
-
-            SetPoints();
-            _diametr = FindMaxLen() * 2;
-
-            SetBaseType();
-            _bases = GetAllBases();
-            threeBases = GetThreeBases(_bases, _diametr, out title);
-            
-            if (title != null)
-            {
-                NxFunctions.FreezeDisplay();
-                Katalog2005.Algorithm.SpecialFunctions.LoadPart(title, false);
-                SetConstraints();
-                NxFunctions.UnFreezeDisplay();
-                _partIsLoaded = true;
             }
             else
             {
-                _partIsLoaded = false;
-                Message.Show("Подходящая база не найдена!");
-            }
-        }
+                SetEnable(_group1, true);
+                SetEnable(_group, true);
 
-        SetPrevBttnText(threeBases[0]);
-        SetLabelDiametr(threeBases[1]);
-        SetNextBttnText(threeBases[2]);
+                SetPoints();
+                _diametr = FindMaxLen()*2;
+
+                SetBaseType();
+                _bases = GetAllBases();
+                threeBases = GetThreeBases(_bases, _diametr, out title);
+
+                if (title != null)
+                {
+                    NxFunctions.FreezeDisplay();
+                    Katalog2005.Algorithm.SpecialFunctions.LoadPart(title, false);
+                    SetConstraints();
+                    NxFunctions.UnFreezeDisplay();
+                    _partIsLoaded = true;
+                }
+                else
+                {
+                    _partIsLoaded = false;
+                    Message.Show("Подходящая база не найдена!");
+                }
+            }
+
+            SetPrevBttnText(threeBases[0]);
+            SetLabelDiametr(threeBases[1]);
+            SetNextBttnText(threeBases[2]);
+        }
+        catch (ParamObjectNotFoundExeption ex)
+        {
+            Component[] comps = new Component[1];
+            comps[0] = ex.Element.ElementComponent;
+            NxFunctions.Delete(comps);
+            Message.ShowError("Деталь " + ex.Element.Title + " не параметризирована!" +
+                              Environment.NewLine + "Объект " + ex.NxObjectName + " не найден!");
+        }  
 
     }
 
@@ -760,8 +789,9 @@ public sealed class TurningBase : DialogProgpam
 
     void SetConstraints()
     {
-        _baseElement = new UspElement(Katalog2005.Algorithm.SpecialFunctions.LoadedPart);
-        _baseFace = _baseElement.GetFace(Config.BaseHoleName);
+        UspElement newElement = new UspElement(Katalog2005.Algorithm.SpecialFunctions.LoadedPart);
+        _baseFace = newElement.GetFace(Config.BaseHoleName);
+        _baseElement = newElement;
 
         _touchAxe = new TouchAxe();
         _touchAxe.Create(_turningElement.ElementComponent, _turningFace,
@@ -792,59 +822,6 @@ public sealed class TurningBase : DialogProgpam
         {
             _globeDirection = new Vector(_centrePoint, _basePoint);
         }
-    }
-
-    void ReplaceComponent(string newTitleComponent)
-    {
-        Component oldBase = _baseElement.ElementComponent;
-        Katalog2005.Algorithm.SpecialFunctions.LoadPart(newTitleComponent, true);
-        string uniqueName = newTitleComponent + "__" + DateTime.Now.GetHashCode();
-
-        Logger.WriteLine("Замена компонента " + oldBase.Name + " компонентом " + uniqueName);
-        
-        ReplaceComponentBuilder rcb = Config.WorkPart.AssemblyManager.CreateReplaceComponentBuilder();
-        rcb.ComponentNameType = ReplaceComponentBuilder.ComponentNameOption.AsSpecified;
-
-        rcb.ComponentsToReplace.Add(oldBase);
-        rcb.ComponentName = uniqueName;
-        rcb.ReplacementPart = Path.GetTempPath() + Config.TmpFolder + Path.DirectorySeparatorChar +
-                    newTitleComponent + Config.PartFileExtension;
-        
-
-        rcb.SetComponentReferenceSetType(ReplaceComponentBuilder.ComponentReferenceSet.Others, "Оставить");
-        PartLoadStatus partLoadStatus1 = rcb.RegisterReplacePartLoadStatus();
-        rcb.Commit();
-
-        if (partLoadStatus1.NumberUnloadedParts > 0)
-        {
-            for (int i = 0; i < partLoadStatus1.NumberUnloadedParts; i++)
-            {
-                Logger.WriteLine(partLoadStatus1.GetPartName(i), partLoadStatus1.GetStatus(i),
-                                 partLoadStatus1.GetStatusDescription(i));
-            }
-        }
-
-        partLoadStatus1.Dispose();
-        rcb.Destroy();
-
-        Tag newCompTag = Tag.Null;
-        string findName;
-        if (_isFirstReplace)
-        {
-            findName = uniqueName;
-            _isFirstReplace = false;
-        }
-        else
-        {
-            //то работает, то нет
-            //findName = oldBase.Name;
-            findName = uniqueName;
-        }
-        Config.TheUfSession.Obj.CycleByNameAndType(Config.WorkPart.Tag, findName, UFConstants.UF_component_type, true, ref newCompTag);
-        oldBase = (Component)NXObjectManager.Get(newCompTag);
-        oldBase.SetName(uniqueName);
-
-        _baseElement = new UspElement(oldBase);
     }
 
     string GetTitle(double diametr)

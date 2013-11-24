@@ -22,7 +22,7 @@ public class UspElement
     /// <summary>
     /// Возвращает список всех нижних плоскостей пазов для данного элемента.
     /// </summary>
-    public List<Face> SlotFaces
+    public IEnumerable<Face> SlotFaces
     {
         get
         {
@@ -66,12 +66,12 @@ public class UspElement
     /// </summary>
     public string Title
     {
-        get { return GetTitle(); }
+        get { return _title; }
     }
     /// <summary>
     /// Возвращает ГОСТ элемента УСП.
     /// </summary>
-    public string Gost
+    private string Gost
     {
         get { return SqlUspElement.GetGost(Title); }
     }
@@ -96,9 +96,11 @@ public class UspElement
     }
 
     private readonly Component _component;
+    private readonly string _title;
     private Fix _fixter;
     private Body _body;
     private Catalog _catalog;
+    
 
     List<Face> _bottomFaces;
 
@@ -112,6 +114,8 @@ public class UspElement
 
         SetBody();
         SetBottomFaces();
+        //вдргу компонент побьётся
+        _title = GetTitle();
     }
 
     /// <summary>
@@ -177,7 +181,7 @@ public class UspElement
         string mess = "Грань " + faceName + " в элементе " + ElementComponent.Name + " не найдена.";
         mess += Environment.NewLine + "Тип элемента - " + GetType();
         Logger.WriteLine(mess);
-        throw new ParamObjectNotFoundExeption(Title, faceName);
+        throw new ParamObjectNotFoundExeption(this, faceName);
     }
     /// <summary>
     /// Возвращает ребро элемента по его имени.
@@ -197,7 +201,7 @@ public class UspElement
         string mess = "Грань " + edgeName + " в элементе " + ElementComponent.Name + " не найдена.";
         mess += Environment.NewLine + "Тип элемента - " + GetType();
         Logger.WriteLine(mess);
-        throw new ParamObjectNotFoundExeption(Title, edgeName);
+        throw new ParamObjectNotFoundExeption(this, edgeName);
     }
 
     public virtual void AttachToMe(SmallAngleElement smallAngleElement)

@@ -141,6 +141,7 @@
     <Compile Include="Elements\JigSleeve.cs" />
     <Compile Include="Elements\QuickJigSleeve.cs" />
     <Compile Include="Exeptions\BadQueryExeption.cs" />
+    <Compile Include="Exeptions\PartAlreadyLoadedExeption.cs" />
     <Compile Include="Exeptions\ParamObjectNotFoundExeption.cs" />
     <Compile Include="Exeptions\EmptyQueryExeption.cs" />
     <Compile Include="Gallary\ImageBox.cs">

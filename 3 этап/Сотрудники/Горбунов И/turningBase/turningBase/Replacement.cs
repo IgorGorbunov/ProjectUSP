@@ -10,9 +10,9 @@ using NXOpen.Utilities;
 /// </summary>
 public static class Replacement
 {
-    public static void ReplaceByTitle(Component oldComponent, string newComponentTitle)
+    public static Component ReplaceByTitle(Component oldComponent, string newComponentTitle)
     {
-        //Component oldBase = _baseElement.ElementComponent;
+        string oldName = oldComponent.Name;
         Katalog2005.Algorithm.SpecialFunctions.LoadPart(newComponentTitle, true);
         string uniqueName = DateTime.Now.GetHashCode() + "_" + newComponentTitle;
 
@@ -26,17 +26,23 @@ public static class Replacement
         rcb.ReplacementPart = Path.GetTempPath() + Config.TmpFolder + Path.DirectorySeparatorChar +
                     newComponentTitle + Config.PartFileExtension;
 
-
         rcb.SetComponentReferenceSetType(ReplaceComponentBuilder.ComponentReferenceSet.Others, "Оставить");
         PartLoadStatus partLoadStatus1 = rcb.RegisterReplacePartLoadStatus();
         rcb.Commit();
 
+        bool alreadyHave = false;
         if (partLoadStatus1.NumberUnloadedParts > 0)
         {
             for (int i = 0; i < partLoadStatus1.NumberUnloadedParts; i++)
             {
                 Logger.WriteLine(partLoadStatus1.GetPartName(i), partLoadStatus1.GetStatus(i),
                                  partLoadStatus1.GetStatusDescription(i));
+
+                if (partLoadStatus1.GetStatus(i) == 641014)
+                {
+                    alreadyHave = true;
+                    throw new PartAlreadyLoadedExeption();
+                }
             }
         }
 
@@ -44,20 +50,20 @@ public static class Replacement
         rcb.Destroy();
 
         Tag newCompTag = Tag.Null;
-        //if (_isFirstReplace)
-        //{
-        //    findName = uniqueName;
-        //    _isFirstReplace = false;
-        //}
-        //else
-        //{
-        //    //то работает, то нет
-            string findName = oldComponent.Name;
-            //string findName = uniqueName;
-        //}
+        string findName = uniqueName;
+        if (alreadyHave)
+        {
+
+        }
+        else
+        {
+            findName = uniqueName;
+        }
+
         Config.TheUfSession.Obj.CycleByNameAndType(Config.WorkPart.Tag, findName, UFConstants.UF_component_type, true, ref newCompTag);
-        oldComponent = (Component)NXObjectManager.Get(newCompTag);
-        oldComponent.SetName(uniqueName);
+        Component newConmponent = (Component)NXObjectManager.Get(newCompTag);
+        newConmponent.SetName(uniqueName);
+        return newConmponent;
     }
 }
 
