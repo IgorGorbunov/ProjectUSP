@@ -425,24 +425,13 @@ public class AngleSet : DialogProgpam
 
     private void SetElements(AngleSolution solution)
     {
-        Dictionary<Element, byte> eDictionary = solution.solution.getMainSolution(0);
-
-        List<string> list = new List<string>();
-        list.Add(solution.baseElement.Obozn);
-
-        foreach (KeyValuePair<Element, byte> keyValuePair in eDictionary)
-        {
-            for (int i = 0; i < keyValuePair.Value; i++)
-            {
-                list.Add(keyValuePair.Key.Obozn);
-            }
-        }
+        List<string> partlist = SetPartList(solution);
         
         NxFunctions.FreezeDisplay();
         Stack<Component> loadedElements = new Stack<Component>();
         try
         {
-            LoadParts(list, loadedElements);
+            LoadParts(partlist, loadedElements);
             SetEnable(_button0, false);
         }
         catch (ParamObjectNotFoundExeption ex)
@@ -458,11 +447,31 @@ public class AngleSet : DialogProgpam
 
     }
 
-    private void LoadParts(List<string> list, Stack<Component> loadedElements)
+    private List<string> SetPartList(AngleSolution solution)
     {
+        Dictionary<Element, byte> eDictionary = solution.solution.getMainSolution(0);
+
+        List<string> list = new List<string>();
+        if (solution.baseElement != null)
+        {
+            list.Add(solution.baseElement.Obozn);
+        }
+
+        foreach (KeyValuePair<Element, byte> keyValuePair in eDictionary)
+        {
+            for (int i = 0; i < keyValuePair.Value; i++)
+            {
+                list.Add(keyValuePair.Key.Obozn);
+            }
+        }
+
         Logger.WriteLine("Элементы для набора на угол:");
         Logger.WriteLine(list);
+        return list;
+    }
 
+    private void LoadParts(List<string> list, Stack<Component> loadedElements)
+    {
         bool notFirst = false;
         UspElement prevElement = null;
         UspElement firstElement = null;
@@ -493,7 +502,7 @@ public class AngleSet : DialogProgpam
             prevElement = element;
             notFirst = true;
         }
-        if (list.Count > 1)
+        if (list.Count > 1 && firstElement.IsBiqAngleElement)
         {
             SetAngleConstraint(firstElement, prevElement);
         }

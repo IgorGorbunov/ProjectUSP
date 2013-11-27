@@ -42,9 +42,8 @@ namespace Katalog2005.Algorithm
                 }
                 else
                 {
-                    string mess = "Детали '" + oboznOfUsp + "' нет в каталоге!";
-                    Logger.WriteError(mess);
-                    Message.Show(mess);
+                    string mess = "Модель детали '" + oboznOfUsp + "' не загружена в каталог!";
+                    Message.ShowError(mess);
                 }
             }
 
