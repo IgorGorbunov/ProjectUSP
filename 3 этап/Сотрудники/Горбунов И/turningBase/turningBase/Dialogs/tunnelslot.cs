@@ -369,6 +369,8 @@ public sealed class Tunnelslot : DialogProgpam
         }
         UnSelectObjects(_point0);
         SetEnable(_direction0, false);
+        SetEnable(block, false);
+        _point0.Focus();
     }
     bool SetComponent(UIBlock block, ref UspElement element,
                       Catalog anotherElementCatalog)
@@ -441,6 +443,7 @@ public sealed class Tunnelslot : DialogProgpam
         }
         UnSelectObjects(_slotTunPoint);
         SetEnable(_direction0, false);
+        SetEnable(block, false);
     }
     bool SetFace(UIBlock block, ref Tunnel tunnel, ref UspElement element)
     {
@@ -493,6 +496,7 @@ public sealed class Tunnelslot : DialogProgpam
                 Geom.DirectionsAreOnStraight(_tunnel1.Direction, _slot1.BottomDirection))
             {
                 _slot1.Highlight();
+                SetEnable(block, false);
                 SetConstraints();
             }
             else
@@ -516,6 +520,7 @@ public sealed class Tunnelslot : DialogProgpam
         {
             _firstPointSelected = false;
             SetEnable(block, false);
+            SetEnable(_selection0, true);
 
             UnSelectObjects(_faceSelect0);
             SetEnable(_faceSelect0, false);
@@ -550,12 +555,14 @@ public sealed class Tunnelslot : DialogProgpam
             }
 
             _slot2.Highlight();
+            SetEnable(block, false);
             SetConstraints();
         }
         else
         {
             _secondPointSelected = false;
             SetEnable(block, false);
+            SetEnable(_selection01, true);
 
             UnSelectObjects(_selection01);
             _selection01.Focus();

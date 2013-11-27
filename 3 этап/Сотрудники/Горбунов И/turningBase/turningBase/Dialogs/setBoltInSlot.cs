@@ -59,6 +59,7 @@ public class SetBoltInSlot : DialogProgpam
     private readonly HeightElement _firstElement;
 
     private bool _pointIsSet;
+    private bool _okApplyClick;
 
 
     /// <summary>
@@ -84,6 +85,7 @@ public class SetBoltInSlot : DialogProgpam
             TheDialog.AddApplyHandler(apply_cb);
             TheDialog.AddOkHandler(ok_cb);
             TheDialog.AddUpdateHandler(update_cb);
+            TheDialog.AddCancelHandler(cancel_cb);
             TheDialog.AddInitializeHandler(initialize_cb);
             TheDialog.AddFocusNotifyHandler(focusNotify_cb);
             TheDialog.AddKeyboardFocusNotifyHandler(keyboardFocusNotify_cb);
@@ -154,6 +156,11 @@ public class SetBoltInSlot : DialogProgpam
         {
             //---- Enter your callback code here -----
             _double0.GetProperties().SetDouble("Value", _reserveHeight);
+            if (HeightSet.BoltAdded)
+            {
+                SetEnable(_double0, false);
+                SetEnable(_point0, false);
+            }
         }
         catch (Exception ex)
         {
@@ -172,6 +179,12 @@ public class SetBoltInSlot : DialogProgpam
         try
         {
             //---- Enter your callback code here -----
+            _okApplyClick = true;
+            if (HeightSet.BoltAdded)
+            {
+                SetEnable(_double0, false);
+                SetEnable(_point0, false);
+            }
         }
         catch (Exception ex)
         {
@@ -210,6 +223,30 @@ public class SetBoltInSlot : DialogProgpam
             //---- Enter your exception handling code here -----
             Logger.WriteError(ex.ToString());
             Message.Show("Block Styler", Message.MessageType.Error, ex);
+        }
+        return 0;
+    }
+
+    //------------------------------------------------------------------------------
+    //Callback Name: cancel_cb
+    //------------------------------------------------------------------------------
+    private int cancel_cb()
+    {
+        try
+        {
+            //---- Enter your callback code here -----
+            Logger.WriteLine("Нажата кнопка ОТМЕНА.");
+            
+            if (_okApplyClick == false)
+            {
+                HeightSet.BoltAdded = false;
+            }
+        }
+        catch (Exception ex)
+        {
+            //---- Enter your exception handling code here -----
+            Config.TheUi.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            Logger.WriteError(ex.ToString());
         }
         return 0;
     }
@@ -275,6 +312,9 @@ public class SetBoltInSlot : DialogProgpam
 
     private void SetBolt(UIBlock block)
     {
+        if (HeightSet.BoltAdded == true)
+            return;
+
         try
         {
             Point3d point = GetPoint(block);
@@ -308,6 +348,10 @@ public class SetBoltInSlot : DialogProgpam
             bolt.SetInSlot(slot);
             bolt.SetInTunnel(_firstElement.HoleFace);
             _pointIsSet = true;
+
+            HeightSet.BoltAdded = true;
+            SetEnable(_double0, false);
+            SetEnable(_point0, false);
         }
         catch (BadQueryExeption)
         {
@@ -331,6 +375,7 @@ public class SetBoltInSlot : DialogProgpam
     private void Init()
     {
         Check();
+        
     }
 
     private void Check()

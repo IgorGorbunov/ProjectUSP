@@ -14,15 +14,6 @@ G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningB
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\x86\Debug\ProjectUsp.dll.licenses
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\x86\Debug\ProjectUsp.dll
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\x86\Debug\ProjectUsp.pdb
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\bin\x64\Debug\licenses.licx
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\bin\x64\Debug\Devart.Data.dll
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\bin\x64\Debug\Devart.Data.Oracle.dll
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\bin\x64\Debug\NXOpen.dll
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\bin\x64\Debug\NXOpen.UF.dll
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\bin\x64\Debug\NXOpen.Utilities.dll
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\bin\x64\Debug\NXOpenUI.dll
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\bin\x64\Debug\Devart.Data.xml
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\bin\x64\Debug\Devart.Data.Oracle.xml
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\x64\Debug\ResolveAssemblyReference.cache
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\x64\Debug\ExactHeightForm.resources
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\x64\Debug\ImageBox.resources
@@ -30,8 +21,6 @@ G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningB
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\x64\Debug\ImageSqlForm.resources
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\x64\Debug\Katalog2005.ConnectBD.resources
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\x64\Debug\ProjectUsp.csproj.GenerateResource.Cache
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\bin\x64\Debug\ProjectUsp64D.dll
-G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\bin\x64\Debug\ProjectUsp64D.pdb
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\x64\Release\ResolveAssemblyReference.cache
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\x64\Release\ExactHeightForm.resources
 G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\obj\x64\Release\ImageBox.resources
@@ -173,3 +162,28 @@ F:\avia\22.11.13\turningBase\bin\x86\Devart.Data.xml
 F:\avia\22.11.13\turningBase\bin\x86\NXOpenUI.xml
 F:\avia\22.11.13\turningBase\bin\x86\NXOpen.Utilities.xml
 F:\avia\22.11.13\turningBase\bin\x86\Devart.Data.Oracle.xml
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\bin\licenses.licx
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\bin\ProjectUsp.dll
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\bin\ProjectUsp.pdb
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\bin\Devart.Data.dll
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\bin\Devart.Data.Oracle.dll
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\bin\NXOpen.xml
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\bin\Devart.Data.xml
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\bin\NXOpenUI.xml
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\bin\NXOpen.Utilities.xml
+G:\repos\ProjectUSP\3 этап\Сотрудники\Горбунов И\turningBase\turningBase\bin\Devart.Data.Oracle.xml
+F:\avia\25.11.13\licenses.licx
+F:\avia\25.11.13\ProjectUsp.dll
+F:\avia\25.11.13\ProjectUsp.pdb
+F:\avia\25.11.13\turningBase\obj\x86\Release\ResolveAssemblyReference.cache
+F:\avia\25.11.13\turningBase\obj\x86\Release\ExactHeightForm.resources
+F:\avia\25.11.13\turningBase\obj\x86\Release\ImageBox.resources
+F:\avia\25.11.13\turningBase\obj\x86\Release\img_gallery.ImageForm.resources
+F:\avia\25.11.13\turningBase\obj\x86\Release\ImageSqlForm.resources
+F:\avia\25.11.13\turningBase\obj\x86\Release\AngleAlgo.resources
+F:\avia\25.11.13\turningBase\obj\x86\Release\Katalog2005.ConnectBD.resources
+F:\avia\25.11.13\turningBase\obj\x86\Release\SootherForm.resources
+F:\avia\25.11.13\turningBase\obj\x86\Release\ProjectUsp.csproj.GenerateResource.Cache
+F:\avia\25.11.13\turningBase\obj\x86\Release\ProjectUsp.dll.licenses
+F:\avia\25.11.13\turningBase\obj\x86\Release\ProjectUsp.dll
+F:\avia\25.11.13\turningBase\obj\x86\Release\ProjectUsp.pdb

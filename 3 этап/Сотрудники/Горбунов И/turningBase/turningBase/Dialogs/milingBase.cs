@@ -347,7 +347,7 @@ public sealed class MilingBase : DialogProgpam
                 _selection01.Focus();
                 if (_baseIsLoaded)
                 {
-                    UpdateLoad();
+                    //UpdateLoad();
                 }
                 else
                 {
@@ -586,6 +586,9 @@ public sealed class MilingBase : DialogProgpam
             _someParalElement.Unfix();
         }
         NxFunctions.Update();
+
+        SetEnable(_selection01, false);
+        SetEnable(_selection02, false);
     }
 
 
@@ -602,6 +605,7 @@ public sealed class MilingBase : DialogProgpam
             LoadBase();
             SetTopParallel();
             MoveBase();
+            SetEnable(_button0, false);
         }
         else
         {

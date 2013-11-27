@@ -52,6 +52,9 @@ public sealed class HeightSet : DialogProgpam
     /// Высота введенная пользователем.
     /// </summary>
     public static double UserHeight;
+
+    public static bool BoltAdded;
+
     //class members
     private readonly string _theDialogName;
 
@@ -72,6 +75,8 @@ public sealed class HeightSet : DialogProgpam
 
     private HeightElement _firstElement;
 
+    
+
 
     /// <summary>
     /// Инициализирует новый экземпляр класса диалога для набора высоты для заданного каталога.
@@ -89,6 +94,7 @@ public sealed class HeightSet : DialogProgpam
             TheDialog.AddApplyHandler(apply_cb);
             TheDialog.AddOkHandler(ok_cb);
             TheDialog.AddUpdateHandler(update_cb);
+            TheDialog.AddCancelHandler(cancel_cb);
             TheDialog.AddInitializeHandler(initialize_cb);
             TheDialog.AddFocusNotifyHandler(focusNotify_cb);
             TheDialog.AddKeyboardFocusNotifyHandler(keyboardFocusNotify_cb);
@@ -305,6 +311,26 @@ public sealed class HeightSet : DialogProgpam
         }
         return errorCode;
     }
+
+    //------------------------------------------------------------------------------
+    //Callback Name: cancel_cb
+    //------------------------------------------------------------------------------
+    private static int cancel_cb()
+    {
+        try
+        {
+            //---- Enter your callback code here -----
+            Logger.WriteLine("Нажата кнопка ОТМЕНА.");
+            BoltAdded = false;
+        }
+        catch (Exception ex)
+        {
+            //---- Enter your exception handling code here -----
+            Config.TheUi.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error, ex.ToString());
+            Logger.WriteError(ex.ToString());
+        }
+        return 0;
+    }
     
     //------------------------------------------------------------------------------
     //Callback Name: focusNotify_cb
@@ -466,8 +492,14 @@ public sealed class HeightSet : DialogProgpam
         {
             SetElems(solution);
         }
-        SetEnable(_group01, true);
-        SetEnable(_button0, true);
+        if (!_heightSetted)
+        {
+            SetEnable(_group01, true);
+            SetEnable(_button0, true);
+        }
+        SetEnable(_double0, false);
+        SetEnable(_selection0, false);
+        SetEnable(_selection01, false);
     }
 
     private void SetElems(Solution solution)
