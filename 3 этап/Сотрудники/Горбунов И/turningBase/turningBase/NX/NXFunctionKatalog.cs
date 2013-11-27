@@ -81,13 +81,13 @@ namespace Katalog2005.Algorithm
         /// <returns></returns>
         private static void LoadPartToTempSpecDet(string oboznachenie)
         {
+            Message.ShowError("Закомментрировано!");
+            //string nmf =
+            //    SqlOracle1.ParamQuerySelect("SELECT NMF FROM MODEL_ATTR20 WHERE HD = :HD", "HD",
+            //                               oboznachenie);
 
-            string nmf =
-                SqlOracle1.ParamQuerySelect("SELECT NMF FROM MODEL_ATTR20 WHERE HD = :HD", "HD",
-                                           oboznachenie);
 
-
-            string openPart = SqlOracle1.UnloadOsnasToTEMPFolderFile20(nmf.Trim());
+            //string openPart = SqlOracle1.UnloadOsnasToTEMPFolderFile20(nmf.Trim());
         }
 
         /// <summary>

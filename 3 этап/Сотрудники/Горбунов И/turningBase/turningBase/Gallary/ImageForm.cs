@@ -55,7 +55,7 @@ namespace img_gallery
 
             foreach (ImageInfo info in Images)
             {
-                ImageBox pb = new ImageBox(info);
+                ImageLabelBox pb = new ImageLabelBox(info);
 
                 pb.Margin = new Padding(3);
                 pb.pictureBox1.MouseClick += MouseClickEventHandler;

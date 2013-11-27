@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using Devart.Data.Oracle;
 
 /// <summary>
 /// Класс настроек форм.
@@ -11,7 +10,7 @@ public static class ConfigDlx
     /// <summary>
     /// Папка с формами для диалогов.
     /// </summary>
-    public const string DlxFolder = @"dialogs";
+    private const string DlxFolder = @"dialogs";
 
     public static string FullDlxFolder
     {
@@ -23,18 +22,11 @@ public static class ConfigDlx
             return dialogsPath;
         }
     }
-    /// <summary>
-    /// Имя файла с формой базирования элементов по отверстиям.
-    /// </summary>
-    public const string DlxTunnelTunnel = @"tunnel+tunnel.dlx";
+
     /// <summary>
     /// Имя файла с формой для базирования отверстие-паз.
     /// </summary>
     public const string DlxTunnelSlot = @"tunnel+slot.dlx";
-    /// <summary>
-    /// Имя файла с формой c двумя точками.
-    /// </summary>
-    public const string DlxPointPoint = @"point+point.dlx";
     /// <summary>
     /// Возвращает имя файла с формой для выгрузки токарной базы.
     /// </summary>

@@ -35,9 +35,8 @@
 //These imports are needed for the following template code
 //------------------------------------------------------------------------------
 using System;
+using System.Diagnostics;
 using System.IO;
-using System.Windows.Forms;
-using Katalog2005;
 using NXOpen.BlockStyler;
 
 //------------------------------------------------------------------------------
@@ -48,7 +47,6 @@ public class Buttons : DialogProgpam
     //class members
     private readonly string _theDialogName;
 
-    private UIBlock _group0;// Block type: Group
     private UIBlock _button0;// Block type: Button
     private UIBlock _button01;// Block type: Button
     private UIBlock _button02;// Block type: Button
@@ -113,7 +111,6 @@ public class Buttons : DialogProgpam
     {
         try
         {
-            _group0 = TheDialog.TopBlock.FindBlock("group0");
             _button0 = TheDialog.TopBlock.FindBlock("button0");
             _button01 = TheDialog.TopBlock.FindBlock("button01");
             _button02 = TheDialog.TopBlock.FindBlock("button02");
@@ -215,6 +212,8 @@ public class Buttons : DialogProgpam
                 //---------Enter your code here-----------
                 dialogProgpam = new TurnElement();
             }
+
+            Debug.Assert(dialogProgpam != null, "dialogProgpam != null");
             dialogProgpam.Show();
         }
         catch (TimeoutException ex)

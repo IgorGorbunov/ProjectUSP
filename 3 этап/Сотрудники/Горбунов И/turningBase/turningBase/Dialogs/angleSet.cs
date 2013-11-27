@@ -36,6 +36,7 @@
 //------------------------------------------------------------------------------
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
@@ -54,10 +55,8 @@ public class AngleSet : DialogProgpam
     //class members
     private readonly string _theDialogName;
 
-    private UIBlock _group0;// Block type: Group
     private UIBlock _integer0;// Block type: Integer
     private UIBlock _integer01;// Block type: Integer
-    private UIBlock _group;// Block type: Group
     private UIBlock _button0;// Block type: Button
     private UIBlock _group1;// Block type: Group
     private UIBlock _label0;// Block type: Label
@@ -144,10 +143,8 @@ public class AngleSet : DialogProgpam
     {
         try
         {
-            _group0 = TheDialog.TopBlock.FindBlock("group0");
             _integer0 = TheDialog.TopBlock.FindBlock("integer0");
             _integer01 = TheDialog.TopBlock.FindBlock("integer01");
-            _group = TheDialog.TopBlock.FindBlock("group");
             _button0 = TheDialog.TopBlock.FindBlock("button0");
             _group1 = TheDialog.TopBlock.FindBlock("group1");
             _label0 = TheDialog.TopBlock.FindBlock("label0");
@@ -502,6 +499,8 @@ public class AngleSet : DialogProgpam
             prevElement = element;
             notFirst = true;
         }
+
+        Debug.Assert(firstElement != null, "firstElement != null");
         if (list.Count > 1 && firstElement.IsBiqAngleElement)
         {
             SetAngleConstraint(firstElement, prevElement);

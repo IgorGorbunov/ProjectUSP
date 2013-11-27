@@ -5,10 +5,7 @@ using System.Drawing;
 using System.Data;
 using System.Text;
 using System.Windows.Forms;
-using img_gallery;
 
-//namespace img_gallery.Controls
-//{
     public partial class ImageBox : UserControl
     {
         public Image Image;
@@ -22,7 +19,10 @@ using img_gallery;
             string labelText = "";
             labelText = ConcatString(labelText, "ÂÏÏ", vppNum);
             labelText = ConcatString(labelText, "ÒÇ", tzNum);
-            labelText = ConcatString(labelText, "Äåòàëü", partTitle);
+            if (!String.IsNullOrEmpty(partTitle))
+            {
+                labelText += ";\n" + partTitle.Trim();
+            }
             label1.Text = labelText;
         }
 
@@ -35,25 +35,11 @@ using img_gallery;
             label1.Text = title;
         }
 
-        public ImageBox(ImageInfo info)
-        {
-            InitializeComponent();
-            this.Image = pictureBox1.Image = info.Image;
-            pictureBox1.BorderStyle = BorderStyle.FixedSingle;
-            if (info.Selected)
-            {
-                pictureBox1.BackColor = Color.LightGreen;
-            }
-            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
-            label1.Text = info.Name;
-            lblCount.Text += info.ElementCount;
-        }
-
         string ConcatString(string s, string key, string value)
         {
             if (value == null) return s;
             value = value.Trim();
-            if (!String.IsNullOrEmpty(value))           
+            if (!String.IsNullOrEmpty(value))
             {
                 if (!String.IsNullOrEmpty(s))
                 {
@@ -64,4 +50,3 @@ using img_gallery;
             return s;
         }
     }
-//}

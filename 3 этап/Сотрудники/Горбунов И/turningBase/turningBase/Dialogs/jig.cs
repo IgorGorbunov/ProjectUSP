@@ -50,7 +50,7 @@ public sealed class Jig : DialogProgpam
     //class members
     private readonly string _theDialogName;
 
-    private UIBlock group0;// Block type: Group
+    private UIBlock _group0;// Block type: Group
     private UIBlock _selection0;// Block type: Selection
     private UIBlock _instrDiametrBlock;// Block type: Double
     private UIBlock _sleeveTypeBlock;// Block type: Enumeration
@@ -165,7 +165,7 @@ public sealed class Jig : DialogProgpam
     {
         try
         {
-            group0 = TheDialog.TopBlock.FindBlock("group0");
+            _group0 = TheDialog.TopBlock.FindBlock("group0");
             _selection0 = TheDialog.TopBlock.FindBlock("selection0");
             _instrDiametrBlock = TheDialog.TopBlock.FindBlock("double0");
             _sleeveTypeBlock = TheDialog.TopBlock.FindBlock("enum0");
@@ -282,28 +282,26 @@ public sealed class Jig : DialogProgpam
             else if (block == _double01)
             {
                 //---------Enter your code here-----------
-                bool isFixed = _workpiece.ElementComponent.IsFixed;
-                if (!isFixed)
-                {
-                    _workpiece.Fix();
-                }
-                double angle = _double01.GetProperties().GetDouble("Value");
-                Vector jigVector = new Vector(_jigPlank.SleeveFace);
-                Movement.MoveByRotation(_jigPlank.ElementComponent, jigVector, angle - _startAngle);
-                _startAngle = angle;
-                NxFunctions.Update();
-                if (!isFixed)
-                {
-                    _workpiece.Unfix();
-                }
+                RotateJig(_double01);
             }
             else if (block == _toggle0)
             {
                 //---------Enter your code here-----------
+                bool value = block.GetProperties().GetLogical("Value");
+                if (value)
+                {
+                    SetEnable(_button01, true);
+                }
+                else
+                {
+                    SetEnable(_button01, false);
+                }
             }
             else if (block == _button01)
             {
                 //---------Enter your code here-----------
+                PlanksForm planksForm = new PlanksForm();
+                planksForm.ShowDialog();
             }
             else if (block == _toggle01)
             {
@@ -382,6 +380,24 @@ public sealed class Jig : DialogProgpam
     
     //---------------------------------------------------------------------------------
 
+    private void RotateJig(UIBlock block)
+    {
+        bool isFixed = _workpiece.ElementComponent.IsFixed;
+        if (!isFixed)
+        {
+            _workpiece.Fix();
+        }
+        double angle = block.GetProperties().GetDouble("Value");
+        Vector jigVector = new Vector(_jigPlank.SleeveFace);
+        Movement.MoveByRotation(_jigPlank.ElementComponent, jigVector, angle - _startAngle);
+        _startAngle = angle;
+        NxFunctions.Update();
+        if (!isFixed)
+        {
+            _workpiece.Unfix();
+        }
+    }
+
     private void SetFace(UIBlock block)
     {
         TaggedObject[] taggedObjects = block.GetProperties().GetTaggedObjectVector("SelectedObjects");
@@ -400,28 +416,38 @@ public sealed class Jig : DialogProgpam
 
     private void ImportJig()
     {
-        DataTable sleeves = SqlUspElement.GetSleeves(_catalog, GetSleeveTypeConditions(), _gost);
-        KeyValuePair<string, double> bestSleeve = FilterSleeves(sleeves);
-        if (_goodSleeves.Count > 0)
+        try
         {
-            double outDiametr = SqlUspElement.GetDiametr(_catalog, bestSleeve.Key);
-            string jigTitle = SqlUspJigs.GetByDiametr(_catalog, outDiametr);
-            Katalog2005.Algorithm.SpecialFunctions.LoadPart(jigTitle, false);
-            _jigPlank = new JigPlank(Katalog2005.Algorithm.SpecialFunctions.LoadedPart);
-            Katalog2005.Algorithm.SpecialFunctions.LoadPart(bestSleeve.Key, false);
-            _quickJigSleeve = new QuickJigSleeve(Katalog2005.Algorithm.SpecialFunctions.LoadedPart);
-            SetConstraints();
-            SetRecommendDistance();
-            SetEnable(_group01, true);
-            SetEnable(_direction0, !_oneEdge);
+            DataTable sleeves = SqlUspElement.GetSleeves(_catalog, GetSleeveTypeConditions(), _gost);
+            KeyValuePair<string, double> bestSleeve = FilterSleeves(sleeves);
+            if (_goodSleeves.Count > 0)
+            {
+                double outDiametr = SqlUspElement.GetDiametr(_catalog, bestSleeve.Key);
+                string jigTitle = SqlUspJigs.GetByDiametr(_catalog, outDiametr);
+                Katalog2005.Algorithm.SpecialFunctions.LoadPart(jigTitle, false);
+                _jigPlank = new JigPlank(Katalog2005.Algorithm.SpecialFunctions.LoadedPart);
+                Katalog2005.Algorithm.SpecialFunctions.LoadPart(bestSleeve.Key, false);
+                _quickJigSleeve =
+                    new QuickJigSleeve(Katalog2005.Algorithm.SpecialFunctions.LoadedPart);
+                SetConstraints();
+                SetRecommendDistance();
+                SetEnable(_group01, true);
+                SetEnable(_group0, false);
+                SetEnable(_direction0, !_oneEdge);
+            }
+            else
+            {
+                string mess = "Подходящих втулок не было найдено!" + Environment.NewLine +
+                              "Измените параметры.";
+                Logger.WriteWarning(mess);
+                Message.ShowError(mess);
+                SetEnable(_group01, false);
+            }
         }
-        else
+        catch (ParamObjectNotFoundExeption exeption)
         {
-            string mess = "Подходящих втулок не было найдено!" + Environment.NewLine +
-                          "Измените параметры.";
-            Logger.WriteWarning(mess);
-            Message.ShowError(mess);
-            SetEnable(_group01, false);
+            Message.ShowError("Деталь " + exeption.Element.Title + " не параметризирована!", 
+                "Объект " + exeption.NxObjectName + " не найден!");
         }
     }
 
@@ -510,16 +536,17 @@ public sealed class Jig : DialogProgpam
 
     private void SetDistanceConstraint(Edge edge)
     {
+        NxFunctions.FreezeDisplay();
         bool intersecst = SetDistance(edge);
         if (!intersecst) 
             return;
         _touchAxeJigElement.Reverse();
         SetDistance(edge);
+        NxFunctions.UnFreezeDisplay();
     }
 
     private bool SetDistance(Edge edge)
     {
-
         _distanceConstr.Delete();
         _distanceConstr = new Distance();
         _distanceConstr.Create(_workpiece.ElementComponent, edge, _jigPlank.ElementComponent, _jigPlank.SlotFace, _realDistance);
@@ -649,10 +676,10 @@ public sealed class Jig : DialogProgpam
 
     private void ShowJigPlanks()
     {
-        //Dictionary<string, string> param;
-        //string query = SqlUspJigs.GetQueryJigTypes(_catalog, out param);
-        //ImageSqlForm imageSqlForm = new ImageSqlForm(query, param);
-        //imageSqlForm.ShowDialog();
+        Dictionary<string, string> param;
+        string query = SqlUspJigs.GetQueryJigTypes(_catalog, out param);
+        ImageSqlForm imageSqlForm = new ImageSqlForm(query, param);
+        imageSqlForm.ShowDialog();
     }
 
     private void Init()

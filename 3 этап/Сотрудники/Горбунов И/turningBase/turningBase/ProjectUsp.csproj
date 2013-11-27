@@ -16,7 +16,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\</OutputPath>
+    <OutputPath>C:\ug_customization\application\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -76,19 +76,19 @@
     </Reference>
     <Reference Include="NXOpen, Version=7.5.0.32, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\libs\NXOpen.dll</HintPath>
+      <HintPath>C:\Documents and Settings\USP\Рабочий стол\NXOpen.dll</HintPath>
     </Reference>
     <Reference Include="NXOpen.UF, Version=7.5.0.31, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\libs\NXOpen.UF.dll</HintPath>
+      <HintPath>C:\Documents and Settings\USP\Рабочий стол\NXOpen.UF.dll</HintPath>
     </Reference>
     <Reference Include="NXOpen.Utilities, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\libs\NXOpen.Utilities.dll</HintPath>
+      <HintPath>C:\Documents and Settings\USP\Рабочий стол\NXOpen.Utilities.dll</HintPath>
     </Reference>
     <Reference Include="NXOpenUI, Version=7.5.0.32, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\libs\NXOpenUI.dll</HintPath>
+      <HintPath>C:\Documents and Settings\USP\Рабочий стол\NXOpenUI.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -150,6 +150,12 @@
     <Compile Include="Gallary\ImageBox.designer.cs">
       <DependentUpon>ImageBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="Gallary\ImageLabelBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Gallary\ImageLabelBox.designer.cs">
+      <DependentUpon>ImageLabelBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="Gallary\ImageForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -170,6 +176,12 @@
       <DependentUpon>AngleAlgo.cs</DependentUpon>
     </Compile>
     <Compile Include="Korneev\HeightAlgorithm.cs" />
+    <Compile Include="Korneev\PlanksForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Korneev\PlanksForm.designer.cs">
+      <DependentUpon>PlanksForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Korneev\StringCalss.cs" />
     <Compile Include="Log\Log.cs" />
     <Compile Include="Math\Axes\CoordinateAxe.cs" />
@@ -239,6 +251,10 @@
       <DependentUpon>ImageBox.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Gallary\ImageLabelBox.resx">
+      <DependentUpon>ImageLabelBox.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Gallary\ImageForm.resx">
       <DependentUpon>ImageForm.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -249,6 +265,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Korneev\AngleAlgo.resx">
       <DependentUpon>AngleAlgo.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Korneev\PlanksForm.resx">
+      <DependentUpon>PlanksForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="licenses.licx">

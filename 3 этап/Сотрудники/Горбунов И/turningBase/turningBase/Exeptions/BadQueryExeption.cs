@@ -1,6 +1,6 @@
 using System;
 
-public class BadQueryExeption : Exception
+public sealed class BadQueryExeption : Exception
 {
     public BadQueryExeption()
     {
