@@ -155,7 +155,7 @@ static class SqlUspElement
 
         if (SqlOracle.Sel(query, paramDict, out title))
         {
-            if (title == "" || title == null)
+            if (string.IsNullOrEmpty(title))
             {
                 throw new BadQueryExeption();
             }

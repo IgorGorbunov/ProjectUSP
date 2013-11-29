@@ -11,19 +11,22 @@ public static class SqlUspJigs
     /// </summary>
     /// <param name="catalog">Каталог.</param>
     /// <param name="diametr">Диаметр под втулку.</param>
+    /// <param name="gost">Гост планки УСП.</param>
     /// <returns></returns>
-    public static string GetByDiametr(Catalog catalog, double diametr)
+    public static string GetByDiametr(Catalog catalog, double diametr, string gost)
     {
         Dictionary<string, string> parametrs = new Dictionary<string, string>();
-        const string par1 = "CAT", par2 = "diametr";
+        const string par1 = "CAT", par2 = "diametr", par3 = "gost";
         parametrs.Add(par1, ((int)catalog.CatalogUsp).ToString());
         parametrs.Add(par2, diametr.ToString());
+        parametrs.Add(par3, gost);
 
         string query = Sql.GetBegin(SqlTabUspData.CTitle);
         query += SqlUspElement.From + Sql.AddTable(SqlTabJigData.Name) + Sql.Where;
         query += SqlTabUspData.CInnerDiametr + Sql.Eq + Sql.Par(par2);
         query += Sql.GetNewCond(SqlTabUspData.CCatalog + Sql.Eq + Sql.Par(par1));
         query += Sql.GetNewCond(SqlTabUspData.CGost + Sql.Eq + SqlTabJigData.CGost);
+        query += Sql.GetNewCond(Sql.Equal(SqlTabUspData.CGost, Sql.Par(par3)));
         query += Sql.OrderBy(SqlTabUspData.CWeight);
         query = Sql.GetFirst(query);
 
@@ -52,6 +55,8 @@ public static class SqlUspJigs
         query += SqlUspElement.From + Sql.AddTable(SqlTabJigData.Name) + Sql.Where;
         query += SqlTabUspData.CCatalog + Sql.Eq + Sql.Par(cat);
         query += Sql.GetNewCond(SqlTabUspData.CGost + Sql.Eq + SqlTabJigData.CGost);
+        query += Sql.GetNewCond(SqlTabUspData.ThereIs);
+        query += Sql.OrderBy(SqlTabUspData.CGost);
         query += ") WHERE RN = 1";
 
         return query;

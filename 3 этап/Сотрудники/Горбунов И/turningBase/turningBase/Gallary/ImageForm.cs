@@ -2,10 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using algorithm;
-
-//using algorithm;
-//using img_gallery.Controls;
 
 
     public partial class ImageForm : Form
@@ -35,6 +31,12 @@ using algorithm;
         protected ImageForm()
         {
             InitializeComponent();
+        }
+
+        protected ImageForm(MouseEventHandler mouseClickEventHandler)
+        {
+            InitializeComponent();
+            MouseClickEventHandler = mouseClickEventHandler;
         }
 
         private const int _HEIGHT = 220;

@@ -652,5 +652,4 @@ public sealed class Tunnelslot : DialogProgpam
     {
         ConfigDlx.UnloadDialog(ConfigDlx.DlxTunnelSlot);
     }
-
 }

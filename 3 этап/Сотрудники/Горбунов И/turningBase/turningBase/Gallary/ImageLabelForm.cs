@@ -2,9 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using algorithm;
 
-    public partial class ImageLabelForm : Form
+public partial class ImageLabelForm : Form
     {
         public List<ImageInfo> Images; 
         public readonly MouseEventHandler MouseClickEventHandler;

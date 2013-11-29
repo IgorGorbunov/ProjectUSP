@@ -37,7 +37,9 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
 using System.IO;
+using System.Windows.Forms;
 using NXOpen;
 using NXOpen.BlockStyler;
 using NXOpen.UF;
@@ -70,8 +72,9 @@ public sealed class Jig : DialogProgpam
     private UspElement _workpiece;
 
     private string _gost;
-
     private readonly Catalog _catalog;
+    private ImageSqlForm _jigPlanksForm;
+    private int _sizeFormX, _sizeFormY;
 
     private readonly List<string[]> _goodSleeves = new List<string[]>();
     private int _nSleeveColumns;
@@ -85,6 +88,9 @@ public sealed class Jig : DialogProgpam
     private Touch _sleeveJigTouch;
     private Distance _distanceConstr = new Distance();
     private double _recommendDistance, _realDistance;
+
+    private string _foldingPlankTitle;
+
 
     private const double _DISTANCE_COEF = 0.4;
 
@@ -260,7 +266,7 @@ public sealed class Jig : DialogProgpam
             {
             //---------Enter your code here-----------
                 //запуск галереи
-                _gost = "15321-70";
+                //_gost = "15321-70";
                 ShowJigPlanks();
                 ImportJig();
             }
@@ -302,10 +308,27 @@ public sealed class Jig : DialogProgpam
                 //---------Enter your code here-----------
                 PlanksForm planksForm = new PlanksForm();
                 planksForm.ShowDialog();
+                if (!string.IsNullOrEmpty(_foldingPlankTitle))
+                {
+                    SetEnable(_toggle01, true);
+                }
+                else
+                {
+                    SetEnable(_toggle01, false);
+                }
             }
             else if (block == _toggle01)
             {
                 //---------Enter your code here-----------
+                bool value = block.GetProperties().GetLogical("Value");
+                if (value)
+                {
+                    SetEnable(_integer0, true);
+                }
+                else
+                {
+                    SetEnable(_integer0, false);
+                }
             }
             else if (block == _integer0)
             {
@@ -416,6 +439,9 @@ public sealed class Jig : DialogProgpam
 
     private void ImportJig()
     {
+        if (string.IsNullOrEmpty(_gost))
+            return;
+
         try
         {
             DataTable sleeves = SqlUspElement.GetSleeves(_catalog, GetSleeveTypeConditions(), _gost);
@@ -423,7 +449,7 @@ public sealed class Jig : DialogProgpam
             if (_goodSleeves.Count > 0)
             {
                 double outDiametr = SqlUspElement.GetDiametr(_catalog, bestSleeve.Key);
-                string jigTitle = SqlUspJigs.GetByDiametr(_catalog, outDiametr);
+                string jigTitle = SqlUspJigs.GetByDiametr(_catalog, outDiametr, _gost);
                 Katalog2005.Algorithm.SpecialFunctions.LoadPart(jigTitle, false);
                 _jigPlank = new JigPlank(Katalog2005.Algorithm.SpecialFunctions.LoadedPart);
                 Katalog2005.Algorithm.SpecialFunctions.LoadPart(bestSleeve.Key, false);
@@ -442,11 +468,13 @@ public sealed class Jig : DialogProgpam
                 Logger.WriteWarning(mess);
                 Message.ShowError(mess);
                 SetEnable(_group01, false);
+                _gost = null;
             }
         }
         catch (ParamObjectNotFoundExeption exeption)
         {
-            Message.ShowError("Деталь " + exeption.Element.Title + " не параметризирована!", 
+            _gost = null;
+            Message.ShowError("Модель детали " + exeption.Element.Title + " не параметризирована!", 
                 "Объект " + exeption.NxObjectName + " не найден!");
         }
     }
@@ -678,8 +706,34 @@ public sealed class Jig : DialogProgpam
     {
         Dictionary<string, string> param;
         string query = SqlUspJigs.GetQueryJigTypes(_catalog, out param);
-        ImageSqlForm imageLabelSqlForm = new ImageSqlForm(query, param);
-        imageLabelSqlForm.ShowDialog();
+        _jigPlanksForm = new ImageSqlForm(query, param, MouseClickEventHandler);
+        if (_sizeFormX != 0 && _sizeFormY != 0)
+        {
+            _jigPlanksForm.Size = new Size(_sizeFormX, _sizeFormY);
+        }
+        _jigPlanksForm.ShowDialog();
+        _sizeFormX = _jigPlanksForm.Size.Width;
+        _sizeFormY = _jigPlanksForm.Size.Height;
+    }
+
+    private void MouseClickEventHandler(object sender, MouseEventArgs mouseEventArgs)
+    {
+        PictureBox pictureBox = (PictureBox)sender;
+        foreach (ImageInfo imageInfo in _jigPlanksForm.Images)
+        {
+
+                if (!imageInfo.Image.Equals(pictureBox.Image))
+                    continue;
+                SetGost(imageInfo.Name);
+                _jigPlanksForm.Close();
+                return;
+        }
+    }
+
+    private void SetGost(string imageTitle)
+    {
+        string[] split = imageTitle.Split(' ');
+        _gost = split[split.Length - 1];
     }
 
     private void Init()

@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
+using System.Windows.Forms;
 
 
 public partial class ImageSqlForm : ImageForm
 {
-    public ImageSqlForm(string sqlQuery, Dictionary<string, string> param)
+    public ImageSqlForm(string sqlQuery, Dictionary<string, string> param, MouseEventHandler mouseClickEventHandler)
+        : base(mouseClickEventHandler)
     {
         DataTable dataTable;
         if (SqlOracle.SelData(sqlQuery, param, out dataTable))
