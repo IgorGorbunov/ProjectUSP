@@ -728,6 +728,17 @@ public sealed class TurningBase : DialogProgpam
             SetLabelDiametr(threeBases[1]);
             SetNextBttnText(threeBases[2]);
         }
+        catch (PartNotFoundExeption ex)
+        {
+            string mess = "Модель детали '" + ex.Message + "' не загружена в каталог!";
+            Message.ShowError(mess);
+            _faceSelected = false;
+            SetEnable(_selection0, true);
+            UnSelectObjects(_selection0);
+            SetEnable(_group1, false);
+            SetEnable(_group, false);
+            _selection0.Focus();
+        }  
         catch (ParamObjectNotFoundExeption ex)
         {
             Component[] comps = new Component[1];

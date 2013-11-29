@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
-using img_gallery;
 
 
 public partial class ImageSqlForm : ImageForm
@@ -42,7 +41,7 @@ public partial class ImageSqlForm : ImageForm
                     titleSet = true;
                 }
 
-                if (titleSet)
+                if (titleSet && i < (dataTable.Columns.Count - 1))
                 {
                     title += " - ";
                 }

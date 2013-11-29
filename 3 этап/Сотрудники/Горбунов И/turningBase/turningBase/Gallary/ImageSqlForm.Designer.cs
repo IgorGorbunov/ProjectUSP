@@ -39,7 +39,7 @@
             this.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.ItemAtRow = 3;
-            this.Name = "ImageSqlForm";
+            this.Name = "ImageLabelSqlForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Галерея элементов";
             this.TopMost = true;

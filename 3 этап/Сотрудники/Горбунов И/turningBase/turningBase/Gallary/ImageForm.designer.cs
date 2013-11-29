@@ -1,5 +1,4 @@
-namespace img_gallery
-{
+
     partial class ImageForm
     {
         /// <summary>
@@ -61,4 +60,3 @@ namespace img_gallery
 
         private System.Windows.Forms.Panel mainPanel;
     }
-}

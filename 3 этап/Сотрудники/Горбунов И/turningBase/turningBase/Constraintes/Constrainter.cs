@@ -34,6 +34,7 @@ public class Constrainter
             return;
         NXObject objectToDelete = Constr;
         Config.TheSession.UpdateManager.AddToDeleteList(objectToDelete);
+        Constr = null;
     }
     /// <summary>
     /// Возвращает true, если сопряжение переограничено.

@@ -312,7 +312,7 @@ public class SetBoltInSlot : DialogProgpam
 
     private void SetBolt(UIBlock block)
     {
-        if (HeightSet.BoltAdded == true)
+        if (HeightSet.BoltAdded)
             return;
 
         try
@@ -350,6 +350,7 @@ public class SetBoltInSlot : DialogProgpam
             _pointIsSet = true;
 
             HeightSet.BoltAdded = true;
+            HeightSet.Unfix(HeightSet.BoltFixElements);
             SetEnable(_double0, false);
             SetEnable(_point0, false);
         }

@@ -7,8 +7,7 @@ using algorithm;
 //using algorithm;
 //using img_gallery.Controls;
 
-namespace img_gallery
-{
+
     public partial class ImageForm : Form
     {
         public List<ImageInfo> Images; 
@@ -47,15 +46,18 @@ namespace img_gallery
         /// </summary>
         public void DrawItems()
         {
-            int y;
-            int x = y = _DIFF;
+            int y = _DIFF;
+            int x = _DIFF;
             _itemAtRow = mainPanel.Width / (_WIDTH + _DIFF + 6);
 
             mainPanel.Controls.Clear();
 
+            if (Images == null)
+                return;
+
             foreach (ImageInfo info in Images)
             {
-                ImageLabelBox pb = new ImageLabelBox(info);
+                ImageBox pb = new ImageBox(info.Image, info.Name);
 
                 pb.Margin = new Padding(3);
                 pb.pictureBox1.MouseClick += MouseClickEventHandler;
@@ -83,21 +85,3 @@ namespace img_gallery
             ItemAtRow = mainPanel.Width / (_WIDTH + _DIFF + 6);
         }
     }
-
-    public class ImageInfo {
-        public Image Image;
-        public String Name;
-        public int ElementCount;
-        public bool Selected;
-        public AngleSolution Solution;
-
-        public ImageInfo(Image image, String name, int elementCount, bool selected, AngleSolution solution)
-        {
-            Image = image;
-            Name = name;
-            Selected = selected;
-            ElementCount = elementCount;
-            Solution = solution;
-        }
-    }
-}

@@ -42,8 +42,7 @@ namespace Katalog2005.Algorithm
                 }
                 else
                 {
-                    string mess = "Модель детали '" + oboznOfUsp + "' не загружена в каталог!";
-                    Message.ShowError(mess);
+                    throw new PartNotFoundExeption(oboznOfUsp);
                 }
             }
 

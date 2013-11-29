@@ -44,7 +44,6 @@ using NXOpen.Assemblies;
 using NXOpen.BlockStyler;
 using NXOpen.Positioning;
 using algorithm;
-using img_gallery;
 using ListBox = NXOpen.BlockStyler.ListBox;
 
 /// <summary>
@@ -69,7 +68,7 @@ public class AngleSet : DialogProgpam
     private int _degrees, _minutes;
     private bool _angleIsObtuse;
 
-    private ImageForm _dialogForm;
+    private ImageLabelForm _dialogLabelForm;
     private List<AngleSolution> _orderedList;
     
     /// <summary>
@@ -414,10 +413,10 @@ public class AngleSet : DialogProgpam
                 images.Add(new ImageInfo(image, "ГОСТ " + solution.Gost + " " + name, solution.count + 1, solution.count == minCount, solution));
 
         }
-        _dialogForm = new ImageForm(images, MouseClickEventHandler);
-        _dialogForm.Text = "Типы элементов для набора угла";
-        _dialogForm.DrawItems();
-        _dialogForm.ShowDialog();
+        _dialogLabelForm = new ImageLabelForm(images, MouseClickEventHandler);
+        _dialogLabelForm.Text = "Типы элементов для набора угла";
+        _dialogLabelForm.DrawItems();
+        _dialogLabelForm.ShowDialog();
     }
 
     private void SetElements(AngleSolution solution)
@@ -550,14 +549,14 @@ public class AngleSet : DialogProgpam
     private void MouseClickEventHandler(object sender, MouseEventArgs mouseEventArgs)
     {
         PictureBox pictureBox = (PictureBox) sender;
-        foreach (ImageInfo imageInfo in _dialogForm.Images)
+        foreach (ImageInfo imageInfo in _dialogLabelForm.Images)
         {
             if (pictureBox.Image == null)
             {
                 if (imageInfo.Image == null)
                 {
                     SetElements(imageInfo.Solution);
-                    _dialogForm.Close();
+                    _dialogLabelForm.Close();
                     return;
                 }
             }
@@ -566,7 +565,7 @@ public class AngleSet : DialogProgpam
                 if (!imageInfo.Image.Equals(pictureBox.Image))
                     continue;
                 SetElements(imageInfo.Solution);
-                _dialogForm.Close();
+                _dialogLabelForm.Close();
                 return;
             }
         }

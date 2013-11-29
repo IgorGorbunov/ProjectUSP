@@ -24,7 +24,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\</OutputPath>
+    <OutputPath>C:\ug_customization\application\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -141,26 +141,34 @@
     <Compile Include="Elements\JigSleeve.cs" />
     <Compile Include="Elements\QuickJigSleeve.cs" />
     <Compile Include="Exeptions\BadQueryExeption.cs" />
+    <Compile Include="Exeptions\PartNotFoundExeption.cs" />
     <Compile Include="Exeptions\PartAlreadyLoadedExeption.cs" />
     <Compile Include="Exeptions\ParamObjectNotFoundExeption.cs" />
     <Compile Include="Exeptions\EmptyQueryExeption.cs" />
+    <Compile Include="Gallary\ImageForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Gallary\ImageForm.designer.cs">
+      <DependentUpon>ImageForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Gallary\ImageBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Gallary\ImageBox.designer.cs">
       <DependentUpon>ImageBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="Gallary\ImageInfo.cs" />
     <Compile Include="Gallary\ImageLabelBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Gallary\ImageLabelBox.designer.cs">
       <DependentUpon>ImageLabelBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="Gallary\ImageForm.cs">
+    <Compile Include="Gallary\ImageLabelForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Gallary\ImageForm.designer.cs">
-      <DependentUpon>ImageForm.cs</DependentUpon>
+    <Compile Include="Gallary\ImageLabelForm.designer.cs">
+      <DependentUpon>ImageLabelForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Gallary\ImageSqlForm.cs">
       <SubType>Form</SubType>
@@ -247,6 +255,10 @@
       <SubType>Designer</SubType>
       <DependentUpon>ExactHeightForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Gallary\ImageForm.resx">
+      <DependentUpon>ImageForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Gallary\ImageBox.resx">
       <DependentUpon>ImageBox.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -255,8 +267,8 @@
       <DependentUpon>ImageLabelBox.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Gallary\ImageForm.resx">
-      <DependentUpon>ImageForm.cs</DependentUpon>
+    <EmbeddedResource Include="Gallary\ImageLabelForm.resx">
+      <DependentUpon>ImageLabelForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Gallary\ImageSqlForm.resx">

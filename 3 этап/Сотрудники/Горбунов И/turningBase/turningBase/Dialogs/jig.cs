@@ -678,8 +678,8 @@ public sealed class Jig : DialogProgpam
     {
         Dictionary<string, string> param;
         string query = SqlUspJigs.GetQueryJigTypes(_catalog, out param);
-        ImageSqlForm imageSqlForm = new ImageSqlForm(query, param);
-        imageSqlForm.ShowDialog();
+        ImageSqlForm imageLabelSqlForm = new ImageSqlForm(query, param);
+        imageLabelSqlForm.ShowDialog();
     }
 
     private void Init()

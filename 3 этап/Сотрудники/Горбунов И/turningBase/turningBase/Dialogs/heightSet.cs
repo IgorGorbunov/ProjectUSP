@@ -37,6 +37,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Windows.Forms;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.BlockStyler;
@@ -54,6 +55,8 @@ public sealed class HeightSet : DialogProgpam
     public static double UserHeight;
 
     public static bool BoltAdded;
+
+    public static IEnumerable<UspElement> BoltFixElements;
 
     //class members
     private readonly string _theDialogName;
@@ -254,9 +257,7 @@ public sealed class HeightSet : DialogProgpam
             }
             else if (block == _button0)
             {
-                SetBoltInSlot setBolt = new SetBoltInSlot(_catalog, _height, _RESERVE_HEIGHT,
-                                                          _firstElement);
-                setBolt.Show();
+                SetBolt();
             }
             else if (block == _double0)
             {
@@ -401,6 +402,15 @@ public sealed class HeightSet : DialogProgpam
     //        throw;
     //    }
     //}
+
+    private void SetBolt()
+    {
+        BoltFixElements = FixElements();
+        SetBoltInSlot setBolt = new SetBoltInSlot(_catalog, _height, _RESERVE_HEIGHT,
+                                                          _firstElement);
+        setBolt.Show();
+        Unfix(BoltFixElements);
+    }
 
     private Point3d GetPoint(UIBlock block)
     {
@@ -582,17 +592,18 @@ public sealed class HeightSet : DialogProgpam
         }
 
         UspElement element2 = null;
-        bool secondElementIsFixed = _face1.OwningComponent.IsFixed;
+        bool secondElementIsFixed = _face2.OwningComponent.IsFixed;
         if (!secondElementIsFixed)
         {
-            element2 = new UspElement(_face1.OwningComponent);
+            element2 = new UspElement(_face2.OwningComponent);
             element2.Fix();
         }
+        NxFunctions.Update();
         UspElement[] array = {element1, element2};
         return array;
     }
 
-    private void Unfix(IEnumerable<UspElement> uspElements)
+    public static void Unfix(IEnumerable<UspElement> uspElements)
     {
         if (uspElements == null)
             return;
@@ -603,6 +614,7 @@ public sealed class HeightSet : DialogProgpam
                 uspElement.Unfix();
             }
         }
+        NxFunctions.Update();
     }
 
     private void Init()

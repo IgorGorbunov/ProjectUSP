@@ -431,6 +431,9 @@ public sealed class Tunnelslot : DialogProgpam
         if (SetFace(block, ref _tunnel1, ref _element1))
         {
             SetEnable(_slotTunPoint, true);
+            UnSelectObjects(_slotTunPoint);
+            SetEnable(_direction0, false);
+            SetEnable(block, false);
         }
         else
         {
@@ -441,9 +444,6 @@ public sealed class Tunnelslot : DialogProgpam
         {
             _slot1.Unhighlight();
         }
-        UnSelectObjects(_slotTunPoint);
-        SetEnable(_direction0, false);
-        SetEnable(block, false);
     }
     bool SetFace(UIBlock block, ref Tunnel tunnel, ref UspElement element)
     {
