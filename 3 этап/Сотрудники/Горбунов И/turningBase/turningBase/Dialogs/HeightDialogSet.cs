@@ -47,7 +47,7 @@ using algorithm;
 /// <summary>
 /// Класс диалога для набора высоты.
 /// </summary>
-public sealed class HeightSet : DialogProgpam
+public sealed class HeightDialogSet : DialogProgpam
 {
     /// <summary>
     /// Высота введенная пользователем.
@@ -85,7 +85,7 @@ public sealed class HeightSet : DialogProgpam
     /// Инициализирует новый экземпляр класса диалога для набора высоты для заданного каталога.
     /// </summary>
     /// <param name="catalog">Каталог.</param>
-    public HeightSet(Catalog catalog)
+    public HeightDialogSet(Catalog catalog)
     {
         try
         {
@@ -453,7 +453,7 @@ public sealed class HeightSet : DialogProgpam
             double maxLen = SqlUspElement.GetMaxLenSlotFixture(_catalog);
             if (maxLen >= _height)
             {
-                SetHeihgtElems(_height);
+                SetHeihgtElems(_height, ElementType.HeightBySquare, false, _catalog);
             }
             else
             {
@@ -474,12 +474,12 @@ public sealed class HeightSet : DialogProgpam
         }
     }
 
-    private void SetHeihgtElems(double height)
+    private void SetHeihgtElems(double height, ElementType elementType, bool ignoreInStock, Catalog catalog)
     {
 
         Solution solution = new SelectionAlgorihtm(
-            DatabaseUtils.loadFromDb(ElementType.HeightBySquare, false, (int)_catalog.CatalogUsp),//учитываем колво на складе
-            1000).solve(height, false); //учитываем колво на складе
+            DatabaseUtils.loadFromDb(elementType, ignoreInStock, (int)catalog.CatalogUsp),//учитываем колво на складе
+            1000).solve(height, ignoreInStock); //учитываем колво на складе
  
         if (solution.mainAnswer == -1)
         {
@@ -494,8 +494,8 @@ public sealed class HeightSet : DialogProgpam
             else
             {
                 SetElems(new SelectionAlgorihtm(
-                    DatabaseUtils.loadFromDb(ElementType.HeightBySquare, false, (int)_catalog.CatalogUsp),
-                    1000).solve(UserHeight, false));
+                    DatabaseUtils.loadFromDb(elementType, ignoreInStock, (int)catalog.CatalogUsp),
+                    1000).solve(UserHeight, ignoreInStock));
             }
         }
         else

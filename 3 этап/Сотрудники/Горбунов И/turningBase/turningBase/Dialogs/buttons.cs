@@ -200,7 +200,7 @@ public class Buttons : DialogProgpam
             else if (block == _button04)
             {
                 //---------Enter your code here-----------
-                dialogProgpam = new HeightSet(new Catalog12());
+                dialogProgpam = new HeightDialogSet(new Catalog12());
             }
             else if (block == _button05)
             {

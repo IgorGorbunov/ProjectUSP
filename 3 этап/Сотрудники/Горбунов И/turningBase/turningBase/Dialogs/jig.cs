@@ -69,6 +69,7 @@ public sealed class Jig : DialogProgpam
     private UIBlock _toggle01;// Block type: Toggle
     private UIBlock _integer0;// Block type: Integer
     private UIBlock _direction0;
+    private UIBlock _double03;// Block type: Double
 
     //------------------------------------------------------------------------
 
@@ -190,6 +191,7 @@ public sealed class Jig : DialogProgpam
             _toggle01 = TheDialog.TopBlock.FindBlock("toggle01");
             _integer0 = TheDialog.TopBlock.FindBlock("integer0");
             _direction0 = TheDialog.TopBlock.FindBlock("direction0");
+            _double03 = TheDialog.TopBlock.FindBlock("double03");
         }
         catch (Exception ex)
         {
@@ -320,16 +322,21 @@ public sealed class Jig : DialogProgpam
                 bool value = block.GetProperties().GetLogical("Value");
                 if (value)
                 {
-                    SetEnable(_integer0, true);
+                    SetEnable(_double03, true);
                 }
                 else
                 {
-                    SetEnable(_integer0, false);
+                    SetEnable(_double03, false);
                 }
             }
             else if (block == _integer0)
             {
                 //---------Enter your code here-----------
+            }
+            else if (block == _double03)
+            {
+                //---------Enter your code here-----------
+                SetHeight();
             }
         }
         catch (Exception ex)
@@ -399,6 +406,11 @@ public sealed class Jig : DialogProgpam
     }
     
     //---------------------------------------------------------------------------------
+
+    private void SetHeight()
+    {
+        
+    }
 
     private void ShowFoldingPlanks()
     {
@@ -493,6 +505,7 @@ public sealed class Jig : DialogProgpam
                 SetRecommendDistance();
                 SetEnable(_group01, true);
                 SetEnable(_group0, false);
+                SetEnable(_toggle0, true);
                 SetEnable(_direction0, !_oneEdge);
             }
             else

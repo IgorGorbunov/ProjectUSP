@@ -26,7 +26,7 @@ public partial class ExactHeightForm : Form
         _moreHeight = maxHeight;
         SetButtons();
 
-        HeightSet.UserHeight = -1;
+        HeightDialogSet.UserHeight = -1;
     }
 
     private void SetLabel(double height)
@@ -56,13 +56,13 @@ public partial class ExactHeightForm : Form
 
     private void lessBtn_Click(object sender, EventArgs e)
     {
-        HeightSet.UserHeight = _lessHeight;
+        HeightDialogSet.UserHeight = _lessHeight;
         Close();
     }
 
     private void moreBtn_Click(object sender, EventArgs e)
     {
-        HeightSet.UserHeight = _moreHeight;
+        HeightDialogSet.UserHeight = _moreHeight;
         Close();
     }
 

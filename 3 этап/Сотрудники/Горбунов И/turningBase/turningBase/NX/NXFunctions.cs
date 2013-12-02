@@ -194,6 +194,13 @@ internal static class NxFunctions
         return array;
     }
 
+    public static IEnumerable<UspElement> FixElements(Component component1, Component component2)
+    {
+        UspElement element1 = new UspElement(component1);
+        UspElement element2 = new UspElement(component2);
+        return FixElements(element1, element2);
+    }
+
     public static void Unfix(IEnumerable<UspElement> uspElements)
     {
         if (uspElements == null)

@@ -156,7 +156,7 @@ public class SetBoltInSlot : DialogProgpam
         {
             //---- Enter your callback code here -----
             _double0.GetProperties().SetDouble("Value", _reserveHeight);
-            if (HeightSet.BoltAdded)
+            if (HeightDialogSet.BoltAdded)
             {
                 SetEnable(_double0, false);
                 SetEnable(_point0, false);
@@ -180,7 +180,7 @@ public class SetBoltInSlot : DialogProgpam
         {
             //---- Enter your callback code here -----
             _okApplyClick = true;
-            if (HeightSet.BoltAdded)
+            if (HeightDialogSet.BoltAdded)
             {
                 SetEnable(_double0, false);
                 SetEnable(_point0, false);
@@ -239,7 +239,7 @@ public class SetBoltInSlot : DialogProgpam
             
             if (_okApplyClick == false)
             {
-                HeightSet.BoltAdded = false;
+                HeightDialogSet.BoltAdded = false;
             }
         }
         catch (Exception ex)
@@ -312,7 +312,7 @@ public class SetBoltInSlot : DialogProgpam
 
     private void SetBolt(UIBlock block)
     {
-        if (HeightSet.BoltAdded)
+        if (HeightDialogSet.BoltAdded)
             return;
 
         try
@@ -349,8 +349,8 @@ public class SetBoltInSlot : DialogProgpam
             bolt.SetInTunnel(_firstElement.HoleFace);
             _pointIsSet = true;
 
-            HeightSet.BoltAdded = true;
-            HeightSet.Unfix(HeightSet.BoltFixElements);
+            HeightDialogSet.BoltAdded = true;
+            HeightDialogSet.Unfix(HeightDialogSet.BoltFixElements);
             SetEnable(_double0, false);
             SetEnable(_point0, false);
         }

@@ -184,7 +184,8 @@
     <Compile Include="Gallary\ImageSqlForm.Designer.cs">
       <DependentUpon>ImageSqlForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\heightSet.cs" />
+    <Compile Include="Dialogs\HeightDialogSet.cs" />
+    <Compile Include="HeightSet.cs" />
     <Compile Include="Korneev\AngleAlgo.cs">
       <SubType>Form</SubType>
     </Compile>
