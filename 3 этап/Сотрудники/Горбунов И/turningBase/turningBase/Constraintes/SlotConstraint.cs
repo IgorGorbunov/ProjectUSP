@@ -34,6 +34,13 @@ class SlotConstraint
         Config.TheUfSession.Modl.Update();
     }
     /// <summary>
+    /// Производит соединение вдоль паза.
+    /// </summary>
+    public void SetCenterConstraint2()
+    {
+        _centerConstr.Create(_firstSlot, _secondSlot);
+    }
+    /// <summary>
     /// Производит соединение вдоль паза по рёбрам первого паза.
     /// </summary>
     public void SetCenterEdgeConstraint()
@@ -52,16 +59,5 @@ class SlotConstraint
     {
         _centerConstr.Reverse();
     }
-
-    /*void escapeOverConstrained(ComponentConstraint constrain)
-    {
-        Constraint.SolverStatus status = constrain.GetConstraintStatus();
-        if (status == Constraint.SolverStatus.OverConstrained)
-        {
-            this.reverse();
-
-            executeConstraints();
-        }
-    }*/
 }
 

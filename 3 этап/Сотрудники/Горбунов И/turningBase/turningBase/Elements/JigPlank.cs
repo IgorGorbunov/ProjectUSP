@@ -1,4 +1,6 @@
-﻿using NXOpen;
+﻿using System;
+using System.Collections.Generic;
+using NXOpen;
 using NXOpen.Assemblies;
 
 /// <summary>
@@ -48,6 +50,36 @@ public class JigPlank : UspElement
             return _sleeveFace;
         }
     }
+    /// <summary>
+    /// Возвращает поперечный паз.
+    /// </summary>
+    public Slot AcrossSlot
+    {
+        get
+        {
+            if (_acrossSlot == null)
+            {
+                SetAcrossSlot();
+            }
+            return _acrossSlot;
+        }
+    }
+    /// <summary>
+    /// Возвращает продольный паз.
+    /// </summary>
+    public Slot AlongSlot
+    {
+        get
+        {
+            if (_alongSlot == null)
+            {
+                SetAlongSlot();
+            }
+            return _alongSlot;
+        }
+    }
+
+    private Slot _acrossSlot, _alongSlot;
 
     private Face _topSlotFace, _topJigFace, _sleeveFace;
 
@@ -60,10 +92,53 @@ public class JigPlank : UspElement
         
     }
 
+
+    /// <summary>
+    /// Создаёт констрэйнт TouchAxe кондукторной планки и обрабатываемой детали.
+    /// </summary>
+    /// <param name="component">Компонент обрабатываемой детали.</param>
+    /// <param name="face">Обрабатываемая грань.</param>
+    /// <returns></returns>
+    public TouchAxe SetOn(Component component, Face face)
+    {
+        TouchAxe touchAxe = new TouchAxe();
+        touchAxe.Create(ElementComponent, SleeveFace, component, face);
+        return touchAxe;
+    }
+
+    public void SetOn(FoldingPlank fPlank)
+    {
+        IEnumerable<UspElement> fixElements = NxFunctions.FixElements(this, null);
+        try
+        {
+
+            SlotTouch alongTouch = new SlotTouch(AlongSlot, fPlank.AlongSlot);
+            alongTouch.SetTouchFaceConstraint();
+
+            SlotConstraint alongConstraint2 = new SlotConstraint(AlongSlot, fPlank.AlongSlot);
+            alongConstraint2.SetCenterConstraint2();
+            
+            SlotConstraint acrossConstraint = new SlotConstraint(AcrossSlot, fPlank.AcrossSlot);
+            acrossConstraint.SetCenterConstraint();
+
+            Vector jigDir = AlongSlot.Direction2;
+            Vector foldDir = fPlank.AlongSlot.Direction2;
+            if (!jigDir.IsCoDirectional(foldDir)) 
+                return;
+            alongConstraint2.Reverse();
+            acrossConstraint.Reverse();
+        }
+        finally 
+        {
+            NxFunctions.Unfix(fixElements);
+        }
+    }
+
+
     /// <summary>
     /// Устанавливает НГП, использовать после Replacement.
     /// </summary>
-    public void SetSlotFace()
+    private void SetSlotFace()
     {
         Face[] faces = Body.GetFaces();
 
@@ -82,28 +157,33 @@ public class JigPlank : UspElement
     /// <summary>
     /// Устанавливает верхнюю грань для втулки, использовать после Replacement.
     /// </summary>
-    public void SetTopJigFace()
+    private void SetTopJigFace()
     {
         _topJigFace = GetFace(Config.JigTopName);
     }
     /// <summary>
     /// Устанавливает цилиндрическую грань для втулки, использовать после Replacement.
     /// </summary>
-    public void SetSleeveFace()
+    private void SetSleeveFace()
     {
         _sleeveFace = GetFace(Config.JigSleeveName);
     }
 
-    /// <summary>
-    /// Создаёт констрэйнт TouchAxe кондукторной планки и обрабатываемой детали.
-    /// </summary>
-    /// <param name="component">Компонент обрабатываемой детали.</param>
-    /// <param name="face">Обрабатываемая грань.</param>
-    /// <returns></returns>
-    public TouchAxe SetOn(Component component, Face face)
+    private void SetAcrossSlot()
     {
-        TouchAxe touchAxe = new TouchAxe();
-        touchAxe.Create(ElementComponent, SleeveFace, component, face);
-        return touchAxe;
+        Edge slotEdge = GetEdge(Config.AcrossSlot);
+        Point3d point1, point2;
+        slotEdge.GetVertices(out point1, out point2);
+        _acrossSlot = GetNearestSlot(point1);
     }
+
+    private void SetAlongSlot()
+    {
+        Edge slotEdge = GetEdge(Config.AlongSlot);
+        Point3d point1, point2;
+        slotEdge.GetVertices(out point1, out point2);
+        _alongSlot = GetNearestSlot(point1);
+    }
+
+    
 }

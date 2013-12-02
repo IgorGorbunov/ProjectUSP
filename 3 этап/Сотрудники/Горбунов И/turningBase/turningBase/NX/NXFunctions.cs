@@ -86,8 +86,14 @@ internal static class NxFunctions
             {
                 Delete(componentConstraint);
             }
-            Delete(component);
+            Delete((NXObject)component);
         }
+    }
+
+    public static void Delete(params Component[] components)
+    {
+        IEnumerable<Component> iComponents = components;
+        Delete(iComponents);
     }
 
     private static void SetAsterix(Point3d point)
@@ -158,6 +164,48 @@ internal static class NxFunctions
             }
         }
         return null;
+    }
+
+    public static IEnumerable<UspElement> FixElements(UspElement element1, UspElement element2)
+    {
+        UspElement fixElement1 = null;
+        if (element1 != null)
+        {
+            bool firstElementIsFixed = element1.ElementComponent.IsFixed;
+            if (!firstElementIsFixed)
+            {
+                fixElement1 = new UspElement(element1.ElementComponent);
+                fixElement1.Fix();
+            }
+        }
+
+        UspElement fixElement2 = null;
+        if (element2 != null)
+        {
+            bool secondElementIsFixed = element2.ElementComponent.IsFixed;
+            if (!secondElementIsFixed)
+            {
+                fixElement2 = new UspElement(element2.ElementComponent);
+                fixElement2.Fix();
+            }
+        }
+        Update();
+        UspElement[] array = { fixElement1, fixElement2 };
+        return array;
+    }
+
+    public static void Unfix(IEnumerable<UspElement> uspElements)
+    {
+        if (uspElements == null)
+            return;
+        foreach (UspElement uspElement in uspElements)
+        {
+            if (uspElement != null)
+            {
+                uspElement.Unfix();
+            }
+        }
+        Update();
     }
 
 }

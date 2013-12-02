@@ -433,9 +433,9 @@ public class AngleSet : DialogProgpam
         catch (ParamObjectNotFoundExeption ex)
         {
             NxFunctions.Delete(loadedElements);
-            string mess = "Деталь " + ex.Element.Title + " неверно параметризированна!" +
+            string mess = "Деталь '" + ex.Element.Title + "' неверно параметризированна!" +
                           Environment.NewLine;
-            mess += "Не найден параметр " + ex.NxObjectName;
+            mess += "Не найден параметр '" + ex.NxObjectName + "'.";
             Message.ShowError(mess);
             SetEnable(_button0, true);
         }

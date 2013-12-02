@@ -27,6 +27,10 @@ public static partial class Config
     /// </summary>
     public const string JigSleeveName = "JIG_SLEEVE";
 
+    public const string FoldAlongEdgeName = "FOLD_ALONG";
+
+    public const string FoldAcrossEdgeName = "FOLD_ACROSS";
+
     /// <summary>
     /// Наименование цилиндрической грани кондукторной втулки.
     /// </summary>

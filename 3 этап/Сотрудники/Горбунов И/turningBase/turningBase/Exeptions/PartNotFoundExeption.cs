@@ -1,8 +1,7 @@
 using System;
-using NXOpen.Assemblies;
 
 /// <summary>
-/// Класс исключения отсутствия параметризированного объекта на детали.
+/// Класс исключения отсутствия модели элемента УСП в базе данных.
 /// </summary>
 public class PartNotFoundExeption : Exception
 {

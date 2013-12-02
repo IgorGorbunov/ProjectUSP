@@ -6,12 +6,13 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
-
     public partial class PlanksForm : Form
     {
-        public PlanksForm()
+        int katalogUsp;
+
+        public PlanksForm(int katalogUsp)
         {
-            SqlOracle.BuildConnectionString("ktc", "ktc", "baseeoi");
+            this.katalogUsp = katalogUsp;
             InitializeComponent();
             //splitContainer1.BackColor = Color.Red;
             splitContainer1.BorderStyle = BorderStyle.FixedSingle;
@@ -19,14 +20,24 @@ using System.Windows.Forms;
         }
 
         List<string> gosts = new List<string>();
+        List<string> gostNames = new List<string>();
+        List<Image> gostImages = new List<Image>();
+        DataView view;
 
         private void loadForm()
         {
-            DataSet ds = SqlOracle1.getDS("SELECT * FROM USP_PLANKS_DATA");            
-            dgvPlanks.DataSource = ds.Tables[0];
+            DataSet ds = SqlOracle1.getDS("SELECT * FROM KTC.USP_PLANKS_DATA WHERE KATALOG_USP = " + katalogUsp);
+            view = new DataView(ds.Tables[0]);
+            dgvPlanks.DataSource = view;
             dgvPlanks.Columns["GOST"].Visible = false;
-            dgvPlanks.Columns["NAME"].HeaderText = "Наименование";            
-            dgvPlanks.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvPlanks.Columns["KATALOG_USP"].Visible = false;
+            dgvPlanks.Columns["NAME"].HeaderText = "Обозначение";
+            int colWidth = 30;
+            dgvPlanks.Columns["L"].MinimumWidth = colWidth;
+            dgvPlanks.Columns["B"].MinimumWidth = colWidth;
+            dgvPlanks.Columns["H"].MinimumWidth = colWidth;
+            dgvPlanks.Columns["NAME"].MinimumWidth = 80;
+            
             //dgvPlanks.Columns["NAME"].Width = dgvPlanks.Width * 3 / 4;
             Dictionary<string, bool> tgosts = new Dictionary<string, bool>();
             foreach (DataRow row in ds.Tables[0].Rows)
@@ -35,11 +46,24 @@ using System.Windows.Forms;
             }
             foreach(string s in tgosts.Keys) {
                 gosts.Add(s);
+                Image image = null;
+                string gostName = "ГОСТ " + s;
+                try
+                {
+                    image = SqlUspElement.GetImage(s);
+                    gostName += " " + SqlUspElement.GetName(s); 
+                }
+                catch (TimeoutException ex) { continue; }
+                gostImages.Add(image);
+                gostNames.Add(gostName);
             }
+            view.RowFilter = "GOST LIKE '%" + gosts[0] + "%'";
+            dgvPlanks.Refresh();
+            dgvPlanks.Visible = false;
             DrawItems();
         }
 
-        private const int _HEIGHT = 220;
+        private const int _HEIGHT = 240;
         private const int _WIDTH = 180;
         private const int _DIFF = 10;
 
@@ -67,19 +91,13 @@ using System.Windows.Forms;
 
             splitContainer1.Panel1.Controls.Clear();
 
-            foreach (string gost in gosts)
+            for(int i = 0; i < gosts.Count; ++i) 
             {
-                Image image = null;
-                try
-                {
-                    image = SqlUspElement.GetImage(gost);
-                }
-                catch (TimeoutException ex) { continue; }
-
-                ImageBox pb = new ImageBox(image, gost);
+                
+                ImageBox pb = new ImageBox(gostImages[i], gostNames[i]);
 
                 pb.Margin = new Padding(3);
-
+                pb.pictureBox1.MouseClick += new MouseEventHandler(pb_MouseClick);
                 pb.Location = new Point(x, y);
 
                 if (x + _WIDTH + _DIFF + 6 > ItemAtRow * (_DIFF + 6) + ItemAtRow * _WIDTH)
@@ -97,6 +115,14 @@ using System.Windows.Forms;
             }
         }
 
+        void pb_MouseClick(object sender, MouseEventArgs e)
+        {
+            int index = gostImages.IndexOf((sender as PictureBox).Image);
+            view.RowFilter = "GOST LIKE '%" + gosts[index] + "%'";
+            dgvPlanks.Refresh();
+            dgvPlanks.Visible = true;
+        }
+
         private void ImageForm_SizeChanged(object sender, EventArgs e)
         {
             ItemAtRow = splitContainer1.Panel1.Width / (_WIDTH + _DIFF + 6);
@@ -104,10 +130,17 @@ using System.Windows.Forms;
 
         private void btSelect_Click(object sender, EventArgs e)
         {
-            if (dgvPlanks.SelectedRows.Count == 1) {
+            if (dgvPlanks.SelectedRows.Count == 1)
+            {
                 eventHandler(dgvPlanks.SelectedRows[0].Index);
-            } else {
-                eventHandler(-1);    
+            }
+            else if (dgvPlanks.SelectedCells.Count > 0)
+            {
+                eventHandler(dgvPlanks.SelectedCells[0].RowIndex);
+            }
+            else
+            {
+                eventHandler(-1);
             }
         }
 
@@ -120,11 +153,46 @@ using System.Windows.Forms;
         {
             if (selectedIndex >= 0)
             {
-                MessageBox.Show((dgvPlanks.Rows[selectedIndex].Cells["GOST"]).Value.ToString());
+                LoadPart((dgvPlanks.Rows[selectedIndex].Cells["NAME"]).Value.ToString());
             }
             else
             {
-                MessageBox.Show("Строка не выбрана");
+                Message.ShowError("Модель детали не выбрана!");
+            }
+        }
+
+        private void dgvPlanks_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (dgvPlanks.SelectedCells.Count > 0)
+            {
+                btSelect.Enabled = true;
+            }
+            else
+            {
+                btSelect.Enabled = false;
+            }
+        }
+
+        private void cancelBtn_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void LoadPart(string title)
+        {
+            try
+            {
+                Katalog2005.Algorithm.SpecialFunctions.LoadPart(title, false);
+                Jig.FPlank = new FoldingPlank(Katalog2005.Algorithm.SpecialFunctions.LoadedPart);
+                Close();
+            }
+            catch (TimeoutException)
+            {
+                Message.Timeout();
+            }
+            catch (PartNotFoundExeption ex)
+            {
+                Message.ShowError("Модель детали '" + ex.Message + "' не загружена в базу данных!");
             }
         }
     }

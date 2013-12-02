@@ -37,10 +37,12 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using NXOpen;
+using NXOpen.Assemblies;
 using NXOpen.BlockStyler;
 using NXOpen.UF;
 
@@ -68,6 +70,10 @@ public sealed class Jig : DialogProgpam
     private UIBlock _integer0;// Block type: Integer
     private UIBlock _direction0;
 
+    //------------------------------------------------------------------------
+
+    public static FoldingPlank FPlank;
+
     private Surface _selectedFace;
     private UspElement _workpiece;
 
@@ -88,8 +94,6 @@ public sealed class Jig : DialogProgpam
     private Touch _sleeveJigTouch;
     private Distance _distanceConstr = new Distance();
     private double _recommendDistance, _realDistance;
-
-    private string _foldingPlankTitle;
 
 
     private const double _DISTANCE_COEF = 0.4;
@@ -212,6 +216,7 @@ public sealed class Jig : DialogProgpam
             _selection0.GetProperties().SetSelectionFilter("SelectionFilter", Selection.SelectionAction.ClearAndEnableSpecific, mask);
 
             _double01.GetProperties().SetDouble("Value", 0.0);
+            _toggle0.GetProperties().SetLogical("Value", false);
         }
         catch (Exception ex)
         {
@@ -306,16 +311,8 @@ public sealed class Jig : DialogProgpam
             else if (block == _button01)
             {
                 //---------Enter your code here-----------
-                PlanksForm planksForm = new PlanksForm();
-                planksForm.ShowDialog();
-                if (!string.IsNullOrEmpty(_foldingPlankTitle))
-                {
-                    SetEnable(_toggle01, true);
-                }
-                else
-                {
-                    SetEnable(_toggle01, false);
-                }
+                Logger.WriteLine("Нажата кнопка выбора складывающихся планок.");
+                ShowFoldingPlanks();
             }
             else if (block == _toggle01)
             {
@@ -403,6 +400,43 @@ public sealed class Jig : DialogProgpam
     
     //---------------------------------------------------------------------------------
 
+    private void ShowFoldingPlanks()
+    {
+        PlanksForm planksForm = new PlanksForm((int)_catalog.CatalogUsp);
+        planksForm.ShowDialog();
+        NxFunctions.FreezeDisplay();
+        try
+        {
+            if (FPlank != null)
+            {
+                _jigPlank.SetOn(FPlank);
+                SetEnable(_toggle0, false);
+                SetEnable(_button01, false);
+                SetEnable(_toggle01, true);
+            }
+            else
+            {
+                SetEnable(_toggle0, true);
+                SetEnable(_button01, true);
+                SetEnable(_toggle01, false);
+            }
+        }
+        catch (ParamObjectNotFoundExeption e)
+        {
+            Debug.Assert(FPlank != null, "FPlank != null");
+            NxFunctions.Delete(FPlank.ElementComponent);
+            FPlank = null;
+            string mess = "Модель детали '" + e.Element.Title + "' неверно параметризированна!" +
+                          Environment.NewLine;
+            mess += "Не найден параметр '" + e.NxObjectName + "'.";
+            Message.ShowError(mess);
+        }
+        finally
+        {
+            NxFunctions.UnFreezeDisplay();
+        }
+    }
+
     private void RotateJig(UIBlock block)
     {
         bool isFixed = _workpiece.ElementComponent.IsFixed;
@@ -474,8 +508,23 @@ public sealed class Jig : DialogProgpam
         catch (ParamObjectNotFoundExeption exeption)
         {
             _gost = null;
-            Message.ShowError("Модель детали " + exeption.Element.Title + " не параметризирована!", 
-                "Объект " + exeption.NxObjectName + " не найден!");
+            if (_jigPlank != null)
+            {
+                NxFunctions.Delete(_jigPlank.ElementComponent);
+                _jigPlank = null;
+            }
+            if (_quickJigSleeve != null)
+            {
+                NxFunctions.Delete(_quickJigSleeve.ElementComponent);
+                _quickJigSleeve = null;
+            }
+            Message.ShowError(
+                "Модель детали '" + exeption.Element.Title + "' не параметризирована!",
+                "Объект '" + exeption.NxObjectName + "' не найден!");
+        }
+        finally
+        {
+            NxFunctions.UnFreezeDisplay();
         }
     }
 

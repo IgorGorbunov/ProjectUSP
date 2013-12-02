@@ -730,7 +730,7 @@ public sealed class TurningBase : DialogProgpam
         }
         catch (PartNotFoundExeption ex)
         {
-            string mess = "Модель детали '" + ex.Message + "' не загружена в каталог!";
+            string mess = "Модель детали '" + ex.Message + "' не загружена в базу данных!";
             Message.ShowError(mess);
             _faceSelected = false;
             SetEnable(_selection0, true);

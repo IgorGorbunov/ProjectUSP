@@ -11,6 +11,7 @@ public class Constrainter
     protected ComponentPositioner CompPositioner;
 
     ComponentNetwork _componentNetwork;
+    private bool clear;
 
     protected Constrainter()
     {

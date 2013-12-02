@@ -108,6 +108,7 @@
     <Compile Include="Constraintes\Constrainter.cs" />
     <Compile Include="Constraintes\Align.cs" />
     <Compile Include="Constraintes\Angle.cs" />
+    <Compile Include="Constraintes\SlotTouch.cs" />
     <Compile Include="Constraintes\Distance.cs" />
     <Compile Include="Constraintes\Fix.cs" />
     <Compile Include="Constraintes\Parallel.cs" />
@@ -119,6 +120,12 @@
     <Compile Include="Data\NoRoundBaseData.cs" />
     <Compile Include="Dialogs\angleSet.cs" />
     <Compile Include="Dialogs\buttons.cs" />
+    <Compile Include="Dialogs\CatalogForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\CatalogForm.Designer.cs">
+      <DependentUpon>CatalogForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\DialogProgpam.cs" />
     <Compile Include="Dialogs\ExactHeightForm.cs">
       <SubType>Form</SubType>
@@ -132,6 +139,7 @@
     <Compile Include="Dialogs\tunnelslot.cs" />
     <Compile Include="Dialogs\turnElement.cs" />
     <Compile Include="ElementIntersection.cs" />
+    <Compile Include="Elements\FoldingPlank.cs" />
     <Compile Include="Elements\SlotTBolt.cs" />
     <Compile Include="Elements\SmallAngleElement.cs" />
     <Compile Include="Elements\BigAngleElement.cs" />
@@ -251,6 +259,10 @@
     <Compile Include="Math\Vector.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Dialogs\CatalogForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>CatalogForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\ExactHeightForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ExactHeightForm.cs</DependentUpon>
