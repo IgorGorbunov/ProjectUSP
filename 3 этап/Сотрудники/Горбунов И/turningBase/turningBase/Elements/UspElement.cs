@@ -305,6 +305,27 @@ public class UspElement
         _body = bb;
     }
 
+    public void ClearConstraints()
+    {
+        ComponentConstraint[] constraints = ElementComponent.GetConstraints();
+        foreach (ComponentConstraint componentConstraint in constraints)
+        {
+            NxFunctions.Delete(componentConstraint);
+        }
+    }
+
+    public void ClearConstraint(Constraint.Type type)
+    {
+        ComponentConstraint[] constraints = ElementComponent.GetConstraints();
+        foreach (ComponentConstraint componentConstraint in constraints)
+        {
+            if (componentConstraint.ConstraintType == type)
+            {
+                NxFunctions.Delete(componentConstraint);
+            }
+        }
+    }
+
     private string GetTitle()
     {
         string componentName = ElementComponent.Name;

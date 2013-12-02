@@ -7,12 +7,16 @@ public static class HeightSet
 {
     private static Face _lowFace;
     private static Face _highFace;
+    private static HeightElement _firstElement, _lastElement;
 
-    public static bool SetHeight(Face face1, Face face2, double height, ElementType elementType, bool ignoreInStock, Catalog catalog)
+    public static bool SetHeight(Face face1, Face face2, double height, ElementType elementType, bool ignoreInStock, Catalog catalog, out HeightElement firstElement, out HeightElement lastElement)
     {
         _lowFace = face1;
         _highFace = face2;
-        return SetHeihgtElems(height, elementType, ignoreInStock, catalog);
+        bool flag = SetHeihgtElems(height, elementType, ignoreInStock, catalog);
+        firstElement = _firstElement;
+        lastElement = _lastElement;
+        return flag;
     }
 
     private static bool SetHeihgtElems(double height, ElementType elementType, bool ignoreInStock, Catalog catalog)
@@ -77,6 +81,7 @@ public static class HeightSet
             }
             else
             {
+                _firstElement = elements[i];
                 Touch touch = new Touch();
                 touch.Create(_lowFace, elements[i].BottomFace);
                 NxFunctions.Update();
@@ -84,6 +89,7 @@ public static class HeightSet
 
             if (i == elements.Length - 1)
             {
+                _lastElement = elements[i];
                 Touch touch = new Touch();
                 touch.Create(_highFace, elements[i].TopFace);
                 NxFunctions.Update();

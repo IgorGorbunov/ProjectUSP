@@ -1,4 +1,7 @@
-﻿using NXOpen;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using NXOpen;
 using NXOpen.Assemblies;
 
 /// <summary>
@@ -28,6 +31,16 @@ public class SlotTBolt : UspElement
     {
         SetConstraints(slot);
         MoveBolt(slot);
+    }
+
+    public void SetInJig(JigPlank jigPlank)
+    {
+        SetJigConstraints(jigPlank);
+    }
+
+    public void SetInHeightElement(HeightElement heightElement)
+    {
+        SetHeightConstraints(heightElement);
     }
 
     /// <summary>
@@ -63,6 +76,38 @@ public class SlotTBolt : UspElement
             return;
         slot.SlotSet.UspElement.Unfix();
         NxFunctions.Update();
+    }
+
+    private void SetJigConstraints(JigPlank jigPlank)
+    {
+        IEnumerable<UspElement> fixedElements = NxFunctions.FixElements(jigPlank, null);
+        try
+        {
+            Face holeFace = jigPlank.HoleFace;
+
+            TouchAxe touchAxe = new TouchAxe();
+            touchAxe.Create(holeFace, _tunnelFace);
+        }
+        finally
+        {
+            NxFunctions.Unfix(fixedElements);
+        }
+    }
+
+    private void SetHeightConstraints(HeightElement heightElement)
+    {
+        IEnumerable<UspElement> fixedElements = NxFunctions.FixElements(this, null);
+        try
+        {
+            Face holeFace = heightElement.HoleFace;
+
+            TouchAxe touchAxe = new TouchAxe();
+            touchAxe.Create(holeFace, _tunnelFace);
+        }
+        finally
+        {
+            NxFunctions.Unfix(fixedElements);
+        }
     }
 
     private void MoveBolt(Slot slot)

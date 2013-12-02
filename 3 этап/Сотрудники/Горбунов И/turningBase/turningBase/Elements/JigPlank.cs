@@ -51,9 +51,23 @@ public class JigPlank : UspElement
         }
     }
     /// <summary>
+    /// Возвращает грань для центрирования пазового болта в кондукторной планке.
+    /// </summary>
+    public Face HoleFace
+    {
+        get
+        {
+            if (_holeFace == null)
+            {
+                SetHoleFace();
+            }
+            return _holeFace;
+        }
+    }
+    /// <summary>
     /// Возвращает поперечный паз.
     /// </summary>
-    public Slot AcrossSlot
+    private Slot AcrossSlot
     {
         get
         {
@@ -67,7 +81,7 @@ public class JigPlank : UspElement
     /// <summary>
     /// Возвращает продольный паз.
     /// </summary>
-    public Slot AlongSlot
+    private Slot AlongSlot
     {
         get
         {
@@ -81,7 +95,7 @@ public class JigPlank : UspElement
 
     private Slot _acrossSlot, _alongSlot;
 
-    private Face _topSlotFace, _topJigFace, _sleeveFace;
+    private Face _topSlotFace, _topJigFace, _sleeveFace, _holeFace;
 
     /// <summary>
     /// Инициализирует новый экземпляр класса кондукторной планки УСП для заданного компонента.
@@ -134,6 +148,21 @@ public class JigPlank : UspElement
         }
     }
 
+    public void SetOn(HeightElement heightElement)
+    {
+        IEnumerable<UspElement> fixElements = NxFunctions.FixElements(this, null);
+        try
+        {
+            Face holeFace = heightElement.HoleFace;
+            TouchAxe touchAxe = new TouchAxe();
+            touchAxe.Create(HoleFace, holeFace);
+        }
+        finally
+        {
+            NxFunctions.Unfix(fixElements);
+        }
+    }
+
 
     /// <summary>
     /// Устанавливает НГП, использовать после Replacement.
@@ -167,6 +196,11 @@ public class JigPlank : UspElement
     private void SetSleeveFace()
     {
         _sleeveFace = GetFace(Config.JigSleeveName);
+    }
+
+    private void SetHoleFace()
+    {
+        _holeFace = GetFace(Config.JigHoleName);
     }
 
     private void SetAcrossSlot()

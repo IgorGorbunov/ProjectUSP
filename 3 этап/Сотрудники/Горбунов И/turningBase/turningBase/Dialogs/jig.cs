@@ -35,6 +35,7 @@
 //These imports are needed for the following template code
 //------------------------------------------------------------------------------
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
@@ -44,7 +45,10 @@ using System.Windows.Forms;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.BlockStyler;
+using NXOpen.Positioning;
 using NXOpen.UF;
+using algorithm;
+using Constraint = NXOpen.Positioning.Constraint;
 
 /// <summary>
 /// Класс диалога для установки кондуктора.
@@ -219,6 +223,8 @@ public sealed class Jig : DialogProgpam
 
             _double01.GetProperties().SetDouble("Value", 0.0);
             _toggle0.GetProperties().SetLogical("Value", false);
+            _toggle01.GetProperties().SetLogical("Value", false);
+            _double03.GetProperties().SetDouble("Value", 0.0);
         }
         catch (Exception ex)
         {
@@ -336,7 +342,7 @@ public sealed class Jig : DialogProgpam
             else if (block == _double03)
             {
                 //---------Enter your code here-----------
-                SetHeight();
+                SetHeight(block);
             }
         }
         catch (Exception ex)
@@ -407,9 +413,64 @@ public sealed class Jig : DialogProgpam
     
     //---------------------------------------------------------------------------------
 
-    private void SetHeight()
+    private void SetHeight(UIBlock block)
     {
-        
+        Face[] faces = GetTouchFoldJigFaces();
+        FPlank.ClearConstraint(Constraint.Type.Touch);
+        HeightElement firstElement, lastElement;
+        if (HeightSet.SetHeight(faces[0], faces[1], block.GetProperties().GetDouble("Value"),
+                                ElementType.HeightBySquare, false, _catalog, out firstElement, out lastElement))
+        {
+            IEnumerable<UspElement> fixElements = NxFunctions.FixElements(FPlank, null);
+            try
+            {
+                _jigPlank.SetOn(firstElement);
+            }
+            catch (TimeoutException)
+            {
+                Message.Timeout();
+            }
+            catch (ParamObjectNotFoundExeption e)
+            {
+                Message.ShowError(
+                    "Модель детали '" + e.Element.Title + "' неверно параметризирована!",
+                    "Объект '" + e.NxObjectName + "' не найден.");
+            }
+            catch (PartNotFoundExeption e)
+            {
+                Message.ShowError(
+                    "Модель детали '" + e.Message + "' не загружена в базу данных!");
+            }
+            finally
+            {
+                NxFunctions.Unfix(fixElements);
+            }
+            SetEnable(block, false);
+            SetEnable(_toggle01, false);
+        }
+        else
+        {
+            SetEnable(block, true);
+            SetEnable(_toggle01, true);
+        }
+    }
+
+    private Face[] GetTouchFoldJigFaces()
+    {
+        ComponentConstraint[] constraints = FPlank.ElementComponent.GetConstraints();
+        foreach (ComponentConstraint componentConstraint in constraints)
+        {
+            if (componentConstraint.ConstraintType != Constraint.Type.Touch) 
+                continue;
+
+            List<NXObject> foreignFaces;
+            List<NXObject> ownfaces = FPlank.GetConstraintObjects(componentConstraint, out foreignFaces);
+            Face[] faces = new Face[2];
+            faces[0] = (Face) ownfaces[0];
+            faces[1] = (Face) foreignFaces[0];
+            return faces;
+        }
+        return new Face[2];
     }
 
     private void ShowFoldingPlanks()
