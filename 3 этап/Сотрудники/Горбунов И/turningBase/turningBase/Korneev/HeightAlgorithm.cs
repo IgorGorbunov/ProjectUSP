@@ -1,5 +1,3 @@
-
-
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -118,7 +116,7 @@ namespace algorithm
         }
 
         /// <summary>
-        ///
+        /// 
         /// </summary>
         /// <param name="h">Требуемое значение параметра</param>
         /// <returns>Количество элементов, которым можно набрать значение h</returns>
@@ -128,7 +126,7 @@ namespace algorithm
         }
 
         /// <summary>
-        ///
+        /// 
         /// </summary>
         /// <param name="h">Требуемое значение параметра</param>
         /// <param name="solutionNumber">Номер решение (нумеруются с 0)</param>
@@ -177,20 +175,18 @@ namespace algorithm
     /// </summary>
     static class AngleSolver
     {
-        static SelectionAlgorihtm[,] smallAngleTable = new SelectionAlgorihtm[2, 2];
-        static Dictionary<String, BigAngleGost>[,] bigAngleGosts = new Dictionary<string, BigAngleGost>[2, 2];
-        static AngleSolver()
-        {
+        static SelectionAlgorihtm[,] smallAngleTable = new SelectionAlgorihtm[2,2];
+        static Dictionary<String, BigAngleGost>[,] bigAngleGosts = new Dictionary<string,BigAngleGost>[2,2];
+        static AngleSolver() {
             for (int i = 0; i < 2; ++i)
             {
-                for (int j = 0; j < 2; ++j)
-                {
+                for(int j = 0; j < 2; ++j) {
                     bool ignore = j > 0;
-                    smallAngleTable[i, j] = new SelectionAlgorihtm(
+                    smallAngleTable[i,j] = new SelectionAlgorihtm(
                         DatabaseUtils.loadAngleElement(ElementType.SmallAngle, ignore, i),
-                        11000, 1);
-                    smallAngleTable[i, j].solve(6000, ignore);
-                    bigAngleGosts[i, j] = DatabaseUtils.loadBigAngleElement(ignore, i);
+                        10000, 1);
+                    smallAngleTable[i,j].solve(6000, ignore);
+                    bigAngleGosts[i,j] = DatabaseUtils.loadBigAngleElement(ignore, i);
                 }
             }
         }
@@ -204,14 +200,14 @@ namespace algorithm
         /// <param name="ignoreInStock">Игнорировать наличие на складе</param>
         /// <param name="katalog">Каталог УСП</param>
         /// <returns>Список решений для каждого ГОСТа</returns>
-        public static Dictionary<String, AngleSolution> solve(int angle, bool ignoreInStock, int katalog)
+        public static Dictionary<String, AngleSolution> solve(int angle, bool ignoreInStock, int katalog) 
         {
             int ignore = ignoreInStock ? 1 : 0;
-            int lowerBound = (angle > 90 * 60 ? 2 : -1);
+            int lowerBound = (angle > 90*60 ? 2 : -1);
             Dictionary<String, AngleSolution> result = new Dictionary<string, AngleSolution>();
-            foreach (string gost in bigAngleGosts[katalog, ignore].Keys)
+            foreach (string gost in bigAngleGosts[katalog,ignore].Keys)
             {
-                BigAngleGost bigAngleGost = bigAngleGosts[katalog, ignore][gost];
+                BigAngleGost bigAngleGost = bigAngleGosts[katalog,ignore][gost];
                 if (bigAngleGost.type >= lowerBound && bigAngleGost.minimalAngle > 0 && bigAngleGost.minimalAngle <= angle)
                 {
                     Element baseElement = null;
@@ -221,7 +217,7 @@ namespace algorithm
                         if (element.Height <= angle)
                         {
                             int h = (int)(angle - element.Height);
-                            int cn = smallAngleTable[katalog, ignore].getElementCount(h);
+                            int cn = smallAngleTable[katalog,ignore].getElementCount(h);
                             if (cn > maxElementInSolution) continue;
                             if (baseElement == null || elementCount > cn)
                             {
@@ -233,14 +229,15 @@ namespace algorithm
                     if (baseElement != null)
                     {
                         result[gost] = new AngleSolution(elementCount, baseElement,
-                                            smallAngleTable[katalog, ignore].solve(angle - baseElement.Height, ignoreInStock), gost);
+                                            smallAngleTable[katalog,ignore].solve(angle - baseElement.Height, ignoreInStock), gost);
                     }
                 }
             }
-            if (smallAngleTable[katalog, ignore].getElementCount(angle) <= maxElementInSolution)
+            if (smallAngleTable[katalog,ignore].getElementCount(angle) <= maxElementInSolution)
             {
-                result["Без большого элемента"] = new AngleSolution(smallAngleTable[katalog, ignore].getElementCount(angle), null,
-                                            smallAngleTable[katalog, ignore].solve(angle, ignoreInStock), "Без большого элемента");
+                string smallGost = (katalog == 0 ? "14449-69" : "15229-70");
+                result[smallGost] = new AngleSolution(smallAngleTable[katalog, ignore].getElementCount(angle), null,
+                                            smallAngleTable[katalog, ignore].solve(angle, ignoreInStock), smallGost);
             }
             return result;
         }
@@ -277,7 +274,7 @@ namespace algorithm
         }
 
         /// <summary>
-        ///
+        /// 
         /// </summary>
         /// <param name="solutionNumber">Номер решения</param>
         /// <returns>Список элементов, которым можно набрать требуемое</returns>
@@ -288,7 +285,7 @@ namespace algorithm
         }
 
         /// <summary>
-        ///
+        /// 
         /// </summary>
         /// <param name="solutionNumber">Номер решения</param>
         /// <returns>Список элементов, которым можно набрать ближайшее снизу значение параметра</returns>
@@ -299,7 +296,7 @@ namespace algorithm
         }
 
         /// <summary>
-        ///
+        /// 
         /// </summary>
         /// <param name="solutionNumber">Номер решения</param>
         /// <returns>Список элементов, которым можно набрать ближайшее сверху значение параметра</returns>
@@ -310,7 +307,7 @@ namespace algorithm
         }
 
         /// <summary>
-        ///
+        /// 
         /// </summary>
         /// <param name="h">Требуемое значение параметра</param>
         /// <returns>Количество элементов, которым можно набрать значение h</returns>
@@ -402,7 +399,7 @@ namespace algorithm
     public static class AngleConverter
     {
         /// <summary>
-        /// Конвертирование строки в числовое значение - количество минут
+        /// Конвертирование строки в числовое значение - количество минут 
         /// </summary>
         /// <param name="s">Строка вида xx°xx'</param>
         /// <returns>Количество минут в заданном угле</returns>
@@ -447,7 +444,7 @@ namespace algorithm
         /// Высота или угол
         /// </summary>
         public double Height;
-
+        
         /// <summary>
         /// Доступное количество на складе
         /// </summary>
@@ -497,11 +494,11 @@ namespace algorithm
         {
             tableNames = new Dictionary<ElementType, string>();
             propertyNames = new Dictionary<ElementType, string>();
-            tableNames[ElementType.HeightByCircle] = "USP_VISOTA_1OTV_KRUG";
-            tableNames[ElementType.HeightBySquare] = "USP_VISOTA_1OTV_KV";
-            tableNames[ElementType.HeightByRectangle] = "USP_VISOTA_1OTV_PR";
-            tableNames[ElementType.BigAngle] = "USP_ANGLE_BIG";
-            tableNames[ElementType.SmallAngle] = "USP_ANGLE_SMALL";
+            tableNames[ElementType.HeightByCircle] = "KTC.USP_VISOTA_1OTV_KRUG";
+            tableNames[ElementType.HeightBySquare] = "KTC.USP_VISOTA_1OTV_KV";
+            tableNames[ElementType.HeightByRectangle] = "KTC.USP_VISOTA_1OTV_PR";
+            tableNames[ElementType.BigAngle] = "KTC.USP_ANGLE_BIG";
+            tableNames[ElementType.SmallAngle] = "KTC.USP_ANGLE_SMALL";
             propertyNames[ElementType.HeightByCircle] = "Круглые элементы";
             propertyNames[ElementType.HeightBySquare] = "Квадратные элементы";
             propertyNames[ElementType.HeightByRectangle] = "Прямоугольные элементы";
@@ -540,7 +537,7 @@ namespace algorithm
             foreach (DataRow row in elementLinks.Tables[0].Rows)
             {
                 string paramH = row["PARAM_H"].ToString();
-                DataSet subElements = SqlOracle1.getDS("SELECT NAME, OBOZN, " + paramH + ", NALICHI FROM DB_DATA"
+                DataSet subElements = SqlOracle1.getDS("SELECT NAME, OBOZN, " + paramH + ", NALICHI FROM KTC.DB_DATA"
                     + " WHERE GOST='" + row["GOST"] + "'"
                     + (ignoreInStock ? "" : " AND NALICHI > 0 AND NALICHI <> 999")
                     + " AND KATALOG_USP='" + KatologUsp + "'");
@@ -567,7 +564,7 @@ namespace algorithm
             DataSet elementLinks = SqlOracle1.getDS("SELECT * FROM " + ElementTypeInfo.getTableName(elementType));
             foreach (DataRow row in elementLinks.Tables[0].Rows)
             {
-                DataSet subElements = SqlOracle1.getDS("SELECT NAME, OBOZN, A, NALICHI FROM DB_DATA"
+                DataSet subElements = SqlOracle1.getDS("SELECT NAME, OBOZN, A, NALICHI FROM KTC.DB_DATA"
                     + " WHERE GOST='" + row["GOST"] + "'"
                     + (ignoreInStock ? "" : " AND NALICHI > 0 AND NALICHI <> 999")
                     + " AND KATALOG_USP='" + KatologUsp + "'");
@@ -578,7 +575,7 @@ namespace algorithm
                     //System.Diagnostics.Trace.WriteLine(elementRow["A"].ToString());
                     //System.Diagnostics.Trace.WriteLine(elementRow["NALICHI"].ToString());
                     result.Add(new Element(elementRow["NAME"].ToString(), elementRow["OBOZN"].ToString(),
-                        AngleConverter.StringToInt(elementRow["A"].ToString()),
+                        AngleConverter.StringToInt(elementRow["A"].ToString()), 
                         (ignoreInStock ? 99 : int.Parse(elementRow["NALICHI"].ToString()))));
                 }
             }
@@ -602,12 +599,12 @@ namespace algorithm
                 if (KatologUsp == 1 && type == 2)
                 {
                     System.Diagnostics.Trace.WriteLine(gost + " " + type);
-                    System.Diagnostics.Trace.WriteLine("SELECT NAME, OBOZN, A, NALICHI FROM DB_DATA"
+                    System.Diagnostics.Trace.WriteLine("SELECT NAME, OBOZN, A, NALICHI FROM KTC.DB_DATA"
                     + " WHERE GOST='" + gost + "'"
                     + (ignoreInStock ? "" : " AND NALICHI > 0 AND NALICHI <> 999")
                     + " AND KATALOG_USP='" + KatologUsp + "'");
                 }
-                DataSet subElements = SqlOracle1.getDS("SELECT NAME, OBOZN, A, NALICHI FROM DB_DATA"
+                DataSet subElements = SqlOracle1.getDS("SELECT NAME, OBOZN, A, NALICHI FROM KTC.DB_DATA"
                     + " WHERE GOST='" + gost + "'"
                     + (ignoreInStock ? "" : " AND NALICHI > 0 AND NALICHI <> 999")
                     + " AND KATALOG_USP='" + KatologUsp + "'");
@@ -642,6 +639,5 @@ namespace algorithm
             }
             return result;
         }
-    }
+    }    
 }
-

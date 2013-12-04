@@ -31,6 +31,28 @@ public class Align : Constrainter
         string logMess = "Соединение выравниванием " + first + " и " + second;
         Logger.WriteLine(logMess);
     }
+
+    /// <summary>
+    /// Создание соединения между гранями/ребрами двух компонентов.
+    /// </summary>
+    /// <param name="first">Грань/ребро с первого компонента.</param>
+    /// <param name="second">Грань/ребро со второго компонента.</param>
+    public void Create(NXObject first, NXObject second)
+    {
+        Constr = (ComponentConstraint)CompPositioner.CreateConstraint();
+        Constr.ConstraintAlignment = Constraint.Alignment.CoAlign;
+        Constr.ConstraintType = Constraint.Type.Touch;
+
+        Constr.CreateConstraintReference(first.OwningComponent,
+                                         first, false, false, false);
+
+        Constr.CreateConstraintReference(second.OwningComponent,
+                                         second, false, false, false);
+        ExecuteConstraints();
+
+        string logMess = "Соединение выравниванием " + first + " и " + second;
+        Logger.WriteLine(logMess);
+    }
     
 }
 

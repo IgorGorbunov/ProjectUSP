@@ -91,7 +91,7 @@ public sealed class Jig : DialogProgpam
     private int _nSleeveColumns;
 
     private JigPlank _jigPlank;
-    private QuickJigSleeve _quickJigSleeve;
+    private JigSleeve _quickJigSleeve;
     private Edge _thisEdge, _otherEdge;
     private bool _oneEdge;
 
@@ -614,9 +614,7 @@ public sealed class Jig : DialogProgpam
         NxFunctions.FreezeDisplay();
 #endif
         _touchAxeJigElement = _jigPlank.SetOn(_workpiece.ElementComponent, _selectedFace.Face);
-        _sleeveJigTouch = _quickJigSleeve.SetOnJig(_jigPlank);
-        _touchAxeSleeveJig = _quickJigSleeve.SetToJig(_jigPlank);
-        NxFunctions.Update();
+        _quickJigSleeve.SetInJig(_jigPlank);
         SelectDistanceConstraint();
         NxFunctions.Update();
 #if (!DEBUG)
@@ -769,7 +767,7 @@ public sealed class Jig : DialogProgpam
                 return " and " + SqlTabUspData.CGost + " = '" + gost + "'";
             case "Обычные":
                 gost = SqlTabUspData.GetGost(SqlTabUspData.GostUsp.Sleeves, _catalog);
-                return " and " + SqlTabUspData.CGost + " = " + gost + "'";
+                return " and " + SqlTabUspData.CGost + " = '" + gost + "'";
         }
         return "";
     }

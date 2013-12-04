@@ -41,7 +41,7 @@ using System.Windows.Forms;
             pictureBox1.BorderStyle = BorderStyle.FixedSingle;
             if (info.Selected)
             {
-                pictureBox1.BackColor = Color.LightGreen;
+                lblCount.ForeColor = Color.Blue;
             }
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
             label1.Text = info.Name;

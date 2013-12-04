@@ -139,6 +139,7 @@
     <Compile Include="Dialogs\tunnelslot.cs" />
     <Compile Include="Dialogs\turnElement.cs" />
     <Compile Include="ElementIntersection.cs" />
+    <Compile Include="Elements\JigSleeves\CommonJigSleeve.cs" />
     <Compile Include="Elements\FoldingPlank.cs" />
     <Compile Include="Elements\SlotTBolt.cs" />
     <Compile Include="Elements\SmallAngleElement.cs" />
@@ -146,8 +147,8 @@
     <Compile Include="Elements\HeightElement.cs" />
     <Compile Include="Elements\BaseElement.cs" />
     <Compile Include="Elements\JigPlank.cs" />
-    <Compile Include="Elements\JigSleeve.cs" />
-    <Compile Include="Elements\QuickJigSleeve.cs" />
+    <Compile Include="Elements\JigSleeves\JigSleeve.cs" />
+    <Compile Include="Elements\JigSleeves\QuickJigSleeve.cs" />
     <Compile Include="Exeptions\BadQueryExeption.cs" />
     <Compile Include="Exeptions\PartNotFoundExeption.cs" />
     <Compile Include="Exeptions\PartAlreadyLoadedExeption.cs" />
@@ -186,11 +187,11 @@
     </Compile>
     <Compile Include="Dialogs\HeightDialogSet.cs" />
     <Compile Include="HeightSet.cs" />
-    <Compile Include="Korneev\AngleAlgo.cs">
+    <Compile Include="Korneev\AlgoForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Korneev\AngleAlgo.designer.cs">
-      <DependentUpon>AngleAlgo.cs</DependentUpon>
+    <Compile Include="Korneev\AlgoForm.designer.cs">
+      <DependentUpon>AlgoForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Korneev\HeightAlgorithm.cs" />
     <Compile Include="Korneev\PlanksForm.cs">
@@ -288,8 +289,8 @@
       <SubType>Designer</SubType>
       <DependentUpon>ImageSqlForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Korneev\AngleAlgo.resx">
-      <DependentUpon>AngleAlgo.cs</DependentUpon>
+    <EmbeddedResource Include="Korneev\AlgoForm.resx">
+      <DependentUpon>AlgoForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Korneev\PlanksForm.resx">

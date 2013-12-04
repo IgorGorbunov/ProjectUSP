@@ -366,6 +366,4 @@ static class SqlUspElement
         }
         throw new TimeoutException();
     }
-
-    
 }

@@ -58,15 +58,15 @@
             // lblCount
             // 
             this.lblCount.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.lblCount.Location = new System.Drawing.Point(0, 206);
+            this.lblCount.Location = new System.Drawing.Point(0, 211);
             this.lblCount.Name = "lblCount";
             this.lblCount.Padding = new System.Windows.Forms.Padding(0, 1, 0, 0);
-            this.lblCount.Size = new System.Drawing.Size(180, 15);
+            this.lblCount.Size = new System.Drawing.Size(180, 19);
             this.lblCount.TabIndex = 2;
             this.lblCount.Text = "Количество: ";
             this.lblCount.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
-            // ImageBox
+            // ImageLabelBox
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;

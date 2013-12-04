@@ -61,7 +61,7 @@
             this.splitContainer1.Panel2.Controls.Add(this.dgvPlanks);
             this.splitContainer1.Panel2MinSize = 120;
             this.splitContainer1.Size = new System.Drawing.Size(606, 366);
-            this.splitContainer1.SplitterDistance = 414;
+            this.splitContainer1.SplitterDistance = 416;
             this.splitContainer1.SplitterWidth = 2;
             this.splitContainer1.TabIndex = 0;
             // 
@@ -72,7 +72,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panel1.Location = new System.Drawing.Point(0, 310);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(190, 56);
+            this.panel1.Size = new System.Drawing.Size(188, 56);
             this.panel1.TabIndex = 2;
             // 
             // panel3
@@ -83,13 +83,13 @@
             this.panel3.Margin = new System.Windows.Forms.Padding(0);
             this.panel3.Name = "panel3";
             this.panel3.Padding = new System.Windows.Forms.Padding(16, 16, 10, 16);
-            this.panel3.Size = new System.Drawing.Size(93, 56);
+            this.panel3.Size = new System.Drawing.Size(91, 56);
             this.panel3.TabIndex = 4;
             // 
             // cancelBtn
             // 
             this.cancelBtn.Dock = System.Windows.Forms.DockStyle.Right;
-            this.cancelBtn.Location = new System.Drawing.Point(8, 16);
+            this.cancelBtn.Location = new System.Drawing.Point(6, 16);
             this.cancelBtn.Name = "cancelBtn";
             this.cancelBtn.Size = new System.Drawing.Size(75, 24);
             this.cancelBtn.TabIndex = 2;
@@ -133,7 +133,7 @@
             this.dgvPlanks.Name = "dgvPlanks";
             this.dgvPlanks.ReadOnly = true;
             this.dgvPlanks.RowHeadersVisible = false;
-            this.dgvPlanks.Size = new System.Drawing.Size(190, 366);
+            this.dgvPlanks.Size = new System.Drawing.Size(188, 366);
             this.dgvPlanks.TabIndex = 0;
             this.dgvPlanks.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvPlanks_CellMouseClick);
             this.dgvPlanks.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvPlanks_CellMouseDoubleClick);
@@ -149,7 +149,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(400, 175);
             this.Name = "PlanksForm";
-            this.Text = "PlanksForm";
+            this.Text = "Выбор складывающейся планки";
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
