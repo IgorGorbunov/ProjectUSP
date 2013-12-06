@@ -63,24 +63,22 @@ public class AngleSet : DialogProgpam
 
     //-----------------------------------------------------
 
-    private readonly Catalog _catalog;
+    private Catalog _catalog;
 
     private int _degrees, _minutes;
     private bool _angleIsObtuse;
 
     private ImageLabelForm _dialogLabelForm;
     private List<AngleSolution> _orderedList;
-    
+
     /// <summary>
     /// Инициализирует новый экземпляр класса диалога для набора угла для заданного каталога.
     /// </summary>
-    /// <param name="catalog">Каталог.</param>
-    public AngleSet(Catalog catalog)
+    public AngleSet()
     {
         try
         {
             Init();
-            _catalog = catalog;
             _theDialogName = Path.Combine(ConfigDlx.FullDlxFolder, ConfigDlx.DlxAngle); 
 
             TheDialog = Config.TheUi.CreateDialog(_theDialogName);
@@ -314,6 +312,18 @@ public class AngleSet : DialogProgpam
     }
     
     //----------------------------------------------------------------------------------
+
+    protected override bool ShowCatalog()
+    {
+        CatalogForm catalogForm = new CatalogForm();
+        catalogForm.ShowDialog();
+        if (catalogForm.SelectedCatalog == null)
+        {
+            return false;
+        }
+        _catalog = catalogForm.SelectedCatalog;
+        return true;
+    }
 
     private void SetGostImages()
     {

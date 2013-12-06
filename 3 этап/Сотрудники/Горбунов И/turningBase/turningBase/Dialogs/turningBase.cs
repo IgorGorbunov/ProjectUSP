@@ -75,7 +75,7 @@ public sealed class TurningBase : DialogProgpam
     private Surface _projectSurface;
     private readonly List<Point3d> _projectList = new List<Point3d>();
 
-    private readonly Catalog _catalog;
+    private Catalog _catalog;
     private string _slotType;
     private double _diametr;
     private KeyValuePair<string, double>[] _bases;
@@ -94,15 +94,14 @@ public sealed class TurningBase : DialogProgpam
     private TouchAxe _touchAxe;
 
 
-    //------------------------------------------------------------------------------
-    //Constructor for NX Styler class
-    //------------------------------------------------------------------------------
-    public TurningBase(Catalog catalog)
+    /// <summary>
+    /// Инициализирует новый экземпляр класса диалога для выгрузки токарной базы.
+    /// </summary>
+    public TurningBase()
     {
         try
         {
             Init();
-            _catalog = catalog;
             _theDialogName = Path.Combine(ConfigDlx.FullDlxFolder, ConfigDlx.DlxTurningBase);
 
             TheDialog = Config.TheUi.CreateDialog(_theDialogName);
@@ -399,6 +398,20 @@ public sealed class TurningBase : DialogProgpam
             //---- Enter your exception handling code here -----
             Message.Show(ex);
         }
+    }
+
+    //---------------------------------------------------------------------------------
+
+    protected override bool ShowCatalog()
+    {
+        CatalogForm catalogForm = new CatalogForm();
+        catalogForm.ShowDialog();
+        if (catalogForm.SelectedCatalog == null)
+        {
+            return false;
+        }
+        _catalog = catalogForm.SelectedCatalog;
+        return true;
     }
 
     void SetBaseType()

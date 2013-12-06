@@ -17,7 +17,10 @@ public abstract class DialogProgpam
         try
         {
             Logger.WriteLine("~~~~~~~~~~ Запущен диалог " + GetType().Name);
-            TheDialog.Show();
+            if (ShowCatalog())
+            {
+                TheDialog.Show();
+            }
         }
         catch (TimeoutException)
         {
@@ -27,8 +30,17 @@ public abstract class DialogProgpam
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            Message.Show(ex);
+            Message.ShowError(ex);
         }
+    }
+
+    /// <summary>
+    /// Виртуальная функция для выбора каталога в диалогах там, где это необходимо.
+    /// </summary>
+    /// <returns></returns>
+    protected virtual bool ShowCatalog()
+    {
+        return true;
     }
 
     //------------------------------------------------------------------------------

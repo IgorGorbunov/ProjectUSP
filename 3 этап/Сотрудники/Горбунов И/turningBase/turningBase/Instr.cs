@@ -93,6 +93,26 @@ public static class Instr
     }
 
     /// <summary>
+    /// Добавляет объект в уникальный список.
+    /// </summary>
+    /// <param name="list">Список.</param>
+    /// <param name="obj">Объект.</param>
+    public static void AddUnicToList<T>(List<T> list, T obj)
+    {
+        bool alreadyHave = false;
+        foreach (T t in list)
+        {
+            if (!t.Equals(obj)) continue;
+
+            alreadyHave = true;
+            break;
+        }
+        if (alreadyHave) return;
+
+        list.Add(obj);
+    }
+
+    /// <summary>
     /// Возвращает экземпляр класса Image из массива байт.
     /// </summary>
     /// <param name="bytes">Массив байт.</param>

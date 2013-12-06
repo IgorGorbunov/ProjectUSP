@@ -23,7 +23,7 @@ public static class SqlTabUspData
     /// <summary>
     /// Возвращает столбец с главным диаметром элемента.
     /// </summary>
-    public const string CDiametr = "D";
+    public const string CDiametr = Name + "." + "d";
     /// <summary>
     /// Столбец с обозначением длины елемента.
     /// </summary>

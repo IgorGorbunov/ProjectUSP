@@ -54,13 +54,10 @@ public sealed class MilingBase : DialogProgpam
 
     private readonly string _theDialogName;
 
-    private UIBlock _group0; // Block type: Group
     private UIBlock _toggleRoundBase; // Block type: Toggle
     private UIBlock _enumSlotType; // Block type: Enumeration
-    private UIBlock _group01; // Block type: Group
     private UIBlock _toggleRectatgularBase; // Block type: Toggle
     private UIBlock _toggleSquareBase; // Block type: Toggle
-    private UIBlock _group02; // Block type: Group
     private UIBlock _selection0; // Block type: Selection
     private UIBlock _button0; // Block type: Selection
     private UIBlock _distanceGroup; // Block type: Group
@@ -72,7 +69,7 @@ public sealed class MilingBase : DialogProgpam
 
     //------------------------------------------
 
-    private readonly Catalog _catalog;
+    private Catalog _catalog;
 
     private Face _selectedFace;
 
@@ -105,21 +102,19 @@ public sealed class MilingBase : DialogProgpam
     private bool _firstMove = true;
 
     private readonly List<Vertex> _absolutePoints = new List<Vertex>();
-    private readonly List<Vertex> _projectPoints = new List<Vertex>(); 
+    private readonly List<Vertex> _projectPoints = new List<Vertex>();
 
 
     /// <summary>
     /// Инициализирует новый экземпляр класса диалога для выгрузки базовой плиты для фрезерки для
     /// заданного каталога.
     /// </summary>
-    /// <param name="catalog">Заданный каталог.</param>
-    public MilingBase(Catalog catalog)
+    public MilingBase()
     {
         try
         {
-            Init();
-            _catalog = catalog;
             _theDialogName = Path.Combine(ConfigDlx.FullDlxFolder, ConfigDlx.DlxMilingBase);
+            Init();
 
             TheDialog = Config.TheUi.CreateDialog(_theDialogName);
             TheDialog.AddApplyHandler(apply_cb);
@@ -212,13 +207,10 @@ public sealed class MilingBase : DialogProgpam
     {
         try
         {
-            _group0 = TheDialog.TopBlock.FindBlock("group0");
             _toggleRoundBase = TheDialog.TopBlock.FindBlock("toggle0");
             _enumSlotType = TheDialog.TopBlock.FindBlock("enum0");
-            _group01 = TheDialog.TopBlock.FindBlock("group01");
             _toggleRectatgularBase = TheDialog.TopBlock.FindBlock("toggle01");
             _toggleSquareBase = TheDialog.TopBlock.FindBlock("toggle02");
-            _group02 = TheDialog.TopBlock.FindBlock("group02");
             _selection0 = TheDialog.TopBlock.FindBlock("selection0");
             _button0 = TheDialog.TopBlock.FindBlock("button0");
             _distanceGroup = TheDialog.TopBlock.FindBlock("group");
@@ -465,6 +457,18 @@ public sealed class MilingBase : DialogProgpam
     }
 
     //-------------------------------------
+
+    protected override bool ShowCatalog()
+    {
+        CatalogForm catalogForm = new CatalogForm();
+        catalogForm.ShowDialog();
+        if (catalogForm.SelectedCatalog == null)
+        {
+            return false;
+        }
+        _catalog = catalogForm.SelectedCatalog;
+        return true;
+    }
 
     private void SetEnum(bool enable)
     {

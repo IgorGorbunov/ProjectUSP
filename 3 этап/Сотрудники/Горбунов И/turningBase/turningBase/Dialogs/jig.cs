@@ -35,7 +35,6 @@
 //These imports are needed for the following template code
 //------------------------------------------------------------------------------
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
@@ -83,7 +82,7 @@ public sealed class Jig : DialogProgpam
     private UspElement _workpiece;
 
     private string _gost;
-    private readonly Catalog _catalog;
+    private Catalog _catalog;
     private ImageSqlForm _jigPlanksForm;
     private int _sizeFormX, _sizeFormY;
 
@@ -91,15 +90,14 @@ public sealed class Jig : DialogProgpam
     private int _nSleeveColumns;
 
     private JigPlank _jigPlank;
-    private JigSleeve _quickJigSleeve;
+    private JigSleeve _jigSleeve;
     private Edge _thisEdge, _otherEdge;
     private bool _oneEdge;
 
-    private TouchAxe _touchAxeJigElement, _touchAxeSleeveJig;
-    private Touch _sleeveJigTouch;
+    private TouchAxe _touchAxeJigElement;
     private Distance _distanceConstr = new Distance();
     private double _recommendDistance, _realDistance;
-
+    private bool _sleeveIsQuick;
 
     private const double _DISTANCE_COEF = 0.4;
 
@@ -108,13 +106,11 @@ public sealed class Jig : DialogProgpam
     /// <summary>
     /// Инициализирует новый экземпляр класса диалога для установки кондуктора для заданного каталога.
     /// </summary>
-    /// <param name="catalog">Каталог.</param>
-    public Jig(Catalog catalog)
+    public Jig()
     {
         try
         {
             Init();
-            _catalog = catalog;
             _theDialogName = Path.Combine(ConfigDlx.FullDlxFolder, ConfigDlx.DlxJig);
 
             TheDialog = Config.TheUi.CreateDialog(_theDialogName);
@@ -307,14 +303,7 @@ public sealed class Jig : DialogProgpam
             {
                 //---------Enter your code here-----------
                 bool value = block.GetProperties().GetLogical("Value");
-                if (value)
-                {
-                    SetEnable(_button01, true);
-                }
-                else
-                {
-                    SetEnable(_button01, false);
-                }
+                SetEnable(_button01, value);
             }
             else if (block == _button01)
             {
@@ -326,14 +315,7 @@ public sealed class Jig : DialogProgpam
             {
                 //---------Enter your code here-----------
                 bool value = block.GetProperties().GetLogical("Value");
-                if (value)
-                {
-                    SetEnable(_double03, true);
-                }
-                else
-                {
-                    SetEnable(_double03, false);
-                }
+                SetEnable(_double03, value);
             }
             else if (block == _integer0)
             {
@@ -412,6 +394,18 @@ public sealed class Jig : DialogProgpam
     }
     
     //---------------------------------------------------------------------------------
+
+    protected override bool ShowCatalog()
+    {
+        CatalogForm catalogForm = new CatalogForm();
+        catalogForm.ShowDialog();
+        if (catalogForm.SelectedCatalog == null)
+        {
+            return false;
+        }
+        _catalog = catalogForm.SelectedCatalog;
+        return true;
+    }
 
     private void SetHeight(UIBlock block)
     {
@@ -552,7 +546,7 @@ public sealed class Jig : DialogProgpam
         try
         {
             DataTable sleeves = SqlUspElement.GetSleeves(_catalog, GetSleeveTypeConditions(), _gost);
-            KeyValuePair<string, double> bestSleeve = FilterSleeves(sleeves);
+            KeyValuePair<string, double> bestSleeve = GetBestSleeve(sleeves);
             if (_goodSleeves.Count > 0)
             {
                 double outDiametr = SqlUspElement.GetDiametr(_catalog, bestSleeve.Key);
@@ -560,8 +554,16 @@ public sealed class Jig : DialogProgpam
                 Katalog2005.Algorithm.SpecialFunctions.LoadPart(jigTitle, false);
                 _jigPlank = new JigPlank(Katalog2005.Algorithm.SpecialFunctions.LoadedPart);
                 Katalog2005.Algorithm.SpecialFunctions.LoadPart(bestSleeve.Key, false);
-                _quickJigSleeve =
-                    new QuickJigSleeve(Katalog2005.Algorithm.SpecialFunctions.LoadedPart);
+                Component sleeveComponent = Katalog2005.Algorithm.SpecialFunctions.LoadedPart;
+                if (_sleeveIsQuick)
+                {
+                    _jigSleeve = new QuickJigSleeve(sleeveComponent);
+                }
+                else
+                {
+                    _jigSleeve = new CommonJigSleeve(sleeveComponent);
+                }
+                
                 SetConstraints();
                 SetRecommendDistance();
                 SetEnable(_group01, true);
@@ -587,10 +589,10 @@ public sealed class Jig : DialogProgpam
                 NxFunctions.Delete(_jigPlank.ElementComponent);
                 _jigPlank = null;
             }
-            if (_quickJigSleeve != null)
+            if (_jigSleeve != null)
             {
-                NxFunctions.Delete(_quickJigSleeve.ElementComponent);
-                _quickJigSleeve = null;
+                NxFunctions.Delete(_jigSleeve.ElementComponent);
+                _jigSleeve = null;
             }
             Message.ShowError(
                 "Модель детали '" + exeption.Element.Title + "' не параметризирована!",
@@ -614,7 +616,7 @@ public sealed class Jig : DialogProgpam
         NxFunctions.FreezeDisplay();
 #endif
         _touchAxeJigElement = _jigPlank.SetOn(_workpiece.ElementComponent, _selectedFace.Face);
-        _quickJigSleeve.SetInJig(_jigPlank);
+        _jigSleeve.SetInJig(_jigPlank);
         SelectDistanceConstraint();
         NxFunctions.Update();
 #if (!DEBUG)
@@ -733,9 +735,9 @@ public sealed class Jig : DialogProgpam
 
     private void SetRecommendDistance()
     {
-        double sleeveWorkpieceLength = _DISTANCE_COEF * _quickJigSleeve.InnerDiametr;
+        double sleeveWorkpieceLength = _DISTANCE_COEF * _jigSleeve.InnerDiametr;
         Surface surface1 = new Surface(_jigPlank.SlotFace);
-        Surface surface2 = new Surface(_quickJigSleeve.BottomFace);
+        Surface surface2 = new Surface(_jigSleeve.BottomFace);
         _recommendDistance = sleeveWorkpieceLength + Math.Abs(surface1.GetDistance(surface2));
 
         _label02.GetProperties().SetString("Label", "Рекомендуемое расстояние - " + Config.Round(_recommendDistance));
@@ -764,9 +766,11 @@ public sealed class Jig : DialogProgpam
         {
             case "Быстросменные":
                 gost = SqlTabUspData.GetGost(SqlTabUspData.GostUsp.QuickSleeves, _catalog);
+                _sleeveIsQuick = true;
                 return " and " + SqlTabUspData.CGost + " = '" + gost + "'";
             case "Обычные":
                 gost = SqlTabUspData.GetGost(SqlTabUspData.GostUsp.Sleeves, _catalog);
+                _sleeveIsQuick = false;
                 return " and " + SqlTabUspData.CGost + " = '" + gost + "'";
         }
         return "";
@@ -777,18 +781,26 @@ public sealed class Jig : DialogProgpam
         return _instrDiametrBlock.GetProperties().GetDouble("Value");
     }
 
-    private KeyValuePair<string, double> FilterSleeves(DataTable sleeves)
+    private KeyValuePair<string, double> GetBestSleeve(DataTable sleeves)
+    {
+        FilterSleevesAndGetOutDiams(sleeves);
+        KeyValuePair<string, double> bestSleeve = SortSleeves();
+        return bestSleeve;
+    }
+
+    private List<double> FilterSleevesAndGetOutDiams(DataTable sleeves)
     {
         double diametr = GetDiametr();
         _goodSleeves.Clear();
         _nSleeveColumns = sleeves.Columns.Count;
+        List<double> outDiams = new List<double>();
 
         foreach (DataRow row in sleeves.Rows)
         {
             string[] split = row[1].ToString().Split(' ');
             double minD = Double.Parse(split[1]);
             double maxD = Double.Parse(split[3]);
-            if (minD >= diametr || maxD < diametr) 
+            if (minD >= diametr || maxD < diametr)
                 continue;
 
             string[] newRow = new string[_nSleeveColumns];
@@ -797,10 +809,9 @@ public sealed class Jig : DialogProgpam
                 newRow[i] = row[i].ToString();
             }
             _goodSleeves.Add(newRow);
+            Instr.AddUnicToList(outDiams, double.Parse(row[2].ToString()));
         }
-
-        KeyValuePair<string, double> bestSleeve = SortSleeves();
-        return bestSleeve;
+        return outDiams;
     }
 
     private KeyValuePair<string, double> SortSleeves()
@@ -825,16 +836,21 @@ public sealed class Jig : DialogProgpam
 
     private void ShowJigPlanks()
     {
-        Dictionary<string, string> param;
-        string query = SqlUspJigs.GetQueryJigTypes(_catalog, out param);
-        _jigPlanksForm = new ImageSqlForm(query, param, MouseClickEventHandler);
-        if (_sizeFormX != 0 && _sizeFormY != 0)
+        DataTable sleeves = SqlUspElement.GetSleeves(_catalog, GetSleeveTypeConditions());
+        List<double> sleeveDiams = FilterSleevesAndGetOutDiams(sleeves);
+        //if (_goodSleeves.Count > 0)
         {
-            _jigPlanksForm.Size = new Size(_sizeFormX, _sizeFormY);
+            Dictionary<string, string> param;
+            string query = SqlUspJigs.GetQueryJigTypes(_catalog, sleeveDiams, out param);
+            _jigPlanksForm = new ImageSqlForm(query, param, MouseClickEventHandler);
+            if (_sizeFormX != 0 && _sizeFormY != 0)
+            {
+                _jigPlanksForm.Size = new Size(_sizeFormX, _sizeFormY);
+            }
+            _jigPlanksForm.ShowDialog();
+            _sizeFormX = _jigPlanksForm.Size.Width;
+            _sizeFormY = _jigPlanksForm.Size.Height;
         }
-        _jigPlanksForm.ShowDialog();
-        _sizeFormX = _jigPlanksForm.Size.Width;
-        _sizeFormY = _jigPlanksForm.Size.Height;
     }
 
     private void MouseClickEventHandler(object sender, MouseEventArgs mouseEventArgs)

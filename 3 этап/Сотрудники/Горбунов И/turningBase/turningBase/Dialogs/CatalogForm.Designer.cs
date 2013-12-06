@@ -1,5 +1,4 @@
-namespace ProjectUsp.Dialogs
-{
+
     partial class CatalogForm
     {
         /// <summary>
@@ -38,40 +37,43 @@ namespace ProjectUsp.Dialogs
             // label1
             // 
             this.label1.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label1.Location = new System.Drawing.Point(-1, 9);
+            this.label1.Location = new System.Drawing.Point(12, 9);
             this.label1.Name = "label1";
             this.label1.Padding = new System.Windows.Forms.Padding(5);
-            this.label1.Size = new System.Drawing.Size(228, 56);
+            this.label1.Size = new System.Drawing.Size(199, 66);
             this.label1.TabIndex = 0;
             this.label1.Text = "Выберите серию деталей УСП, с которой Вы хотите работать.";
             // 
             // cat8Btn
             // 
-            this.cat8Btn.Location = new System.Drawing.Point(12, 54);
+            this.cat8Btn.Location = new System.Drawing.Point(22, 49);
             this.cat8Btn.Name = "cat8Btn";
             this.cat8Btn.Size = new System.Drawing.Size(75, 39);
             this.cat8Btn.TabIndex = 1;
             this.cat8Btn.Text = "8 паз\r\n2 серия";
             this.cat8Btn.UseVisualStyleBackColor = true;
+            this.cat8Btn.Click += new System.EventHandler(this.cat8Btn_Click);
             // 
             // cat12Btn
             // 
-            this.cat12Btn.Location = new System.Drawing.Point(93, 54);
+            this.cat12Btn.Location = new System.Drawing.Point(113, 49);
             this.cat12Btn.Name = "cat12Btn";
             this.cat12Btn.Size = new System.Drawing.Size(75, 39);
             this.cat12Btn.TabIndex = 2;
             this.cat12Btn.Text = "12 паз\r\n3 серия\r\n";
             this.cat12Btn.UseVisualStyleBackColor = true;
+            this.cat12Btn.Click += new System.EventHandler(this.cat12Btn_Click);
             // 
             // cancelBtn
             // 
             this.cancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelBtn.Location = new System.Drawing.Point(93, 108);
+            this.cancelBtn.Location = new System.Drawing.Point(113, 110);
             this.cancelBtn.Name = "cancelBtn";
             this.cancelBtn.Size = new System.Drawing.Size(75, 23);
             this.cancelBtn.TabIndex = 3;
             this.cancelBtn.Text = "Отмена";
             this.cancelBtn.UseVisualStyleBackColor = true;
+            this.cancelBtn.Click += new System.EventHandler(this.cancelBtn_Click);
             // 
             // CatalogForm
             // 
@@ -79,7 +81,7 @@ namespace ProjectUsp.Dialogs
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Gainsboro;
             this.CancelButton = this.cancelBtn;
-            this.ClientSize = new System.Drawing.Size(179, 142);
+            this.ClientSize = new System.Drawing.Size(210, 145);
             this.Controls.Add(this.cancelBtn);
             this.Controls.Add(this.cat12Btn);
             this.Controls.Add(this.cat8Btn);
@@ -103,4 +105,3 @@ namespace ProjectUsp.Dialogs
         private System.Windows.Forms.Button cat12Btn;
         private System.Windows.Forms.Button cancelBtn;
     }
-}

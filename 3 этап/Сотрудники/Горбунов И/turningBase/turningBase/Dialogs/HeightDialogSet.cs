@@ -37,7 +37,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Windows.Forms;
 using NXOpen;
 using NXOpen.Assemblies;
 using NXOpen.BlockStyler;
@@ -72,25 +71,21 @@ public sealed class HeightDialogSet : DialogProgpam
     private Face _face1, _face2;
     private bool _face1Selected, _face2Selected, _heightSetted;
 
-    private readonly Catalog _catalog;
+    private Catalog _catalog;
     private double _height;
     private const double _RESERVE_HEIGHT = 10;
 
     private HeightElement _firstElement;
 
-    
-
 
     /// <summary>
     /// Инициализирует новый экземпляр класса диалога для набора высоты для заданного каталога.
     /// </summary>
-    /// <param name="catalog">Каталог.</param>
-    public HeightDialogSet(Catalog catalog)
+    public HeightDialogSet()
     {
         try
         {
             Init();
-            _catalog = catalog;
             _theDialogName = Path.Combine(ConfigDlx.FullDlxFolder, ConfigDlx.DlxHeight);
 
             TheDialog = Config.TheUi.CreateDialog(_theDialogName);
@@ -403,6 +398,18 @@ public sealed class HeightDialogSet : DialogProgpam
     //    }
     //}
 
+    protected override bool ShowCatalog()
+    {
+        CatalogForm catalogForm = new CatalogForm();
+        catalogForm.ShowDialog();
+        if (catalogForm.SelectedCatalog == null)
+        {
+            return false;
+        }
+        _catalog = catalogForm.SelectedCatalog;
+        return true;
+    }
+
     private void SetBolt()
     {
         BoltFixElements = FixElements();
@@ -412,13 +419,13 @@ public sealed class HeightDialogSet : DialogProgpam
         Unfix(BoltFixElements);
     }
 
-    private Point3d GetPoint(UIBlock block)
-    {
-        Logger.WriteLine("Активирована кнопка постановки точки.");
-        Point3d point = block.GetProperties().GetPoint("Point");
-        Logger.WriteLine("Координаты точки", point);
-        return point;
-    }
+    //private Point3d GetPoint(UIBlock block)
+    //{
+    //    Logger.WriteLine("Активирована кнопка постановки точки.");
+    //    Point3d point = block.GetProperties().GetPoint("Point");
+    //    Logger.WriteLine("Координаты точки", point);
+    //    return point;
+    //}
 
     private void DoMagic()
     {
@@ -539,46 +546,61 @@ public sealed class HeightDialogSet : DialogProgpam
 
     private void LoadParts(List<string> partList)
     {
+        NxFunctions.FreezeDisplay();
         IEnumerable<UspElement> fixElements = null;
         if (!_heightSetted)
         {
             fixElements = FixElements();
         }
-        
-        int i = 0;
-        HeightElement[] elements = new HeightElement[partList.Count];
-        foreach (string s in partList)
+        Stack<Component> loadedElements = new Stack<Component>();
+        try
         {
-            Katalog2005.Algorithm.SpecialFunctions.LoadPart(s, false);
-            Component component = Katalog2005.Algorithm.SpecialFunctions.LoadedPart;
-            elements[i] = new HeightElement(component);
+            int i = 0;
+            HeightElement[] elements = new HeightElement[partList.Count];
+            foreach (string s in partList)
+            {
+                Katalog2005.Algorithm.SpecialFunctions.LoadPart(s, false);
+                Component component = Katalog2005.Algorithm.SpecialFunctions.LoadedPart;
+                loadedElements.Push(component);
+                elements[i] = new HeightElement(component);
 
-            if (i > 0)
-            {
-                elements[i].SetOn(elements[i - 1]);
-            }
-            else
-            {
-                _firstElement = elements[i];
-                if (!_heightSetted)
+                if (i > 0)
+                {
+                    elements[i].SetOn(elements[i - 1]);
+                }
+                else
+                {
+                    _firstElement = elements[i];
+                    if (!_heightSetted)
+                    {
+                        Touch touch = new Touch();
+                        touch.Create(_face1.OwningComponent, _face1, component,
+                                     elements[i].BottomFace);
+                        NxFunctions.Update();
+                    }
+                }
+
+                if (!_heightSetted && i == elements.Length - 1)
                 {
                     Touch touch = new Touch();
-                    touch.Create(_face1.OwningComponent, _face1, component, elements[i].BottomFace);
+                    touch.Create(_face2.OwningComponent, _face2, component, elements[i].TopFace);
                     NxFunctions.Update();
                 }
+                i++;
             }
-
-            if (!_heightSetted && i == elements.Length - 1)
-            {
-                Touch touch = new Touch();
-                touch.Create(_face2.OwningComponent, _face2, component, elements[i].TopFace);
-                NxFunctions.Update();
-            }
-            i++;
+        }
+        catch (ParamObjectNotFoundExeption e)
+        {
+            NxFunctions.Delete(loadedElements);
+            string mess = "Деталь '" + e.Element.Title + "' неверно параметризированна!" +
+                          Environment.NewLine;
+            mess += "Не найден параметр '" + e.NxObjectName + "'.";
+            Message.ShowError(mess);
         }
 
         Unfix(fixElements);
         SetEnable(_toggle0, false);
+        NxFunctions.UnFreezeDisplay();
     }
 
     private IEnumerable<UspElement> FixElements()

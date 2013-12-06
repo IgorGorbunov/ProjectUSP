@@ -329,6 +329,28 @@ static class SqlUspElement
         throw new TimeoutException();
     }
 
+    public static DataTable GetSleeves(Catalog catalog, string conditionType)
+    {
+        Dictionary<string, string> parametrs = new Dictionary<string, string>();
+        parametrs.Add("CAT", ((int)catalog.CatalogUsp).ToString());
+
+        string query = Sql.GetBegin(SqlTabUspData.CTitle,
+                                             SqlTabUspData.CInnerDiametr,
+                                             SqlTabUspData.CDiametr,
+                                             SqlTabUspData.CHeight);
+        query += "from " + SqlTabUspData.Name + " where " +
+                 SqlTabUspData.CCatalog + " = :CAT" +
+                 " and " + SqlTabUspData.ThereIs +
+                 conditionType;
+
+        DataTable dataTable;
+        if (SqlOracle.SelData(query, parametrs, out dataTable))
+        {
+            return dataTable;
+        }
+        throw new TimeoutException();
+    }
+
     public static double GetDiametr(Catalog catalog, string title)
     {
         Dictionary<string, string> parametrs = new Dictionary<string, string>();

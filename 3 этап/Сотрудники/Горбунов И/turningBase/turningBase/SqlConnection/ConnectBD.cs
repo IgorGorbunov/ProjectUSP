@@ -27,8 +27,7 @@ namespace Katalog2005
 
         private void ConnectBD_FormClosed(object sender, FormClosedEventArgs e)
         {
-            //me
-            (Owner).Close();
+
         }
 
         private void ConnectBD_Load(object sender, EventArgs e)

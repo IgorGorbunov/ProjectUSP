@@ -35,7 +35,6 @@
 //These imports are needed for the following template code
 //------------------------------------------------------------------------------
 using System;
-using System.Diagnostics;
 using System.IO;
 using NXOpen.BlockStyler;
 
@@ -185,36 +184,35 @@ public class Buttons : DialogProgpam
             else if(block == _button01)
             {
             //---------Enter your code here-----------
-                dialogProgpam = new TurningBase(new Catalog12());
+                dialogProgpam = new TurningBase();
             }
             else if(block == _button02)
             {
             //---------Enter your code here-----------
-                dialogProgpam = new MilingBase(new Catalog12());
+                dialogProgpam = new MilingBase();
             }
             else if(block == _button03)
             {
             //---------Enter your code here-----------
-                dialogProgpam = new Jig(new Catalog12());
+                dialogProgpam = new Jig();
             }
             else if (block == _button04)
             {
                 //---------Enter your code here-----------
-                dialogProgpam = new HeightDialogSet(new Catalog12());
+                dialogProgpam = new HeightDialogSet();
             }
             else if (block == _button05)
             {
                 //---------Enter your code here-----------
-                dialogProgpam = new AngleSet(new Catalog12());
+                dialogProgpam = new AngleSet();
             }
             else if (block == _button06)
             {
                 //---------Enter your code here-----------
                 dialogProgpam = new TurnElement();
             }
-
-            Debug.Assert(dialogProgpam != null, "dialogProgpam != null");
             dialogProgpam.Show();
+            
         }
         catch (TimeoutException ex)
         {
