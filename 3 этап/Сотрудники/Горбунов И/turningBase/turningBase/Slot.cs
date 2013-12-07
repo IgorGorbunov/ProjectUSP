@@ -207,8 +207,8 @@ public class Slot
         Edge[] edges = _slotSet.BottomFace.GetEdges();
         foreach (Edge edge in edges)
         {
-            if (Config.Round(edge.GetLength()) != SlotSet.UspElement.UspCatalog.SlotWidthB &&
-                Config.Round(edge.GetLength()) != SlotSet.UspElement.UspCatalog.PSlotWidth) continue;
+            if (Config.Round(edge.GetLength()) != SlotSet.SingleElement.UspCatalog.SlotWidthB &&
+                Config.Round(edge.GetLength()) != SlotSet.SingleElement.UspCatalog.PSlotWidth) continue;
             Face[] faces = edge.GetFaces();
             foreach (Face face in faces)
             {

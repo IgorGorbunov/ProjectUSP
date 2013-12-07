@@ -38,6 +38,17 @@ public class Touch : Constrainter
     /// <param name="secondFace">Грань со второго компонента.</param>
     public void Create(Face firstFace, Face secondFace)
     {
+        Create(firstFace, secondFace, "");
+    }
+
+    /// <summary>
+    /// Создание именнованного соединения между гранями двух компонентов.
+    /// </summary>
+    /// <param name="firstFace">Грань с первого компонента.</param>
+    /// <param name="secondFace">Грань со второго компонента.</param>
+    /// <param name="name">Наименование сопряжения.</param>
+    public void Create(Face firstFace, Face secondFace, string name)
+    {
         Constr = (ComponentConstraint)CompPositioner.CreateConstraint();
         Constr.ConstraintAlignment = Constraint.Alignment.ContraAlign;
         Constr.ConstraintType = Constraint.Type.Touch;
@@ -47,6 +58,7 @@ public class Touch : Constrainter
 
         Constr.CreateConstraintReference(secondFace.OwningComponent,
                                          secondFace, false, false, false);
+        Constr.SetName(name);
         ExecuteConstraints();
 
         string logMess = "Соединение касанием " + firstFace + " и " + secondFace;

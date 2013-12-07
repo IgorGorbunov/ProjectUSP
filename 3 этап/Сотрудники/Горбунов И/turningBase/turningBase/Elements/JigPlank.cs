@@ -6,7 +6,7 @@ using NXOpen.Assemblies;
 /// <summary>
 /// Класс кондукторных планок.
 /// </summary>
-public class JigPlank : UspElement
+public class JigPlank : SingleElement
 {
     /// <summary>
     /// Возвращает основную НГП кондукторной планки.
@@ -119,15 +119,18 @@ public class JigPlank : UspElement
         touchAxe.Create(ElementComponent, SleeveFace, component, face);
         return touchAxe;
     }
-
+    /// <summary>
+    /// Создаёт сопряжения кондукторной и складывающейся планки.
+    /// </summary>
+    /// <param name="fPlank"></param>
     public void SetOn(FoldingPlank fPlank)
     {
-        IEnumerable<UspElement> fixElements = NxFunctions.FixElements(this, null);
+        IEnumerable<SingleElement> fixElements = NxFunctions.FixElements(this, null);
         try
         {
 
             SlotTouch alongTouch = new SlotTouch(AlongSlot, fPlank.AlongSlot);
-            alongTouch.SetTouchFaceConstraint();
+            alongTouch.SetTouchFaceConstraint(Config.JigFoldingTouch);
 
             SlotConstraint alongConstraint2 = new SlotConstraint(AlongSlot, fPlank.AlongSlot);
             alongConstraint2.SetCenterConstraint2();
@@ -150,7 +153,7 @@ public class JigPlank : UspElement
 
     public void SetOn(HeightElement heightElement)
     {
-        IEnumerable<UspElement> fixElements = NxFunctions.FixElements(this, null);
+        IEnumerable<SingleElement> fixElements = NxFunctions.FixElements(this, null);
         try
         {
             Face holeFace = heightElement.HoleFace;

@@ -5,7 +5,7 @@ using NXOpen.Assemblies;
 /// <summary>
 /// Класс кондукторных элементов для набора высоты.
 /// </summary>
-public class HeightElement : UspElement
+public class HeightElement : SingleElement
 {
     /// <summary>
     /// Возвращает грань отверстия.
@@ -52,7 +52,7 @@ public class HeightElement : UspElement
     /// <summary>
     /// Возвращает паз на нижней грани элемента.
     /// </summary>
-    public Slot TopSlot
+    private Slot TopSlot
     {
         get
         {
@@ -63,7 +63,8 @@ public class HeightElement : UspElement
             return _topSlot;
         }
     }
-    public Slot TopSideSlot
+
+    private Slot TopSideSlot
     {
         get 
         { 
@@ -74,7 +75,7 @@ public class HeightElement : UspElement
     /// <summary>
     /// Возвращает паз на верхней грани элемента.
     /// </summary>
-    public Slot BottomSlot
+    private Slot BottomSlot
     {
         get
         {
@@ -85,7 +86,8 @@ public class HeightElement : UspElement
             return _bottomSlot;
         }
     }
-    public Slot BottomSideSlot
+
+    private Slot BottomSideSlot
     {
         get
         {
@@ -96,7 +98,7 @@ public class HeightElement : UspElement
     /// <summary>
     /// Возвращает true, если есть верхний небоковой паз.
     /// </summary>
-    public bool HasHorizontTopSlotSet
+    private bool HasHorizontTopSlotSet
     {
         get
         {
@@ -110,7 +112,7 @@ public class HeightElement : UspElement
     /// <summary>
     /// Возвращает true, если есть нижний небоковой паз.
     /// </summary>
-    public bool HasHorizontBottomSlotSet
+    private bool HasHorizontBottomSlotSet
     {
         get
         {
@@ -146,7 +148,7 @@ public class HeightElement : UspElement
     /// <summary>
     /// Обновление граней после Replacement.
     /// </summary>
-    public void Update()
+    private void Update()
     {
         SetFaces();
     }

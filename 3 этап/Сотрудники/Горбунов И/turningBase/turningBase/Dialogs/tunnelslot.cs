@@ -59,7 +59,7 @@ public sealed class Tunnelslot : DialogProgpam
 
     //---------------------------------------------------------------------------------
 
-    private UspElement _element1, _element2;
+    private SingleElement _element1, _element2;
     private Tunnel _tunnel1;
     private SlotSet _slotSet1, _slotSet2;
     private static Slot _slot1;
@@ -372,7 +372,7 @@ public sealed class Tunnelslot : DialogProgpam
         SetEnable(block, false);
         _point0.Focus();
     }
-    bool SetComponent(UIBlock block, ref UspElement element,
+    bool SetComponent(UIBlock block, ref SingleElement element,
                       Catalog anotherElementCatalog)
     {
         PropertyList propList = block.GetProperties();
@@ -387,7 +387,7 @@ public sealed class Tunnelslot : DialogProgpam
                 Logger.WriteLine("Объект - " + tagObs[0] +
                     " - " + parentComponent.Name);
 
-                element = new UspElement(parentComponent);
+                element = new SingleElement(parentComponent);
 
                 if (anotherElementCatalog != null)
                 {
@@ -445,7 +445,7 @@ public sealed class Tunnelslot : DialogProgpam
             _slot1.Unhighlight();
         }
     }
-    bool SetFace(UIBlock block, ref Tunnel tunnel, ref UspElement element)
+    bool SetFace(UIBlock block, ref Tunnel tunnel, ref SingleElement element)
     {
         PropertyList propertyList = block.GetProperties();
         TaggedObject[] to = propertyList.GetTaggedObjectVector("SelectedObjects");
@@ -454,7 +454,7 @@ public sealed class Tunnelslot : DialogProgpam
         if (to.Length > 0)
         {
             Face face = (Face) to[0];
-            element = new UspElement(face.OwningComponent);
+            element = new SingleElement(face.OwningComponent);
             if (2 * Geom.GetRadius(face) >= element.UspCatalog.Diametr)
             {
                 Logger.WriteLine("Грань выбрана - " + face);

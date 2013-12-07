@@ -4,7 +4,7 @@ using NXOpen.Assemblies;
 /// <summary>
 /// Класс кондукторных элементов для набора высоты.
 /// </summary>
-public class SmallAngleElement : UspElement
+public class SmallAngleElement : SingleElement
 {
     /// <summary>
     /// Возвращает верхнюю грань элемента.

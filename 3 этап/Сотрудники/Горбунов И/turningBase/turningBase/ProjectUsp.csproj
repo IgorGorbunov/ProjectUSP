@@ -139,8 +139,10 @@
     <Compile Include="Dialogs\tunnelslot.cs" />
     <Compile Include="Dialogs\turnElement.cs" />
     <Compile Include="ElementIntersection.cs" />
+    <Compile Include="Elements\FoldingPlanks\UpFoldingPlank.cs" />
+    <Compile Include="Elements\UADs\GroupElement.cs" />
     <Compile Include="Elements\JigSleeves\CommonJigSleeve.cs" />
-    <Compile Include="Elements\FoldingPlank.cs" />
+    <Compile Include="Elements\FoldingPlanks\FoldingPlank.cs" />
     <Compile Include="Elements\SlotTBolt.cs" />
     <Compile Include="Elements\SmallAngleElement.cs" />
     <Compile Include="Elements\BigAngleElement.cs" />
@@ -149,6 +151,7 @@
     <Compile Include="Elements\JigPlank.cs" />
     <Compile Include="Elements\JigSleeves\JigSleeve.cs" />
     <Compile Include="Elements\JigSleeves\QuickJigSleeve.cs" />
+    <Compile Include="Elements\UADs\UadElement.cs" />
     <Compile Include="Exeptions\BadQueryExeption.cs" />
     <Compile Include="Exeptions\PartNotFoundExeption.cs" />
     <Compile Include="Exeptions\PartAlreadyLoadedExeption.cs" />
@@ -258,7 +261,7 @@
     <Compile Include="Math\Straight.cs" />
     <Compile Include="Tunnel.cs" />
     <Compile Include="Dialogs\turningBase.cs" />
-    <Compile Include="Elements\UspElement.cs" />
+    <Compile Include="Elements\UADs\SingleElement.cs" />
     <Compile Include="Math\Vector.cs" />
   </ItemGroup>
   <ItemGroup>

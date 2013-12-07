@@ -4,8 +4,22 @@ using NXOpen.Assemblies;
 /// <summary>
 /// Класс складывающихся планок.
 /// </summary>
-public class FoldingPlank : UspElement
+public class FoldingPlank : GroupElement
 {
+    /// <summary>
+    /// Возвращает вернюю модель элемента УСП.
+    /// </summary>
+    public  UpFoldingPlank UpPlank
+    {
+        get
+        {
+            if (_upPlank == null)
+            {
+                SetAlongSlot();
+            }
+            return _upPlank;
+        }
+    }
     /// <summary>
     /// Возвращает поперечный паз.
     /// </summary>
@@ -35,6 +49,7 @@ public class FoldingPlank : UspElement
         }
     }
 
+    private UpFoldingPlank _upPlank;
     private Slot _acrossSlot, _alongSlot;
 
     /// <summary>
@@ -47,20 +62,34 @@ public class FoldingPlank : UspElement
         
     }
 
+    /// <summary>
+    /// Удаляет сопряжение касания между складывающейся и кондукторной планкой.
+    /// </summary>
+    public void DeleteJigTouch()
+    {
+        _upPlank.DeleteJigTouch();
+    }
+
 
     private void SetAcrossSlot()
     {
-        Edge slotEdge = GetEdge(Config.AcrossSlot);
+        Component upComponent;
+        Edge slotEdge = GetEdge(Config.UpAcrossSlot, out upComponent);
+        _upPlank = new UpFoldingPlank(upComponent, this);
+
         Point3d point1, point2;
         slotEdge.GetVertices(out point1, out point2);
-        _acrossSlot = GetNearestSlot(point1);
+        _acrossSlot = _upPlank.GetNearestSlot(point1);
     }
 
     private void SetAlongSlot()
     {
-        Edge slotEdge = GetEdge(Config.AlongSlot);
+        Component upComponent;
+        Edge slotEdge = GetEdge(Config.UpAlongSlot, out upComponent);
+        _upPlank = new UpFoldingPlank(upComponent, this);
+
         Point3d point1, point2;
         slotEdge.GetVertices(out point1, out point2);
-        _alongSlot = GetNearestSlot(point1);
+        _alongSlot = _upPlank.GetNearestSlot(point1);
     }
 }

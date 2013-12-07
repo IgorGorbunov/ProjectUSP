@@ -7,20 +7,35 @@ using NXOpen.Assemblies;
 public class ParamObjectNotFoundExeption : Exception
 {
     /// <summary>
-    /// Наименование детали.
+    /// Одномодельная деталь УСП.
     /// </summary>
-    public readonly UspElement Element;
+    public readonly SingleElement SingleElement;
+    /// <summary>
+    /// Многомодельная деталь УСП.
+    /// </summary>
+    public readonly GroupElement GroupElement;
     /// <summary>
     /// Наименование параметризированного объекта.
     /// </summary>
     public readonly string NxObjectName;
+    /// <summary>
+    /// Модель элемента УСП.
+    /// </summary>
+    public readonly UadElement Element;
 
     public ParamObjectNotFoundExeption()
     {
         
     }
 
-    public ParamObjectNotFoundExeption(UspElement element, string nxObjectName)
+    public ParamObjectNotFoundExeption(SingleElement element, string nxObjectName)
+    {
+        Element = element;
+        NxObjectName = nxObjectName;
+    }
+
+    public ParamObjectNotFoundExeption(string message, GroupElement element, string nxObjectName)
+        : base(message)
     {
         Element = element;
         NxObjectName = nxObjectName;
@@ -37,4 +52,6 @@ public class ParamObjectNotFoundExeption : Exception
     {
         NxObjectName = nxObjectName;
     }
+
+
 }

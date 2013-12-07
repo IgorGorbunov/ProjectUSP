@@ -318,7 +318,7 @@ public class SetBoltInSlot : DialogProgpam
         try
         {
             Point3d point = GetPoint(block);
-            UspElement element = NxFunctions.GetUnsuppressElement(point);
+            SingleElement element = NxFunctions.GetUnsuppressElement(point);
             Logger.WriteLine("Точка находится на компоненте ", element.ElementComponent.Name);
             Slot slot = element.GetNearestSlot(point);
             if (slot.Type == Config.SlotType.Pslot)

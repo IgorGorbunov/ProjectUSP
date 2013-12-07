@@ -64,7 +64,7 @@ public static class HeightSet
 
     private static void LoadParts(List<string> partList)
     {
-        IEnumerable<UspElement> fixElements = NxFunctions.FixElements(_lowFace.OwningComponent,
+        IEnumerable<SingleElement> fixElements = NxFunctions.FixElements(_lowFace.OwningComponent,
                                                                       _highFace.OwningComponent);
 
         int i = 0;

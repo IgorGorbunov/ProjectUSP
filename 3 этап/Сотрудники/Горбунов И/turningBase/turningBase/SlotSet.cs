@@ -56,7 +56,7 @@ public sealed class SlotSet
     /// <summary>
     /// Возвращает элемент УСП.
     /// </summary>
-    public UspElement UspElement
+    public SingleElement SingleElement
     {
         get { return _element; }
     }
@@ -82,13 +82,13 @@ public sealed class SlotSet
     Point3d _selectPoint;
 
 
-    readonly UspElement _element;
+    readonly SingleElement _element;
     
     /// <summary>
     /// Инициализирует новый экземпляр класса для заданного элемента УСП.
     /// </summary>
     /// <param name="element">Элемент УСП, на котором существует набор пазов.</param>
-    public SlotSet(UspElement element)
+    public SlotSet(SingleElement element)
     {
         _element = element;
     }
@@ -98,7 +98,7 @@ public sealed class SlotSet
     /// </summary>
     /// <param name="element">Элемент УСП, на котором существует набор пазов.</param>
     /// <param name="face">НГП пазов.</param>
-    public SlotSet(UspElement element, Face face)
+    public SlotSet(SingleElement element, Face face)
     {
         _element = element;
         _bottomFace = face;
@@ -503,6 +503,7 @@ public sealed class SlotSet
                     if (vec1.IsNormal(tempVec))
                     {
                         double length = tempVec.Length;
+
                         if (Config.Round(length) == _element.UspCatalog.PSlotWidth ||
                             Config.Round(length) == _element.UspCatalog.SlotWidthB ||
                             Config.Round(length) == 11.2) //расстояние П-паза в элементах набора малого угла в 12ом пазе

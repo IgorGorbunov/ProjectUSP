@@ -7,7 +7,7 @@ using NXOpen.Utilities;
 
 internal static class NxFunctions
 {
-    public static bool GetFace(TaggedObject[] to, UspElement element, out Face face)
+    public static bool GetFace(TaggedObject[] to, SingleElement element, out Face face)
     {
         TaggedObject t = to[0];
 
@@ -134,7 +134,7 @@ internal static class NxFunctions
     /// </summary>
     /// <param name="point">Точка НА компоненте.</param>
     /// <returns></returns>
-    public static UspElement GetUnsuppressElement(Point3d point)
+    public static SingleElement GetUnsuppressElement(Point3d point)
     {
         PartCollection collection = Config.TheSession.Parts;
         foreach (Part part in collection)
@@ -147,7 +147,7 @@ internal static class NxFunctions
                 Component component = (Component)NXObjectManager.Get(tag);
                 if (component.IsBlanked) continue;
 
-                UspElement element = new UspElement(component);
+                SingleElement element = new SingleElement(component);
 
                 double[] surrCoords = new double[3];
                 surrCoords[0] = point.X;
@@ -165,47 +165,54 @@ internal static class NxFunctions
         }
         return null;
     }
-
-    public static IEnumerable<UspElement> FixElements(UspElement element1, UspElement element2)
+    /// <summary>
+    /// Создаёт сопряжения фиксирования на заданных одномодельных элементах УСП, 
+    /// если таких сопряжений не было до вызова метода и возвращает список тех элементов 
+    /// на которые данные сопряжения были наложены в результате выполнения данного метода.
+    /// </summary>
+    /// <param name="element1">Первый одномодельный элемент УСП.</param>
+    /// <param name="element2">Второй одномодельный эелмент УСП.</param>
+    /// <returns></returns>
+    public static IEnumerable<SingleElement> FixElements(SingleElement element1, SingleElement element2)
     {
-        UspElement fixElement1 = null;
+        SingleElement fixElement1 = null;
         if (element1 != null)
         {
             bool firstElementIsFixed = element1.ElementComponent.IsFixed;
             if (!firstElementIsFixed)
             {
-                fixElement1 = new UspElement(element1.ElementComponent);
+                fixElement1 = new SingleElement(element1.ElementComponent);
                 fixElement1.Fix();
             }
         }
 
-        UspElement fixElement2 = null;
+        SingleElement fixElement2 = null;
         if (element2 != null)
         {
             bool secondElementIsFixed = element2.ElementComponent.IsFixed;
             if (!secondElementIsFixed)
             {
-                fixElement2 = new UspElement(element2.ElementComponent);
+                fixElement2 = new SingleElement(element2.ElementComponent);
                 fixElement2.Fix();
             }
         }
         Update();
-        UspElement[] array = { fixElement1, fixElement2 };
+        SingleElement[] array = { fixElement1, fixElement2 };
         return array;
     }
 
-    public static IEnumerable<UspElement> FixElements(Component component1, Component component2)
+    public static IEnumerable<SingleElement> FixElements(Component component1, Component component2)
     {
-        UspElement element1 = new UspElement(component1);
-        UspElement element2 = new UspElement(component2);
+        SingleElement element1 = new SingleElement(component1);
+        SingleElement element2 = new SingleElement(component2);
         return FixElements(element1, element2);
     }
 
-    public static void Unfix(IEnumerable<UspElement> uspElements)
+    public static void Unfix(IEnumerable<SingleElement> uspElements)
     {
         if (uspElements == null)
             return;
-        foreach (UspElement uspElement in uspElements)
+        foreach (SingleElement uspElement in uspElements)
         {
             if (uspElement != null)
             {

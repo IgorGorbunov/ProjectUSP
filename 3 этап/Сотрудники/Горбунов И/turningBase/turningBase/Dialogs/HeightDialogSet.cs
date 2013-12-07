@@ -55,7 +55,7 @@ public sealed class HeightDialogSet : DialogProgpam
 
     public static bool BoltAdded;
 
-    public static IEnumerable<UspElement> BoltFixElements;
+    public static IEnumerable<SingleElement> BoltFixElements;
 
     //class members
     private readonly string _theDialogName;
@@ -547,7 +547,7 @@ public sealed class HeightDialogSet : DialogProgpam
     private void LoadParts(List<string> partList)
     {
         NxFunctions.FreezeDisplay();
-        IEnumerable<UspElement> fixElements = null;
+        IEnumerable<SingleElement> fixElements = null;
         if (!_heightSetted)
         {
             fixElements = FixElements();
@@ -603,33 +603,33 @@ public sealed class HeightDialogSet : DialogProgpam
         NxFunctions.UnFreezeDisplay();
     }
 
-    private IEnumerable<UspElement> FixElements()
+    private IEnumerable<SingleElement> FixElements()
     {
-        UspElement element1 = null;
+        SingleElement element1 = null;
         bool firstElementIsFixed = _face1.OwningComponent.IsFixed;
         if (!firstElementIsFixed)
         {
-            element1 = new UspElement(_face1.OwningComponent);
+            element1 = new SingleElement(_face1.OwningComponent);
             element1.Fix();
         }
 
-        UspElement element2 = null;
+        SingleElement element2 = null;
         bool secondElementIsFixed = _face2.OwningComponent.IsFixed;
         if (!secondElementIsFixed)
         {
-            element2 = new UspElement(_face2.OwningComponent);
+            element2 = new SingleElement(_face2.OwningComponent);
             element2.Fix();
         }
         NxFunctions.Update();
-        UspElement[] array = {element1, element2};
+        SingleElement[] array = {element1, element2};
         return array;
     }
 
-    public static void Unfix(IEnumerable<UspElement> uspElements)
+    public static void Unfix(IEnumerable<SingleElement> uspElements)
     {
         if (uspElements == null)
             return;
-        foreach (UspElement uspElement in uspElements)
+        foreach (SingleElement uspElement in uspElements)
         {
             if (uspElement != null)
             {

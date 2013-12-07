@@ -25,9 +25,24 @@ public sealed class Program
 
             _form = new SootherForm();
             _form.Show();
+
+            try
+            {
+                SootherForm._startProgram = new Buttons();
+                SootherForm._startProgram.Show();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                string mess = "Не удалось выгрузить файлы на диск!" + Environment.NewLine + "Доступ запрещён!";
+                Message.ShowError(mess);
+            }
+            catch (TimeoutException ex)
+            {
+                const string mess = "Нет соединения с БД!";
+                Logger.WriteError(mess, ex);
+            }
             // The following method shows the dialog immediately
-            
-            //_startProgram.Show();
+
             Logger.WriteLine("--------------------------------------------------" + " Конец работы программы ");
         }
         catch (Exception ex)

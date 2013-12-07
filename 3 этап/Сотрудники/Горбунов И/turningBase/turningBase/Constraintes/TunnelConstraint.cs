@@ -10,7 +10,7 @@ public sealed class TunnelConstraint
 
     readonly Tunnel _firstTunnel;
     readonly Slot _slot;
-    private readonly UspElement _fixture = null;
+    private readonly SingleElement _fixture = null;
 
      Touch _touchConstr;
 

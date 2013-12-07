@@ -82,8 +82,8 @@ public sealed class MilingBase : DialogProgpam
     private bool _isSquareBase = true;
     private bool _baseIsLoaded;
 
-    private UspElement _someAlignElement;
-    private UspElement _someParalElement;
+    private SingleElement _someAlignElement;
+    private SingleElement _someParalElement;
     private Parallel _topParallel;
     private Parallel _sideParallel;
 
@@ -563,7 +563,7 @@ public sealed class MilingBase : DialogProgpam
         if ((_alignFace1 == null) || (_alignFace2 == null))
             return;
 
-        _someAlignElement = new UspElement(_alignFace1.OwningComponent);
+        _someAlignElement = new SingleElement(_alignFace1.OwningComponent);
         bool isFixed = _someAlignElement.ElementComponent.IsFixed;
         bool isSomeFixed = _someParalElement.ElementComponent.IsFixed;
 
@@ -639,7 +639,7 @@ public sealed class MilingBase : DialogProgpam
                 Component component = (Component) NXObjectManager.Get(tag);
                 if (component.IsBlanked) continue;
 
-                UspElement element = new UspElement(component);
+                SingleElement element = new SingleElement(component);
 
                 double[] minCorner = new double[3];
                 double[] distances = new double[3];
@@ -867,7 +867,7 @@ public sealed class MilingBase : DialogProgpam
                     if (component.IsBlanked) continue;
                     if (component == _base.ElementComponent) continue;
 
-                    UspElement element = new UspElement(component);
+                    SingleElement element = new SingleElement(component);
                     Face[] faces = element.Body.GetFaces();
                     foreach (Face face in faces)
                     {
@@ -884,7 +884,7 @@ public sealed class MilingBase : DialogProgpam
         Exit:
 
         Debug.Assert(_selectedFace != null, "_selectedFace != null");
-        _someParalElement = new UspElement(_selectedFace.OwningComponent);
+        _someParalElement = new SingleElement(_selectedFace.OwningComponent);
         bool isFixed = _someParalElement.ElementComponent.IsFixed;
 
         if (!isFixed)

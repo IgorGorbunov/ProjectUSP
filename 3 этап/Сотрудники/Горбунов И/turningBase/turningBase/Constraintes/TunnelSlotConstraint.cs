@@ -16,9 +16,9 @@ public sealed class TunnelSlotConstraint
     private Fix _fixConstr;
     private TouchAxe _touchAxe;
 
-    private readonly UspElement _firstElement;
-    private readonly UspElement _secondElement;
-    private UspElement _fixture;
+    private readonly SingleElement _firstElement;
+    private readonly SingleElement _secondElement;
+    private SingleElement _fixture;
 
     private readonly Tunnel _tunnel;
     private readonly Slot _slot;
@@ -36,8 +36,8 @@ public sealed class TunnelSlotConstraint
     /// <param name="tunnel">Базовое отверстие на первом элементе УСП.</param>
     /// <param name="secondElement">Второй элемент УСП.</param>
     /// <param name="slot">Паз на втором элементе УСП.</param>
-    public TunnelSlotConstraint(UspElement firstElement, Tunnel tunnel,
-                         UspElement secondElement, Slot slot)
+    public TunnelSlotConstraint(SingleElement firstElement, Tunnel tunnel,
+                         SingleElement secondElement, Slot slot)
     {
         _tunnel = tunnel;
         _slot = slot;
@@ -265,7 +265,7 @@ public sealed class TunnelSlotConstraint
         }
 
         Katalog2005.Algorithm.SpecialFunctions.LoadPart(title, false);
-        _fixture = new UspElement(Katalog2005.Algorithm.SpecialFunctions.LoadedPart);
+        _fixture = new SingleElement(Katalog2005.Algorithm.SpecialFunctions.LoadedPart);
     }
 
     void SetFixtureFaces()

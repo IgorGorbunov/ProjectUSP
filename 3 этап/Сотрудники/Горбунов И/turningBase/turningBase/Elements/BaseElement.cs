@@ -4,7 +4,7 @@ using NXOpen.Assemblies;
 /// <summary>
 /// Класс базовых плит.
 /// </summary>
-public class BaseElement : UspElement
+public class BaseElement : SingleElement
 {
     /// <summary>
     /// Возвращает основную НГП базовой плиты.

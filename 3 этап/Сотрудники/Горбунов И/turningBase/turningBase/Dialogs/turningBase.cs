@@ -71,6 +71,7 @@ public sealed class TurningBase : DialogProgpam
     private bool _faceSelected;
     private bool _partIsLoaded;
     private bool _isFixed = true;
+    private bool _enumWasClicked;
 
     private Surface _projectSurface;
     private readonly List<Point3d> _projectList = new List<Point3d>();
@@ -81,10 +82,10 @@ public sealed class TurningBase : DialogProgpam
     private KeyValuePair<string, double>[] _bases;
 
     private Face _turningFace;
-    private UspElement _turningElement;
+    private SingleElement _turningElement;
 
     private Face _baseFace;
-    private UspElement _baseElement;
+    private SingleElement _baseElement;
     private string _newTitle;
     private double _newDiametr;
 
@@ -270,7 +271,9 @@ public sealed class TurningBase : DialogProgpam
             {
                 //---------Enter your code here-----------
                 Logger.WriteLine("Нажат выбор типа паза.");
+                _enumWasClicked = true;
                 UpdateLoad(block);
+                _enumWasClicked = false;
             }
             else if (block == _direction0)
             {
@@ -485,7 +488,7 @@ public sealed class TurningBase : DialogProgpam
 
                 if (_turningFace.IsOccurrence)
                 {
-                    _turningElement = new UspElement(_turningFace.OwningComponent);
+                    _turningElement = new SingleElement(_turningFace.OwningComponent);
                     _isFixed = _turningElement.ElementComponent.IsFixed;
                     if (!_isFixed)
                     {
@@ -509,8 +512,6 @@ public sealed class TurningBase : DialogProgpam
         return false;
     }
 
-    
-
     void SetPoints()
     {
         PartCollection partCollection = Config.TheSession.Parts;
@@ -526,7 +527,7 @@ public sealed class TurningBase : DialogProgpam
                 Component component = (Component)NXObjectManager.Get(tag);
                 if (component.IsBlanked) continue;
 
-                UspElement element = new UspElement(component);
+                SingleElement element = new SingleElement(component);
 
                 double[] minCorner = new double[3];
                 double[] distances = new double[3];
@@ -650,16 +651,13 @@ public sealed class TurningBase : DialogProgpam
         {
             if (!_faceSelected) return;
 
+            double[] threeBases;
             string title;
-            double[] threeBases = new double[3];
-
             if (_partIsLoaded)
             {
-                if (block == _enum0)
-                {
-                    SetBaseType();
-                    _bases = GetAllBases();
-                }
+                SetBaseType();
+                _bases = GetAllBases();
+                threeBases = GetThreeBases(_bases, _diametr, out title);
 
                 if (block.Type != "Button")
                 {
@@ -667,22 +665,18 @@ public sealed class TurningBase : DialogProgpam
                     _newTitle = GetTitle(_newDiametr);
                 }
 
-#if(!DEBUG)
-            NxFunctions.FreezeDisplay();
-#endif
-
+                NxFunctions.FreezeDisplay();
                 if (Config.Round(_globeDirection.GetAngle(_moveDirection)) != 0)
                 {
                     _touchAxe.Reverse();
                     NxFunctions.Update();
                 }
 
-                //ReplaceComponent(_newTitle);
                 try
                 {
                     Component newComponent =
                         Replacement.ReplaceByTitle(_baseElement.ElementComponent, _newTitle);
-                    _baseElement = new UspElement(newComponent);
+                    _baseElement = new SingleElement(newComponent);
 
 
 
@@ -705,9 +699,10 @@ public sealed class TurningBase : DialogProgpam
                     comps[0] = _baseElement.ElementComponent;
                     NxFunctions.Delete(comps);
                 }
-#if(!DEBUG)
-            NxFunctions.UnFreezeDisplay();
-#endif
+                finally
+                {
+                    NxFunctions.UnFreezeDisplay();
+                }
 
             }
             else
@@ -745,17 +740,31 @@ public sealed class TurningBase : DialogProgpam
         {
             string mess = "Модель детали '" + ex.Message + "' не загружена в базу данных!";
             Message.ShowError(mess);
-            _faceSelected = false;
-            SetEnable(_selection0, true);
-            UnSelectObjects(_selection0);
-            SetEnable(_group1, false);
-            SetEnable(_group, false);
-            _selection0.Focus();
+            if (!_partIsLoaded)
+            {
+                _faceSelected = false;
+                SetEnable(_selection0, true);
+                UnSelectObjects(_selection0);
+                SetEnable(_group1, false);
+                SetEnable(_group, false);
+                _selection0.Focus();
+            }
+            else
+            {
+                if (_enumWasClicked)
+                {
+                    int i = _enum0.GetProperties().GetEnum("Value");
+                    _enum0.GetProperties().SetEnum("Value", i == 0 ? 1 : 0);
+
+                    SetBaseType();
+                    _bases = GetAllBases();
+                }
+            }
         }  
         catch (ParamObjectNotFoundExeption ex)
         {
             Component[] comps = new Component[1];
-            comps[0] = ex.Element.ElementComponent;
+            comps[0] = ex.SingleElement.ElementComponent;
             NxFunctions.Delete(comps);
             Message.ShowError("Деталь " + ex.Element.Title + " не параметризирована!" +
                               Environment.NewLine + "Объект " + ex.NxObjectName + " не найден!");
@@ -813,7 +822,7 @@ public sealed class TurningBase : DialogProgpam
 
     void SetConstraints()
     {
-        UspElement newElement = new UspElement(Katalog2005.Algorithm.SpecialFunctions.LoadedPart);
+        SingleElement newElement = new SingleElement(Katalog2005.Algorithm.SpecialFunctions.LoadedPart);
         _baseFace = newElement.GetFace(Config.BaseHoleName);
         _baseElement = newElement;
 

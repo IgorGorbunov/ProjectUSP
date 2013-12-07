@@ -97,9 +97,9 @@ namespace Katalog2005
                         //отображение информации на форме
                         //me
                         //((Katalog)this.Owner).ViewInform();
-
+                        Close();
                         ((SootherForm)Owner).Start();
-                        //Close();
+                        //
                     }
                     else
                     {

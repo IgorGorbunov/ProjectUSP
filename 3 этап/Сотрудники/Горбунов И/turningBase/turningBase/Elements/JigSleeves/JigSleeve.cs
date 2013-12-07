@@ -4,7 +4,7 @@ using NXOpen.Assemblies;
 /// <summary>
 /// Класс кондукторных втулок.
 /// </summary>
-public class JigSleeve : UspElement
+public class JigSleeve : SingleElement
 {
     /// <summary>
     /// Возвращает грань для центрирования втулки в кондукторной планке.

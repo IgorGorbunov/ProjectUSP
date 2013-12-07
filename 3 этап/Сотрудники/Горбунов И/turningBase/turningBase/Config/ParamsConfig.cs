@@ -86,6 +86,21 @@ public static partial class Config
     /// Наименование второй боковой грани отверстия в продольном пазе элемента.
     /// </summary>
     public const string HoleSide1 = "HOLE_SIDE_1";
+    /// <summary>
+    /// Наименование бокового ребра поперечного паза верхнего элемента складывающейся планки.
+    /// </summary>
+    public const string UpAcrossSlot = "UP_ACROSS_SLOT";
+    /// <summary>
+    /// Наименование бокового ребра продольного паза верхнего элемента складывающейся планки.
+    /// </summary>
+    public const string UpAlongSlot = "UP_ALONG_SLOT";
+
+    //----------------------- Constraints ----------------------------------
+
+    /// <summary>
+    /// Наименование сопряжения касания между кондукторной и складывающейся планки.
+    /// </summary>
+    public const string JigFoldingTouch = "JIG+FOLDING";
 
 
 }

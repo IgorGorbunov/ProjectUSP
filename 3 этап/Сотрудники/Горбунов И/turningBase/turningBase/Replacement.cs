@@ -61,6 +61,7 @@ public static class Replacement
         }
 
         Config.TheUfSession.Obj.CycleByNameAndType(Config.WorkPart.Tag, findName, UFConstants.UF_component_type, true, ref newCompTag);
+        //Message.Tst();
         Component newConmponent = (Component)NXObjectManager.Get(newCompTag);
         newConmponent.SetName(uniqueName);
         return newConmponent;

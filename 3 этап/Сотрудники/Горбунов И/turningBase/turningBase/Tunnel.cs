@@ -88,7 +88,7 @@ public class Tunnel
     Slot _slot;
 
     Face _face;
-    readonly UspElement _element;
+    readonly SingleElement _element;
 
     readonly double[] _direction = new double[3];
 
@@ -100,7 +100,7 @@ public class Tunnel
     /// </summary>
     /// <param name="face">Грань для базирования.</param>
     /// <param name="element">Элемент УСП для данной грани.</param>
-    public Tunnel(Face face, UspElement element)
+    public Tunnel(Face face, SingleElement element)
     {
         _face = face;
         _element = element;

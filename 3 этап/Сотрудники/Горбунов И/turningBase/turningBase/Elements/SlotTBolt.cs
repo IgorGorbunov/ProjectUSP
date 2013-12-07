@@ -7,7 +7,7 @@ using NXOpen.Assemblies;
 /// <summary>
 /// Класс Т-образных болтов.
 /// </summary>
-public class SlotTBolt : UspElement
+public class SlotTBolt : SingleElement
 {
 
     private Face _tunnelFace, _bottomFace;
@@ -62,7 +62,7 @@ public class SlotTBolt : UspElement
         bool isFixed = slot.ParentComponent.IsFixed;
         if (!isFixed)
         {
-            slot.SlotSet.UspElement.Fix();
+            slot.SlotSet.SingleElement.Fix();
             NxFunctions.Update();
         }
 
@@ -74,13 +74,13 @@ public class SlotTBolt : UspElement
 
         if (isFixed) 
             return;
-        slot.SlotSet.UspElement.Unfix();
+        slot.SlotSet.SingleElement.Unfix();
         NxFunctions.Update();
     }
 
     private void SetJigConstraints(JigPlank jigPlank)
     {
-        IEnumerable<UspElement> fixedElements = NxFunctions.FixElements(jigPlank, null);
+        IEnumerable<SingleElement> fixedElements = NxFunctions.FixElements(jigPlank, null);
         try
         {
             Face holeFace = jigPlank.HoleFace;
@@ -96,7 +96,7 @@ public class SlotTBolt : UspElement
 
     private void SetHeightConstraints(HeightElement heightElement)
     {
-        IEnumerable<UspElement> fixedElements = NxFunctions.FixElements(this, null);
+        IEnumerable<SingleElement> fixedElements = NxFunctions.FixElements(this, null);
         try
         {
             Face holeFace = heightElement.HoleFace;

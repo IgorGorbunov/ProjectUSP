@@ -4,7 +4,7 @@ using NXOpen.Assemblies;
 /// <summary>
 /// Класс элементов УСП для набора больших углов.
 /// </summary>
-public class BigAngleElement : UspElement
+public class BigAngleElement : SingleElement
 {
     /// <summary>
     /// Возвращает нижнюю грань элемента.

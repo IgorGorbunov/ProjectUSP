@@ -479,12 +479,12 @@ public class AngleSet : DialogProgpam
     private void LoadParts(List<string> list, Stack<Component> loadedElements)
     {
         bool notFirst = false;
-        UspElement prevElement = null;
-        UspElement firstElement = null;
+        SingleElement prevElement = null;
+        SingleElement firstElement = null;
         foreach (string s in list)
         {
             Katalog2005.Algorithm.SpecialFunctions.LoadPart(s, false);
-            UspElement element = new UspElement(Katalog2005.Algorithm.SpecialFunctions.LoadedPart);
+            SingleElement element = new SingleElement(Katalog2005.Algorithm.SpecialFunctions.LoadedPart);
             loadedElements.Push(element.ElementComponent);
 
             if (element.IsBiqAngleElement)
@@ -516,7 +516,7 @@ public class AngleSet : DialogProgpam
         }
     }
 
-    private void SetAngleConstraint(UspElement first, UspElement last)
+    private void SetAngleConstraint(SingleElement first, SingleElement last)
     {
         BigAngleElement firstElement = new BigAngleElement(first.ElementComponent);
         SmallAngleElement lastElement = new SmallAngleElement(last.ElementComponent);
@@ -535,7 +535,7 @@ public class AngleSet : DialogProgpam
         //}
     }
 
-    private void AlongSlotReverse(UspElement first)
+    private void AlongSlotReverse(SingleElement first)
     {
         bool isFixed = first.ElementComponent.IsFixed;
         if (!isFixed)

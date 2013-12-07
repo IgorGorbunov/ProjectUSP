@@ -28,7 +28,7 @@ class SlotTouch
     /// <summary>
     /// Производит соединение двух деталей по ортогональным пазам плоскостям.
     /// </summary> 
-    public void SetTouchFaceConstraint()
+    public void SetTouchFaceConstraint(string constraintName)
     {
         KeyValuePair<Face, double>[] pairs1 = _firstSlot.OrtFaces;
         KeyValuePair<Face, double>[] pairs2 = _secondSlot.OrtFaces;
@@ -42,7 +42,7 @@ class SlotTouch
                                                                 "SetTouch");
 
                 _touchConstr = new Touch();
-                _touchConstr.Create(pairs1[j].Key, pairs2[i].Key);
+                _touchConstr.Create(pairs1[j].Key, pairs2[i].Key, constraintName);
                 MoveToEachOther(pairs1[j].Key, pairs2[i].Key);
 
                 if (intersect.TouchExists)

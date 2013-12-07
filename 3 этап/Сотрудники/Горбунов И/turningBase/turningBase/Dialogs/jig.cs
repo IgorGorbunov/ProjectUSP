@@ -79,7 +79,7 @@ public sealed class Jig : DialogProgpam
     public static FoldingPlank FPlank;
 
     private Surface _selectedFace;
-    private UspElement _workpiece;
+    private SingleElement _workpiece;
 
     private string _gost;
     private Catalog _catalog;
@@ -409,13 +409,13 @@ public sealed class Jig : DialogProgpam
 
     private void SetHeight(UIBlock block)
     {
-        Face[] faces = GetTouchFoldJigFaces();
-        FPlank.ClearConstraint(Constraint.Type.Touch);
+        Face[] faces = GetFoldJigTouchFaces();
+        FPlank.DeleteJigTouch();
         HeightElement firstElement, lastElement;
         if (HeightSet.SetHeight(faces[0], faces[1], block.GetProperties().GetDouble("Value"),
                                 ElementType.HeightBySquare, false, _catalog, out firstElement, out lastElement))
         {
-            IEnumerable<UspElement> fixElements = NxFunctions.FixElements(FPlank, null);
+            IEnumerable<SingleElement> fixElements = NxFunctions.FixElements(FPlank.UpPlank, null);
             try
             {
                 _jigPlank.SetOn(firstElement);
@@ -449,7 +449,7 @@ public sealed class Jig : DialogProgpam
         }
     }
 
-    private Face[] GetTouchFoldJigFaces()
+    private Face[] GetFoldJigTouchFaces()
     {
         ComponentConstraint[] constraints = FPlank.ElementComponent.GetConstraints();
         foreach (ComponentConstraint componentConstraint in constraints)
@@ -458,7 +458,7 @@ public sealed class Jig : DialogProgpam
                 continue;
 
             List<NXObject> foreignFaces;
-            List<NXObject> ownfaces = FPlank.GetConstraintObjects(componentConstraint, out foreignFaces);
+            List<NXObject> ownfaces = FPlank.UpPlank.GetConstraintObjects(componentConstraint, out foreignFaces);
             Face[] faces = new Face[2];
             faces[0] = (Face) ownfaces[0];
             faces[1] = (Face) foreignFaces[0];
@@ -526,7 +526,7 @@ public sealed class Jig : DialogProgpam
     {
         TaggedObject[] taggedObjects = block.GetProperties().GetTaggedObjectVector("SelectedObjects");
         _selectedFace = new Surface((Face) taggedObjects[0]);
-        _workpiece = new UspElement(_selectedFace.Face.OwningComponent);
+        _workpiece = new SingleElement(_selectedFace.Face.OwningComponent);
 
         Logger.WriteLine("Выбран объект " + _selectedFace.Face);
 
