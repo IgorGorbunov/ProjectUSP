@@ -250,7 +250,7 @@ public class JigPlank : SingleElement
         KeyValuePair<Face, double>[] faces = jigSlot.OrtFaces;
         Touch touch = new Touch();
         //нижняя грань кондукторной планки + верхняя грань складывающейся планки
-        touch.Create(faces[faces.Length - 1].Key, fPlank.TopFace);
+        touch.Create(faces[faces.Length - 1].Key, fPlank.TopFace, Config.JigFoldingTouch);
 
         Center centerAxe = new Center();
         centerAxe.CreateAxe12(fPlank.HoleFace, HoleAxesFaces[0], HoleAxesFaces[1]);
@@ -296,7 +296,7 @@ public class JigPlank : SingleElement
         KeyValuePair<Face, double>[] faces = jigSlot.OrtFaces;
         Touch touch = new Touch();
         //нижняя грань кондукторной планки + верхняя грань складывающейся планки
-        touch.Create(faces[faces.Length - 1].Key, fPlank.TopFace);
+        touch.Create(faces[faces.Length - 1].Key, fPlank.TopFace, Config.JigFoldingTouch);
 
         TouchAxe touchAxe = new TouchAxe();
         touchAxe.Create(HoleFace, fPlank.HoleFace);
@@ -355,8 +355,19 @@ public class JigPlank : SingleElement
         try
         {
             Face holeFace = heightElement.HoleFace;
-            TouchAxe touchAxe = new TouchAxe();
-            touchAxe.Create(HoleFace, holeFace);
+            if (WithLongHole)
+            {
+                Center center = new Center();
+                center.Create12(holeFace, HoleFace1, HoleFace2);
+                Center centerAxe = new Center();
+                centerAxe.CreateAxe12(holeFace, HoleAxesFaces[0], HoleAxesFaces[1]);
+            }
+            else
+            {
+                TouchAxe touchAxe = new TouchAxe();
+                touchAxe.Create(HoleFace, holeFace);
+            }
+            NxFunctions.Update();
         }
         finally
         {

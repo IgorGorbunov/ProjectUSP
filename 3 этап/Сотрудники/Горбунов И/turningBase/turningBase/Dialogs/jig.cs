@@ -330,8 +330,7 @@ public sealed class Jig : DialogProgpam
         catch (Exception ex)
         {
             //---- Enter your exception handling code here -----
-            Config.TheUi.NXMessageBox.Show("Block Styler", NXMessageBox.DialogType.Error,
-                                           ex.ToString());
+            Message.ShowError(ex.ToString());
         }
         return 0;
     }
@@ -451,12 +450,12 @@ public sealed class Jig : DialogProgpam
 
     private Face[] GetFoldJigTouchFaces()
     {
-        ComponentConstraint[] constraints = FPlank.ElementComponent.GetConstraints();
+        ComponentConstraint[] constraints = FPlank.UpPlank.ElementComponent.GetConstraints();
         foreach (ComponentConstraint componentConstraint in constraints)
         {
-            if (componentConstraint.ConstraintType != Constraint.Type.Touch) 
+            if (componentConstraint.ConstraintType != Constraint.Type.Touch || 
+                componentConstraint.Name != Config.JigFoldingTouch) 
                 continue;
-
             List<NXObject> foreignFaces;
             List<NXObject> ownfaces = FPlank.UpPlank.GetConstraintObjects(componentConstraint, out foreignFaces);
             Face[] faces = new Face[2];

@@ -93,8 +93,8 @@ public class GroupElement : UadElement
             }
             catch (ParamObjectNotFoundExeption)
             {
-                Logger.WriteLine("В элементе '", singleElement.Title, "' сборочного элемента '",
-                    Title, "' ребро '", edgeName, "' не найдено.");
+                Logger.WriteLine("В элементе '" + singleElement.Title + "' сборочного элемента '" +
+                    Title + "' ребро '" + edgeName + "' не найдено.");
             }
             if (edge == null) 
                 continue;
@@ -124,8 +124,8 @@ public class GroupElement : UadElement
             }
             catch (ParamObjectNotFoundExeption)
             {
-                Logger.WriteLine("В элементе '", singleElement.Title, "' сборочного элемента '",
-                    Title, "' грань '", faceName, "' не найдена.");
+                Logger.WriteLine("В элементе '" + singleElement.Title + "' сборочного элемента '" +
+                    Title + "' грань '" + faceName + "' не найдена.");
             }
             if (face == null)
                 continue;
