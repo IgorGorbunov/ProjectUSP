@@ -360,7 +360,7 @@ public class TurnElement : DialogProgpam
             Point3d newPoint = GetTurn(point, angle);
             Slot newSlot = _element.GetNearestSlot(newPoint);
             Center center = new Center();
-            center.Create(newSlot, (Face)_otherElementObjects[0], (Face)_otherElementObjects[1]);
+            center.Create22(newSlot, (Face)_otherElementObjects[0], (Face)_otherElementObjects[1]);
 
             Vector rightSlotDirection = GetRightSlotDirection((Face) _otherElementObjects[0],
                                                               (Face) _otherElementObjects[1]);

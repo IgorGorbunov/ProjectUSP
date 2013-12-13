@@ -77,7 +77,7 @@ public class BigAngleElement : SingleElement
 
         Slot alongSlot = GetSlot(AlongSlotEdge);
         Center center = new Center();
-        center.Create(smallAngleElement.HoleSideFace0, smallAngleElement.HoleSideFace1, alongSlot.SideFace1, alongSlot.SideFace2, "ALONG_SLOT");
+        center.Create22(smallAngleElement.HoleSideFace0, smallAngleElement.HoleSideFace1, alongSlot.SideFace1, alongSlot.SideFace2, "ALONG_SLOT", false);
 
         Slot acrossSlot1 = smallAngleElement.GetSlot(smallAngleElement.AcrossSlotEdge);
         Slot acrossSlot2 = GetSlot(AcrossSlotEdge);

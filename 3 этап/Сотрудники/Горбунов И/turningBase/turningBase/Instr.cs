@@ -112,6 +112,19 @@ public static class Instr
         list.Add(obj);
     }
 
+
+    public static bool Exist<T>(List<T> list, T obj)
+    {
+        foreach (T var in list)
+        {
+            if (var.Equals(obj))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /// <summary>
     /// Возвращает экземпляр класса Image из массива байт.
     /// </summary>

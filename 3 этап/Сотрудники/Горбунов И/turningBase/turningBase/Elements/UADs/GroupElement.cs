@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using NXOpen;
 using NXOpen.Assemblies;
-using NXOpen.Positioning;
 
 /// <summary>
 /// Класс содержащий элемент УСП.
@@ -81,7 +79,7 @@ public class GroupElement : UadElement
     /// Возвращает ребро элемента по его имени.
     /// </summary>
     /// <param name="edgeName">Обозначение ребра.</param>
-    /// <param name="component"></param>
+    /// <param name="component">Компонент, в котором найдено ребро.</param>
     /// <returns></returns>
     protected Edge GetEdge(string edgeName, out Component component)
     {
@@ -108,6 +106,37 @@ public class GroupElement : UadElement
         throw new ParamObjectNotFoundExeption(mess, this, edgeName);
     }
 
+    /// <summary>
+    /// Возвращает грань элемента по его имени.
+    /// </summary>
+    /// <param name="faceName">Обозначение ребра.</param>
+    /// <param name="component">Компонент, в котором найдена грань.</param>
+    /// <returns></returns>
+    protected Face GetFace(string faceName, out Component component)
+    {
+        Face face = null;
+        component = null;
+        foreach (SingleElement singleElement in _children)
+        {
+            try
+            {
+                face = singleElement.GetFace(faceName);
+            }
+            catch (ParamObjectNotFoundExeption)
+            {
+                Logger.WriteLine("В элементе '", singleElement.Title, "' сборочного элемента '",
+                    Title, "' грань '", faceName, "' не найдена.");
+            }
+            if (face == null)
+                continue;
+            component = singleElement.ElementComponent;
+            return face;
+        }
+        string mess = "В сборочном элементе '" + Title + "' грань '" +
+                      faceName + "' не найдена.";
+        throw new ParamObjectNotFoundExeption(mess, this, faceName);
+    }
+
 
     private void SetChildren()
     {
@@ -130,4 +159,3 @@ public class GroupElement : UadElement
     }
 
 }
-

@@ -7,26 +7,35 @@ using NXOpen.Utilities;
 
 internal static class NxFunctions
 {
-    public static bool GetFace(TaggedObject[] to, SingleElement element, out Face face)
+    public static IEnumerable<Edge> GetParallelEdges(Edge[] edges, Edge parallelEdge, double distanceBetween)
     {
-        TaggedObject t = to[0];
-
-        Part p = (Part) element.ElementComponent.OwningPart;
-        BodyCollection bc = p.Bodies;
-        foreach (Body b in bc)
+        for (int i = 0; i < edges.Length; i++)
         {
-            Face[] fc = b.GetFaces();
-
-            foreach (Face f in fc)
+            Vector parallelVector = new Vector(parallelEdge);
+            if (edges[i].SolidEdgeType != Edge.EdgeType.Linear)
+                continue;
+            Vector vector1 = new Vector(edges[i]);
+            for (int j = i + 1; j < edges.Length; j++)
             {
-                if (f.Tag != t.Tag) continue;
-                face = f;
-                return true;
+                if (edges[j].SolidEdgeType != Edge.EdgeType.Linear)
+                    continue;
+                Vector vector2 = new Vector(edges[j]);
+                if (!vector1.IsParallel(parallelVector))
+                    continue;
+                if (!vector1.IsParallel(vector2))
+                    continue;
+                Straight straight = new Straight(vector2);
+                if (straight.GetDistance(vector1.Start) == 0)
+                    continue;
+                if (!Geom.IsEqual(vector1.GetStartsLength(vector2), distanceBetween)) 
+                    continue;
+                Edge[] parallelEdges = new Edge[2];
+                parallelEdges[0] = edges[i];
+                parallelEdges[1] = edges[j];
+                return parallelEdges;
             }
         }
-
-        face = null;
-        return false;
+        return null;
     }
 
     /// <summary>

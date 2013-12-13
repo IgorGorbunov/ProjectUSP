@@ -69,8 +69,6 @@ namespace Katalog2005
         /// <returns></returns> 
         private void automatConnection()
         {
-            String connectionString = "";
-            
             if (GetServerBDparams(System.Environment.GetEnvironmentVariable("KTPP_DB_SERVER")).Length == 3)
             {
                 string[] paramsBD = GetServerBDparams(System.Environment.GetEnvironmentVariable("KTPP_DB_SERVER"));

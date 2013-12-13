@@ -102,5 +102,10 @@ public static class Sql
     {
         return param1 + Eq + param2;
     }
+
+    public static string EqualStr(object param1, object param2)
+    {
+        return param1 + Eq + "'" + param2 + "'";
+    }
 }
 

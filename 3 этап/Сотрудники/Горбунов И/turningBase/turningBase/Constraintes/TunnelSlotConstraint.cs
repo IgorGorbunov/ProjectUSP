@@ -194,7 +194,7 @@ public sealed class TunnelSlotConstraint
         SetFixtureFaces();
 
         Center center = new Center();
-        center.Create(_fixture.ElementComponent, _tunnelSideFaces[0], _tunnelSideFaces[1],
+        center.Create22(_fixture.ElementComponent, _tunnelSideFaces[0], _tunnelSideFaces[1],
                       _secondElement.ElementComponent, _slot.SideFace1, _slot.SideFace2);
 
         Touch touch = new Touch();

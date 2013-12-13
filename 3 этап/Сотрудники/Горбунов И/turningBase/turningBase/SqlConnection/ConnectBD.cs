@@ -5,8 +5,6 @@ namespace Katalog2005
 {
     public partial class ConnectBD : Form
     {
-        private bool _isConnect;
-
         public ConnectBD()
         {
             InitializeComponent();

@@ -30,6 +30,14 @@ public static partial class Config
     /// Наименование цилиндрической грани для установки болта кондукторной планки.
     /// </summary>
     public const string JigHoleName = "JIG_HOLE";
+    /// <summary>
+    /// Наименование цилиндрической грани 1 для установки болта кондукторной планки.
+    /// </summary>
+    public const string JigHole1Name = "JIG_HOLE_1";
+    /// <summary>
+    /// Наименование цилиндрической грани 2 для установки болта кондукторной планки.
+    /// </summary>
+    public const string JigHole2Name = "JIG_HOLE_2";
 
     /// <summary>
     /// Наименование цилиндрической грани кондукторной втулки.
@@ -86,6 +94,8 @@ public static partial class Config
     /// Наименование второй боковой грани отверстия в продольном пазе элемента.
     /// </summary>
     public const string HoleSide1 = "HOLE_SIDE_1";
+
+
     /// <summary>
     /// Наименование бокового ребра поперечного паза верхнего элемента складывающейся планки.
     /// </summary>
@@ -94,6 +104,18 @@ public static partial class Config
     /// Наименование бокового ребра продольного паза верхнего элемента складывающейся планки.
     /// </summary>
     public const string UpAlongSlot = "UP_ALONG_SLOT";
+    /// <summary>
+    /// Наименование цилиндрической грани отверстия верхнего элемента складывающейся планки.
+    /// </summary>
+    public const string FoldindBoltHole = "BOLT_HOLE";
+    /// <summary>
+    /// Наименование первой грани продольного отверстия верхнего элемента складывающейся планки.
+    /// </summary>
+    public const string FoldindBoltHole1 = "BOLT_HOLE_1";
+    /// <summary>
+    /// Наименование второй грани продольного отверстия верхнего элемента складывающейся планки.
+    /// </summary>
+    public const string FoldindBoltHole2 = "BOLT_HOLE_2";
 
     //----------------------- Constraints ----------------------------------
 

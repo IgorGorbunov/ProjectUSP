@@ -26,7 +26,7 @@ class SlotConstraint
     /// </summary>
     public void SetCenterConstraint()
     {
-        _centerConstr.Create(_firstSlot.ParentComponent,
+        _centerConstr.Create22(_firstSlot.ParentComponent,
                             _firstSlot.SideFace1, _firstSlot.SideFace2,
                             _secondSlot.ParentComponent,
                             _secondSlot.SideFace1, _secondSlot.SideFace2);
@@ -38,14 +38,14 @@ class SlotConstraint
     /// </summary>
     public void SetCenterConstraint2()
     {
-        _centerConstr.Create(_firstSlot, _secondSlot);
+        _centerConstr.Create22(_firstSlot, _secondSlot);
     }
     /// <summary>
     /// Производит соединение вдоль паза по рёбрам первого паза.
     /// </summary>
     public void SetCenterEdgeConstraint()
     {
-        _centerConstr.Create(_firstSlot.ParentComponent,
+        _centerConstr.Create22(_firstSlot.ParentComponent,
                             _firstSlot.EdgeLong1, _firstSlot.EdgeLong2,
                             _secondSlot.ParentComponent,
                             _secondSlot.SideFace1, _secondSlot.SideFace2);

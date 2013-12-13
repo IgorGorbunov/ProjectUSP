@@ -123,18 +123,6 @@ public class Vector
         }
     }
 
-    public double X
-    {
-        get
-        {
-            if (Geom.IsEqual(_direction, new Point3d(0.0, 0.0, 0.0)))
-            {
-                SetDirection();
-            }
-            return _direction.X;
-        }
-    }
-
     double _length = -1.0;
     Point3d _direction = new Point3d(0.0, 0.0, 0.0);
     private Point3d _start, _end;
@@ -403,12 +391,18 @@ public class Vector
         return IsCoDirectional(trueSlotDirection);
     }
 
+    public double GetStartsLength(Vector vector)
+    {
+        Vector vectorBetween = new Vector(Start, vector.Start);
+        return vectorBetween.Length;
+    }
+
     /// <summary>
     /// Возвращает координаты точки смещения заданной точки по текущему векору.
     /// </summary>
     /// <param name="point">Заданная точка.</param>
     /// <returns></returns>
-    public Point3d GetOffsetPoint(Point3d point)
+    private Point3d GetOffsetPoint(Point3d point)
     {
         Point3d offsetPoint = new Point3d();
 

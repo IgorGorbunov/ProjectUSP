@@ -121,7 +121,7 @@ public class SmallAngleElement : SingleElement
                      ElementComponent, TopFace);
 
         Center center = new Center();
-        center.Create(smallAngleElement.ElementComponent, smallAngleElement.HoleSideFace0,
+        center.Create22(smallAngleElement.ElementComponent, smallAngleElement.HoleSideFace0,
                       smallAngleElement.HoleSideFace1, ElementComponent, HoleSideFace0, HoleSideFace1);
 
         NxFunctions.Update();

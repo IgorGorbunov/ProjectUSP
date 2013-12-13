@@ -27,6 +27,10 @@ using System.Windows.Forms;
         private void loadForm()
         {
             DataSet ds = SqlOracle1.getDS("SELECT * FROM KTC.USP_PLANKS_DATA WHERE KATALOG_USP = " + katalogUsp);
+#if(DEBUG)
+            ds = SqlOracle1.getDS("SELECT * FROM KTC.USP_PLANKS_DATA_DEBUG WHERE KATALOG_USP = " + katalogUsp);
+#endif
+
             view = new DataView(ds.Tables[0]);
             dgvPlanks.DataSource = view;
             dgvPlanks.Columns["GOST"].Visible = false;

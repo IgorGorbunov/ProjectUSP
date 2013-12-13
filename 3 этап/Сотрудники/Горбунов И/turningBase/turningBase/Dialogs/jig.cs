@@ -493,9 +493,17 @@ public sealed class Jig : DialogProgpam
             Debug.Assert(FPlank != null, "FPlank != null");
             NxFunctions.Delete(FPlank.ElementComponent);
             FPlank = null;
-            string mess = "Модель детали '" + e.Element.Title + "' неверно параметризированна!" +
+            string mess;
+            if (e.NxObjectName == null)
+            {
+                mess = e.Message;
+            }
+            else
+            {
+                mess = "Модель детали '" + e.Element.Title + "' неверно параметризированна!" +
                           Environment.NewLine;
-            mess += "Не найден параметр '" + e.NxObjectName + "'.";
+                mess += "Не найден параметр '" + e.NxObjectName + "'.";
+            }
             Message.ShowError(mess);
         }
         finally
@@ -838,7 +846,7 @@ public sealed class Jig : DialogProgpam
     {
         DataTable sleeves = SqlUspElement.GetSleeves(_catalog, GetSleeveTypeConditions());
         List<double> sleeveDiams = FilterSleevesAndGetOutDiams(sleeves);
-        //if (_goodSleeves.Count > 0)
+        if (_goodSleeves.Count > 0)
         {
             Dictionary<string, string> param;
             string query = SqlUspJigs.GetQueryJigTypes(_catalog, sleeveDiams, out param);
@@ -850,6 +858,10 @@ public sealed class Jig : DialogProgpam
             _jigPlanksForm.ShowDialog();
             _sizeFormX = _jigPlanksForm.Size.Width;
             _sizeFormY = _jigPlanksForm.Size.Height;
+        }
+        else
+        {
+            Message.ShowError("Подходящих втулок не найдено!");
         }
     }
 

@@ -67,7 +67,7 @@ public class SlotTBolt : SingleElement
         }
 
         Center center = new Center();
-        center.Create(slot, _sideFaces[0], _sideFaces[1]);
+        center.Create22(slot, _sideFaces[0], _sideFaces[1]);
         Touch touch = new Touch();
         touch.Create(_bottomFace, slot.BottomFace);
         NxFunctions.Update();

@@ -41,6 +41,13 @@ public class ParamObjectNotFoundExeption : Exception
         NxObjectName = nxObjectName;
     }
 
+    public ParamObjectNotFoundExeption(string message, SingleElement element, string nxObjectName)
+        : base(message)
+    {
+        Element = element;
+        NxObjectName = nxObjectName;
+    }
+
     public ParamObjectNotFoundExeption(string message, string nxObjectName)
         : base(message)
     {

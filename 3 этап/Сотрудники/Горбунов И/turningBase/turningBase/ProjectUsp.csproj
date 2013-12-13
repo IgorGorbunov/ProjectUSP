@@ -222,6 +222,7 @@
     <Compile Include="NX\NXFunctions.cs" />
     <Compile Include="Replacement.cs" />
     <Compile Include="Sql - мой\SQL BLOB.cs" />
+    <Compile Include="Sql - мой\SQL Exist.cs" />
     <Compile Include="Sql - мой\SQL Update.cs" />
     <Compile Include="Sql - мой\Sql.cs" />
     <Compile Include="SqlAccess\SqlUspBigAngleElems.cs" />

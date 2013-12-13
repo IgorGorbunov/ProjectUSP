@@ -371,6 +371,13 @@ static class Geom
         return false;
     }
 
+    public static bool IsEqual(double d1, double d2)
+    {
+        double dd1 = Config.Round(d1);
+        double dd2 = Config.Round(d2);
+        return dd1.ToString() == dd2.ToString();
+    }
+
 
     /// <summary>
     /// Возвращает true, если объект является компонентом.
