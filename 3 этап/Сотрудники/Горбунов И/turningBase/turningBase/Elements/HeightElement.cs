@@ -328,6 +328,7 @@ public class HeightElement : SingleElement
             double distance = surface.GetDistance(point);
             if (distance > minDistance)
                 continue;
+
             minDistance = distance;
             goodSlot = slot;
         }

@@ -297,6 +297,9 @@ public sealed class SlotSet
                 if (!HasSurrPointOnFace(edges[i], edges[j]))
                     continue;
 
+                if (!SideFacesLookInside(edges[i], edges[j]))
+                    continue;
+
                 Edge edgeLong1 = edges[i];
                 Point3d start, end;
                 edgeLong1.GetVertices(out start, out end);
@@ -607,6 +610,32 @@ public sealed class SlotSet
             }
         }
         return false;
+    }
+
+    private bool SideFacesLookInside(Edge edge1, Edge edge2)
+    {
+        Face sideFace1 = null, sideFace2 = null;
+        Face[] faces = edge1.GetFaces();
+        foreach (Face face in faces)
+        {
+            if (face == _bottomFace) 
+                continue;
+            sideFace1 = face;
+            break;
+        }
+
+        faces = edge2.GetFaces();
+        foreach (Face face in faces)
+        {
+            if (face == _bottomFace)
+                continue;
+            sideFace2 = face;
+            break;
+        }
+        Surface surface1 = new Surface(sideFace1);
+        Surface surface2 = new Surface(sideFace2);
+        double d = surface1.GetDistance(surface2);
+        return d > 0;
     }
 
     private Point3d GetSurroundingPoint(Edge edge1, Edge edge2)
