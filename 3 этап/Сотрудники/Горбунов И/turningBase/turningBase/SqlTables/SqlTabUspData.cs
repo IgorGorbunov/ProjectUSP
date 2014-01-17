@@ -178,10 +178,13 @@ public static class SqlTabUspData
     {
         get
         {
-            string predicate = "TO_NUMBER(" + CCount + ")>0 AND TO_NUMBER(" + CCount + ")<>999";
+            string predicate;
 #if(DEBUG)
             predicate = "TO_NUMBER(" + CCount + ")>-1 ";
+#else
+            predicate = "TO_NUMBER(" + CCount + ")>0 AND TO_NUMBER(" + CCount + ")<>999";
 #endif
+
             return predicate;
         }
     }

@@ -25,7 +25,7 @@ public static class HeightSet
         Solution solution = new SelectionAlgorihtm(
             DatabaseUtils.loadFromDb(elementType, ignoreInStock, (int)catalog.CatalogUsp),//учитываем колво на складе
             1000).solve(height, ignoreInStock); //учитываем колво на складе
-
+        
         if (solution.mainAnswer == -1)
         {
             ExactHeightForm form = new ExactHeightForm(height, solution.lowerBound,
@@ -65,7 +65,7 @@ public static class HeightSet
     private static void LoadParts(List<string> partList)
     {
         IEnumerable<SingleElement> fixElements = NxFunctions.FixElements(_lowFace.OwningComponent,
-                                                                      _highFace.OwningComponent);
+                                                                         _highFace.OwningComponent);
 
         int i = 0;
         HeightElement[] elements = new HeightElement[partList.Count];

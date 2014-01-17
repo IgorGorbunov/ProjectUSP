@@ -468,7 +468,7 @@ public sealed class Jig : DialogProgpam
 
     private void ShowFoldingPlanks()
     {
-        PlanksForm planksForm = new PlanksForm((int)_catalog.CatalogUsp);
+        PlanksForm planksForm = new PlanksForm((int)_catalog.CatalogUsp, _jigPlank.Width);
         planksForm.ShowDialog();
         NxFunctions.FreezeDisplay();
         try

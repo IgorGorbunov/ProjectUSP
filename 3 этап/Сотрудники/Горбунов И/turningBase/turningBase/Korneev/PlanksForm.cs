@@ -1,4 +1,4 @@
-using System;
+п»їusing System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -9,10 +9,12 @@ using System.Windows.Forms;
     public partial class PlanksForm : Form
     {
         int katalogUsp;
+        double _plankWidth;
 
-        public PlanksForm(int katalogUsp)
+        public PlanksForm(int katalogUsp, double plankWidth)
         {
             this.katalogUsp = katalogUsp;
+            _plankWidth = plankWidth;
             InitializeComponent();
             //splitContainer1.BackColor = Color.Red;
             splitContainer1.BorderStyle = BorderStyle.FixedSingle;
@@ -26,21 +28,25 @@ using System.Windows.Forms;
 
         private void loadForm()
         {
-            DataSet ds = SqlOracle1.getDS("SELECT * FROM KTC.USP_PLANKS_DATA WHERE KATALOG_USP = " + katalogUsp);
+            string table;
 #if(DEBUG)
-            ds = SqlOracle1.getDS("SELECT * FROM KTC.USP_PLANKS_DATA_DEBUG WHERE KATALOG_USP = " + katalogUsp);
+            table = "KTC.USP_PLANKS_DATA_DEBUG";
+#else
+            table = "KTC.USP_PLANKS_DATA";
 #endif
+            DataSet ds = SqlOracle1.getDS("SELECT * FROM " + table + " WHERE KATALOG_USP = " + katalogUsp + " and (WIDTH is NULL or WIDTH = " + _plankWidth + ")");
 
             view = new DataView(ds.Tables[0]);
             dgvPlanks.DataSource = view;
             dgvPlanks.Columns["GOST"].Visible = false;
             dgvPlanks.Columns["KATALOG_USP"].Visible = false;
-            dgvPlanks.Columns["NAME"].HeaderText = "Обозначение";
+            dgvPlanks.Columns["WIDTH"].Visible = false;
+            dgvPlanks.Columns["OBOZN"].HeaderText = "РћР±РѕР·РЅР°С‡РµРЅРёРµ";
             int colWidth = 30;
             dgvPlanks.Columns["L"].MinimumWidth = colWidth;
             dgvPlanks.Columns["B"].MinimumWidth = colWidth;
             dgvPlanks.Columns["H"].MinimumWidth = colWidth;
-            dgvPlanks.Columns["NAME"].MinimumWidth = 80;
+            dgvPlanks.Columns["OBOZN"].MinimumWidth = 80;
             
             //dgvPlanks.Columns["NAME"].Width = dgvPlanks.Width * 3 / 4;
             Dictionary<string, bool> tgosts = new Dictionary<string, bool>();
@@ -51,7 +57,7 @@ using System.Windows.Forms;
             foreach(string s in tgosts.Keys) {
                 gosts.Add(s);
                 Image image = null;
-                string gostName = "ГОСТ " + s;
+                string gostName = "Р“РћРЎРў " + s;
                 try
                 {
                     image = SqlUspElement.GetImage(s);
@@ -85,7 +91,7 @@ using System.Windows.Forms;
         private int _itemAtRow;
 
         /// <summary>
-        /// Добавляет элементы на форму.
+        /// Р”РѕР±Р°РІР»СЏРµС‚ СЌР»РµРјРµРЅС‚С‹ РЅР° С„РѕСЂРјСѓ.
         /// </summary>
         public void DrawItems()
         {
@@ -157,11 +163,11 @@ using System.Windows.Forms;
         {
             if (selectedIndex >= 0)
             {
-                LoadPart((dgvPlanks.Rows[selectedIndex].Cells["NAME"]).Value.ToString());
+                LoadPart((dgvPlanks.Rows[selectedIndex].Cells["OBOZN"]).Value.ToString());
             }
             else
             {
-                Message.ShowError("Модель детали не выбрана!");
+                Message.ShowError("РњРѕРґРµР»СЊ РґРµС‚Р°Р»Рё РЅРµ РІС‹Р±СЂР°РЅР°!");
             }
         }
 
@@ -196,7 +202,7 @@ using System.Windows.Forms;
             }
             catch (PartNotFoundExeption ex)
             {
-                Message.ShowError("Модель детали '" + ex.Message + "' не загружена в базу данных!");
+                Message.ShowError("РњРѕРґРµР»СЊ РґРµС‚Р°Р»Рё '" + ex.Message + "' РЅРµ Р·Р°РіСЂСѓР¶РµРЅР° РІ Р±Р°Р·Сѓ РґР°РЅРЅС‹С…!");
             }
         }
     }

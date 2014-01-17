@@ -98,7 +98,10 @@ internal static class NxFunctions
             Delete((NXObject)component);
         }
     }
-
+    /// <summary>
+    /// Удаляет компоненты из NX.
+    /// </summary>
+    /// <param name="components"></param>
     public static void Delete(params Component[] components)
     {
         IEnumerable<Component> iComponents = components;

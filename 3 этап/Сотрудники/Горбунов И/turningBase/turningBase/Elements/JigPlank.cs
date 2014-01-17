@@ -9,6 +9,20 @@ using NXOpen.Assemblies;
 public class JigPlank : SingleElement
 {
     /// <summary>
+    /// Возвращает ширину планки.
+    /// </summary>
+    public double Width
+    {
+        get
+        {
+            if (_width == default(double))
+            {
+                SetWidth();
+            }
+            return _width;
+        }
+    }
+    /// <summary>
     /// Возвращает основную НГП кондукторной планки.
     /// </summary>
     public Face SlotFace
@@ -169,6 +183,8 @@ public class JigPlank : SingleElement
             return _holeFace2;
         }
     }
+
+    private double _width;
 
     private Slot _acrossSlot, _alongSlot;
 
@@ -478,5 +494,32 @@ public class JigPlank : SingleElement
         _alongSlot = GetNearestSlot(point1);
     }
 
-    
+    private void SetWidth()
+    {
+        _width = GetWidth(Title);
+    }
+
+    //---------------------------------SQL Structure----------------------------
+
+    private const string _C_WIDTH = SqlTabUspData.CWidth;
+    private const string _C_TITLE = SqlTabUspData.CTitle;
+    private const string _FROM = Sql.From + SqlTabUspData.Name;
+
+    //---------------------------------SQL -------------------------------------
+
+    private double GetWidth(string title)
+    {
+        Dictionary<string, string> paramDict = new Dictionary<string, string>();
+        paramDict.Add("TITLE", title);
+        string d;
+
+        string query = Sql.GetBegin(_C_WIDTH) + _FROM + Sql.Where;
+        query += Sql.EqualStr(_C_TITLE, title);
+
+        if (SqlOracle.Sel(query, paramDict, out d))
+        {
+            return Double.Parse(d);
+        }
+        throw new TimeoutException();
+    }
 }
