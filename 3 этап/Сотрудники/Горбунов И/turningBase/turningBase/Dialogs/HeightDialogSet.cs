@@ -67,6 +67,7 @@ public sealed class HeightDialogSet : DialogProgpam
     private UIBlock _button0;// Block type: Selection
     private UIBlock _double0;// Block type: Selection
     private UIBlock _toggle0;// Block type: Selection
+    private UIBlock _enum0;
 
     private Face _face1, _face2;
     private bool _face1Selected, _face2Selected, _heightSetted;
@@ -153,6 +154,7 @@ public sealed class HeightDialogSet : DialogProgpam
             _button0 = TheDialog.TopBlock.FindBlock("button0");
             _double0 = TheDialog.TopBlock.FindBlock("double0");
             _toggle0 = TheDialog.TopBlock.FindBlock("toggle0");
+            _enum0 = TheDialog.TopBlock.FindBlock("enum0");
         }
         catch (Exception ex)
         {
@@ -218,6 +220,10 @@ public sealed class HeightDialogSet : DialogProgpam
     {
         try
         {
+            if (block == _enum0)
+            {
+
+            }
             if(block == _selection0)
             {
             //---------Enter your code here-----------
@@ -460,7 +466,7 @@ public sealed class HeightDialogSet : DialogProgpam
             double maxLen = SqlUspElement.GetMaxLenSlotFixture(_catalog);
             if (maxLen >= _height)
             {
-                SetHeihgtElems(_height, ElementType.HeightBySquare, false, _catalog);
+                SetHeihgtElems(_height, GetElementType(), false, _catalog);
             }
             else
             {
@@ -514,6 +520,7 @@ public sealed class HeightDialogSet : DialogProgpam
             SetEnable(_group01, true);
             SetEnable(_button0, true);
         }
+        SetEnable(_enum0, false);
         SetEnable(_double0, false);
         SetEnable(_selection0, false);
         SetEnable(_selection01, false);
@@ -657,5 +664,19 @@ public sealed class HeightDialogSet : DialogProgpam
         _face1Selected = false;
         _face2Selected = false;
         _selection0.Focus();
+    }
+
+    private ElementType GetElementType()
+    {
+        switch (_enum0.GetProperties().GetEnumAsString("Value"))
+        {
+            case "Квадратные":
+                return ElementType.HeightBySquare;
+            case "Прямоугольные":
+                return ElementType.HeightByRectangle;
+            case "Круглые":
+                return ElementType.HeightByCircle;
+        }
+        return ElementType.None;
     }
 }
