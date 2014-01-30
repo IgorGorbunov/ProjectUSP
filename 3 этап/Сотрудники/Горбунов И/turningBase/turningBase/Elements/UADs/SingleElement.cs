@@ -9,21 +9,8 @@ using NXOpen.Positioning;
 /// </summary>
 public class SingleElement : UadElement
 {
-    public GroupElement Parent 
-    {
-        get { return _parent; }
-        set { _parent = value; }
-    }
-    /// <summary>
-    /// Возвращает компонент элемента.
-    /// </summary>
-    public Component ElementComponent
-    {
-        get
-        {
-            return _component;
-        }
-    }
+    
+
     /// <summary>
     /// Возвращает список всех нижних плоскостей пазов для данного элемента.
     /// </summary>
@@ -74,26 +61,6 @@ public class SingleElement : UadElement
         }
     }
     /// <summary>
-    /// Возвращает обозначение элемента УСП.
-    /// </summary>
-    public override string Title
-    {
-        get { return _title; }
-    }
-    /// <summary>
-    /// Возвращает ГОСТ элемента УСП.
-    /// </summary>
-    private string Gost
-    {
-        get
-        {
-            if (_gost != null) 
-                return _gost;
-            _gost = Parent == null ? SqlUspElement.GetGost(Title) : Parent.Gost;
-            return _gost;
-        }
-    }
-    /// <summary>
     /// Возвращает true, если элемент для набора большого угла.
     /// </summary>
     public bool IsBiqAngleElement
@@ -112,10 +79,27 @@ public class SingleElement : UadElement
             return false;
         }
     }
+    /// <summary>
+    /// Возвращает ГОСТ элемента УСП.
+    /// </summary>
+    protected string Gost
+    {
+        get
+        {
+            if (_gost != null) 
+                return _gost;
+            _gost = Parent == null ? SqlUspElement.GetGost(Title) : Parent.Gost;
+            return _gost;
+        }
+    }
+    
+    private GroupElement Parent
+    {
+        get { return _parent; }
+        set { _parent = value; }
+    }
 
-    private readonly Component _component;
     private GroupElement _parent;
-    private readonly string _title;
     private Fix _fixter;
     private Body _body;
 
@@ -129,14 +113,11 @@ public class SingleElement : UadElement
     /// Инициализирует новый экземпляр класса элемента УСП для заданного компонента.
     /// </summary>
     /// <param name="component">Компонент из сборки NX.</param>
-    public SingleElement(Component component)
+    public SingleElement(Component component) : base(component)
     {
-        _component = component;
-
         SetBody();
         SetBottomFaces();
         //вдргу компонент побьётся
-        _title = GetTitle();
     }
 
     /// <summary>
@@ -145,7 +126,7 @@ public class SingleElement : UadElement
     /// </summary>
     /// <param name="component">Компонент из сборки NX.</param>
     /// <param name="groupElement">Сборочная единица УСП.</param>
-    public SingleElement(Component component, GroupElement groupElement) 
+    public SingleElement(Component component, GroupElement groupElement)
         : this(component)
     {
         Parent = groupElement;
@@ -322,13 +303,13 @@ public class SingleElement : UadElement
     public void SetBody()
     {
         Body bb = null;
-        BodyCollection bc = ((Part)_component.Prototype).Bodies;
+        BodyCollection bc = ((Part)ElementComponent.Prototype).Bodies;
         Logger.WriteLine("У объекта \"" + ElementComponent.Name + " " + ElementComponent +
                          "\" " + bc.ToArray().Length + " тел(о).");
 
         foreach (Body body in bc)
         {
-            NXObject tmpNxObject = _component.FindOccurrence(body);
+            NXObject tmpNxObject = ElementComponent.FindOccurrence(body);
             if (tmpNxObject != null)
             {
                 bb = (Body)tmpNxObject;
@@ -348,7 +329,7 @@ public class SingleElement : UadElement
         }
     }
 
-    public void ClearConstraint(Constraint.Type type, string name)
+    protected void ClearConstraint(Constraint.Type type, string name)
     {
         ComponentConstraint[] constraints = ElementComponent.GetConstraints();
         foreach (ComponentConstraint componentConstraint in constraints)
@@ -358,16 +339,6 @@ public class SingleElement : UadElement
                 NxFunctions.Delete(componentConstraint);
             }
         }
-    }
-
-    private string GetTitle()
-    {
-        string componentName = ElementComponent.Name;
-        string[] split = componentName.Split('_');
-        string nameWithEx = split[split.Length - 1];
-        split = nameWithEx.Split('.');
-        string[] nameWithRevision = split[0].Split(' ');
-        return nameWithRevision[0];
     }
 
 }

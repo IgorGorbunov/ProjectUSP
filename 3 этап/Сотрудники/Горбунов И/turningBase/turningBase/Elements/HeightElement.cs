@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using NXOpen;
 using NXOpen.Assemblies;
 
@@ -162,15 +163,9 @@ public class HeightElement : SingleElement
         _touchConstraint = new Touch();
         _touchConstraint.Create(ElementComponent, BottomFace, element.ElementComponent, element.TopFace);
 
-        if (HasHorizontBottomSlotSet && element.HasHorizontTopSlotSet)
+        if (!IsRound())
         {
-            _slotConstraint = new SlotConstraint(BottomSlot, element.TopSlot);
-            _slotConstraint.SetCenterConstraint();
-        }
-        else
-        {
-            _slotConstraint = new SlotConstraint(BottomSideSlot, element.TopSideSlot);
-            _slotConstraint.SetCenterConstraint();
+            SetSlotConstraints(element);
         }
         
         _touchAxe = new TouchAxe();
@@ -213,6 +208,19 @@ public class HeightElement : SingleElement
     }
 
 
+    private void SetSlotConstraints(HeightElement lowerElement)
+    {
+        if (HasHorizontBottomSlotSet && lowerElement.HasHorizontTopSlotSet)
+        {
+            _slotConstraint = new SlotConstraint(BottomSlot, lowerElement.TopSlot);
+            _slotConstraint.SetCenterConstraint();
+        }
+        else
+        {
+            _slotConstraint = new SlotConstraint(BottomSideSlot, lowerElement.TopSideSlot);
+            _slotConstraint.SetCenterConstraint();
+        }
+    }
 
     private void SetSlot(Point3d point, ref Slot slot, Surface surface)
     {
@@ -356,5 +364,35 @@ public class HeightElement : SingleElement
         _holeFace = GetFace(Config.HeightHole);
         _topFace = GetFace(Config.TopFace);
         _bottomFace = GetFace(Config.BottomFace);
+    }
+
+    private bool IsRound()
+    {
+        return IsRound(Gost);
+    }
+
+    //--------------------SQL - STRUCTURE-------------------------
+
+    private const string _ROUND_ELEMS_T_NAME = "USP_VISOTA_1OTV_KRUG";
+    private const string _FROM = Sql.From + _ROUND_ELEMS_T_NAME;
+
+    private const string _ROUND_ELEMS_C_GOST = "GOST";
+
+    //------------------------SQL---------------------------------
+
+    private bool IsRound(string gost)
+    {
+        Dictionary<string, string> paramDict = new Dictionary<string, string>();
+        paramDict.Add("GOST", gost);
+        string d;
+
+        string query = Sql.GetBegin(_ROUND_ELEMS_C_GOST) + _FROM + Sql.Where;
+        query += Sql.EqualStr(_ROUND_ELEMS_C_GOST, gost);
+
+        if (SqlOracle.Sel(query, paramDict, out d))
+        {
+            return d != default(string);
+        }
+        throw new TimeoutException();
     }
 }

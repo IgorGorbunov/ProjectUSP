@@ -466,7 +466,13 @@ public sealed class HeightDialogSet : DialogProgpam
             double maxLen = SqlUspElement.GetMaxLenSlotFixture(_catalog);
             if (maxLen >= _height)
             {
-                SetHeihgtElems(_height, GetElementType(), false, _catalog);
+                bool ignoreInStock;
+#if(DEBUG)
+                ignoreInStock = true;
+#else
+                ignoreInStock = false;
+#endif
+                SetHeihgtElems(_height, GetElementType(), ignoreInStock, _catalog);
             }
             else
             {
@@ -521,6 +527,7 @@ public sealed class HeightDialogSet : DialogProgpam
             SetEnable(_button0, true);
         }
         SetEnable(_enum0, false);
+        SetEnable(_toggle0, false);
         SetEnable(_double0, false);
         SetEnable(_selection0, false);
         SetEnable(_selection01, false);
@@ -530,14 +537,17 @@ public sealed class HeightDialogSet : DialogProgpam
     {
         Dictionary<Element, byte> eDictionary = solution.getMainSolution(0);
         List<string> list = new List<string>();
+        string mess = "Для набора на высоту выбраны:" + Environment.NewLine;
         foreach (KeyValuePair<Element, byte> keyValuePair in eDictionary)
         {
             for (int i = 0; i < keyValuePair.Value; i++)
             {
+                mess += keyValuePair.Key.Obozn + Environment.NewLine;
                 list.Add(keyValuePair.Key.Obozn);
             }
         }
-        
+
+        Logger.WriteLine(mess);
         LoadParts(list);
     }
 

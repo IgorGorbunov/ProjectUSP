@@ -7,16 +7,7 @@ using NXOpen.Assemblies;
 /// </summary>
 public class GroupElement : UadElement
 {
-    /// <summary>
-    /// Возвращает компонент элемента.
-    /// </summary>
-    public Component ElementComponent
-    {
-        get
-        {
-            return _component;
-        }
-    }
+
     /// <summary>
     /// Возвращает каталог для данного элемента.
     /// </summary>
@@ -40,13 +31,6 @@ public class GroupElement : UadElement
         }
     }
     /// <summary>
-    /// Возвращает обозначение элемента УСП.
-    /// </summary>
-    public override string Title
-    {
-        get { return _title; }
-    }
-    /// <summary>
     /// Возвращает ГОСТ элемента УСП.
     /// </summary>
     public string Gost
@@ -54,11 +38,7 @@ public class GroupElement : UadElement
         get { return SqlUspElement.GetGost(Title); }
     }
 
-
-    private readonly Component _component;
     private List<SingleElement> _children;
-
-    private readonly string _title;
     private Catalog _catalog;
 
 
@@ -66,13 +46,9 @@ public class GroupElement : UadElement
     /// Инициализирует новый экземпляр класса элемента УСП для заданного компонента.
     /// </summary>
     /// <param name="component">Компонент из сборки NX.</param>
-    protected GroupElement(Component component)
+    protected GroupElement(Component component) : base(component)
     {
-        _component = component;
         SetChildren();
-
-        //вдргу компонент побьётся
-        _title = GetTitle();
     }
 
     /// <summary>
@@ -140,22 +116,12 @@ public class GroupElement : UadElement
 
     private void SetChildren()
     {
-        Component[] components = _component.GetChildren();
+        Component[] components = ElementComponent.GetChildren();
         _children = new List<SingleElement>();
         foreach (Component component in components)
         {
             _children.Add(new SingleElement(component, this));
         }
-    }
-
-    private string GetTitle()
-    {
-        string componentName = ElementComponent.Name;
-        string[] split = componentName.Split('_');
-        string nameWithEx = split[split.Length - 1];
-        split = nameWithEx.Split('.');
-        string[] nameWithRevision = split[0].Split(' ');
-        return nameWithRevision[0];
     }
 
 }
