@@ -100,6 +100,8 @@ public sealed class Jig : DialogProgpam
     private bool _sleeveIsQuick;
 
     private const double _DISTANCE_COEF = 0.4;
+    private const double _MAX_DISTANCE = 500.0;
+    private const double _STEP_INC_DISTANCE = 10.0;
 
     private double _startAngle;
 
@@ -647,14 +649,31 @@ public sealed class Jig : DialogProgpam
             if (i == 2)
                 break;
 
-            if (edge.SolidEdgeType != Edge.EdgeType.Circular ||
-                Config.Round(_selectedFace.Radius) != Config.Round(Geom.GetRadius(edge))) 
-                continue;
-           
+            if (!EdgeIsCorrectType(edge) ||
+                !EdgeIsCorrectRadius(edge, _selectedFace.Radius)) continue;
             twoEgdes[i] = edge;
             i++;
         }
         return twoEgdes;
+    }
+
+    private bool EdgeIsCorrectType(Edge edge)
+    {
+        return edge.SolidEdgeType == Edge.EdgeType.Circular ||
+               edge.SolidEdgeType == Edge.EdgeType.Elliptical;
+    }
+
+    private bool EdgeIsCorrectRadius(Edge edge, double faceRadius)
+    {
+        if (edge.SolidEdgeType == Edge.EdgeType.Circular)
+        {
+            return Config.Round(faceRadius) == Config.Round(Geom.GetRadius(edge));
+        }
+        if (edge.SolidEdgeType == Edge.EdgeType.Elliptical)
+        {
+            return Config.Round(faceRadius) <= Config.Round(Geom.GetRadius(edge));
+        }
+        return false;
     }
 
     private void SelectDistanceConstraint()
@@ -700,14 +719,34 @@ public sealed class Jig : DialogProgpam
             return;
         _touchAxeJigElement.Reverse();
         SetDistance(edge);
+
+        SetLondDistance();
+
         NxFunctions.UnFreezeDisplay();
+    }
+
+    private void SetLondDistance()
+    {
+        _label02.GetProperties().SetLogical("Show", false);
+        _double02.GetProperties().SetDouble("MaximumValue", _MAX_DISTANCE);
+        double initDistance = _realDistance;
+
+        ElementIntersection intersection = new ElementIntersection(_workpiece.Body,
+                                                                  _jigPlank.Body);
+        while (intersection.AnyIntersectionExists)
+        {
+            initDistance += _STEP_INC_DISTANCE;
+            SetUserDistance(Config.Round(initDistance));
+        }
+
     }
 
     private bool SetDistance(Edge edge)
     {
         _distanceConstr.Delete();
         _distanceConstr = new Distance();
-        _distanceConstr.Create(_workpiece.ElementComponent, edge, _jigPlank.ElementComponent, _jigPlank.SlotFace, _realDistance);
+        _distanceConstr.Create(_workpiece.ElementComponent, edge, _jigPlank.ElementComponent, 
+            _jigPlank.SlotFace, _realDistance);
         NxFunctions.Update();
 
         ElementIntersection intersection = new ElementIntersection(_workpiece.Body,
@@ -734,10 +773,7 @@ public sealed class Jig : DialogProgpam
         _distanceConstr.Reverse();
         NxFunctions.Update();
 
-        if (!intersection.AnyIntersectionExists && !_distanceConstr.IsOverConstrained())
-            return false;
-
-        return true;
+        return intersection.AnyIntersectionExists || _distanceConstr.IsOverConstrained();
     }
 
     private void SetRecommendDistance()

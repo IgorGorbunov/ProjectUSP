@@ -97,7 +97,7 @@ public class Surface
         }
     }
     /// <summary>
-    /// Возвращает вектор поверхности.
+    /// Возвращает вектор поверхности????.
     /// </summary>
     public Vector VectorDirection2
     {
@@ -357,6 +357,16 @@ public class Surface
     {
         Vector vector = new Vector(CenterPoint, surface.CenterPoint);
         return vector.Center;
+    }
+    /// <summary>
+    /// Возвращает truе, если ось поверхности данной цилиндрической грани
+    /// перпендикулярна заданной прямой поверхности.
+    /// </summary>
+    /// <param name="plane">Заданная прямая поверхность.</param>
+    /// <returns></returns>
+    public bool HoleIsNormalToPlane(Surface plane)
+    {
+        return VectorDirection2.IsParallel(plane.Direction2);
     }
 
     public double GetAngle(Surface surface)
